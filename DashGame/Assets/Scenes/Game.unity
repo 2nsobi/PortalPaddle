@@ -1910,7 +1910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60ef94f155187274c89e5d2e7716a768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pools:
+  levels:
   - tag: Level2
     prefab1: {fileID: 1455348243074798, guid: 3c17509a753df754296c6f4b5acfb50b, type: 2}
     prefab2: {fileID: 1455348243074798, guid: 3c17509a753df754296c6f4b5acfb50b, type: 2}
@@ -1926,11 +1926,16 @@ MonoBehaviour:
     prefab2: {fileID: 1237450454083868, guid: 9247dd56ce867fe44b5b2bdf9ed4ff3b, type: 2}
     prefab3: {fileID: 1237450454083868, guid: 9247dd56ce867fe44b5b2bdf9ed4ff3b, type: 2}
     size: 1
-  - tag: Obstacle1
-    prefab1: {fileID: 1237450454083868, guid: 9247dd56ce867fe44b5b2bdf9ed4ff3b, type: 2}
-    prefab2: {fileID: 1237450454083868, guid: 9247dd56ce867fe44b5b2bdf9ed4ff3b, type: 2}
-    prefab3: {fileID: 1237450454083868, guid: 9247dd56ce867fe44b5b2bdf9ed4ff3b, type: 2}
-    size: 1
+  obstacles:
+  - tag: Obstacle1_Lvl2
+    prefab: {fileID: 1229943567752760, guid: f580bb7460deca44bb2d4ac22a1e8eb0, type: 2}
+    size: 2
+  - tag: Obstacle1_Lvl3
+    prefab: {fileID: 1117546777786746, guid: 9a6e3db96a9cb1a46b370aaa8abe60b5, type: 2}
+    size: 2
+  - tag: Obstacle1_Lvl4
+    prefab: {fileID: 1556598627809410, guid: 1f90d140d4a492f4ebd1587eb1cb809d, type: 2}
+    size: 2
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   transitionSpeed: 5
 --- !u!1 &1246721658
