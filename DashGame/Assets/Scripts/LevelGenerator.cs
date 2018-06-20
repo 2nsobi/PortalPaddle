@@ -14,7 +14,7 @@ public class LevelGenerator : MonoBehaviour {
     #endregion
 
     [System.Serializable]
-    public class Pool
+    public class MultiPool
     {
         public string tag;
         public GameObject prefab1;
@@ -23,8 +23,17 @@ public class LevelGenerator : MonoBehaviour {
         public int size;
     }
 
+    [System.Serializable]
+    public class SinglePool
+    {
+        public string tag;
+        public GameObject prefab;
+        public int size;
+    }
+
     public Dictionary<string, Queue<GameObject>> LvlComponentDict;
-    public List<Pool> pools;
+    public List<MultiPool> levels;
+    public List<SinglePool> obstacles;
     public GameObject StartLvl;
     GameObject StartLevel; //for code use
     GameManager game;
@@ -69,7 +78,7 @@ public class LevelGenerator : MonoBehaviour {
 
         LvlComponentDict = new Dictionary<string, Queue<GameObject>>();
 
-        foreach (Pool pool in pools)
+        foreach (MultiPool pool in levels)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
             
@@ -89,6 +98,28 @@ public class LevelGenerator : MonoBehaviour {
             }
 
             LvlComponentDict.Add(pool.tag,objectPool);
+        }
+
+        foreach (SinglePool pool in obstacles)
+        {
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+
+            for (int i = 0; i < pool.size; i++)
+            {
+                GameObject obj = Instantiate(pool.prefab);
+                obj.SetActive(false);
+                objectPool.Enqueue(obj);
+            }
+
+            LvlComponentDict.Add(pool.tag, objectPool);
+        }
+
+        GameObject obstacle1TravelPath = SpawnFromPool("Obstacle1", Vector2.right * 500, Quaternion.identity).transform.Find("TargetTravelPath").gameObject;
+
+        Vector3[] travelPath1 = new Vector3[obstacle1TravelPath.transform.childCount];
+        for (int i = 0; i < obstacle1TravelPath.transform.childCount; i++)
+        {
+            travelPath1[i] = obstacle1TravelPath.transform.GetChild(i).localPosition;
         }
     }
 
