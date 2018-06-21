@@ -14,6 +14,15 @@ public class TargetController : MonoBehaviour
     GameManager game;
     float randomSize;
     Vector3 defaultTargetSize = new Vector3(0.2636f, 0.2636f,1);
+    bool target1Travel;
+    bool target2Travel;
+    bool targetHit;
+    public float travelSpeed;
+    int pointCounter1,pointCounter2;
+    Vector3[] travelPath1;
+    Vector3[] travelPath2;
+    Vector3 currentPoint1, currentPoint2;
+    Vector3 nextPoint1, nextPoint2;
 
     public static TargetController Instance;
 
@@ -55,6 +64,10 @@ public class TargetController : MonoBehaviour
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
+        target1Travel = false;
+        target2Travel = false;
+        targetHit = false;
+        pointCounter1 = 0;
 
         targets = new Target[2];
 
@@ -99,6 +112,61 @@ public class TargetController : MonoBehaviour
     {
         targets[0].animator.SetBool("InUse", targets[0].inUse);
         targets[1].animator.SetBool("InUse", targets[1].inUse);
+
+        if (targetHit)
+        {
+            target1Travel = false;
+            target2Travel = false;
+        }
+
+        if (target1Travel)
+        {
+            targets[0].transform.localPosition = Vector2.MoveTowards(targets[0].transform.localPosition, nextPoint1, Time.deltaTime * travelSpeed);
+            if(targets[0].transform.localPosition == nextPoint1)
+            {
+                nextPoint1 = PointOnPath(travelPath1,pointCounter1+1);
+                if (pointCounter1 + 1 == travelPath1.Length - 1)
+                {
+                    pointCounter1 = 0;
+                }
+            }
+        }
+
+        if (target2Travel)
+        {
+            targets[0].transform.localPosition = Vector2.MoveTowards(targets[0].transform.localPosition, nextPoint2, Time.deltaTime * travelSpeed);
+            if (targets[0].transform.localPosition == nextPoint1)
+            {
+                nextPoint2 = PointOnPath(travelPath2, pointCounter1 + 1);
+                if (pointCounter1 + 1 == travelPath2.Length - 1)
+                {
+                    pointCounter2 = 0;
+                }
+            }
+        }
+    }
+
+    void SelectTargetToTravel(Target target)
+    {
+        targetHit = false;
+        if (target == targets[0])
+        {
+            target1Travel = true;
+            travelPath1 = LG.GetNextObstaclePath;
+            pointCounter1 = -1;
+        }
+        
+        if(target == targets[1])
+        {
+            target2Travel = true;
+            travelPath2 = LG.GetNextObstaclePath;
+            pointCounter2 = -1;
+        }
+    }
+
+    Vector3 PointOnPath(Vector3[] path, int iterator)
+    {
+        return path[iterator];
     }
 
     void MoveToNextLvl()
@@ -119,6 +187,7 @@ public class TargetController : MonoBehaviour
     void AbsorbDone()
     {
         TargetHit();
+        //targetHit = true;
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -131,11 +200,13 @@ public class TargetController : MonoBehaviour
                 targets[i].Use();
             }
         }
+
     }
 
     void AbsorbDoneAndRichochet()
     {
         TargetHitAndRichochet();
+        //targetHit = true;
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -148,6 +219,7 @@ public class TargetController : MonoBehaviour
                 targets[i].Use();
             }
         }
+
     }
 
     void NextLvlGenerated()
@@ -156,20 +228,29 @@ public class TargetController : MonoBehaviour
         {
             if (!targets[i].inUse)
             {
-                if (game.GetScore < 3)
+                /*
+                if (game.GetScore < -1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
                     targets[i].transform.localScale = defaultTargetSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
-                if (game.GetScore >= 3)
+                if (game.GetScore >= -1 && game.GetScore < -1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
                     randomSize = Random.Range(.06f, defaultTargetSize.x);
                     Debug.Log(randomSize);
                     targets[i].transform.localScale = new Vector3(randomSize, randomSize, 1);
                     targets[i].transform.localPosition = RandomPos();
+                }
+                */
+                //if(game.GetScore > 0)
+                {
+                    targets[i].transform.parent = LG.GetNextLvl;
+                    targets[i].transform.localScale = defaultTargetSize;
+                    targets[i].transform.localPosition = LG.GetNextObstaclePath[0];
+                    SelectTargetToTravel(targets[i]);
                 }
                 
             }
@@ -193,14 +274,14 @@ public class TargetController : MonoBehaviour
 
     public Vector2 RandomPos()
     {
-        return new Vector2(Random.Range(spawnAreaCorners[0].x + (collider.radius * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (collider.radius * TargetPrefab.transform.localScale.x)), Random.Range(spawnAreaCorners[0].y + (collider.radius * TargetPrefab.transform.localScale.x), spawnAreaCorners[2].y - (collider.radius * TargetPrefab.transform.localScale.x)));
+        return new Vector2(Random.Range(spawnAreaCorners[0].x + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (2.09f * TargetPrefab.transform.localScale.x)), Random.Range(spawnAreaCorners[0].y + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[2].y - (2.09f * TargetPrefab.transform.localScale.x)));
     }
 
     public int RandomSpawnAreaXRange
     {
         get
         {
-            return (int) Random.Range(spawnAreaCorners[0].x + (collider.radius * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (collider.radius * TargetPrefab.transform.localScale.x));
+            return (int) Random.Range(spawnAreaCorners[0].x + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (2.09f * TargetPrefab.transform.localScale.x));
         }
     }
 }
