@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour {
         score += 2;
         scoreText.text = score.ToString();
         richochetCount++;
-        if (richochetCount == 2)
+        if (richochetCount == 1)
         {
             extraBall = true;
             richochetCount = 0;

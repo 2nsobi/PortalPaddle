@@ -20,6 +20,7 @@ public class EnemyBehavior : MonoBehaviour {
     Transform targetTransform;
     bool wallHit;
     Vector2 RandomXPos;
+    GameManager game;
 
     public static EnemyBehavior Instance;
 
@@ -46,6 +47,7 @@ public class EnemyBehavior : MonoBehaviour {
         // So pretty much always create a singleton in awake and then retrieve it in start
         target = TargetController.Instance;
         wallHit = false;
+        game = GameManager.Instance;
     }
 
     private void OnEnable()
@@ -72,6 +74,11 @@ public class EnemyBehavior : MonoBehaviour {
     private void Update()
     {
         ray = new Ray2D(transform.position + vector, -transform.up);
+
+        if (canAbsorb)
+        {
+            Physics2D.IgnoreLayerCollision(10, 11,false);
+        }
     }
 
     private void FixedUpdate()
@@ -118,6 +125,7 @@ public class EnemyBehavior : MonoBehaviour {
         {
             rigidbody.velocity = Vector2.zero;
             this.transform.position = Vector2.right * 1000;
+            animator.SetTrigger("AtCenter");
             PlayerMissed();
         }
     }
@@ -153,25 +161,30 @@ public class EnemyBehavior : MonoBehaviour {
         this.transform.position = startPos;
         ballSpawner.transform.position = startPos;
         canAbsorb = false;
+        animator.ResetTrigger("GameOver");
         animator.SetTrigger("GameStarted");
         spawnerAnimator.SetTrigger("GameStarted");
         StartCoroutine(SpawnDelay());
         wallHit = false;
+        Physics2D.IgnoreLayerCollision(10,11);
     }
 
     void GameOverConfirmed()
     {
         this.transform.position = Vector2.right * 1000;
         codeSpeed = speed;
+        animator.SetTrigger("GameOver");
     }
 
     void TransitionDone()
     {
+        Physics2D.IgnoreLayerCollision(10, 11);
         animator.SetTrigger("NextLvl");
         spawnerAnimator.SetTrigger("GameStarted");
         animator.ResetTrigger("AtCenter");
 
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
+        rigidbody.velocity = Vector2.zero;
         ballSpawner.transform.position = RandomXPos;
         this.transform.position = RandomXPos;
         canAbsorb = false;
