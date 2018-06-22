@@ -134,9 +134,9 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (canAbsorb)
         {
-            this.transform.position = Vector2.MoveTowards(this.transform.position, targetTransform.position, Time.deltaTime * absorbSpeed);
+            this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetTransform.position, Time.deltaTime * absorbSpeed);
             animator.SetTrigger("AtCenter");
-            if (this.transform.position == targetTransform.position)
+            if (this.transform.position == target.GetCurrentTargetTransform.position)
             {
                 shouldAbsord = false;
             }
