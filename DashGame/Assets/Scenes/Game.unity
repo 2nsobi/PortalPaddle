@@ -1899,7 +1899,7 @@ MonoBehaviour:
   TargetPrefab: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
     type: 2}
   ball: {fileID: 442271006}
-  travelSpeed: 0
+  travelSpeed: 1
 --- !u!114 &1240515138
 MonoBehaviour:
   m_ObjectHideFlags: 0
