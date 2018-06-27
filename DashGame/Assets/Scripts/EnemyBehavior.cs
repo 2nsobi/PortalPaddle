@@ -21,6 +21,8 @@ public class EnemyBehavior : MonoBehaviour {
     bool wallHit;
     Vector2 RandomXPos;
     GameManager game;
+    bool atCenter;
+    bool invulnerable;
 
     public static EnemyBehavior Instance;
 
@@ -39,12 +41,14 @@ public class EnemyBehavior : MonoBehaviour {
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
         codeSpeed = speed;
+        atCenter = false;
+        invulnerable = false;
     }
 
     private void Start()
     {
         //whenever you are retrieving a singleton of another class make sure it is after the singleton is creaeted in that class
-        // So pretty much always create a singleton in awake and then retrieve it in start
+        //So pretty much always create a singleton in awake and then retrieve it in start
         target = TargetController.Instance;
         wallHit = false;
         game = GameManager.Instance;
@@ -79,10 +83,25 @@ public class EnemyBehavior : MonoBehaviour {
         {
             Physics2D.IgnoreLayerCollision(10, 11,false);
         }
+
+        if(this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
+        {
+            this.transform.position = Vector2.right * 1000;
+        }
+
+        if(rigidbody.velocity.magnitude < 0.1f)
+        {
+            Absorb();
+        }
     }
 
     private void FixedUpdate()
     {
+        if (atCenter)
+        {
+            this.transform.position = target.GetCurrentTargetPos;
+        }
+
         if (shouldAbsord)
         {
             Absorb();
@@ -115,6 +134,7 @@ public class EnemyBehavior : MonoBehaviour {
         {
             if (collision.gameObject.layer == 8)
             {
+                invulnerable = true;
                 rigidbody.velocity = Vector2.zero;
                 shouldAbsord = true;
                 targetTransform = collision.transform;
@@ -123,10 +143,13 @@ public class EnemyBehavior : MonoBehaviour {
         }
         if (collision.gameObject.layer == 9)
         {
-            rigidbody.velocity = Vector2.zero;
-            this.transform.position = Vector2.right * 1000;
-            animator.SetTrigger("AtCenter");
-            PlayerMissed();
+            if (!invulnerable)
+            {
+                rigidbody.velocity = Vector2.zero;
+                this.transform.position = Vector2.right * 1000;
+                animator.SetTrigger("AtCenter");
+                PlayerMissed();
+            }
         }
     }
 
@@ -134,10 +157,11 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (canAbsorb)
         {
-            this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetTransform.position, Time.deltaTime * absorbSpeed);
+            this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed + target.getTravelSpeed);
             animator.SetTrigger("AtCenter");
-            if (this.transform.position == target.GetCurrentTargetTransform.position)
+            if (this.transform.position == target.GetCurrentTargetPos)
             {
+                atCenter = true;
                 shouldAbsord = false;
             }
             if (!shouldAbsord)
@@ -145,12 +169,10 @@ public class EnemyBehavior : MonoBehaviour {
                 if (wallHit)
                 {
                     AbsorbDoneAndRichochet();
-                    this.transform.position = Vector2.right * 1000;
                 }
                 else
                 {
                     AbsorbDone();
-                    this.transform.position = Vector2.right * 1000;
                 }
             }
         }
@@ -183,6 +205,8 @@ public class EnemyBehavior : MonoBehaviour {
         spawnerAnimator.SetTrigger("GameStarted");
         animator.ResetTrigger("AtCenter");
 
+        atCenter = false;
+        invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
         rigidbody.velocity = Vector2.zero;
         ballSpawner.transform.position = RandomXPos;
