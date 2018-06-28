@@ -25,6 +25,9 @@ public class TargetController : MonoBehaviour
     Vector3 nextPoint1, nextPoint2;
     Target currentTargetInUse;
     Vector3[] tempPath1,tempPath2;
+    bool gameRunning;
+    bool target1Moving, target2Moving;
+    bool moving; //are targets moving?
 
     public static TargetController Instance;
 
@@ -44,6 +47,8 @@ public class TargetController : MonoBehaviour
         {
             transform = t;
             animator = anim;
+            this.inUse = true;
+            animator.SetBool("InUse",this.inUse);
         }
 
         public void StopUsing()
@@ -55,6 +60,8 @@ public class TargetController : MonoBehaviour
         {
             inUse = true;
         }
+
+        
     }
 
     Target[] targets;
@@ -85,6 +92,7 @@ public class TargetController : MonoBehaviour
         targets[0].StopUsing();
         targets[1].Use();
         currentTargetInUse = null;
+        gameRunning = false;
     }
 
     private void Start()
@@ -117,8 +125,11 @@ public class TargetController : MonoBehaviour
 
     private void Update()
     {
-        targets[0].animator.SetBool("InUse", targets[0].inUse);
-        targets[1].animator.SetBool("InUse", targets[1].inUse);
+        if (gameRunning)
+        {
+            targets[0].animator.SetBool("InUse", targets[0].inUse);
+            targets[1].animator.SetBool("InUse", targets[1].inUse);
+        }
 
         if (target1Hit)
         {
@@ -136,7 +147,7 @@ public class TargetController : MonoBehaviour
             if (targets[0].transform.localPosition == nextPoint1)
             {
                 pointCounter1 += 1;
-                if (pointCounter1 >= travelPath1.Length - 1)
+                if (pointCounter1 > travelPath1.Length - 1)
                 {
                     pointCounter1 = 0;
                 }
@@ -145,12 +156,12 @@ public class TargetController : MonoBehaviour
 
         if (target2Travel)
         {
-            targets[1].transform.localPosition = Vector2.MoveTowards(targets[1].transform.localPosition, nextPoint2, Time.deltaTime * travelSpeed);
             nextPoint2 = PointOnPath(travelPath2, pointCounter2);
+            targets[1].transform.localPosition = Vector2.MoveTowards(targets[1].transform.localPosition, nextPoint2, Time.deltaTime * travelSpeed);
             if (targets[1].transform.localPosition == nextPoint2)
             {
                 pointCounter2 += 1;
-                if (pointCounter2 + 1 >= travelPath2.Length - 1)
+                if (pointCounter2 + 1 > travelPath2.Length - 1)
                 {
                     pointCounter2 = 0;
                 }
@@ -180,13 +191,14 @@ public class TargetController : MonoBehaviour
 
             int randPos = Random.Range(0, travelPath1.Length - 1);
             pointCounter1 = randPos;
-            targets[0].transform.localPosition = LG.GetNextObstaclePath[randPos];
+            targets[0].transform.localPosition = travelPath1[randPos];
         }
 
         if (target == targets[1])
         {
             target2Hit = false;
             target2Travel = true;
+
             if (aRandomNum == 1)
             {
                 tempPath2 = LG.GetNextObstaclePath;
@@ -197,10 +209,12 @@ public class TargetController : MonoBehaviour
             {
                 travelPath2 = LG.GetNextObstaclePath;
             }
-
-            int randPos = Random.Range(0, travelPath1.Length - 1);
+            
+            int randPos = Random.Range(0, travelPath2.Length - 1);
             pointCounter2 = randPos;
-            targets[1].transform.localPosition = LG.GetNextObstaclePath[randPos];
+            targets[1].transform.localPosition = travelPath2[randPos];
+            Debug.Log(travelPath2[randPos]);
+            Debug.Log(targets[1].transform.localPosition);
         }
     }
 
@@ -291,6 +305,25 @@ public class TargetController : MonoBehaviour
             if (targets[i].inUse)
             {
                 currentTargetInUse = targets[i];
+
+                if(targets[i] == targets[0] && target1Travel)
+                {
+                    target1Moving = true;
+                }
+                if (targets[i] == targets[1] && target2Travel)
+                {
+                    target2Moving = true;
+                }
+            }
+
+            if (!targets[0].inUse)
+            {
+                target1Moving = false;
+            }
+
+            if (!targets[1].inUse)
+            {
+                target2Moving = false;
             }
         }
     }
@@ -301,7 +334,7 @@ public class TargetController : MonoBehaviour
         {
             if (!targets[i].inUse)
             {
-                if (game.GetScore >= 0 && game.GetScore < 2)
+                if (game.GetScore >= 0 && game.GetScore < 1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
                     targets[i].transform.localScale = defaultTargetSize;
@@ -324,12 +357,13 @@ public class TargetController : MonoBehaviour
                     SelectTargetToTravel(targets[i]);
                 }
                 */
-                if(game.GetScore >= 2)
+                if(game.GetScore >= 1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
                     randomSize = Random.Range(.06f, defaultTargetSize.x);
                     targets[i].transform.localScale = new Vector3(randomSize, randomSize, 1);
                     SelectTargetToTravel(targets[i]);
+                    moving = true;
                 }
             }
         }
@@ -342,6 +376,9 @@ public class TargetController : MonoBehaviour
 
         target1Travel = false;
         target2Travel = false;
+        gameRunning = false;
+
+        targets[1].animator.ResetTrigger("GameStarted");
     }
 
     void GameStarted()
@@ -355,6 +392,7 @@ public class TargetController : MonoBehaviour
 
         targets[0].transform.localScale = defaultTargetSize;
         targets[1].transform.localScale = defaultTargetSize;
+        gameRunning = true;
     }
 
     public Vector2 RandomPos()
@@ -384,5 +422,13 @@ public class TargetController : MonoBehaviour
         {
             return travelSpeed;
         }
+    }
+
+    public bool IsMoving()
+    {
+        if(target1Moving || target2Moving){
+            return true;
+        }
+        return false;
     }
 }
