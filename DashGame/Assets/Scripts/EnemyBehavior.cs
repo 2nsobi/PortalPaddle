@@ -89,10 +89,6 @@ public class EnemyBehavior : MonoBehaviour {
             this.transform.position = Vector2.right * 1000;
         }
 
-        if(rigidbody.velocity.magnitude < 0.1f)
-        {
-            Absorb();
-        }
     }
 
     private void FixedUpdate()
@@ -113,6 +109,7 @@ public class EnemyBehavior : MonoBehaviour {
         if (collision.gameObject.tag == "Paddle")
         {
             canAbsorb = true;
+            StartCoroutine("CollisionDelay");
         }
         if (collision.gameObject.tag == "Wall")
         {
@@ -126,6 +123,15 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = deflectionSpeed;
         rigidbody.velocity = -transform.up.normalized * codeSpeed;
 
+    }
+
+    //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
+    //good practice for faulty 2D collision detection with fast moving objects
+    IEnumerator CollisionDelay()
+    {
+        Physics2D.IgnoreLayerCollision(11, 12);
+        yield return new WaitForSeconds(0.08f);
+        Physics2D.IgnoreLayerCollision(11, 12, false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -157,7 +163,15 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (canAbsorb)
         {
-            this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed + target.getTravelSpeed);
+            if (target.IsMoving())
+            {
+                this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
+            }
+            else
+            {
+                this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
+            }
+
             animator.SetTrigger("AtCenter");
             if (this.transform.position == target.GetCurrentTargetPos)
             {
@@ -194,6 +208,7 @@ public class EnemyBehavior : MonoBehaviour {
     void GameOverConfirmed()
     {
         this.transform.position = Vector2.right * 1000;
+        this.rigidbody.velocity = Vector2.zero;
         codeSpeed = speed;
         animator.SetTrigger("GameOver");
     }

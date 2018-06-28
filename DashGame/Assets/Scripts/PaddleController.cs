@@ -10,6 +10,7 @@ public class PaddleController : MonoBehaviour
     Vector3[] corners; // corners of tapAreaRect in world space
     public float offset; //used to offset childPaddle1 in ClampedPos() so that the sprite does not appear in the wall
     BoxCollider2D paddleCollider;
+    Rigidbody2D paddleRigidBody; // for continuous collisions
     Vector2 touch1Pos, touch2Pos;
     float paddleLength;
     float angle;
@@ -31,6 +32,14 @@ public class PaddleController : MonoBehaviour
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";
+        paddleCollider.gameObject.layer = 12;
+        /*
+        paddleRigidBody = paddleCollider.gameObject.AddComponent<Rigidbody2D>();
+        paddleRigidBody.gravityScale = 0;
+        paddleRigidBody.angularDrag = 0;
+        paddleRigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        paddleRigidBody.mass = 0.0001f;
+        */
         childPaddle1 = transform.Find("Paddle1").gameObject;
         childPaddle2 = transform.Find("Paddle2").gameObject;
         GameObject tapArea = GameObject.Find("tapArea");
@@ -167,8 +176,8 @@ public class PaddleController : MonoBehaviour
 
     void MakePaddle()
     {
-        paddleLength = Vector2.Distance(touch1Pos, touch2Pos);
-        paddleCollider.size = new Vector2(paddleLength, 0.1f);
+        paddleLength = Vector2.Distance(touch1Pos, touch2Pos) + 0.36f;
+        paddleCollider.size = new Vector2(paddleLength, 0.25f);
         paddleCollider.transform.position = (touch1Pos + touch2Pos) / 2;
         angle = Mathf.Atan2(Mathf.Abs(touch2Pos.y - touch1Pos.y), Mathf.Abs(touch2Pos.x - touch1Pos.x));
 

@@ -235,39 +235,37 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
-        NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
-        NextLvlGenerated();
+        //NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
+        //NextLvlGenerated();
+        GenerateNextLvl();
         playedOnce = true;
     }
 
     void GenerateNextLvl() 
     {
-        if (game.GetScore >= 0 && game.GetScore < 2)
+        if (game.GetScore >= 0  && game.GetScore < 1)
         {
             NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
-            NextLvlGenerated();
         }
         /*
         if (game.GetScore >= 2 && game.GetScore < 4)
         {
             NextLvl = SpawnFromPool("Level3", transform.position + levelOffset, transform.rotation);
-            NextLvlGenerated();
         }
         if (game.GetScore >= 4 && game.GetScore < 6)
         {
             NextLvl = SpawnFromPool("Level4", transform.position + levelOffset, transform.rotation);
             NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 1) + "_Lvl4", transform.position + levelOffset, transform.rotation);
             NextObstacle.go.transform.parent = NextLvl.transform;
-            NextLvlGenerated();
         }
         */
-        if(game.GetScore >= 2)
+        if(game.GetScore >= 1)
         {
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
             NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(2, 2) + "_Lvl2", transform.position + levelOffset, transform.rotation);
             NextObstacle.go.transform.parent = NextLvl.transform;
-            NextLvlGenerated();
         }
+        NextLvlGenerated();
     }
 
     public Transform GetNextLvl
