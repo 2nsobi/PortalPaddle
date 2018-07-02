@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4819896917947690}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4832861809172680}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4365425032900442}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TargetTravelPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4082231038536442}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4637277210951712}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Obstacle2_Lvl2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4319232850323090}
   - component: {fileID: 212931923746719904}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4038892038521486}
   - component: {fileID: 212470003799356386}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4705346346842114}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TargetTravelPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4522878584455772}
   - component: {fileID: 212157362999682328}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4813298506004814}
   - component: {fileID: 212518281390660638}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4149581409107160}
   - component: {fileID: 212085069822674488}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4256065707689604}
   - component: {fileID: 212135417343164576}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (26)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4183295072937666}
   - component: {fileID: 212755003163744094}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4336457324334876}
   - component: {fileID: 212474380269666838}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4617386464462438}
   - component: {fileID: 212936823434300170}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4995901581800530}
   - component: {fileID: 212373359353194466}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (23)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4408469490686368}
   - component: {fileID: 212938117115938304}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (21)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4365149094252252}
   - component: {fileID: 212786676989919376}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4057375151384634}
   - component: {fileID: 212382196752237362}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (22)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4646447502295250}
   - component: {fileID: 212886599108783916}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4963502623861784}
   - component: {fileID: 212330021217272366}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4633331851516152}
   - component: {fileID: 212903791214860228}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4219223745429748}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Obstacle1_Lvl3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4329675144354494}
   - component: {fileID: 212331706008231836}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,7 +390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4696691410595216}
   - component: {fileID: 212635925585311882}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (20)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,7 +406,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4139204638876468}
   - component: {fileID: 212895210199992544}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,7 +422,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4951690456253378}
   - component: {fileID: 212020727088239692}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (24)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4689281582727932}
   - component: {fileID: 212346367453065020}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (25)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4158644089633802}
   - component: {fileID: 212901493079902598}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4057891876233466}
   - component: {fileID: 212384033584641948}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,7 +486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4537264973261134}
   - component: {fileID: 212819854725646674}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -502,7 +502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4695538166089238}
   - component: {fileID: 212462503652430084}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -518,7 +518,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4106169660524674}
   - component: {fileID: 212445615984312084}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -534,7 +534,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4354282643728624}
   - component: {fileID: 212674916764365016}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: simpleCircle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
