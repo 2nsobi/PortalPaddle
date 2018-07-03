@@ -161,7 +161,7 @@ public class TargetController : MonoBehaviour
             if (targets[1].transform.localPosition == nextPoint2)
             {
                 pointCounter2 += 1;
-                if (pointCounter2 + 1 > travelPath2.Length - 1)
+                if (pointCounter2 > travelPath2.Length - 1)
                 {
                     pointCounter2 = 0;
                 }
@@ -171,14 +171,14 @@ public class TargetController : MonoBehaviour
 
     void SelectTargetToTravel(Target target)
     {
-        int aRandomNum = Random.Range(0, 1); //if equal to 0 will travel in normal, order if 1 will travel in reverse order
+        int aRandomNum = Random.Range(0, 10); //if greater than 4 will travel in normal, order if smaller than 5 will travel in reverse order
 
         if (target == targets[0])
         {
             target1Hit = false;
             target1Travel = true;
 
-            if (aRandomNum == 1)
+            if (aRandomNum > 4)
             {
                 tempPath1 = LG.GetNextObstaclePath;
                 System.Array.Reverse(tempPath1);
@@ -190,7 +190,7 @@ public class TargetController : MonoBehaviour
             }
 
             int randPos = Random.Range(0, travelPath1.Length - 1);
-            pointCounter1 = randPos;
+            pointCounter1 = randPos + 1;
             targets[0].transform.localPosition = travelPath1[randPos];
         }
 
@@ -199,7 +199,7 @@ public class TargetController : MonoBehaviour
             target2Hit = false;
             target2Travel = true;
 
-            if (aRandomNum == 1)
+            if (aRandomNum > 4)
             {
                 tempPath2 = LG.GetNextObstaclePath;
                 System.Array.Reverse(tempPath2);
@@ -211,10 +211,8 @@ public class TargetController : MonoBehaviour
             }
             
             int randPos = Random.Range(0, travelPath2.Length - 1);
-            pointCounter2 = randPos;
+            pointCounter2 = randPos + 1;
             targets[1].transform.localPosition = travelPath2[randPos];
-            Debug.Log(travelPath2[randPos]);
-            Debug.Log(targets[1].transform.localPosition);
         }
     }
 
@@ -360,7 +358,7 @@ public class TargetController : MonoBehaviour
                 if(game.GetScore >= 1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
-                    randomSize = Random.Range(.06f, defaultTargetSize.x);
+                    randomSize = Random.Range(.08f, defaultTargetSize.x);
                     targets[i].transform.localScale = new Vector3(randomSize, randomSize, 1);
                     SelectTargetToTravel(targets[i]);
                     moving = true;
@@ -377,6 +375,8 @@ public class TargetController : MonoBehaviour
         target1Travel = false;
         target2Travel = false;
         gameRunning = false;
+        target1Hit = false;
+        target2Hit = false;
 
         targets[1].animator.ResetTrigger("GameStarted");
     }
