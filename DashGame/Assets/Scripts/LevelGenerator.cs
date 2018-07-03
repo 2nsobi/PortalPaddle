@@ -32,8 +32,8 @@ public class LevelGenerator : MonoBehaviour
         public int size;
     }
 
-    public Dictionary<string, Queue<GameObject>> LvlComponentDict; //for background use mainly
-    Dictionary<string, Queue<Obstacle>> ObstacleList; //for obstacle use mainly
+    Dictionary<string, Queue<GameObject>> LvlComponentDict; //for background use mainly
+    Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
     public List<MultiPool> levels;
     public List<SinglePool> obstacles;
     public GameObject StartLvl;
@@ -45,12 +45,12 @@ public class LevelGenerator : MonoBehaviour
     GameObject CurrentLvl;
     Obstacle NextObstacle;
     Obstacle CurrentObstacle;
+    Obstacle PreviousObstacle;
     bool currentlyTransitioning;
     bool playedOnce; // ateast one game session has been started since opening app, used to get rid of NullReferenceException when GameOverConfirmed() is called after app is opened
     Vector3[] travelPath1;
-    Obstacle[] obstaclesLvl2;
-    Obstacle[] obstaclesLvl3;
-    Obstacle[] obstaclesLvl4;
+    bool obstacleDespawned;
+    int obstacleSpawnCounter;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -76,14 +76,14 @@ public class LevelGenerator : MonoBehaviour
 
     public class Obstacle
     {
-        public GameObject go;
+        public GameObject gameObject;
         public Transform transform;
         public Vector3[] path;
 
         public Obstacle(GameObject go)
         {
             this.transform = go.transform.Find("TargetTravelPath");
-            this.go = go;
+            this.gameObject = go;
             this.path = new Vector3[transform.childCount];
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -94,6 +94,9 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
+        obstacleSpawnCounter = 0;
+        obstacleDespawned = false;
+
         game = GameManager.Instance;
 
         currentlyTransitioning = false;
@@ -102,7 +105,7 @@ public class LevelGenerator : MonoBehaviour
         CurrentLvl = StartLevel;
 
         LvlComponentDict = new Dictionary<string, Queue<GameObject>>();
-        ObstacleList = new Dictionary<string, Queue<Obstacle>>();
+        ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
 
         foreach (MultiPool pool in levels)
         {
@@ -132,48 +135,65 @@ public class LevelGenerator : MonoBehaviour
 
             for (int i = 0; i < pool.size; i++)
             {
-                Obstacle obstacle = new Obstacle(Instantiate(pool.prefab)); 
-                obstacle.go.SetActive(false);
+                Obstacle obstacle = new Obstacle(Instantiate(pool.prefab));
+                obstacle.gameObject.SetActive(false);
                 obstaclePool.Enqueue(obstacle);
             }
 
-            ObstacleList.Add(pool.tag, obstaclePool);
+            ObstacleDict.Add(pool.tag, obstaclePool);
         }
 
     }
 
     void GameOverConfirmed()
     {
+        obstacleSpawnCounter = 0;
+        obstacleDespawned = false;
+
         if (playedOnce)
         {
+            #region Disactivates All Level Prefabs
             foreach (GameObject obj in LvlComponentDict["Level2"])
             {
-                for (int i = 0; i < LvlComponentDict["Level2"].Count; i++)
-                {
-                    obj.SetActive(false);
-                }
+                obj.SetActive(false);
             }
             foreach (GameObject obj in LvlComponentDict["Level3"])
             {
-                for (int i = 0; i < LvlComponentDict["Level3"].Count; i++)
-                {
-                    obj.SetActive(false);
-                }
+                obj.SetActive(false);
             }
             foreach (GameObject obj in LvlComponentDict["Level4"])
             {
-                for (int i = 0; i < LvlComponentDict["Level4"].Count; i++)
-                {
-                    obj.SetActive(false);
-                }
+                obj.SetActive(false);
             }
-            foreach(GameObject obj in LvlComponentDict["Level5"])
+            foreach (GameObject obj in LvlComponentDict["Level5"])
             {
-                for(int i = 0; i< LvlComponentDict["Level4"].Count;i++)
-                {
-                    obj.SetActive(false);
-                }
+                obj.SetActive(false);
             }
+            #endregion
+
+            #region Disactivates All Obstacle Prefabs
+            foreach (Obstacle ob in ObstacleDict["Obstacle1_Lvl2"])
+            {
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle2_Lvl2"])
+            {
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle3_Lvl2"])
+            {
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle4_Lvl2"])
+            {
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle5_Lvl2"])
+            {
+                ob.gameObject.SetActive(false);
+            }
+            #endregion
+
             CurrentLvl = StartLevel;
             CurrentLvl.transform.position = Vector3.zero;
         }
@@ -194,24 +214,28 @@ public class LevelGenerator : MonoBehaviour
 
     public Obstacle SpawnFromObstacles(string tag, Vector2 position, Quaternion rotation)
     {
-        Obstacle obstacleToSpawn = ObstacleList[tag].Dequeue();
+        obstacleSpawnCounter++;
 
-        obstacleToSpawn.go.SetActive(true);
-        obstacleToSpawn.go.transform.position = position;
-        obstacleToSpawn.go.transform.rotation = rotation;
+        Obstacle obstacleToSpawn = ObstacleDict[tag].Dequeue();
 
-        ObstacleList[tag].Enqueue(obstacleToSpawn);
+        obstacleToSpawn.gameObject.SetActive(true);
+        obstacleToSpawn.gameObject.transform.position = position;
+        obstacleToSpawn.gameObject.transform.rotation = rotation;
+
+        ObstacleDict[tag].Enqueue(obstacleToSpawn);
 
         return obstacleToSpawn;
     }
 
     void AbsorbDone()
     {
+        PreviousObstacle = CurrentObstacle;
         currentlyTransitioning = true;
     }
 
     void MoveToNextLvl()
     {
+        PreviousObstacle = CurrentObstacle;
         currentlyTransitioning = true;
     }
 
@@ -229,6 +253,11 @@ public class LevelGenerator : MonoBehaviour
                 TransitionDone();
                 GenerateNextLvl();
                 currentlyTransitioning = false;
+
+                if (obstacleDespawned)
+                {
+                    PreviousObstacle.transform.localPosition = Vector3.right * 1000;
+                }
             }
         }
     }
@@ -241,9 +270,9 @@ public class LevelGenerator : MonoBehaviour
         playedOnce = true;
     }
 
-    void GenerateNextLvl() 
+    void GenerateNextLvl()
     {
-        if (game.GetScore >= 0  && game.GetScore < 1)
+        if (game.GetScore >= 0 && game.GetScore < 1)
         {
             NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
         }
@@ -259,11 +288,15 @@ public class LevelGenerator : MonoBehaviour
             NextObstacle.go.transform.parent = NextLvl.transform;
         }
         */
-        if(game.GetScore >= 1)
+        if (game.GetScore >= 1)
         {
+            if (obstacleSpawnCounter == 2)
+            {
+                obstacleDespawned = true;
+            }
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
-            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(2, 2) + "_Lvl2", transform.position + levelOffset, transform.rotation);
-            NextObstacle.go.transform.parent = NextLvl.transform;
+            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 6) + "_Lvl2", transform.position + levelOffset, transform.rotation);
+            NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }
         NextLvlGenerated();
     }

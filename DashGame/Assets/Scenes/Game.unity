@@ -406,7 +406,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1329292869
   m_SortingLayer: 1
-  m_SortingOrder: 2
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: dbe3059c9ab128b48b7a43ff5b5eaef7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -690,7 +690,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 613265242}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.02, y: -6.25, z: 0}
+  m_LocalPosition: {x: 0.02, y: -5.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1240515136}
@@ -1322,7 +1322,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 802888453}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.14, y: 6.3, z: 0}
+  m_LocalPosition: {x: 0.14, y: 5.76, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1240515136}
@@ -1891,7 +1891,7 @@ MonoBehaviour:
   TargetPrefab: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
     type: 2}
   ball: {fileID: 442271006}
-  travelSpeed: 5
+  travelSpeed: 2
 --- !u!114 &1240515138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1931,6 +1931,15 @@ MonoBehaviour:
   - tag: Obstacle2_Lvl2
     prefab: {fileID: 1780568989254076, guid: f3857d98a513e6c4cb207611b9973b2b, type: 2}
     size: 2
+  - tag: Obstacle3_Lvl2
+    prefab: {fileID: 1817218842730660, guid: 7545e655627030e4b834d6e80960ce11, type: 2}
+    size: 2
+  - tag: Obstacle4_Lvl2
+    prefab: {fileID: 1911681477247782, guid: a49c492f79800ed4e8f9aef615200308, type: 2}
+    size: 2
+  - tag: Obstacle5_Lvl2
+    prefab: {fileID: 1271317240674962, guid: 320c3a798eb4e674baa7a848a8adb39e, type: 2}
+    size: 2
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   transitionSpeed: 5
 --- !u!114 &1240515139
@@ -1939,7 +1948,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1240515135}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2536eaccfd4d26e4f95bc936a98b2ed5, type: 3}
   m_Name: 
@@ -2504,7 +2513,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1697053773
 RectTransform:
   m_ObjectHideFlags: 0

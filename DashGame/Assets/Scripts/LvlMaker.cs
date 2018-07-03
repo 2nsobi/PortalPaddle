@@ -113,6 +113,10 @@ public class LvlMaker : MonoBehaviour
                 Debug.Log("Nevermind. You have to set the circle path before you test it. Click again to set path.");
             }
         }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            ReverseLinearPath();
+        }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             activeObject = refTarg;
@@ -181,7 +185,12 @@ public class LvlMaker : MonoBehaviour
                 }
                 catch (System.ArgumentException e)
                 {
-                    Debug.LogError(e.Message);
+                    Debug.LogError(e.Message + " Please select a sprite to spawn with the number keys.");
+                    return;
+                }
+                catch (UnassignedReferenceException e)
+                {
+                    Debug.LogError(e.Message + " Please select a sprite to spawn with the number keys.");
                     return;
                 }
                 sr = activeObject.GetComponent<SpriteRenderer>();
@@ -260,5 +269,14 @@ public class LvlMaker : MonoBehaviour
             Debug.Log("Nevermind. You have to set the circle path before you test it. Click again to set path.");
         }
         return Vector3.zero;
+    }
+
+    void ReverseLinearPath()
+    {
+        Transform t = renameObstacle.transform.Find("TargetTravelPath");
+        for (int i = t.childCount - 1 ; i >= 0 ; i--)
+        {
+            Instantiate(t.GetChild(i),t.transform);
+        }
     }
 }
