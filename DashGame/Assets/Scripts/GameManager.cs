@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
     Coroutine transitionCoroutine = null;
     TargetController TargetController;
     public Text scoreText;
-    int score;
+    private int score;
 
     public static GameManager Instance;
 
@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour {
     public static event GameDelegate GameResumed;
     public static event GameDelegate GameStarted;
     public static event GameDelegate MoveToNextLvl;
+    public static event GameDelegate GoToSettingsPage;
+    public static event GameDelegate ComeBackFromSettingsPage;
 
     bool gameOver, gamePaused;
 
@@ -227,6 +229,7 @@ public class GameManager : MonoBehaviour {
     public void GoToSettings()
     {
         SetPageState(pageState.SettingsPage);
+        GoToSettingsPage();
     }
 
     public void PauseGame()
@@ -241,6 +244,12 @@ public class GameManager : MonoBehaviour {
     {
         SetPageState(pageState.StartPage);
         GameOverConfirmed();
+    }
+
+    public void ComeBackFromSettings()
+    {
+        SetPageState(pageState.StartPage);
+        ComeBackFromSettingsPage();
     }
 
     public int GetScore

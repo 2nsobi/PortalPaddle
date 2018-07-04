@@ -63,6 +63,8 @@ public class LevelGenerator : MonoBehaviour
         EnemyBehavior.AbsorbDone += AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDone;
         GameManager.MoveToNextLvl += MoveToNextLvl;
+        GameManager.GoToSettingsPage += GoToSettingsPage;
+        GameManager.ComeBackFromSettingsPage += ComeBackFromSettingsPage;
     }
 
     private void OnDisable()
@@ -72,6 +74,8 @@ public class LevelGenerator : MonoBehaviour
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
         GameManager.MoveToNextLvl -= MoveToNextLvl;
+        GameManager.GoToSettingsPage -= GoToSettingsPage;
+        GameManager.ComeBackFromSettingsPage -= ComeBackFromSettingsPage;
     }
 
     public class Obstacle
@@ -82,12 +86,13 @@ public class LevelGenerator : MonoBehaviour
 
         public Obstacle(GameObject go)
         {
-            this.transform = go.transform.Find("TargetTravelPath");
+            this.transform = go.transform;
             this.gameObject = go;
-            this.path = new Vector3[transform.childCount];
-            for (int i = 0; i < transform.childCount; i++)
+            Transform t = go.transform.Find("TargetTravelPath");
+            this.path = new Vector3[t.childCount];
+            for (int i = 0; i < t.childCount; i++)
             {
-                this.path[i] = transform.GetChild(i).localPosition;
+                this.path[i] = t.GetChild(i).localPosition;
             }
         }
     }
@@ -174,25 +179,33 @@ public class LevelGenerator : MonoBehaviour
             #region Disactivates All Obstacle Prefabs
             foreach (Obstacle ob in ObstacleDict["Obstacle1_Lvl2"])
             {
+                ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
             foreach (Obstacle ob in ObstacleDict["Obstacle2_Lvl2"])
             {
+                ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
             foreach (Obstacle ob in ObstacleDict["Obstacle3_Lvl2"])
             {
+                ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
             foreach (Obstacle ob in ObstacleDict["Obstacle4_Lvl2"])
             {
+                ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
             foreach (Obstacle ob in ObstacleDict["Obstacle5_Lvl2"])
             {
+                ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
             #endregion
+
+            NextObstacle = null;
+            PreviousObstacle = null;
 
             CurrentLvl = StartLevel;
             CurrentLvl.transform.position = Vector3.zero;
@@ -256,7 +269,8 @@ public class LevelGenerator : MonoBehaviour
 
                 if (obstacleDespawned)
                 {
-                    PreviousObstacle.transform.localPosition = Vector3.right * 1000;
+                    PreviousObstacle.transform.parent = null;
+                    PreviousObstacle.gameObject.SetActive(false);
                 }
             }
         }
@@ -264,8 +278,6 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
-        //NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
-        //NextLvlGenerated();
         GenerateNextLvl();
         playedOnce = true;
     }
@@ -296,6 +308,7 @@ public class LevelGenerator : MonoBehaviour
             }
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
             NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 6) + "_Lvl2", transform.position + levelOffset, transform.rotation);
+            Debug.Log(NextObstacle.gameObject.name);
             NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }
         NextLvlGenerated();
@@ -331,5 +344,15 @@ public class LevelGenerator : MonoBehaviour
         {
             return CurrentObstacle.path;
         }
+    }
+
+    public void GoToSettingsPage()
+    {
+
+    }
+
+    public void ComeBackFromSettingsPage()
+    {
+       
     }
 }
