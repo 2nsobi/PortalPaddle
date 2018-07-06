@@ -17,7 +17,6 @@ public class LevelGenerator : MonoBehaviour
     [System.Serializable]
     public class MultiPool
     {
-        public string tag;
         public GameObject prefab1;
         public GameObject prefab2;
         public GameObject prefab3;
@@ -27,7 +26,6 @@ public class LevelGenerator : MonoBehaviour
     [System.Serializable]
     public class SinglePool
     {
-        public string tag;
         public GameObject prefab;
         public int size;
     }
@@ -43,6 +41,7 @@ public class LevelGenerator : MonoBehaviour
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
     GameObject NextLvl;
     GameObject CurrentLvl;
+    GameObject PreviousLvl;
     Obstacle NextObstacle;
     Obstacle CurrentObstacle;
     Obstacle PreviousObstacle;
@@ -51,6 +50,9 @@ public class LevelGenerator : MonoBehaviour
     Vector3[] travelPath1;
     bool obstacleDespawned;
     int obstacleSpawnCounter;
+    int levelSpawnCounter;
+
+    List<Obstacle> AllObstacles;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -99,6 +101,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
+        levelSpawnCounter = 0;
         obstacleSpawnCounter = 0;
         obstacleDespawned = false;
 
@@ -131,8 +134,10 @@ public class LevelGenerator : MonoBehaviour
                 objectPool.Enqueue(obj3);
             }
 
-            LvlComponentDict.Add(pool.tag, objectPool);
+            LvlComponentDict.Add(pool.prefab1.name, objectPool);
         }
+
+        AllObstacles = new List<Obstacle>();
 
         foreach (SinglePool pool in obstacles)
         {
@@ -141,11 +146,14 @@ public class LevelGenerator : MonoBehaviour
             for (int i = 0; i < pool.size; i++)
             {
                 Obstacle obstacle = new Obstacle(Instantiate(pool.prefab));
+
                 obstacle.gameObject.SetActive(false);
                 obstaclePool.Enqueue(obstacle);
+
+                AllObstacles.Add(obstacle);
             }
 
-            ObstacleDict.Add(pool.tag, obstaclePool);
+            ObstacleDict.Add(pool.prefab.name, obstaclePool);
         }
 
     }
@@ -153,6 +161,7 @@ public class LevelGenerator : MonoBehaviour
     void GameOverConfirmed()
     {
         obstacleSpawnCounter = 0;
+        levelSpawnCounter = 0;
         obstacleDespawned = false;
 
         if (playedOnce)
@@ -234,6 +243,8 @@ public class LevelGenerator : MonoBehaviour
 
     public GameObject SpawnFromPool(string tag, Vector2 position, Quaternion rotation)
     {
+        levelSpawnCounter++;
+
         GameObject objectToSpawn = LvlComponentDict[tag].Dequeue();
 
         objectToSpawn.SetActive(true);
@@ -262,13 +273,11 @@ public class LevelGenerator : MonoBehaviour
 
     void AbsorbDone()
     {
-        PreviousObstacle = CurrentObstacle;
         currentlyTransitioning = true;
     }
 
     void MoveToNextLvl()
     {
-        PreviousObstacle = CurrentObstacle;
         currentlyTransitioning = true;
     }
 
@@ -282,10 +291,21 @@ public class LevelGenerator : MonoBehaviour
             if (NextLvl.transform.position == Vector3.zero)
             {
                 CurrentLvl = NextLvl;
-                CurrentObstacle = NextObstacle;
                 TransitionDone();
                 GenerateNextLvl();
                 currentlyTransitioning = false;
+
+                Debug.Log(obstacleSpawnCounter);
+
+                if (obstacleSpawnCounter == 1)
+                {
+                    CurrentObstacle = NextObstacle;
+                }
+
+                if (obstacleSpawnCounter == 3)
+                {
+                    obstacleDespawned = true;
+                }
 
                 if (obstacleDespawned)
                 {
@@ -294,6 +314,20 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+
+        if (game.IsGameRunning)
+        {
+            if (CurrentObstacle != null)
+            {
+                if (CurrentObstacle.transform.position.y < -5.2)
+                {
+                    PreviousObstacle = CurrentObstacle;
+                    CurrentObstacle = NextObstacle;
+                    Debug.Log("previous ob has been set");
+                }
+            }
+        }
+
     }
 
     void GameStarted()
@@ -322,13 +356,8 @@ public class LevelGenerator : MonoBehaviour
         */
         if (game.GetScore >= 1)
         {
-            if (obstacleSpawnCounter == 2)
-            {
-                obstacleDespawned = true;
-            }
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
             NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(7, 7) + "_Lvl2", transform.position + levelOffset, transform.rotation);
-            Debug.Log(NextObstacle.gameObject.name);
             NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }
         NextLvlGenerated();
@@ -373,6 +402,6 @@ public class LevelGenerator : MonoBehaviour
 
     public void ComeBackFromSettingsPage()
     {
-       
+
     }
 }

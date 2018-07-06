@@ -45,7 +45,7 @@ public class EnemyBehavior : MonoBehaviour {
         atCenter = false;
         invulnerable = false;
         particleSystem = GetComponentInChildren<ParticleSystem>();
-        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x);
+        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 1);
     }
 
     private void Start()
@@ -109,8 +109,6 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        particleSystem.Play();
-
         if (collision.gameObject.tag == "Paddle")
         {
             canAbsorb = true;
@@ -120,6 +118,12 @@ public class EnemyBehavior : MonoBehaviour {
         {
             wallHit = true;
         }
+
+        if (!atCenter && !shouldAbsord)
+        {
+            particleSystem.Play();
+        }
+
         ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
         Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
 

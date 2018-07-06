@@ -75,8 +75,8 @@ public class TargetController : MonoBehaviour
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
         target1Travel = false;
         target2Travel = false;
-        target1Hit = true;
-        target2Hit = true;
+        target1Hit = false;
+        target2Hit = false;
         pointCounter1 = 0;
         pointCounter2 = 0;
 
@@ -134,11 +134,24 @@ public class TargetController : MonoBehaviour
         if (target1Hit)
         {
             target1Travel = false;
-            target1Travel = false;
+            if (gameRunning)
+            {
+                if (targets[0].transform.position.y < LG.GetNextLvl.transform.position.y + 5.2) //5.2 is about half the height of a lvl
+                {
+                    targets[0].StopUsing();
+                }
+            }
         }
         if (target2Hit)
         {
             target2Travel = false;
+            if (gameRunning)
+            {
+                if (targets[1].transform.position.y < LG.GetNextLvl.transform.position.y + 5.2) //5.2 is about half the height of a lvl
+                {
+                    targets[1].StopUsing();
+                }
+            }
         }
 
         if (target1Travel)
@@ -168,6 +181,7 @@ public class TargetController : MonoBehaviour
                 }
             }
         }
+
     }
 
     void SelectTargetToTravel(Target target)
@@ -228,7 +242,7 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                targets[i].StopUsing();
+                //targets[i].StopUsing();
                 if (i == 0)
                 {
                     target1Hit = true;
@@ -253,7 +267,7 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                targets[i].StopUsing();
+                //targets[i].StopUsing();
                 if (i == 0)
                 {
                     target1Hit = true;
@@ -279,7 +293,7 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                targets[i].StopUsing();
+               // targets[i].StopUsing();
                 if (i == 0)
                 {
                     target1Hit = true;
@@ -356,7 +370,7 @@ public class TargetController : MonoBehaviour
                     SelectTargetToTravel(targets[i]);
                 }
                 */
-                if(game.GetScore >= 1)
+                if (game.GetScore >= 1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
                     randomSize = Random.Range(.08f, defaultTargetSize.x);
@@ -376,8 +390,8 @@ public class TargetController : MonoBehaviour
         target1Travel = false;
         target2Travel = false;
         gameRunning = false;
-        target1Hit = true;
-        target2Hit = true;
+        target1Hit = false;
+        target2Hit = false;
 
         targets[1].animator.ResetTrigger("GameStarted");
     }
