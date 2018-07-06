@@ -202,6 +202,26 @@ public class LevelGenerator : MonoBehaviour
                 ob.transform.parent = null;
                 ob.gameObject.SetActive(false);
             }
+            foreach (Obstacle ob in ObstacleDict["Obstacle6_Lvl2"])
+            {
+                ob.transform.parent = null;
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle7_Lvl2"])
+            {
+                ob.transform.parent = null;
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle8_Lvl2"])
+            {
+                ob.transform.parent = null;
+                ob.gameObject.SetActive(false);
+            }
+            foreach (Obstacle ob in ObstacleDict["Obstacle9_Lvl2"])
+            {
+                ob.transform.parent = null;
+                ob.gameObject.SetActive(false);
+            }
             #endregion
 
             NextObstacle = null;
@@ -307,7 +327,7 @@ public class LevelGenerator : MonoBehaviour
                 obstacleDespawned = true;
             }
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
-            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 6) + "_Lvl2", transform.position + levelOffset, transform.rotation);
+            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(7, 7) + "_Lvl2", transform.position + levelOffset, transform.rotation);
             Debug.Log(NextObstacle.gameObject.name);
             NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4900461162565636}
   - component: {fileID: 212169990076641462}
   - component: {fileID: 60844271772177690}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4466031679347386}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4156886621348882}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4661139166520950}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,7 +83,7 @@ GameObject:
   - component: {fileID: 4383974764462378}
   - component: {fileID: 212851024887726848}
   - component: {fileID: 60781898915027828}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4333417418388602}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TargetTravelPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4643983846384926}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4405489806703784}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4952809332733422}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4502539300629404}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Obstacle6_Lvl2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4077634360022350}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4584986723434818}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +203,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4016917035951106}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -218,7 +218,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4177393233405652}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,7 +233,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4555022798915112}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -250,7 +250,7 @@ GameObject:
   - component: {fileID: 4484131632515990}
   - component: {fileID: 212571609698833764}
   - component: {fileID: 60395408542020114}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 4089462142520508}
   - component: {fileID: 212922755127539084}
   - component: {fileID: 60264485702282374}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +282,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4466501763767080}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +299,7 @@ GameObject:
   - component: {fileID: 4793668681682424}
   - component: {fileID: 212440085161758932}
   - component: {fileID: 60486575900809292}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 4455756589935796}
   - component: {fileID: 212697327050058140}
   - component: {fileID: 60957240182533066}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 4737003627388434}
   - component: {fileID: 212197983684668196}
   - component: {fileID: 60617878169783528}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: triangle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4007513118102772}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -363,7 +363,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4857712107008534}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

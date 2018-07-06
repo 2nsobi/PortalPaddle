@@ -66,6 +66,11 @@ public class PaddleController : MonoBehaviour
         particles.gameObject.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        paddleCollider.gameObject.SetActive(false);
+    }
+
     private void FixedUpdate()
     {
         //When using multi touch make sure to use fingerID's to track fingers seperately
