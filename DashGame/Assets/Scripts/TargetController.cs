@@ -75,8 +75,8 @@ public class TargetController : MonoBehaviour
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
         target1Travel = false;
         target2Travel = false;
-        target1Hit = false;
-        target2Hit = false;
+        target1Hit = true;
+        target2Hit = true;
         pointCounter1 = 0;
         pointCounter2 = 0;
 
@@ -133,6 +133,7 @@ public class TargetController : MonoBehaviour
 
         if (target1Hit)
         {
+            target1Travel = false;
             target1Travel = false;
         }
         if (target2Hit)
@@ -375,8 +376,8 @@ public class TargetController : MonoBehaviour
         target1Travel = false;
         target2Travel = false;
         gameRunning = false;
-        target1Hit = false;
-        target2Hit = false;
+        target1Hit = true;
+        target2Hit = true;
 
         targets[1].animator.ResetTrigger("GameStarted");
     }

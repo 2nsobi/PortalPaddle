@@ -9,7 +9,7 @@ public class EnemyBehavior : MonoBehaviour {
     float codeSpeed;
     public float deflectionSpeed;
     Ray2D ray;
-    Vector3 vector = new Vector2(0, 2); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
+    Vector3 vector; // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     TargetController target;
     bool shouldAbsord;
     public float absorbSpeed;
@@ -23,6 +23,7 @@ public class EnemyBehavior : MonoBehaviour {
     GameManager game;
     bool atCenter;
     bool invulnerable;
+    ParticleSystem particleSystem;
 
     public static EnemyBehavior Instance;
 
@@ -43,6 +44,8 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
+        particleSystem = GetComponentInChildren<ParticleSystem>();
+        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x);
     }
 
     private void Start()
@@ -106,6 +109,8 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        particleSystem.Play();
+
         if (collision.gameObject.tag == "Paddle")
         {
             canAbsorb = true;
