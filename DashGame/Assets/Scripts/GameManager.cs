@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
     TargetController TargetController;
     public Text scoreText;
     private int score;
+    bool gameRunning;
 
     public static GameManager Instance;
 
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour {
         TargetController = TargetController.Instance;
         Paddle.gameObject.SetActive(false);
         GoToStartPage();
+        gameRunning = false;
     }
 
     private void OnEnable()
@@ -210,11 +212,13 @@ public class GameManager : MonoBehaviour {
         SetPageState(pageState.Game);
         Paddle.gameObject.SetActive(true);
         extraBallSprite.SetActive(false);
+        gameRunning = true;
         GameStarted();
     }
 
     public void GameOver()
     {
+        gameRunning = false;
         Paddle.gameObject.SetActive(false);
         SetPageState(pageState.GameOver);
     }
@@ -257,6 +261,14 @@ public class GameManager : MonoBehaviour {
         get
         {
             return score;
+        }
+    }
+
+    public bool IsGameRunning
+    {
+        get
+        {
+            return gameRunning;
         }
     }
 }

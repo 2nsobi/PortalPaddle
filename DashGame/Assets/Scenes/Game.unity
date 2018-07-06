@@ -1879,31 +1879,31 @@ MonoBehaviour:
   obstacles:
   - tag: Obstacle1_Lvl2
     prefab: {fileID: 1714331836289788, guid: f580bb7460deca44bb2d4ac22a1e8eb0, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle2_Lvl2
     prefab: {fileID: 1780568989254076, guid: f3857d98a513e6c4cb207611b9973b2b, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle3_Lvl2
     prefab: {fileID: 1817218842730660, guid: 7545e655627030e4b834d6e80960ce11, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle4_Lvl2
     prefab: {fileID: 1911681477247782, guid: a49c492f79800ed4e8f9aef615200308, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle5_Lvl2
     prefab: {fileID: 1271317240674962, guid: 320c3a798eb4e674baa7a848a8adb39e, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle6_Lvl2
     prefab: {fileID: 1351222281608122, guid: 6f35ca4430454994e9da33817c25ecdd, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle7_Lvl2
     prefab: {fileID: 1208859731125744, guid: df2d63080d7d42e4fb9ebd386ce2b043, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle8_Lvl2
     prefab: {fileID: 1620181947749456, guid: a2676ca16d91f514e80da900282552a1, type: 2}
-    size: 2
+    size: 3
   - tag: Obstacle9_Lvl2
     prefab: {fileID: 1517622073381404, guid: a3d65d5eb77a3814b8270edff62a412f, type: 2}
-    size: 2
+    size: 3
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   transitionSpeed: 5
 --- !u!114 &1240515139
