@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
     public static event GameDelegate GamePaused;
     public static event GameDelegate GameResumed;
     public static event GameDelegate GameStarted;
-    public static event GameDelegate MoveToNextLvl;
+    public static event GameDelegate Revive;
     public static event GameDelegate GoToSettingsPage;
     public static event GameDelegate ComeBackFromSettingsPage;
 
@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour {
         {
             extraBall = false;
             extraBallSprite.SetActive(false);
-            MoveToNextLvl();
+            Revive();
         }
     }
 
@@ -113,6 +113,7 @@ public class GameManager : MonoBehaviour {
     void TargetHit()
     {
         score++;
+        Debug.Log("Straight Hit +1 points");
         scoreText.text = score.ToString();
         richochetCount = 0;
     }
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour {
     void TargetHitAndRichochet()
     {
         score += 2;
+        Debug.Log("Richichet +2 points");
         scoreText.text = score.ToString();
         richochetCount++;
         if (richochetCount == 1)

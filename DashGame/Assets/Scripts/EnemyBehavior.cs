@@ -24,6 +24,9 @@ public class EnemyBehavior : MonoBehaviour {
     bool atCenter;
     bool invulnerable;
     ParticleSystem particleSystem;
+    string targetHit; //Name of the target that was hit;
+    bool ShouldSpawn;
+    bool ShouldShrink;
 
     public static EnemyBehavior Instance;
 
@@ -31,7 +34,6 @@ public class EnemyBehavior : MonoBehaviour {
     public static event BallDelegate PlayerMissed;
     public static event BallDelegate AbsorbDone; // specific event for TargetController so its animation matches up with the balls
     public static event BallDelegate AbsorbDoneAndRichochet;
-
 
     private void Awake()
     {
@@ -45,7 +47,9 @@ public class EnemyBehavior : MonoBehaviour {
         atCenter = false;
         invulnerable = false;
         particleSystem = GetComponentInChildren<ParticleSystem>();
-        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 1);
+        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
+        ShouldShrink = false;
+        ShouldSpawn = false;
     }
 
     private void Start()
@@ -62,6 +66,7 @@ public class EnemyBehavior : MonoBehaviour {
         GameManager.GameOverConfirmed += GameOverConfirmed;
         GameManager.GameStarted += GameStarted;
         LevelGenerator.TransitionDone += TransitionDone;
+        GameManager.Revive += Revive;
     }
 
     private void OnDisable()
@@ -69,6 +74,7 @@ public class EnemyBehavior : MonoBehaviour {
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
+        GameManager.Revive -= Revive;
     }
 
     IEnumerator SpawnDelay()
@@ -105,6 +111,9 @@ public class EnemyBehavior : MonoBehaviour {
         {
             Absorb();
         }
+
+        animator.SetBool("ShouldSpawn", ShouldSpawn);
+        animator.SetBool("ShouldShrink", ShouldShrink);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -147,14 +156,16 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (canAbsorb)
         {
+            targetHit = collision.gameObject.name;
             if (collision.gameObject.layer == 8)
             {
                 invulnerable = true;
                 rigidbody.velocity = Vector2.zero;
                 shouldAbsord = true;
                 targetTransform = collision.transform;
+                ShouldShrink = true;
+                ShouldSpawn = false;
             }
-
         }
         if (collision.gameObject.layer == 9)
         {
@@ -162,8 +173,9 @@ public class EnemyBehavior : MonoBehaviour {
             {
                 rigidbody.velocity = Vector2.zero;
                 this.transform.position = Vector2.right * 1000;
-                animator.SetTrigger("AtCenter");
                 PlayerMissed();
+                ShouldShrink = true;
+                ShouldSpawn = false;
             }
         }
     }
@@ -181,7 +193,6 @@ public class EnemyBehavior : MonoBehaviour {
                 this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
             }
 
-            animator.SetTrigger("AtCenter");
             if (this.transform.position == target.GetCurrentTargetPos)
             {
                 atCenter = true;
@@ -206,12 +217,12 @@ public class EnemyBehavior : MonoBehaviour {
         this.transform.position = startPos;
         ballSpawner.transform.position = startPos;
         canAbsorb = false;
-        animator.ResetTrigger("GameOver");
-        animator.SetTrigger("GameStarted");
-        spawnerAnimator.SetTrigger("GameStarted");
         StartCoroutine(SpawnDelay());
         wallHit = false;
         Physics2D.IgnoreLayerCollision(10,11);
+        ShouldSpawn = true;
+        spawnerAnimator.SetTrigger("GameStarted");
+        animator.SetTrigger("GameStarted");
     }
 
     void GameOverConfirmed()
@@ -219,16 +230,14 @@ public class EnemyBehavior : MonoBehaviour {
         this.transform.position = Vector2.right * 1000;
         this.rigidbody.velocity = Vector2.zero;
         codeSpeed = speed;
-        animator.SetTrigger("GameOver");
+
     }
 
     void TransitionDone()
     {
-        Physics2D.IgnoreLayerCollision(10, 11);
-        animator.SetTrigger("NextLvl");
+        ShouldSpawn = true;
         spawnerAnimator.SetTrigger("GameStarted");
-        animator.ResetTrigger("AtCenter");
-
+        Physics2D.IgnoreLayerCollision(10, 11);
         atCenter = false;
         invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
@@ -239,5 +248,30 @@ public class EnemyBehavior : MonoBehaviour {
         StartCoroutine(SpawnDelay());
         wallHit = false;
         codeSpeed = speed;
+    }
+
+    void Revive()
+    {
+        ShouldSpawn = true;
+        spawnerAnimator.SetTrigger("GameStarted");
+        Physics2D.IgnoreLayerCollision(10, 11);
+        atCenter = false;
+        invulnerable = false;
+        RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
+        rigidbody.velocity = Vector2.zero;
+        ballSpawner.transform.position = RandomXPos;
+        this.transform.position = RandomXPos;
+        canAbsorb = false;
+        StartCoroutine(SpawnDelay());
+        wallHit = false;
+        codeSpeed = speed;
+    }
+
+    public string GetTargetHit
+    {
+        get
+        {
+            return targetHit;
+        }
     }
 }
