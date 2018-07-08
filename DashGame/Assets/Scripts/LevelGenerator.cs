@@ -64,7 +64,7 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameOverConfirmed += GameOverConfirmed;
         EnemyBehavior.AbsorbDone += AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDone;
-        GameManager.MoveToNextLvl += MoveToNextLvl;
+        //GameManager.Revive += MoveToNextLvl;
         GameManager.GoToSettingsPage += GoToSettingsPage;
         GameManager.ComeBackFromSettingsPage += ComeBackFromSettingsPage;
     }
@@ -75,7 +75,7 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
-        GameManager.MoveToNextLvl -= MoveToNextLvl;
+        //GameManager.Revive -= MoveToNextLvl;
         GameManager.GoToSettingsPage -= GoToSettingsPage;
         GameManager.ComeBackFromSettingsPage -= ComeBackFromSettingsPage;
     }
@@ -276,10 +276,10 @@ public class LevelGenerator : MonoBehaviour
         currentlyTransitioning = true;
     }
 
-    void MoveToNextLvl()
-    {
-        currentlyTransitioning = true;
-    }
+    //void MoveToNextLvl()
+    //{
+    //    currentlyTransitioning = true;
+    //}
 
     private void FixedUpdate()
     {
@@ -294,8 +294,6 @@ public class LevelGenerator : MonoBehaviour
                 TransitionDone();
                 GenerateNextLvl();
                 currentlyTransitioning = false;
-
-                Debug.Log(obstacleSpawnCounter);
 
                 if (obstacleSpawnCounter == 1)
                 {

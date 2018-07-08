@@ -28,6 +28,7 @@ public class TargetController : MonoBehaviour
     bool gameRunning;
     bool target1Moving, target2Moving;
     bool moving; //are targets moving?
+    Transform nextLvl;
 
     public static TargetController Instance;
 
@@ -68,6 +69,8 @@ public class TargetController : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 0.7f;
+
         Instance = this;
         ball = EnemyBehavior.Instance;
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
@@ -108,7 +111,7 @@ public class TargetController : MonoBehaviour
         EnemyBehavior.AbsorbDone += AbsorbDone;
         GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
-        GameManager.MoveToNextLvl += MoveToNextLvl;
+        //GameManager.Revive += MoveToNextLvl;
         LevelGenerator.TransitionDone += TransitionDone;
     }
 
@@ -119,7 +122,7 @@ public class TargetController : MonoBehaviour
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
-        GameManager.MoveToNextLvl -= MoveToNextLvl;
+        //GameManager.Revive -= MoveToNextLvl;
         LevelGenerator.TransitionDone -= TransitionDone;
     }
 
@@ -136,7 +139,7 @@ public class TargetController : MonoBehaviour
             target1Travel = false;
             if (gameRunning)
             {
-                if (targets[0].transform.position.y < LG.GetNextLvl.transform.position.y + 5.2) //5.2 is about half the height of a lvl
+                if (targets[0].transform.position.y < nextLvl.position.y - 5) //5.2 is about half the height of a lvl
                 {
                     targets[0].StopUsing();
                 }
@@ -147,7 +150,7 @@ public class TargetController : MonoBehaviour
             target2Travel = false;
             if (gameRunning)
             {
-                if (targets[1].transform.position.y < LG.GetNextLvl.transform.position.y + 5.2) //5.2 is about half the height of a lvl
+                if (targets[1].transform.position.y < nextLvl.position.y - 5) //5.2 is about half the height of a lvl
                 {
                     targets[1].StopUsing();
                 }
@@ -236,28 +239,23 @@ public class TargetController : MonoBehaviour
         return path[iterator];
     }
 
-    void MoveToNextLvl()
-    {
-        for (int i = 0; i < targets.Length; i++)
-        {
-            if (targets[i].inUse)
-            {
-                //targets[i].StopUsing();
-                if (i == 0)
-                {
-                    target1Hit = true;
-                }
-                if (i == 1)
-                {
-                    target2Hit = true;
-                }
-            }
-            else
-            {
-                targets[i].Use();
-            }
-        }
-    }
+    //void MoveToNextLvl()
+    //{
+    //    for (int i = 0; i < targets.Length; i++)
+    //    {
+    //        if (targets[i].inUse)
+    //        {
+    //            if (ball.GetTargetHit == "Target0")
+    //            {
+    //                target1Hit = true;
+    //            }
+    //            if (ball.GetTargetHit == "Target1")
+    //            {
+    //                target2Hit = true;
+    //            }
+    //        }
+    //    }
+    //}
 
     void AbsorbDone()
     {
@@ -267,19 +265,14 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                //targets[i].StopUsing();
-                if (i == 0)
+                if (ball.GetTargetHit == "Target0")
                 {
                     target1Hit = true;
                 }
-                if (i == 1)
+                if (ball.GetTargetHit == "Target1")
                 {
                     target2Hit = true;
                 }
-            }
-            else
-            {
-                targets[i].Use();
             }
         }
 
@@ -293,19 +286,14 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-               // targets[i].StopUsing();
-                if (i == 0)
+                if (ball.GetTargetHit == "Target0")
                 {
                     target1Hit = true;
                 }
-                if (i == 1)
+                if (ball.GetTargetHit == "Target1")
                 {
                     target2Hit = true;
                 }
-            }
-            else
-            {
-                targets[i].Use();
             }
         }
 
@@ -343,10 +331,14 @@ public class TargetController : MonoBehaviour
 
     void NextLvlGenerated()
     {
+        nextLvl = LG.GetNextLvl;
+        Debug.Log("Next Level Generated = " + nextLvl.gameObject.name + " at " + nextLvl.position);
+
         for (int i = 0; i < targets.Length; i++)
         {
             if (!targets[i].inUse)
             {
+                targets[i].Use();
                 if (game.GetScore >= 0 && game.GetScore < 1)
                 {
                     targets[i].transform.parent = LG.GetNextLvl;
