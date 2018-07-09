@@ -113,7 +113,6 @@ public class GameManager : MonoBehaviour {
     void TargetHit()
     {
         score++;
-        Debug.Log("Straight Hit +1 points");
         scoreText.text = score.ToString();
         richochetCount = 0;
     }
@@ -121,7 +120,6 @@ public class GameManager : MonoBehaviour {
     void TargetHitAndRichochet()
     {
         score += 2;
-        Debug.Log("Richichet +2 points");
         scoreText.text = score.ToString();
         richochetCount++;
         if (richochetCount == 1)
