@@ -159,23 +159,22 @@ public class EnemyBehavior : MonoBehaviour {
             targetHit = collision.gameObject.name;
             if (collision.gameObject.layer == 8)
             {
+                ShouldSpawn = false;
                 invulnerable = true;
                 rigidbody.velocity = Vector2.zero;
                 shouldAbsord = true;
                 targetTransform = collision.transform;
                 ShouldShrink = true;
-                ShouldSpawn = false;
             }
         }
         if (collision.gameObject.layer == 9)
         {
             if (!invulnerable)
             {
+                ShouldSpawn = false;
                 rigidbody.velocity = Vector2.zero;
                 this.transform.position = Vector2.right * 1000;
                 PlayerMissed();
-                ShouldShrink = true;
-                ShouldSpawn = false;
             }
         }
     }
@@ -203,10 +202,14 @@ public class EnemyBehavior : MonoBehaviour {
                 if (wallHit)
                 {
                     AbsorbDoneAndRichochet();
+                    Debug.Log("Richichet +2 points. also shouldAbsorb = " + shouldAbsord);
+                    return;
                 }
                 else
                 {
                     AbsorbDone();
+                    Debug.Log("Straight Hit +1 points. also shouldAbsorb = " + shouldAbsord);
+                    return;
                 }
             }
         }
@@ -214,6 +217,9 @@ public class EnemyBehavior : MonoBehaviour {
 
     void GameStarted()
     {
+        spawnerAnimator.SetTrigger("GameStarted");
+        animator.SetTrigger("GameStarted");
+
         this.transform.position = startPos;
         ballSpawner.transform.position = startPos;
         canAbsorb = false;
@@ -221,8 +227,7 @@ public class EnemyBehavior : MonoBehaviour {
         wallHit = false;
         Physics2D.IgnoreLayerCollision(10,11);
         ShouldSpawn = true;
-        spawnerAnimator.SetTrigger("GameStarted");
-        animator.SetTrigger("GameStarted");
+        ShouldShrink = false;
     }
 
     void GameOverConfirmed()
@@ -231,11 +236,13 @@ public class EnemyBehavior : MonoBehaviour {
         this.rigidbody.velocity = Vector2.zero;
         codeSpeed = speed;
 
+        animator.SetTrigger("GameOver");
     }
 
     void TransitionDone()
     {
         ShouldSpawn = true;
+        ShouldShrink = false;
         spawnerAnimator.SetTrigger("GameStarted");
         Physics2D.IgnoreLayerCollision(10, 11);
         atCenter = false;
@@ -252,8 +259,10 @@ public class EnemyBehavior : MonoBehaviour {
 
     void Revive()
     {
-        ShouldSpawn = true;
+        animator.SetTrigger("ImmediateSpawn");
         spawnerAnimator.SetTrigger("GameStarted");
+        ShouldSpawn = true;
+        ShouldShrink = false;
         Physics2D.IgnoreLayerCollision(10, 11);
         atCenter = false;
         invulnerable = false;

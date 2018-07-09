@@ -69,8 +69,6 @@ public class TargetController : MonoBehaviour
 
     private void Awake()
     {
-        Time.timeScale = 0.7f;
-
         Instance = this;
         ball = EnemyBehavior.Instance;
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
@@ -332,7 +330,6 @@ public class TargetController : MonoBehaviour
     void NextLvlGenerated()
     {
         nextLvl = LG.GetNextLvl;
-        Debug.Log("Next Level Generated = " + nextLvl.gameObject.name + " at " + nextLvl.position);
 
         for (int i = 0; i < targets.Length; i++)
         {

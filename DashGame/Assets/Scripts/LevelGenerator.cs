@@ -321,7 +321,6 @@ public class LevelGenerator : MonoBehaviour
                 {
                     PreviousObstacle = CurrentObstacle;
                     CurrentObstacle = NextObstacle;
-                    Debug.Log("previous ob has been set");
                 }
             }
         }
