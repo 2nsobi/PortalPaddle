@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
     public Text scoreText;
     private int score;
     bool gameRunning;
+    public Vector2 TargetAspectRatio;
 
     public static GameManager Instance;
 
@@ -98,8 +99,14 @@ public class GameManager : MonoBehaviour {
         {
             extraBall = false;
             extraBallSprite.SetActive(false);
-            Revive();
+            StartCoroutine("ReviveDelay");
         }
+    }
+
+    IEnumerator ReviveDelay()
+    {
+        yield return new WaitForSeconds(0.6f);
+        Revive();
     }
 
     public bool hasExtraBall
