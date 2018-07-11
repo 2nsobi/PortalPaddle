@@ -51,6 +51,9 @@ public class LevelGenerator : MonoBehaviour
     bool obstacleDespawned;
     int obstacleSpawnCounter;
     int levelSpawnCounter;
+    public Vector2 TargetAspectRatio;
+    float targetAspectRatio;
+    PaddleController paddle;
 
     List<Obstacle> AllObstacles;
 
@@ -101,15 +104,22 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
+        targetAspectRatio = TargetAspectRatio.x / TargetAspectRatio.y;
+
         levelSpawnCounter = 0;
         obstacleSpawnCounter = 0;
         obstacleDespawned = false;
 
         game = GameManager.Instance;
+        paddle = PaddleController.Instance;
 
         currentlyTransitioning = false;
 
         StartLevel = Instantiate(StartLvl, transform);
+        Transform wallW = StartLevel.transform.GetChild(0);
+        Transform wallE = StartLevel.transform.GetChild(1);
+        wallW.localPosition = new Vector3(wallW.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW.localPosition.y, 0);
+        wallE.localPosition = new Vector3(wallE.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE.localPosition.y, 0);
         CurrentLvl = StartLevel;
 
         LvlComponentDict = new Dictionary<string, Queue<GameObject>>();
@@ -122,14 +132,26 @@ public class LevelGenerator : MonoBehaviour
             for (int i = 0; i < pool.size; i++)
             {
                 GameObject obj1 = Instantiate(pool.prefab1);
+                Transform wallW0 = obj1.transform.GetChild(0);
+                Transform wallE0 = obj1.transform.GetChild(1);
+                wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
+                wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
                 obj1.SetActive(false);
                 objectPool.Enqueue(obj1);
 
                 GameObject obj2 = Instantiate(pool.prefab2);
+                Transform wallW1 = obj2.transform.GetChild(0);
+                Transform wallE1 = obj2.transform.GetChild(1);
+                wallW1.localPosition = new Vector3(wallW1.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW1.localPosition.y, 0);
+                wallE1.localPosition = new Vector3(wallE1.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE1.localPosition.y, 0);
                 obj2.SetActive(false);
                 objectPool.Enqueue(obj2);
 
                 GameObject obj3 = Instantiate(pool.prefab3);
+                Transform wallW2 = obj3.transform.GetChild(0);
+                Transform wallE2 = obj3.transform.GetChild(1);
+                wallW2.localPosition = new Vector3(wallW2.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW2.localPosition.y, 0);
+                wallE2.localPosition = new Vector3(wallE2.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE2.localPosition.y, 0);
                 obj3.SetActive(false);
                 objectPool.Enqueue(obj3);
             }

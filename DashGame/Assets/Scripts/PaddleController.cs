@@ -23,6 +23,7 @@ public class PaddleController : MonoBehaviour
     Animator particleAnimator;
     Vector3[] pauseButtonCorners = new Vector3[4]; //used so that a paddle wont appear if the pause button is tapped
     public RectTransform pauseButtonRect;
+    float WallDistance; // used to set initial wall position in levelgenerator class
 
     public static PaddleController Instance;
 
@@ -49,6 +50,8 @@ public class PaddleController : MonoBehaviour
         corners = new Vector3[4];
         tapAreaRect.GetWorldCorners(corners);
 
+        Debug.Log(corners[0].x);
+
         particles = Instantiate(particlePrefab, Vector2.right*900, paddleCollider.transform.rotation) as GameObject;
         //particles.transform.parent = paddleCollider.transform;
         ps = particles.GetComponent<ParticleSystem>();
@@ -56,6 +59,11 @@ public class PaddleController : MonoBehaviour
         particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
         particleAnimator = particles.GetComponent<Animator>();
         particles.transform.parent = transform;
+    }
+
+    public float GetDistanceDifferenceForWalls()
+    {
+        return 2.69159f - Vector3.Distance(new Vector3(0, 0, 0), new Vector3(corners[0].x, 0, 0));
     }
 
     private void OnEnable()
