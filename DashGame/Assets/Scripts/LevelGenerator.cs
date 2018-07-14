@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
-
     #region Singleton
     public static LevelGenerator Instance;
 
@@ -54,6 +53,8 @@ public class LevelGenerator : MonoBehaviour
     public Vector2 TargetAspectRatio;
     float targetAspectRatio;
     PaddleController paddle;
+    bool switchColors;
+    Material material;
 
     List<Obstacle> AllObstacles;
 
@@ -104,6 +105,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
+        switchColors = true;
         targetAspectRatio = TargetAspectRatio.x / TargetAspectRatio.y;
 
         levelSpawnCounter = 0;
@@ -116,6 +118,7 @@ public class LevelGenerator : MonoBehaviour
         currentlyTransitioning = false;
 
         StartLevel = Instantiate(StartLvl, transform);
+        material = StartLevel.GetComponent<Renderer>().sharedMaterial;
         Transform wallW = StartLevel.transform.GetChild(0);
         Transform wallE = StartLevel.transform.GetChild(1);
         wallW.localPosition = new Vector3(wallW.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW.localPosition.y, 0);
@@ -303,6 +306,19 @@ public class LevelGenerator : MonoBehaviour
     //    currentlyTransitioning = true;
     //}
 
+    public void InvertColors()
+    {
+        switchColors = !switchColors;
+        if (!switchColors)
+        {
+            material.SetFloat("_InvertColors", 1);
+        }
+        else
+        {
+            material.SetFloat("_InvertColors", 0);
+        }
+    }
+
     private void FixedUpdate()
     {
         if (currentlyTransitioning)
@@ -376,7 +392,7 @@ public class LevelGenerator : MonoBehaviour
         if (game.GetScore >= 1)
         {
             NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
-            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(7, 7) + "_Lvl2", transform.position + levelOffset, transform.rotation);
+            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 10) + "_Lvl2", transform.position + levelOffset, transform.rotation);
             NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }
         NextLvlGenerated();

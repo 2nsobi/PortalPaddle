@@ -27,6 +27,13 @@ public class EnemyBehavior : MonoBehaviour {
     string targetHit; //Name of the target that was hit;
     bool ShouldSpawn;
     bool ShouldShrink;
+    Camera mainCam;
+    readonly Vector3 originalCamPos = new Vector3(0, 0, -50);
+    public float CameraShakeIntensity;
+    public float CameraShakeDuration;
+    Material material;
+    bool firstCollision; //first collision with paddle
+    LevelGenerator LG;
 
     public static EnemyBehavior Instance;
 
@@ -38,6 +45,7 @@ public class EnemyBehavior : MonoBehaviour {
     private void Awake()
     {
         Instance = this;
+        mainCam = Camera.main;
         animator = GetComponent<Animator>();
         shouldAbsord = false;
         rigidbody = GetComponent<Rigidbody2D>();
@@ -50,6 +58,7 @@ public class EnemyBehavior : MonoBehaviour {
         Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
         ShouldSpawn = false;
+        //material = (Material)Resources.Load("Sprites_InvertableColors", typeof(Material));
     }
 
     private void Start()
@@ -59,6 +68,7 @@ public class EnemyBehavior : MonoBehaviour {
         target = TargetController.Instance;
         wallHit = false;
         game = GameManager.Instance;
+        LG = LevelGenerator.Instance;
     }
 
     private void OnEnable()
@@ -86,6 +96,7 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void Update()
     {
+        
         ray = new Ray2D(transform.position + vector, -transform.up);
 
         if (canAbsorb)
@@ -120,9 +131,20 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Paddle")
         {
+            if (!atCenter && !shouldAbsord)
+            {
+                StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+            }
             canAbsorb = true;
             StartCoroutine("CollisionDelay");
         }
+
+        if (firstCollision)
+        {
+            StartCoroutine(FirstCollision());
+            firstCollision = false;
+        }
+
         if (collision.gameObject.tag == "Wall")
         {
             wallHit = true;
@@ -141,6 +163,15 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = deflectionSpeed;
         rigidbody.velocity = -transform.up.normalized * codeSpeed;
 
+    }
+
+    IEnumerator FirstCollision()
+    {
+        LG.InvertColors();
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(0.2f);
+        Time.timeScale = 1;
+        LG.InvertColors();
     }
 
     //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
@@ -228,6 +259,7 @@ public class EnemyBehavior : MonoBehaviour {
         Physics2D.IgnoreLayerCollision(10,11);
         ShouldSpawn = true;
         ShouldShrink = false;
+        firstCollision = true;
     }
 
     void GameOverConfirmed()
@@ -255,6 +287,7 @@ public class EnemyBehavior : MonoBehaviour {
         StartCoroutine(SpawnDelay());
         wallHit = false;
         codeSpeed = speed;
+        firstCollision = true;
     }
 
     void Revive()
@@ -274,6 +307,7 @@ public class EnemyBehavior : MonoBehaviour {
         StartCoroutine(SpawnDelay());
         wallHit = false;
         codeSpeed = speed;
+        firstCollision = true;
     }
 
     public string GetTargetHit
@@ -282,5 +316,29 @@ public class EnemyBehavior : MonoBehaviour {
         {
             return targetHit;
         }
+    }
+
+    IEnumerator CameraShake(float intensity, float duration)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float percentComplete = elapsedTime / duration;
+            float damper = 1.0f - Mathf.Clamp(4.0f * percentComplete - 3.0f, 0.0f, 1.0f);
+
+            float x = Random.value * 2.0f - 1.0f;
+            float y = Random.value * 2.0f - 1.0f;
+            x *= Mathf.PerlinNoise(x,y) * intensity * damper;
+            y *= Mathf.PerlinNoise(x, y) * intensity * damper;
+
+            mainCam.transform.localPosition = new Vector3(x, y, originalCamPos.z);
+
+            yield return null;
+        }
+
+        mainCam.transform.position = originalCamPos;
     }
 }
