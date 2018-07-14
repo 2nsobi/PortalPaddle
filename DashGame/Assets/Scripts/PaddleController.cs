@@ -50,8 +50,6 @@ public class PaddleController : MonoBehaviour
         corners = new Vector3[4];
         tapAreaRect.GetWorldCorners(corners);
 
-        Debug.Log(corners[0].x);
-
         particles = Instantiate(particlePrefab, Vector2.right*900, paddleCollider.transform.rotation) as GameObject;
         //particles.transform.parent = paddleCollider.transform;
         ps = particles.GetComponent<ParticleSystem>();

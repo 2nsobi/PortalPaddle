@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4394869787918300}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 4993115110167718}
   - component: {fileID: 212351693472749494}
   - component: {fileID: 61107452393581224}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4345707761650134}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4538599401891734}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4711463876971912}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 4336837726796748}
   - component: {fileID: 212821053177088896}
   - component: {fileID: 61419208298755304}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 4572561576903894}
   - component: {fileID: 212350412063067358}
   - component: {fileID: 61930035929625770}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 4713383921594896}
   - component: {fileID: 212403707776251106}
   - component: {fileID: 61844861321071394}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4077437476366864}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4195062256954422}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 4164123969914224}
   - component: {fileID: 212052715711478854}
   - component: {fileID: 61502421103927078}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4225621549744598}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4968236623280884}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: pathCircle(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 4195614951642558}
   - component: {fileID: 212561406271497818}
   - component: {fileID: 61770550862118388}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 4615568158535866}
   - component: {fileID: 212043207773669880}
   - component: {fileID: 61790115124084184}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4583006797793670}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TargetTravelPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 4489033436783832}
   - component: {fileID: 212500826584376464}
   - component: {fileID: 61582869501754492}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wall(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

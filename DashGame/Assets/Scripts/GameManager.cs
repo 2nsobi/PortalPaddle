@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour {
     public Text scoreText;
     private int score;
     bool gameRunning;
-    public Vector2 TargetAspectRatio;
 
     public static GameManager Instance;
 
