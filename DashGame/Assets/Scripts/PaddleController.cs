@@ -23,8 +23,6 @@ public class PaddleController : MonoBehaviour
     Animator particleAnimator;
     Vector3[] pauseButtonCorners = new Vector3[4]; //used so that a paddle wont appear if the pause button is tapped
     public RectTransform pauseButtonRect;
-    float WallDistance; // used to set initial wall position in levelgenerator class
-
     public static PaddleController Instance;
 
     private void Awake()
@@ -34,13 +32,6 @@ public class PaddleController : MonoBehaviour
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";
         paddleCollider.gameObject.layer = 12;
-        /*
-        paddleRigidBody = paddleCollider.gameObject.AddComponent<Rigidbody2D>();
-        paddleRigidBody.gravityScale = 0;
-        paddleRigidBody.angularDrag = 0;
-        paddleRigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        paddleRigidBody.mass = 0.0001f;
-        */
         childPaddle1 = transform.Find("Paddle1").gameObject;
         childPaddle2 = transform.Find("Paddle2").gameObject;
         GameObject tapArea = GameObject.Find("tapArea");
@@ -59,7 +50,7 @@ public class PaddleController : MonoBehaviour
         particles.transform.parent = transform;
     }
 
-    public float GetDistanceDifferenceForWalls()
+    public float GetDistanceDifferenceForWalls()// used to set initial wall position in levelgenerator class
     {
         return 2.69159f - Vector3.Distance(new Vector3(0, 0, 0), new Vector3(corners[0].x, 0, 0));
     }

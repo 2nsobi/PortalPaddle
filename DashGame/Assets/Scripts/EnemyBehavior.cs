@@ -11,7 +11,7 @@ public class EnemyBehavior : MonoBehaviour {
     Ray2D ray;
     Vector3 vector; // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     TargetController target;
-    bool shouldAbsord;
+    bool shouldAbsorb;
     public float absorbSpeed;
     Animator animator;
     bool canAbsorb; //ball will only be absorbed after it is deflectd off of the paddle;
@@ -33,6 +33,7 @@ public class EnemyBehavior : MonoBehaviour {
     public float CameraShakeDuration;
     Material material;
     bool firstCollision; //first collision with paddle
+    bool firstTriggerCollision; //for first collision with a target
     LevelGenerator LG;
 
     public static EnemyBehavior Instance;
@@ -47,7 +48,7 @@ public class EnemyBehavior : MonoBehaviour {
         Instance = this;
         mainCam = Camera.main;
         animator = GetComponent<Animator>();
-        shouldAbsord = false;
+        shouldAbsorb = false;
         rigidbody = GetComponent<Rigidbody2D>();
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
@@ -58,7 +59,12 @@ public class EnemyBehavior : MonoBehaviour {
         Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
         ShouldSpawn = false;
-        //material = (Material)Resources.Load("Sprites_InvertableColors", typeof(Material));
+
+        Physics2D.IgnoreLayerCollision(8, 10);
+        Physics2D.IgnoreLayerCollision(8, 12);
+        Physics2D.IgnoreLayerCollision(8, 13);
+        Physics2D.IgnoreLayerCollision(8, 0);
+        Physics2D.IgnoreLayerCollision(8, 9);
     }
 
     private void Start()
@@ -118,7 +124,7 @@ public class EnemyBehavior : MonoBehaviour {
             this.transform.position = target.GetCurrentTargetPos;
         }
 
-        if (shouldAbsord)
+        if (shouldAbsorb)
         {
             Absorb();
         }
@@ -131,16 +137,16 @@ public class EnemyBehavior : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Paddle")
         {
-            if (!atCenter && !shouldAbsord)
-            {
-                StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
-            }
             canAbsorb = true;
             StartCoroutine("CollisionDelay");
         }
 
         if (firstCollision)
         {
+            //if (!atCenter && !shouldAbsord)
+            //{
+            //    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+            //}
             StartCoroutine(FirstCollision());
             firstCollision = false;
         }
@@ -150,7 +156,7 @@ public class EnemyBehavior : MonoBehaviour {
             wallHit = true;
         }
 
-        if (!atCenter && !shouldAbsord)
+        if (!atCenter && !shouldAbsorb)
         {
             particleSystem.Play();
         }
@@ -169,9 +175,13 @@ public class EnemyBehavior : MonoBehaviour {
     {
         LG.InvertColors();
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(0.2f);
+        yield return new WaitForSecondsRealtime(0.15f);
         Time.timeScale = 1;
         LG.InvertColors();
+        if (!atCenter && !shouldAbsorb)
+        {
+            StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+        }
     }
 
     //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
@@ -188,14 +198,19 @@ public class EnemyBehavior : MonoBehaviour {
         if (canAbsorb)
         {
             targetHit = collision.gameObject.name;
-            if (collision.gameObject.layer == 8)
+            if (firstTriggerCollision)
             {
-                ShouldSpawn = false;
-                invulnerable = true;
-                rigidbody.velocity = Vector2.zero;
-                shouldAbsord = true;
-                targetTransform = collision.transform;
-                ShouldShrink = true;
+                if (collision.gameObject.layer == 8)
+                {
+                    ShouldSpawn = false;
+                    invulnerable = true;
+                    rigidbody.velocity = Vector2.zero;
+                    shouldAbsorb = true;
+                    Debug.Log("yeup");
+                    targetTransform = collision.transform;
+                    ShouldShrink = true;
+                    firstTriggerCollision = false;
+                }
             }
         }
         if (collision.gameObject.layer == 9)
@@ -226,20 +241,21 @@ public class EnemyBehavior : MonoBehaviour {
             if (this.transform.position == target.GetCurrentTargetPos)
             {
                 atCenter = true;
-                shouldAbsord = false;
+                shouldAbsorb = false;
             }
-            if (!shouldAbsord)
+
+            if (!shouldAbsorb)
             {
                 if (wallHit)
                 {
                     AbsorbDoneAndRichochet();
-                    Debug.Log("Richichet +2 points. also shouldAbsorb = " + shouldAbsord);
+                    Debug.Log("Richichet +2 points. also shouldAbsorb = " + shouldAbsorb);
                     return;
                 }
                 else
                 {
                     AbsorbDone();
-                    Debug.Log("Straight Hit +1 points. also shouldAbsorb = " + shouldAbsord);
+                    Debug.Log("Straight Hit +1 points. also shouldAbsorb = " + shouldAbsorb);
                     return;
                 }
             }
@@ -260,6 +276,7 @@ public class EnemyBehavior : MonoBehaviour {
         ShouldSpawn = true;
         ShouldShrink = false;
         firstCollision = true;
+        firstTriggerCollision = true;
     }
 
     void GameOverConfirmed()
@@ -288,6 +305,7 @@ public class EnemyBehavior : MonoBehaviour {
         wallHit = false;
         codeSpeed = speed;
         firstCollision = true;
+        firstTriggerCollision = true;
     }
 
     void Revive()
@@ -308,6 +326,7 @@ public class EnemyBehavior : MonoBehaviour {
         wallHit = false;
         codeSpeed = speed;
         firstCollision = true;
+        firstTriggerCollision = true;
     }
 
     public string GetTargetHit
