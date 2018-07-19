@@ -11,7 +11,7 @@ public class PaddleController : MonoBehaviour
     public float offset; //used to offset childPaddle1 in ClampedPos() so that the sprite does not appear in the wall
     BoxCollider2D paddleCollider;
     Rigidbody2D paddleRigidBody; // for continuous collisions
-    Vector2 touch1Pos, touch2Pos;
+    Vector3 touch1Pos, touch2Pos;
     float paddleLength;
     float angle;
     public GameObject particlePrefab;
@@ -24,6 +24,13 @@ public class PaddleController : MonoBehaviour
     Vector3[] pauseButtonCorners = new Vector3[4]; //used so that a paddle wont appear if the pause button is tapped
     public RectTransform pauseButtonRect;
     public static PaddleController Instance;
+    public float maxPaddleLength; //subtracts length from the paddle;
+    LayerMask background = 0;
+    float rayDistance;
+    Ray2D ray;
+    Vector3 touchPos;
+    Vector3 newTouchPos;
+    EnemyBehavior ball;
 
     private void Awake()
     {
@@ -50,6 +57,11 @@ public class PaddleController : MonoBehaviour
         particles.transform.parent = transform;
     }
 
+    private void Start()
+    {
+        ball = EnemyBehavior.Instance;
+    }
+
     public float GetDistanceDifferenceForWalls()// used to set initial wall position in levelgenerator class
     {
         return 2.69159f - Vector3.Distance(new Vector3(0, 0, 0), new Vector3(corners[0].x, 0, 0));
@@ -68,13 +80,13 @@ public class PaddleController : MonoBehaviour
         paddleCollider.gameObject.SetActive(false);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         //When using multi touch make sure to use fingerID's to track fingers seperately
         foreach (Touch t in Input.touches)
         {
-            Vector3 touchPos = Camera.main.ScreenToWorldPoint(t.position);
-            Vector3 newTouchPos = ClampedPos(touchPos);
+            touchPos = Camera.main.ScreenToWorldPoint(t.position);
+            newTouchPos = ClampedPos(touchPos);
 
             if (t.fingerId == 0)
             {
@@ -82,7 +94,9 @@ public class PaddleController : MonoBehaviour
             }
             if (t.fingerId == 1)
             {
-                touch2Pos = newTouchPos;
+                rayDistance = Mathf.Clamp(Vector3.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength);
+                ray = new Ray2D(touch1Pos, newTouchPos - touch1Pos);
+                touch2Pos = ray.GetPoint(rayDistance);
             }
 
             // this if block is used so that a paddle wont appear if the pause button is tapped
@@ -107,7 +121,7 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            childPaddle2.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
+                            childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                             childPaddle2.SetActive(true);
                         }
                     }
@@ -119,21 +133,24 @@ public class PaddleController : MonoBehaviour
                     }
                     break;
                 case TouchPhase.Moved:
-                    if (t.fingerId == 0)
+                    if (!ball.IsTimeFrozen)
                     {
-                        childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
-                        childPaddle1.SetActive(true);
-                    }
+                        if (t.fingerId == 0)
+                        {
+                            childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
+                            childPaddle1.SetActive(true);
+                        }
 
-                    if (t.fingerId == 1)
-                    {
-                        childPaddle2.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
-                        childPaddle2.SetActive(true);
-                        MakePaddle();
-                    }
-                    if(Input.touchCount > 1)
-                    {
-                        MakePaddle();
+                        if (t.fingerId == 1)
+                        {
+                            childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
+                            childPaddle2.SetActive(true);
+                            MakePaddle();
+                        }
+                        if (Input.touchCount > 1)
+                        {
+                            MakePaddle();
+                        }
                     }
                     break;
                 case TouchPhase.Ended:
@@ -168,7 +185,7 @@ public class PaddleController : MonoBehaviour
         }
     }
 
-    public Vector2 ClampedPos(Vector2 touchPosition)
+    public Vector2 ClampedPos(Vector2 touchPosition) // for first touch
     {
         float clampedX = Mathf.Clamp(touchPosition.x, corners[0].x + offset, corners[2].x - offset);
         float clampedY = Mathf.Clamp(touchPosition.y, corners[0].y + offset, corners[2].y - offset);
