@@ -9,7 +9,7 @@ public class EnemyBehavior : MonoBehaviour {
     float codeSpeed;
     public float deflectionSpeed;
     Ray2D ray;
-    Vector3 vector; // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
+    Vector3 rayOffsetVector = new Vector3 (0,0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     TargetController target;
     bool shouldAbsorb;
     public float absorbSpeed;
@@ -23,7 +23,10 @@ public class EnemyBehavior : MonoBehaviour {
     GameManager game;
     bool atCenter;
     bool invulnerable;
-    ParticleSystem particleSystem;
+    ParticleSystem CollisionEffect;
+    ParticleSystem FallEffect;
+    ParticleSystem FirstImpact;
+    ParticleSystem.MainModule FallEffectMainMod;
     string targetHit; //Name of the target that was hit;
     bool ShouldSpawn;
     bool ShouldShrink;
@@ -35,6 +38,10 @@ public class EnemyBehavior : MonoBehaviour {
     bool firstCollision; //first collision with paddle
     bool firstTriggerCollision; //for first collision with a target
     LevelGenerator LG;
+    SpriteRenderer ballSprite;
+    Color originalColor;
+    bool isTimeFrozen;
+    public float rotationSpeed;
 
     public static EnemyBehavior Instance;
 
@@ -55,10 +62,15 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
-        particleSystem = GetComponentInChildren<ParticleSystem>();
+        CollisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
+        FallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
+        FallEffectMainMod = FallEffect.main;
+        FirstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
         Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
         ShouldSpawn = false;
+        ballSprite = transform.Find("BallSprite").GetComponent<SpriteRenderer>();
+        originalColor = ballSprite.color;
 
         Physics2D.IgnoreLayerCollision(8, 10);
         Physics2D.IgnoreLayerCollision(8, 12);
@@ -102,14 +114,6 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void Update()
     {
-        
-        ray = new Ray2D(transform.position + vector, -transform.up);
-
-        if (canAbsorb)
-        {
-            Physics2D.IgnoreLayerCollision(10, 11,false);
-        }
-
         if(this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
         {
             this.transform.position = Vector2.right * 1000;
@@ -119,6 +123,8 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
+
         if (atCenter)
         {
             this.transform.position = target.GetCurrentTargetPos;
@@ -138,15 +144,16 @@ public class EnemyBehavior : MonoBehaviour {
         if (collision.gameObject.tag == "Paddle")
         {
             canAbsorb = true;
+            Physics2D.IgnoreLayerCollision(10, 11, false);
             StartCoroutine("CollisionDelay");
         }
 
         if (firstCollision)
         {
-            //if (!atCenter && !shouldAbsord)
-            //{
-            //    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
-            //}
+            if (!atCenter && !shouldAbsorb)
+            {
+                StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+            }
             StartCoroutine(FirstCollision());
             firstCollision = false;
         }
@@ -154,11 +161,6 @@ public class EnemyBehavior : MonoBehaviour {
         if (collision.gameObject.tag == "Wall")
         {
             wallHit = true;
-        }
-
-        if (!atCenter && !shouldAbsorb)
-        {
-            particleSystem.Play();
         }
 
         ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
@@ -169,28 +171,50 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = deflectionSpeed;
         rigidbody.velocity = -transform.up.normalized * codeSpeed;
 
+        if (!atCenter && !shouldAbsorb)
+        {
+            CollisionEffect.Play();
+        }
+
     }
 
     IEnumerator FirstCollision()
     {
         LG.InvertColors();
+        ballSprite.color = Color.white;
+        FallEffectMainMod.startColor = Color.white;
+        FallEffect.Stop();
+        FallEffect.Play();
         Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(0.15f);
+        isTimeFrozen = true;
+        yield return new WaitForSecondsRealtime(0.2f);
         Time.timeScale = 1;
+        animator.SetTrigger("Boost");
+        isTimeFrozen = false;
+        FirstImpact.Play();
         LG.InvertColors();
-        if (!atCenter && !shouldAbsorb)
-        {
-            StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
-        }
+        //if (!atCenter && !shouldAbsorb)
+        //{
+        //    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+        //}
     }
 
     //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
     //good practice for faulty 2D collision detection with fast moving objects
     IEnumerator CollisionDelay()
     {
-        Physics2D.IgnoreLayerCollision(11, 12);
-        yield return new WaitForSeconds(0.08f);
-        Physics2D.IgnoreLayerCollision(11, 12, false);
+        if (firstCollision)
+        {
+            Physics2D.IgnoreLayerCollision(11, 12);
+            yield return new WaitForSeconds(0.21f);
+            Physics2D.IgnoreLayerCollision(11, 12, false);
+        }
+        else
+        {
+            Physics2D.IgnoreLayerCollision(11, 12);
+            yield return new WaitForSeconds(0.08f);
+            Physics2D.IgnoreLayerCollision(11, 12, false);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -202,11 +226,11 @@ public class EnemyBehavior : MonoBehaviour {
             {
                 if (collision.gameObject.layer == 8)
                 {
+                    Physics2D.IgnoreLayerCollision(10,11);
                     ShouldSpawn = false;
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
                     shouldAbsorb = true;
-                    Debug.Log("yeup");
                     targetTransform = collision.transform;
                     ShouldShrink = true;
                     firstTriggerCollision = false;
@@ -221,8 +245,16 @@ public class EnemyBehavior : MonoBehaviour {
                 rigidbody.velocity = Vector2.zero;
                 this.transform.position = Vector2.right * 1000;
                 PlayerMissed();
+
+                StopCoroutine("GameErrorTest");
             }
         }
+    }
+
+    IEnumerator AbsorbDelay()
+    {
+        yield return new WaitForSeconds(0.15f);
+        shouldAbsorb = true;
     }
 
     void Absorb()
@@ -277,10 +309,12 @@ public class EnemyBehavior : MonoBehaviour {
         ShouldShrink = false;
         firstCollision = true;
         firstTriggerCollision = true;
+        StartCoroutine("GameErrorTest");
     }
 
     void GameOverConfirmed()
     {
+        ballSprite.color = originalColor;
         this.transform.position = Vector2.right * 1000;
         this.rigidbody.velocity = Vector2.zero;
         codeSpeed = speed;
@@ -290,6 +324,7 @@ public class EnemyBehavior : MonoBehaviour {
 
     void TransitionDone()
     {
+        ballSprite.color = originalColor;
         ShouldSpawn = true;
         ShouldShrink = false;
         spawnerAnimator.SetTrigger("GameStarted");
@@ -306,10 +341,13 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
+        StopCoroutine("GameErrorTest");
+        StartCoroutine("GameErrorTest");
     }
 
     void Revive()
     {
+        ballSprite.color = originalColor;
         animator.SetTrigger("ImmediateSpawn");
         spawnerAnimator.SetTrigger("GameStarted");
         ShouldSpawn = true;
@@ -327,6 +365,7 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
+        StartCoroutine("GameErrorTest");
     }
 
     public string GetTargetHit
@@ -359,5 +398,19 @@ public class EnemyBehavior : MonoBehaviour {
         }
 
         mainCam.transform.position = originalCamPos;
+    }
+
+    public bool IsTimeFrozen
+    {
+        get
+        {
+            return isTimeFrozen;
+        }
+    }
+
+    IEnumerator GameErrorTest()
+    {
+        yield return new WaitForSecondsRealtime(40);
+        Debug.LogError("Game Glitch");
     }
 }
