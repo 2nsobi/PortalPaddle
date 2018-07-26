@@ -43,13 +43,20 @@ public class TargetController : MonoBehaviour
         public bool inUse;
         public Transform transform;
         public Animator animator;
+        public Color color;
 
-        public Target(Transform t, Animator anim)
+        public Target(Transform t, Animator anim, Color col)
         {
             transform = t;
             animator = anim;
             this.inUse = true;
             animator.SetBool("InUse",this.inUse);
+
+            Transform portal = transform.Find("PortalSprite");
+            for (int i = 0; i< portal.childCount; i++)
+            {
+                portal.GetChild(i).GetComponent<SpriteRenderer>().color = col;
+            }
         }
 
         public void StopUsing()
@@ -88,7 +95,7 @@ public class TargetController : MonoBehaviour
             GameObject go = Instantiate(TargetPrefab, Vector2.right * -1000, Quaternion.identity);
             go.name = "Target" + i;
             Animator anim = go.GetComponent<Animator>();
-            targets[i] = new Target(go.transform, anim);
+            targets[i] = new Target(go.transform, anim, Color.white);//new Color(137,0,188));
         }
         targets[0].StopUsing();
         targets[1].Use();
