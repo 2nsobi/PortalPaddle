@@ -47,6 +47,18 @@ TagManager:
   - name: Game
     uniqueID: 1329292869
     locked: 0
+  - name: TargetPortal
+    uniqueID: 3161471487
+    locked: 0
+  - name: Walls
+    uniqueID: 2731290247
+    locked: 0
+  - name: SpawnPortal
+    uniqueID: 2267258423
+    locked: 0
   - name: UI
     uniqueID: 1693609387
+    locked: 0
+  - name: Ball
+    uniqueID: 3106541649
     locked: 0

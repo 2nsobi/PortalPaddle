@@ -16,6 +16,7 @@ public class LevelGenerator : MonoBehaviour
     [System.Serializable]
     public class MultiPool
     {
+        public string tag;
         public GameObject prefab1;
         public GameObject prefab2;
         public GameObject prefab3;
@@ -159,7 +160,7 @@ public class LevelGenerator : MonoBehaviour
                 objectPool.Enqueue(obj3);
             }
 
-            LvlComponentDict.Add(pool.prefab1.name, objectPool);
+            LvlComponentDict.Add(pool.tag, objectPool);
         }
 
         AllObstacles = new List<Obstacle>();
@@ -391,7 +392,7 @@ public class LevelGenerator : MonoBehaviour
         */
         if (game.GetScore >= 1)
         {
-            NextLvl = SpawnFromPool("Level5", transform.position + levelOffset, transform.rotation);
+            NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
             NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 10) + "_Lvl2", transform.position + levelOffset, transform.rotation);
             NextObstacle.gameObject.transform.parent = NextLvl.transform;
         }
