@@ -238,6 +238,7 @@ public class GameManager : MonoBehaviour {
 
     public void GoToSettings()
     {
+        Debug.Log("asdasdad");
         SetPageState(pageState.SettingsPage);
         GoToSettingsPage();
     }

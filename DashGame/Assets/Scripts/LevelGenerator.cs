@@ -119,7 +119,7 @@ public class LevelGenerator : MonoBehaviour
         currentlyTransitioning = false;
 
         StartLevel = Instantiate(StartLvl, transform);
-        material = StartLevel.GetComponent<Renderer>().sharedMaterial;
+        material = StartLevel.GetComponentInChildren<Renderer>().sharedMaterial;
         Transform wallW = StartLevel.transform.GetChild(0);
         Transform wallE = StartLevel.transform.GetChild(1);
         wallW.localPosition = new Vector3(wallW.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW.localPosition.y, 0);
