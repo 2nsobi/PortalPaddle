@@ -17,10 +17,9 @@ public class LevelGenerator : MonoBehaviour
     public class MultiPool
     {
         public string tag;
-        public GameObject prefab1;
-        public GameObject prefab2;
-        public GameObject prefab3;
-        public int size;
+        public List<GameObject> prefabs;
+        public int sizePerPrefab;
+        public GameObject filter; //artwork filter for level
     }
 
     [System.Serializable]
@@ -30,14 +29,78 @@ public class LevelGenerator : MonoBehaviour
         public int size;
     }
 
-    Dictionary<string, Queue<GameObject>> LvlComponentDict; //for background use mainly
+    public class Obstacle
+    {
+        public GameObject gameObject;
+        public Transform transform;
+        public Vector3[] path;
+        public string obstacleTexture;
+        SpriteRenderer[] obstacleSprites;
+
+        public Obstacle(GameObject go, string obstacleTexture)
+        {
+            this.transform = go.transform;
+            this.gameObject = go;
+            this.obstacleTexture = obstacleTexture;
+            Transform t = go.transform.Find("TargetTravelPath");
+            this.path = new Vector3[t.childCount];
+            for (int i = 0; i < t.childCount; i++)
+            {
+                this.path[i] = t.GetChild(i).localPosition;
+            }
+
+            obstacleSprites = go.GetComponentsInChildren<SpriteRenderer>();
+            foreach(SpriteRenderer sr in obstacleSprites)
+            {
+                for (int i = 0; i < obstacletextures.Count; i++)
+                {
+                    if (sr.name == obstacletextures[i].shapes[i].tag && obstacleTexture == obstacletextures[i].tag)
+                    {
+                        sr.sprite = obstacletextures[i].shapes[i].shape;
+                    }
+                }
+            }
+        }
+
+        public void SetObstacleTextures(string obstacleTexture)
+        {
+            foreach (SpriteRenderer sr in obstacleSprites)
+            {
+                for (int i = 0; i < obstacletextures.Count; i++)
+                {
+                    if (sr.name == obstacletextures[i].shapes[i].tag && obstacleTexture == obstacletextures[i].tag)
+                    {
+                        sr.sprite = obstacletextures[i].shapes[i].shape;
+                    }
+                }
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class ObstacleTexture
+    {
+        [System.Serializable]
+        public class Shape
+        {
+            public string tag;
+            public Sprite shape;
+        }
+        public string tag;
+        public Shape[] shapes;
+    }
+
+    public Vector2 TargetAspectRatio;
+    public float transitionSpeed;
+    Dictionary<string, List<Queue<GameObject>>> LvlComponentDict; //for background use mainly
     Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
+    public List<ObstacleTexture> obstacleTextures;
+    public static List<ObstacleTexture> obstacletextures;
     public List<MultiPool> levels;
     public List<SinglePool> obstacles;
     public GameObject StartLvl;
     GameObject StartLevel; //for code use
     GameManager game;
-    public float transitionSpeed;
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
     GameObject NextLvl;
     GameObject CurrentLvl;
@@ -51,11 +114,12 @@ public class LevelGenerator : MonoBehaviour
     bool obstacleDespawned;
     int obstacleSpawnCounter;
     int levelSpawnCounter;
-    public Vector2 TargetAspectRatio;
     float targetAspectRatio;
     PaddleController paddle;
     bool switchColors;
     Material material;
+    static System.Random rng = new System.Random();
+    Queue<GameObject> tempQ;
 
     List<Obstacle> AllObstacles;
 
@@ -85,27 +149,10 @@ public class LevelGenerator : MonoBehaviour
         GameManager.ComeBackFromSettingsPage -= ComeBackFromSettingsPage;
     }
 
-    public class Obstacle
-    {
-        public GameObject gameObject;
-        public Transform transform;
-        public Vector3[] path;
-
-        public Obstacle(GameObject go)
-        {
-            this.transform = go.transform;
-            this.gameObject = go;
-            Transform t = go.transform.Find("TargetTravelPath");
-            this.path = new Vector3[t.childCount];
-            for (int i = 0; i < t.childCount; i++)
-            {
-                this.path[i] = t.GetChild(i).localPosition;
-            }
-        }
-    }
-
     private void Start()
     {
+        obstacletextures = obstacleTextures;
+
         switchColors = true;
         targetAspectRatio = TargetAspectRatio.x / TargetAspectRatio.y;
 
@@ -126,41 +173,29 @@ public class LevelGenerator : MonoBehaviour
         wallE.localPosition = new Vector3(wallE.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE.localPosition.y, 0);
         CurrentLvl = StartLevel;
 
-        LvlComponentDict = new Dictionary<string, Queue<GameObject>>();
+        LvlComponentDict = new Dictionary<string, List<Queue<GameObject>>>();
         ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
 
-        foreach (MultiPool pool in levels)
+        foreach (MultiPool level in levels)
         {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-
-            for (int i = 0; i < pool.size; i++)
+            List<Queue<GameObject>> lvlPrefabs = new List<Queue<GameObject>>();
+            foreach (GameObject prefab in level.prefabs)
             {
-                GameObject obj1 = Instantiate(pool.prefab1);
-                Transform wallW0 = obj1.transform.GetChild(0);
-                Transform wallE0 = obj1.transform.GetChild(1);
-                wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
-                wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
-                obj1.SetActive(false);
-                objectPool.Enqueue(obj1);
+                Queue<GameObject> objectPool = new Queue<GameObject>(); //objectPool is a queue of duplications of the same prefab
 
-                GameObject obj2 = Instantiate(pool.prefab2);
-                Transform wallW1 = obj2.transform.GetChild(0);
-                Transform wallE1 = obj2.transform.GetChild(1);
-                wallW1.localPosition = new Vector3(wallW1.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW1.localPosition.y, 0);
-                wallE1.localPosition = new Vector3(wallE1.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE1.localPosition.y, 0);
-                obj2.SetActive(false);
-                objectPool.Enqueue(obj2);
-
-                GameObject obj3 = Instantiate(pool.prefab3);
-                Transform wallW2 = obj3.transform.GetChild(0);
-                Transform wallE2 = obj3.transform.GetChild(1);
-                wallW2.localPosition = new Vector3(wallW2.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW2.localPosition.y, 0);
-                wallE2.localPosition = new Vector3(wallE2.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE2.localPosition.y, 0);
-                obj3.SetActive(false);
-                objectPool.Enqueue(obj3);
+                for (int i = 0; i < level.sizePerPrefab; i++)
+                {
+                    GameObject obj1 = Instantiate(prefab);
+                    Transform wallW0 = obj1.transform.GetChild(0);
+                    Transform wallE0 = obj1.transform.GetChild(1);
+                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
+                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
+                    obj1.SetActive(false);
+                    objectPool.Enqueue(obj1);
+                }
+                lvlPrefabs.Add(objectPool);
             }
-
-            LvlComponentDict.Add(pool.tag, objectPool);
+            LvlComponentDict.Add(level.tag, lvlPrefabs);
         }
 
         AllObstacles = new List<Obstacle>();
@@ -184,6 +219,22 @@ public class LevelGenerator : MonoBehaviour
 
     }
 
+    public void ShufflePrefabsInLevels()
+    {
+        foreach (List<Queue<GameObject>> level in LvlComponentDict.Values)
+        {
+            int n = level.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                Queue<GameObject> tempQ = level[k];
+                level[k] = level[n];
+                level[n] = tempQ;
+            }
+        }
+    }
+
     void GameOverConfirmed()
     {
         obstacleSpawnCounter = 0;
@@ -193,22 +244,32 @@ public class LevelGenerator : MonoBehaviour
         if (playedOnce)
         {
             #region Disactivates All Level Prefabs
-            foreach (GameObject obj in LvlComponentDict["Level2"])
+            foreach (List<Queue<GameObject>> level in LvlComponentDict.Values)
             {
-                obj.SetActive(false);
+                foreach(Queue<GameObject> prefabs in level)
+                {
+                    foreach(GameObject obj in prefabs)
+                    {
+                        obj.SetActive(false);
+                    }
+                }
             }
-            foreach (GameObject obj in LvlComponentDict["Level3"])
-            {
-                obj.SetActive(false);
-            }
-            foreach (GameObject obj in LvlComponentDict["Level4"])
-            {
-                obj.SetActive(false);
-            }
-            foreach (GameObject obj in LvlComponentDict["Level5"])
-            {
-                obj.SetActive(false);
-            }
+            //foreach (GameObject obj in LvlComponentDict["Level2"])
+            //{
+            //    obj.SetActive(false);
+            //}
+            //foreach (GameObject obj in LvlComponentDict["Level3"])
+            //{
+            //    obj.SetActive(false);
+            //}
+            //foreach (GameObject obj in LvlComponentDict["Level4"])
+            //{
+            //    obj.SetActive(false);
+            //}
+            //foreach (GameObject obj in LvlComponentDict["Level5"])
+            //{
+            //    obj.SetActive(false);
+            //}
             #endregion
 
             #region Disactivates All Obstacle Prefabs
@@ -271,13 +332,17 @@ public class LevelGenerator : MonoBehaviour
     {
         levelSpawnCounter++;
 
-        GameObject objectToSpawn = LvlComponentDict[tag].Dequeue();
+        GameObject objectToSpawn = LvlComponentDict[tag][0].Dequeue();
 
         objectToSpawn.SetActive(true);
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
 
-        LvlComponentDict[tag].Enqueue(objectToSpawn);
+        LvlComponentDict[tag][0].Enqueue(objectToSpawn);
+
+        tempQ = LvlComponentDict[tag][0];
+        LvlComponentDict[tag][0] = LvlComponentDict[tag][LvlComponentDict[tag].Count - 1];
+        LvlComponentDict[tag][LvlComponentDict[tag].Count - 1] = tempQ;
 
         return objectToSpawn;
     }
@@ -368,6 +433,7 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
+        ShufflePrefabsInLevels();
         GenerateNextLvl();
         playedOnce = true;
     }
