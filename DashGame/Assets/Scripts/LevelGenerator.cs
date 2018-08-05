@@ -17,9 +17,12 @@ public class LevelGenerator : MonoBehaviour
     public class MultiPool
     {
         public string tag;
+        public string obstacleTexture;
         public List<GameObject> prefabs;
+        public GameObject[] specialLvlPrefabs;
         public int sizePerPrefab;
-        public GameObject filter; //artwork filter for level
+        public GameObject gradient; //for artwork gradients and tings for lvl
+        public GameObject transitionLvl;
     }
 
     [System.Serializable]
@@ -27,6 +30,7 @@ public class LevelGenerator : MonoBehaviour
     {
         public GameObject prefab;
         public int size;
+        public bool easy; //is the obstacle easy or not
     }
 
     public class Obstacle
@@ -37,40 +41,40 @@ public class LevelGenerator : MonoBehaviour
         public string obstacleTexture;
         SpriteRenderer[] obstacleSprites;
 
-        public Obstacle(GameObject go, string obstacleTexture)
+        public Obstacle(GameObject go)
         {
             this.transform = go.transform;
             this.gameObject = go;
-            this.obstacleTexture = obstacleTexture;
             Transform t = go.transform.Find("TargetTravelPath");
-            this.path = new Vector3[t.childCount];
-            for (int i = 0; i < t.childCount; i++)
+            if (t != null)
             {
-                this.path[i] = t.GetChild(i).localPosition;
+                this.path = new Vector3[t.childCount];
+                for (int i = 0; i < t.childCount; i++)
+                {
+                    this.path[i] = t.GetChild(i).localPosition;
+                }
             }
 
             obstacleSprites = go.GetComponentsInChildren<SpriteRenderer>();
-            foreach(SpriteRenderer sr in obstacleSprites)
-            {
-                for (int i = 0; i < obstacletextures.Count; i++)
-                {
-                    if (sr.name == obstacletextures[i].shapes[i].tag && obstacleTexture == obstacletextures[i].tag)
-                    {
-                        sr.sprite = obstacletextures[i].shapes[i].shape;
-                    }
-                }
-            }
         }
 
         public void SetObstacleTextures(string obstacleTexture)
         {
+            this.obstacleTexture = obstacleTexture;
             foreach (SpriteRenderer sr in obstacleSprites)
             {
                 for (int i = 0; i < obstacletextures.Count; i++)
                 {
-                    if (sr.name == obstacletextures[i].shapes[i].tag && obstacleTexture == obstacletextures[i].tag)
+                    if (obstacleTexture.Equals(obstacletextures[i].tag))
                     {
-                        sr.sprite = obstacletextures[i].shapes[i].shape;
+                        for (int j = 0; j < obstacletextures[i].shapes.Length; j++)
+                        {
+                            if (sr.name.Equals(obstacletextures[i].shapes[j].tag))
+                            {
+                                sr.sprite = obstacletextures[i].shapes[j].shape;
+                            }
+                        }
+                        break;
                     }
                 }
             }
@@ -92,8 +96,10 @@ public class LevelGenerator : MonoBehaviour
 
     public Vector2 TargetAspectRatio;
     public float transitionSpeed;
+    public float nextLvlThreshold; //number used to determine when the next lvl becomes teh current lvl
     Dictionary<string, List<Queue<GameObject>>> LvlComponentDict; //for background use mainly
     Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
+    Dictionary<string, Queue<GameObject>> CustomLvlQsDict;
     public List<ObstacleTexture> obstacleTextures;
     public static List<ObstacleTexture> obstacletextures;
     public List<MultiPool> levels;
@@ -120,8 +126,20 @@ public class LevelGenerator : MonoBehaviour
     Material material;
     static System.Random rng = new System.Random();
     Queue<GameObject> tempQ;
-
-    List<Obstacle> AllObstacles;
+    GameObject[] transitionLvls;
+    GameObject[] specialLvls;
+    GameObject[] lvlGradients;
+    GameObject currentlySpawnedGradient;
+    GameObject previouslySpawnedGradient;
+    int gradientCounter; //how mand lvls have art gradients
+    int ezObstacleCount = 0;
+    Queue<GameObject> lvlSpawnQ = new Queue<GameObject>();
+    Queue<Obstacle> obstacleSpawnQ = new Queue<Obstacle>();
+    int specialLvlCount = 0;
+    GameObject activeLvl;
+    GameObject gradientDespawner;
+    Obstacle activeObstacle;
+    int currentLvlNumber;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -175,10 +193,16 @@ public class LevelGenerator : MonoBehaviour
 
         LvlComponentDict = new Dictionary<string, List<Queue<GameObject>>>();
         ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
+        CustomLvlQsDict = new Dictionary<string, Queue<GameObject>>();
 
+        transitionLvls = new GameObject[levels.Count];
+
+        int k = 0;
+        gradientCounter = 0;
         foreach (MultiPool level in levels)
         {
             List<Queue<GameObject>> lvlPrefabs = new List<Queue<GameObject>>();
+
             foreach (GameObject prefab in level.prefabs)
             {
                 Queue<GameObject> objectPool = new Queue<GameObject>(); //objectPool is a queue of duplications of the same prefab
@@ -196,27 +220,86 @@ public class LevelGenerator : MonoBehaviour
                 lvlPrefabs.Add(objectPool);
             }
             LvlComponentDict.Add(level.tag, lvlPrefabs);
-        }
 
-        AllObstacles = new List<Obstacle>();
+            transitionLvls[k] = Instantiate(level.transitionLvl);
+            Transform wallW1 = transitionLvls[k].transform.GetChild(0);
+            Transform wallE1 = transitionLvls[k].transform.GetChild(1);
+            wallW1.localPosition = new Vector3(wallW1.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW1.localPosition.y, 0);
+            wallE1.localPosition = new Vector3(wallE1.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE1.localPosition.y, 0);
+            transitionLvls[k].SetActive(false);
 
-        foreach (SinglePool pool in obstacles)
-        {
-            Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
-
-            for (int i = 0; i < pool.size; i++)
+            if(level.specialLvlPrefabs.Length > 0)
             {
-                Obstacle obstacle = new Obstacle(Instantiate(pool.prefab));
-
-                obstacle.gameObject.SetActive(false);
-                obstaclePool.Enqueue(obstacle);
-
-                AllObstacles.Add(obstacle);
+                specialLvlCount++;
             }
 
-            ObstacleDict.Add(pool.prefab.name, obstaclePool);
-        }
+            if (level.gradient != null)
+            {
+                gradientCounter++;
+            }
 
+            k++;
+        }
+        k = 0;
+
+        lvlGradients = new GameObject[gradientCounter];
+        foreach (MultiPool level in levels)
+        {
+            if (level.gradient != null)
+            {
+                lvlGradients[k] = level.gradient;
+            }
+        }
+        k = 0;
+
+        specialLvls = new GameObject[specialLvlCount];
+        foreach (MultiPool level in levels)
+        {
+            if (level.specialLvlPrefabs.Length > 0)
+            {
+                foreach(GameObject go in level.specialLvlPrefabs)
+                {
+                    GameObject obj1 = Instantiate(go);
+                    Transform wallW0 = obj1.transform.GetChild(0);
+                    Transform wallE0 = obj1.transform.GetChild(1);
+                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
+                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
+                    obj1.SetActive(false);
+                    specialLvls[k] = obj1;
+                    k++;
+                }
+            }
+        }
+        k = 0;
+
+        foreach (SinglePool obstacleType in obstacles)
+        {
+            Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
+            Queue<Obstacle> easyObstaclePool = new Queue<Obstacle>();
+
+            for (int i = 0; i < obstacleType.size; i++)
+            {
+                Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
+
+                ob.gameObject.SetActive(false);
+                obstaclePool.Enqueue(ob);
+            }
+
+            if (obstacleType.easy)
+            {
+                for (int i = 0; i < obstacleType.size; i++)
+                {
+                    Obstacle ob1 = new Obstacle(Instantiate(obstacleType.prefab));
+
+                    ob1.gameObject.SetActive(false);
+                    easyObstaclePool.Enqueue(ob1);
+                }
+                ezObstacleCount++;
+                ObstacleDict.Add("EasyObstacle" + ezObstacleCount, easyObstaclePool);
+            }
+
+            ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
+        }
     }
 
     public void ShufflePrefabsInLevels()
@@ -246,77 +329,29 @@ public class LevelGenerator : MonoBehaviour
             #region Disactivates All Level Prefabs
             foreach (List<Queue<GameObject>> level in LvlComponentDict.Values)
             {
-                foreach(Queue<GameObject> prefabs in level)
+                foreach (Queue<GameObject> prefabs in level)
                 {
-                    foreach(GameObject obj in prefabs)
+                    foreach (GameObject obj in prefabs)
                     {
                         obj.SetActive(false);
                     }
                 }
             }
-            //foreach (GameObject obj in LvlComponentDict["Level2"])
-            //{
-            //    obj.SetActive(false);
-            //}
-            //foreach (GameObject obj in LvlComponentDict["Level3"])
-            //{
-            //    obj.SetActive(false);
-            //}
-            //foreach (GameObject obj in LvlComponentDict["Level4"])
-            //{
-            //    obj.SetActive(false);
-            //}
-            //foreach (GameObject obj in LvlComponentDict["Level5"])
-            //{
-            //    obj.SetActive(false);
-            //}
+
+            foreach (GameObject transitionLvl in transitionLvls)
+            {
+                transitionLvl.SetActive(false);
+            }
             #endregion
 
             #region Disactivates All Obstacle Prefabs
-            foreach (Obstacle ob in ObstacleDict["Obstacle1_Lvl2"])
+            foreach (Queue<Obstacle> q in ObstacleDict.Values)
             {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle2_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle3_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle4_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle5_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle6_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle7_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle8_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
-            }
-            foreach (Obstacle ob in ObstacleDict["Obstacle9_Lvl2"])
-            {
-                ob.transform.parent = null;
-                ob.gameObject.SetActive(false);
+                foreach (Obstacle ob in q)
+                {
+                    ob.transform.parent = null;
+                    ob.gameObject.SetActive(false);
+                }
             }
             #endregion
 
@@ -328,15 +363,11 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public GameObject SpawnFromPool(string tag, Vector2 position, Quaternion rotation)
+    public GameObject SpawnFromPool(string tag)
     {
         levelSpawnCounter++;
 
         GameObject objectToSpawn = LvlComponentDict[tag][0].Dequeue();
-
-        objectToSpawn.SetActive(true);
-        objectToSpawn.transform.position = position;
-        objectToSpawn.transform.rotation = rotation;
 
         LvlComponentDict[tag][0].Enqueue(objectToSpawn);
 
@@ -347,23 +378,59 @@ public class LevelGenerator : MonoBehaviour
         return objectToSpawn;
     }
 
-    public Obstacle SpawnFromObstacles(string tag, Vector2 position, Quaternion rotation)
+    public GameObject SpawnFromPool(int transitionLvl)
     {
-        obstacleSpawnCounter++;
+        levelSpawnCounter++;
 
-        Obstacle obstacleToSpawn = ObstacleDict[tag].Dequeue();
+        GameObject objectToSpawn = transitionLvls[transitionLvl];
 
-        obstacleToSpawn.gameObject.SetActive(true);
-        obstacleToSpawn.gameObject.transform.position = position;
-        obstacleToSpawn.gameObject.transform.rotation = rotation;
+        return objectToSpawn;
+    }
 
-        ObstacleDict[tag].Enqueue(obstacleToSpawn);
+    public Obstacle SpawnFromObstacles(string tag, Vector2 position, Quaternion rotation, Transform parent, string texture, bool easy = false)
+    {
+        if (easy)
+        {
+            obstacleSpawnCounter++;
 
-        return obstacleToSpawn;
+            int num = rng.Next(1, ezObstacleCount + 1);
+            Obstacle obstacleToSpawn = ObstacleDict["EasyObstacle" + 1].Dequeue();
+
+            obstacleToSpawn.gameObject.transform.position = position;
+            obstacleToSpawn.gameObject.transform.rotation = rotation;
+            obstacleToSpawn.transform.parent = parent;
+            obstacleToSpawn.SetObstacleTextures(texture);
+
+            ObstacleDict["EasyObstacle" + 1].Enqueue(obstacleToSpawn);
+
+            return obstacleToSpawn;
+        }
+        else
+        {
+            obstacleSpawnCounter++;
+
+            Obstacle obstacleToSpawn = ObstacleDict[tag].Dequeue();
+
+            obstacleToSpawn.gameObject.transform.position = position;
+            obstacleToSpawn.gameObject.transform.rotation = rotation;
+            obstacleToSpawn.transform.parent = parent;
+            obstacleToSpawn.SetObstacleTextures(texture);
+
+            ObstacleDict[tag].Enqueue(obstacleToSpawn);
+
+            return obstacleToSpawn;
+        }
+
     }
 
     void AbsorbDone()
     {
+        StartCoroutine("transitionDelay");
+    }
+
+    IEnumerator transitionDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
         currentlyTransitioning = true;
     }
 
@@ -389,10 +456,12 @@ public class LevelGenerator : MonoBehaviour
     {
         if (currentlyTransitioning)
         {
-            CurrentLvl.transform.position = Vector2.MoveTowards(CurrentLvl.transform.position, this.transform.position - levelOffset, Time.deltaTime * transitionSpeed);
-            NextLvl.transform.position = Vector2.MoveTowards(NextLvl.transform.position, Vector3.zero, Time.deltaTime * transitionSpeed);
+            //CurrentLvl.transform.position = Vector2.Lerp(CurrentLvl.transform.position, this.transform.position - levelOffset,  transitionSpeed);
+            //NextLvl.transform.position = Vector2.Lerp(NextLvl.transform.position, Vector3.zero,  transitionSpeed);
+            CurrentLvl.transform.position = Vector2.Lerp(CurrentLvl.transform.position, this.transform.position - levelOffset, transitionSpeed * Time.deltaTime);
+            NextLvl.transform.position = Vector2.Lerp(NextLvl.transform.position, Vector3.zero, transitionSpeed * Time.deltaTime);
 
-            if (NextLvl.transform.position == Vector3.zero)
+            if (NextLvl.transform.position.y <= nextLvlThreshold)
             {
                 CurrentLvl = NextLvl;
                 TransitionDone();
@@ -414,6 +483,12 @@ public class LevelGenerator : MonoBehaviour
                     PreviousObstacle.transform.parent = null;
                     PreviousObstacle.gameObject.SetActive(false);
                 }
+
+                if (NextLvl.transform.position.y == 0)
+                {
+                    currentlySpawnedGradient.transform.parent = null;
+                }
+
             }
         }
 
@@ -438,30 +513,103 @@ public class LevelGenerator : MonoBehaviour
         playedOnce = true;
     }
 
+    void AddLvl2SpawnQ(string lvl)
+    {
+
+    }
+
     void GenerateNextLvl()
     {
-        if (game.GetScore >= 0 && game.GetScore < 1)
+        if (game.GetScore < 1)
         {
-            NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
+            activeLvl = SpawnFromPool("level1");
         }
-        /*
-        if (game.GetScore >= 2 && game.GetScore < 4)
+        else if (game.GetScore == 1)
         {
-            NextLvl = SpawnFromPool("Level3", transform.position + levelOffset, transform.rotation);
+            activeLvl = SpawnFromPool(0);
         }
-        if (game.GetScore >= 4 && game.GetScore < 6)
+        else if (game.GetScore >= 2 && game.GetScore < 3)
         {
-            NextLvl = SpawnFromPool("Level4", transform.position + levelOffset, transform.rotation);
-            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 1) + "_Lvl4", transform.position + levelOffset, transform.rotation);
-            NextObstacle.go.transform.parent = NextLvl.transform;
+            activeLvl = SpawnFromPool("level2");
+            currentlySpawnedGradient = Instantiate(lvlGradients[0],Vector3.zero,activeLvl.transform.rotation, NextLvl.transform);
+            currentlySpawnedGradient.transform.parent = activeLvl.transform;
         }
-        */
-        if (game.GetScore >= 1)
+        else if (game.GetScore == 3)
         {
-            NextLvl = SpawnFromPool("Level2", transform.position + levelOffset, transform.rotation);
-            NextObstacle = SpawnFromObstacles("Obstacle" + Random.Range(1, 10) + "_Lvl2", transform.position + levelOffset, transform.rotation);
-            NextObstacle.gameObject.transform.parent = NextLvl.transform;
+            gradientDespawner = SpawnFromPool(1);
+            activeLvl = gradientDespawner;
         }
+        else if (game.GetScore >= 4 && game.GetScore < 5)
+        {
+            activeLvl = SpawnFromPool("level3");
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[2].obstacleTexture);
+        }
+        else if(game.GetScore == 5)
+        {
+            activeLvl = specialLvls[0];
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[2].obstacleTexture);
+        }
+        else if (game.GetScore == 6)
+        {
+            activeLvl = SpawnFromPool(2);
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[3].obstacleTexture);
+        }
+        else if (game.GetScore >= 7 && game.GetScore < 8)
+        {
+            activeLvl = SpawnFromPool("level4");
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[3].obstacleTexture);
+        }
+        else if (game.GetScore == 8)
+        {
+            activeLvl = SpawnFromPool(3);
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[3].obstacleTexture,true);
+        }
+        else
+        {
+            activeLvl = SpawnFromPool("level3");
+            activeObstacle = SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.transform.position, activeLvl.transform.rotation, activeLvl.transform, levels[2].obstacleTexture);
+        }
+
+        lvlSpawnQ.Enqueue(activeLvl);
+
+        NextLvl = lvlSpawnQ.Dequeue();
+
+        if(NextLvl.tag == "level1")
+        {
+            currentLvlNumber = 1;
+        }
+        else if (NextLvl.tag == "level2")
+        {
+            currentLvlNumber = 2;
+        }
+        else if (NextLvl.tag == "level3")
+        {
+            currentLvlNumber = 3;
+        }
+        else
+        {
+            currentLvlNumber = 4;
+        }
+
+        if (NextLvl == gradientDespawner)
+        {
+            currentlySpawnedGradient.transform.parent = CurrentLvl.transform;
+        }
+
+        NextLvl.SetActive(true);
+        NextLvl.transform.position = transform.position + levelOffset;
+        NextLvl.transform.rotation = transform.rotation;
+
+        if (activeObstacle != null)
+        {
+            obstacleSpawnQ.Enqueue(activeObstacle);
+            if (activeObstacle.transform.IsChildOf(NextLvl.transform))
+            {
+                NextObstacle = obstacleSpawnQ.Dequeue();
+                NextObstacle.gameObject.SetActive(true);
+            }
+        }
+
         NextLvlGenerated();
     }
 
@@ -505,5 +653,13 @@ public class LevelGenerator : MonoBehaviour
     public void ComeBackFromSettingsPage()
     {
 
+    }
+
+    public int GetCurrentLvlNumber
+    {
+        get
+        {
+            return currentLvlNumber;
+        }
     }
 }

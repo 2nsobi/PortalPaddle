@@ -234,6 +234,8 @@ public class EnemyBehavior : MonoBehaviour {
                     targetTransform = collision.transform;
                     ShouldShrink = true;
                     firstTriggerCollision = false;
+
+                    Debug.Log("ball should definetely be absorbing right now since shouldAbsorb = true, and ontriggerenter2d has been called");
                 }
             }
         }
@@ -243,7 +245,7 @@ public class EnemyBehavior : MonoBehaviour {
             {
                 ShouldSpawn = false;
                 rigidbody.velocity = Vector2.zero;
-                this.transform.position = Vector2.right * 1000;
+                rigidbody.simulated = false;
                 PlayerMissed();
 
                 StopCoroutine("GameErrorTest");
@@ -281,13 +283,11 @@ public class EnemyBehavior : MonoBehaviour {
                 if (wallHit)
                 {
                     AbsorbDoneAndRichochet();
-                    Debug.Log("Richichet +2 points. also shouldAbsorb = " + shouldAbsorb);
                     return;
                 }
                 else
                 {
                     AbsorbDone();
-                    Debug.Log("Straight Hit +1 points. also shouldAbsorb = " + shouldAbsorb);
                     return;
                 }
             }
@@ -320,6 +320,7 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
 
         animator.SetTrigger("GameOver");
+        rigidbody.simulated = true;
     }
 
     void TransitionDone()
@@ -347,6 +348,7 @@ public class EnemyBehavior : MonoBehaviour {
 
     void Revive()
     {
+        rigidbody.simulated = true;
         ballSprite.color = originalColor;
         animator.SetTrigger("ImmediateSpawn");
         spawnerAnimator.SetTrigger("GameStarted");
