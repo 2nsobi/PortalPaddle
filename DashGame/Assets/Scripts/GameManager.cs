@@ -125,7 +125,8 @@ public class GameManager : MonoBehaviour {
 
     void TargetHitAndRichochet()
     {
-        score += 2;
+        //score += 2;
+        score++;
         scoreText.text = score.ToString();
         richochetCount++;
         if (richochetCount == 1)
