@@ -77,7 +77,10 @@ public class PaddleController : MonoBehaviour
 
     private void OnDisable()
     {
-        paddleCollider.gameObject.SetActive(false);
+        if (paddleCollider.gameObject != null)
+        {
+            paddleCollider.gameObject.SetActive(false);
+        }
     }
 
     private void Update()

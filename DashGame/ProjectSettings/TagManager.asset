@@ -11,6 +11,8 @@ TagManager:
   - level2
   - level3
   - level4
+  - obstacle
+  - gradient
   layers:
   - Default
   - TransparentFX

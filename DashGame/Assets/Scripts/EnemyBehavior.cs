@@ -34,7 +34,6 @@ public class EnemyBehavior : MonoBehaviour {
     readonly Vector3 originalCamPos = new Vector3(0, 0, -50);
     public float CameraShakeIntensity;
     public float CameraShakeDuration;
-    Material material;
     bool firstCollision; //first collision with paddle
     bool firstTriggerCollision; //for first collision with a target
     LevelGenerator LG;
@@ -42,6 +41,7 @@ public class EnemyBehavior : MonoBehaviour {
     Color originalColor;
     bool isTimeFrozen;
     public float rotationSpeed;
+    ParticleSystem ballSpawnerPS;
 
     public static EnemyBehavior Instance;
 
@@ -59,6 +59,8 @@ public class EnemyBehavior : MonoBehaviour {
         rigidbody = GetComponent<Rigidbody2D>();
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
+        ballSpawnerPS = ballSpawner.GetComponentInChildren<ParticleSystem>();
+        ballSpawnerPS.Play();
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
@@ -188,7 +190,7 @@ public class EnemyBehavior : MonoBehaviour {
         Time.timeScale = 0;
         isTimeFrozen = true;
         yield return new WaitForSecondsRealtime(0.2f);
-        Time.timeScale = 1;
+        Time.timeScale = game.TimeScale;
         animator.SetTrigger("Boost");
         isTimeFrozen = false;
         FirstImpact.Play();
@@ -247,8 +249,6 @@ public class EnemyBehavior : MonoBehaviour {
                 rigidbody.velocity = Vector2.zero;
                 rigidbody.simulated = false;
                 PlayerMissed();
-
-                StopCoroutine("GameErrorTest");
             }
         }
     }
@@ -309,7 +309,6 @@ public class EnemyBehavior : MonoBehaviour {
         ShouldShrink = false;
         firstCollision = true;
         firstTriggerCollision = true;
-        StartCoroutine("GameErrorTest");
     }
 
     void GameOverConfirmed()
@@ -342,8 +341,6 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
-        StopCoroutine("GameErrorTest");
-        StartCoroutine("GameErrorTest");
     }
 
     void Revive()
@@ -367,7 +364,6 @@ public class EnemyBehavior : MonoBehaviour {
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
-        StartCoroutine("GameErrorTest");
     }
 
     public string GetTargetHit
@@ -408,11 +404,5 @@ public class EnemyBehavior : MonoBehaviour {
         {
             return isTimeFrozen;
         }
-    }
-
-    IEnumerator GameErrorTest()
-    {
-        yield return new WaitForSecondsRealtime(40);
-        Debug.LogError("Game Glitch");
     }
 }
