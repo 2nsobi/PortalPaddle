@@ -50,7 +50,6 @@ public class TargetController : MonoBehaviour
         public Transform transform;
         public Animator animator;
         public Color color;
-        public ParticleSystem particleSystem;
         public Target(Transform t, Animator anim, Color col)
         {
             transform = t;
@@ -66,7 +65,6 @@ public class TargetController : MonoBehaviour
                     portal.GetChild(i).GetComponent<SpriteRenderer>().color = col;
                 }
             }
-            particleSystem = portal.GetComponentInChildren<ParticleSystem>();
         }
 
         public void StopUsing()
@@ -106,7 +104,6 @@ public class TargetController : MonoBehaviour
             go.name = "Target" + i;
             Animator anim = go.GetComponent<Animator>();
             targets[i] = new Target(go.transform, anim, Color.white);//new Color(137,0,188));
-            targets[i].particleSystem.Play();
         }
         targets[0].StopUsing();
         targets[1].Use();
