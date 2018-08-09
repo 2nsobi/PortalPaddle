@@ -41,7 +41,6 @@ public class EnemyBehavior : MonoBehaviour {
     Color originalColor;
     bool isTimeFrozen;
     public float rotationSpeed;
-    ParticleSystem ballSpawnerPS;
 
     public static EnemyBehavior Instance;
 
@@ -59,8 +58,6 @@ public class EnemyBehavior : MonoBehaviour {
         rigidbody = GetComponent<Rigidbody2D>();
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
-        ballSpawnerPS = ballSpawner.GetComponentInChildren<ParticleSystem>();
-        ballSpawnerPS.Play();
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
