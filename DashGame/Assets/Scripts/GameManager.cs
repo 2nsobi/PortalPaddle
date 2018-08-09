@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour {
     public Text scoreText;
     private int score;
     bool gameRunning;
+    float timeScale = 1;
+    bool paused;
 
     public static GameManager Instance;
 
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour {
     private void Awake()
     {
         Instance = this;
+        Time.timeScale = timeScale;
     }
 
     private void Start()
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour {
         Paddle.gameObject.SetActive(false);
         GoToStartPage();
         gameRunning = false;
+        paused = false;
     }
 
     private void OnEnable()
@@ -85,7 +89,7 @@ public class GameManager : MonoBehaviour {
             yield return new WaitForSecondsRealtime(1);
         }
         CountdownPage.SetActive(false);
-        Time.timeScale = 1;
+        Time.timeScale = timeScale;
     }
 
     void PlayerMissed()
@@ -99,6 +103,9 @@ public class GameManager : MonoBehaviour {
             extraBall = false;
             extraBallSprite.SetActive(false);
             StartCoroutine("ReviveDelay");
+
+            StopCoroutine("GameErrorTest");
+            StartCoroutine("GameErrorTest");
         }
     }
 
@@ -121,12 +128,14 @@ public class GameManager : MonoBehaviour {
         score++;
         scoreText.text = score.ToString();
         richochetCount = 0;
+
+        StopCoroutine("GameErrorTest");
+        StartCoroutine("GameErrorTest");
     }
 
     void TargetHitAndRichochet()
     {
-        //score += 2;
-        score++;
+        score += 2;
         scoreText.text = score.ToString();
         richochetCount++;
         if (richochetCount == 1)
@@ -135,6 +144,9 @@ public class GameManager : MonoBehaviour {
             richochetCount = 0;
             extraBallSprite.SetActive(true);
         }
+
+        StopCoroutine("GameErrorTest");
+        StartCoroutine("GameErrorTest");
     }
 
     void SetPageState(pageState page)
@@ -220,11 +232,13 @@ public class GameManager : MonoBehaviour {
         Paddle.gameObject.SetActive(true);
         extraBallSprite.SetActive(false);
         gameRunning = true;
+        StartCoroutine("GameErrorTest");
         GameStarted();
     }
 
     public void GameOver()
     {
+        StopCoroutine("GameErrorTest");
         gameRunning = false;
         Paddle.gameObject.SetActive(false);
         SetPageState(pageState.GameOver);
@@ -249,6 +263,7 @@ public class GameManager : MonoBehaviour {
         Time.timeScale = 0;
         StopCoroutine("Countdown"); // whenever trying to stop a coroutine make sure you start and stop it with its string name. This way all coroutines running with that name stop instead of the specific one that was started.
         Paddle.gameObject.SetActive(false);
+        paused = true;
     }
 
     public void GoToStartPage()
@@ -277,5 +292,24 @@ public class GameManager : MonoBehaviour {
         {
             return gameRunning;
         }
+    }
+
+    public float TimeScale
+    {
+        get
+        {
+            return timeScale;
+        }
+    }
+
+    IEnumerator GameErrorTest()
+    {
+        yield return new WaitForSecondsRealtime(10);
+        while (paused)
+        {
+            yield return null;
+        }
+        Debug.LogError("Game Glitch");
+
     }
 }

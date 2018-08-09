@@ -14,6 +14,7 @@ public class TargetController : MonoBehaviour
     GameManager game;
     float randomSize;
     Vector3 defaultTargetSize = new Vector3(0.23f, 0.23f, 1);
+    Vector3 troubleshootingSize = new Vector3(0.5f, 0.5f, 0);
     bool target1Travel;
     bool target2Travel;
     bool target1Hit, target2Hit;
@@ -31,6 +32,9 @@ public class TargetController : MonoBehaviour
     bool growShrink1,growShrink2;
     public float growShrinkSpeed;
     float smallestTargestSize = 0.03f; //smallest a target will get when it grows and shrinks
+    Vector3[] nextObstaclePath;
+    float targetRadius = 2.53f; //based on 2d circle collider radius
+    float targetSpawnOffset;
 
     public static TargetController Instance;
 
@@ -46,7 +50,7 @@ public class TargetController : MonoBehaviour
         public Transform transform;
         public Animator animator;
         public Color color;
-
+        public ParticleSystem particleSystem;
         public Target(Transform t, Animator anim, Color col)
         {
             transform = t;
@@ -57,8 +61,12 @@ public class TargetController : MonoBehaviour
             Transform portal = transform.Find("PortalSprite");
             for (int i = 0; i< portal.childCount; i++)
             {
-                portal.GetChild(i).GetComponent<SpriteRenderer>().color = col;
+                if (portal.GetChild(i).GetComponent<SpriteRenderer>() != null)
+                {
+                    portal.GetChild(i).GetComponent<SpriteRenderer>().color = col;
+                }
             }
+            particleSystem = portal.GetComponentInChildren<ParticleSystem>();
         }
 
         public void StopUsing()
@@ -98,11 +106,13 @@ public class TargetController : MonoBehaviour
             go.name = "Target" + i;
             Animator anim = go.GetComponent<Animator>();
             targets[i] = new Target(go.transform, anim, Color.white);//new Color(137,0,188));
+            targets[i].particleSystem.Play();
         }
         targets[0].StopUsing();
         targets[1].Use();
         currentTargetInUse = null;
         gameRunning = false;
+        targetSpawnOffset = targetRadius * defaultTargetSize.x;
     }
 
     private void Start()
@@ -118,7 +128,6 @@ public class TargetController : MonoBehaviour
         EnemyBehavior.AbsorbDone += AbsorbDone;
         GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
-        //GameManager.Revive += MoveToNextLvl;
         LevelGenerator.TransitionDone += TransitionDone;
     }
 
@@ -129,7 +138,6 @@ public class TargetController : MonoBehaviour
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
-        //GameManager.Revive -= MoveToNextLvl;
         LevelGenerator.TransitionDone -= TransitionDone;
     }
 
@@ -223,13 +231,13 @@ public class TargetController : MonoBehaviour
 
             if (aRandomNum > 4)
             {
-                tempPath1 = LG.GetNextObstaclePath;
+                tempPath1 = nextObstaclePath;
                 System.Array.Reverse(tempPath1);
                 travelPath1 = tempPath1;
             }
             else
             {
-                travelPath1 = LG.GetNextObstaclePath;
+                travelPath1 = nextObstaclePath;
             }
 
             int randPos = Random.Range(0, travelPath1.Length - 1);
@@ -244,13 +252,13 @@ public class TargetController : MonoBehaviour
 
             if (aRandomNum > 4)
             {
-                tempPath2 = LG.GetNextObstaclePath;
+                tempPath2 = nextObstaclePath;
                 System.Array.Reverse(tempPath2);
                 travelPath2 = tempPath2;
             }
             else
             {
-                travelPath2 = LG.GetNextObstaclePath;
+                travelPath2 = nextObstaclePath;
             }
             
             int randPos = Random.Range(0, travelPath2.Length - 1);
@@ -371,6 +379,7 @@ public class TargetController : MonoBehaviour
     void NextLvlGenerated()
     {
         nextLvl = LG.GetNextLvl;
+        nextObstaclePath = LG.GetNextObstaclePath;
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -379,31 +388,31 @@ public class TargetController : MonoBehaviour
                 targets[i].Use();
                 if (LG.GetCurrentLvlNumber == 1)
                 {
-                    targets[i].transform.parent = LG.GetNextLvl;
+                    targets[i].transform.parent = nextLvl;
                     targets[i].transform.localScale = defaultTargetSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
                 if (LG.GetCurrentLvlNumber == 2)
                 {
-                    targets[i].transform.parent = LG.GetNextLvl;
+                    targets[i].transform.parent = nextLvl;
                     SelectTargetToGrowShrink(targets[i]);
                     targets[i].transform.localPosition = RandomPos();
                 }
 
                 if(LG.GetCurrentLvlNumber == 3)
                 {
-                    targets[i].transform.parent = LG.GetNextLvl;
+                    targets[i].transform.parent = nextLvl;
                     targets[i].transform.localScale = defaultTargetSize;
-                    targets[i].transform.localPosition = LG.GetNextObstaclePath[Random. Range(0,LG.GetNextObstaclePath.Length-1)];
+                    targets[i].transform.localPosition = nextObstaclePath[Random. Range(0, nextObstaclePath.Length-1)];
                     SelectTargetToTravel(targets[i]);
                 }
                 
                 if (LG.GetCurrentLvlNumber >= 4)
                 {
-                    targets[i].transform.parent = LG.GetNextLvl;
+                    targets[i].transform.parent = nextLvl;
                     SelectTargetToGrowShrink(targets[i]);
-                    targets[i].transform.localPosition = LG.GetNextObstaclePath[Random.Range(0, LG.GetNextObstaclePath.Length - 1)];
+                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length - 1)];
                     SelectTargetToTravel(targets[i]);
                 }
             }
@@ -412,6 +421,9 @@ public class TargetController : MonoBehaviour
 
     void GameOverConfirmed()
     {
+        targets[0].transform.parent = null;
+        targets[1].transform.parent = null;
+
         targets[0].transform.position = Vector2.right * -1000;
         targets[1].transform.position = Vector2.right * -1000;
 
@@ -442,14 +454,14 @@ public class TargetController : MonoBehaviour
 
     public Vector2 RandomPos()
     {
-        return new Vector2(Random.Range(spawnAreaCorners[0].x + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (2.09f * TargetPrefab.transform.localScale.x)), Random.Range(spawnAreaCorners[0].y + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[2].y - (2.09f * TargetPrefab.transform.localScale.x)));
+        return new Vector2(Random.Range(spawnAreaCorners[0].x + (targetSpawnOffset), spawnAreaCorners[3].x - (targetSpawnOffset)), Random.Range(spawnAreaCorners[0].y + (targetSpawnOffset), spawnAreaCorners[2].y - (targetSpawnOffset)));
     }
 
     public int RandomSpawnAreaXRange
     {
         get
         {
-            return (int)Random.Range(spawnAreaCorners[0].x + (2.09f * TargetPrefab.transform.localScale.x), spawnAreaCorners[3].x - (2.09f * TargetPrefab.transform.localScale.x));
+            return (int)Random.Range(spawnAreaCorners[0].x + (0.66f), spawnAreaCorners[3].x - (0.66f)); //float comes from measuring radius of ballspawner
         }
     }
 
