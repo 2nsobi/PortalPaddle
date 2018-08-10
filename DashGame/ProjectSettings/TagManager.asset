@@ -13,6 +13,7 @@ TagManager:
   - level4
   - obstacle
   - gradient
+  - caves2Sky
   layers:
   - Default
   - TransparentFX

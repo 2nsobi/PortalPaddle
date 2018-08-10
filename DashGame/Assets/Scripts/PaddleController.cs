@@ -48,7 +48,7 @@ public class PaddleController : MonoBehaviour
         corners = new Vector3[4];
         tapAreaRect.GetWorldCorners(corners);
 
-        particles = Instantiate(particlePrefab, Vector2.right*900, paddleCollider.transform.rotation) as GameObject;
+        particles = Instantiate(particlePrefab, Vector2.right * 900, paddleCollider.transform.rotation) as GameObject;
         //particles.transform.parent = paddleCollider.transform;
         ps = particles.GetComponent<ParticleSystem>();
         particlesArray = new ParticleSystem.Particle[ps.main.maxParticles];
@@ -77,10 +77,7 @@ public class PaddleController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (paddleCollider.gameObject != null)
-        {
-            paddleCollider.gameObject.SetActive(false);
-        }
+        paddleCollider.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -128,7 +125,7 @@ public class PaddleController : MonoBehaviour
                             childPaddle2.SetActive(true);
                         }
                     }
-                    if(Input.touchCount > 1)
+                    if (Input.touchCount > 1)
                     {
                         MakePaddle();
                         particleAnimator.ResetTrigger("particlesDeactivated");
@@ -181,7 +178,7 @@ public class PaddleController : MonoBehaviour
             paddleCollider.gameObject.SetActive(false);
         }
 
-        if(Input.touchCount == 0)
+        if (Input.touchCount == 0)
         {
             childPaddle1.SetActive(false);
             childPaddle2.SetActive(false);

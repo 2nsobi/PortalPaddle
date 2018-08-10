@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 95325297387539032}
   m_Layer: 0
   m_Name: Caves2Sky
-  m_TagString: level1
+  m_TagString: caves2Sky
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
