@@ -167,6 +167,9 @@ public class LevelGenerator : MonoBehaviour
     static string activeLvlName;
     bool allPrefsInQHaveObstacle;//for spawnfrompool method
     bool dothis; //for spawnfrompool method
+    public GameObject filters;
+    Animator filtersAnimC;
+    bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -196,6 +199,11 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
+        disableFilters = true;
+        removeCaves2SkyFilter = true;
+        caves2SkyFilter = true;
+        cavesFilter = true;
+        filtersAnimC = filters.GetComponent<Animator>();
         obstacletextures = obstacleTextures;
 
         gradientSpawned = false;
@@ -544,6 +552,36 @@ public class LevelGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         currentlyTransitioning = true;
+
+        if (cavesFilter)
+        {
+            if (NextLvl.gameObject.tag == "level1")
+            {
+                filtersAnimC.SetTrigger("fade2Caves");
+                cavesFilter = false;
+            }
+        }
+        if (caves2SkyFilter)
+        {
+            if (NextLvl.gameObject.tag == "caves2Sky")
+            {
+                filtersAnimC.SetTrigger("fade2Caves2Sky");
+                caves2SkyFilter = false;
+            }
+        }
+        else
+        {
+            if (removeCaves2SkyFilter)
+            {
+                filtersAnimC.SetTrigger("remove");
+                removeCaves2SkyFilter = false;
+            }
+            if (disableFilters)
+            {
+                filtersAnimC.SetTrigger("disableFilters");
+                disableFilters = false;
+            }
+        }
     }
 
     public void InvertColors()
@@ -590,7 +628,7 @@ public class LevelGenerator : MonoBehaviour
                     }
                 }
 
-                if(obstaclesShouldDespawn)
+                if (obstaclesShouldDespawn)
                 {
                     PreviousObstacle = CurrentObstacle;
                     if (NextObstacle.transform.position.y <= 10.4)
@@ -633,7 +671,7 @@ public class LevelGenerator : MonoBehaviour
             }
             if (gradientSpawned)
             {
-                if (currentlySpawnedGradient.transform.position.y == 0 && NextLvl!=gradientDespawner)
+                if (currentlySpawnedGradient.transform.position.y == 0 && NextLvl != gradientDespawner)
                 {
                     currentlySpawnedGradient.transform.parent = null;
                     gradientSpawned = false;
@@ -656,7 +694,12 @@ public class LevelGenerator : MonoBehaviour
     {
         ShufflePrefabsInLevels();
         GenerateNextLvl();
+
         playedOnce = true;
+        disableFilters = true;
+        removeCaves2SkyFilter = true;
+        caves2SkyFilter = true;
+        cavesFilter = true;
     }
 
     void GenerateNextLvl()
@@ -758,7 +801,7 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[2].about2Spawn)
                 {
                     transitionLvl = SpawnFromPool(3);
-                    obstacleSpawnQ.Enqueue(SpawnFromObstacles("Obstacle" + rng.Next(1, 10), transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation,transitionLvl, levels[3].obstacleTexture, true));
+                    obstacleSpawnQ.Enqueue(SpawnFromObstacles("Obstacle" + rng.Next(1, 10), transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true));
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level3");
@@ -797,7 +840,7 @@ public class LevelGenerator : MonoBehaviour
         {
             currentLvlNumber = 3;
         }
-        else
+        else if (NextLvl.gameObject.tag == "level4")
         {
             currentLvlNumber = 4;
         }

@@ -14,7 +14,7 @@ public class TargetController : MonoBehaviour
     GameManager game;
     float randomSize;
     Vector3 defaultTargetSize = new Vector3(0.23f, 0.23f, 1);
-    Vector3 troubleshootingSize = new Vector3(0.5f, 0.5f, 0);
+    Vector3 troubleshootingSize = new Vector3(0.5f, 0.5f, 1);
     bool target1Travel;
     bool target2Travel;
     bool target1Hit, target2Hit;
@@ -150,7 +150,10 @@ public class TargetController : MonoBehaviour
         {
             if (gameRunning)
             {
-                targets[0].transform.localScale = new Vector3(((defaultTargetSize.x-smallestTargestSize)/2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x-smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)));
+                targets[0].transform.localScale = new Vector3(((defaultTargetSize.x-smallestTargestSize)/2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) 
+                    * ((defaultTargetSize.x-smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) 
+                    + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)), 
+                    0.575f + Mathf.Sin(Time.time * growShrinkSpeed) * ((1 - 0.15f)/2)); //float values in z scale make particle system particle look normal when they shrink
             }
         }
 
@@ -158,7 +161,10 @@ public class TargetController : MonoBehaviour
         {
             if (gameRunning)
             {
-                targets[1].transform.localScale = new Vector3(((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)));
+                targets[1].transform.localScale = new Vector3(((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed) 
+                    * ((defaultTargetSize.x - smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) 
+                    + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)), 
+                    0.575f + Mathf.Sin(Time.time * growShrinkSpeed) * ((1 - 0.15f) / 2)); //float values in z scale make particle system particle look normal when they shrink
             }
         }
 
@@ -268,24 +274,6 @@ public class TargetController : MonoBehaviour
     { 
         return path[iterator];
     }
-
-    //void MoveToNextLvl()
-    //{
-    //    for (int i = 0; i < targets.Length; i++)
-    //    {
-    //        if (targets[i].inUse)
-    //        {
-    //            if (ball.GetTargetHit == "Target0")
-    //            {
-    //                target1Hit = true;
-    //            }
-    //            if (ball.GetTargetHit == "Target1")
-    //            {
-    //                target2Hit = true;
-    //            }
-    //        }
-    //    }
-    //}
 
     void AbsorbDone()
     {
