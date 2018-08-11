@@ -1,15 +1,16 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class EnemyBehavior : MonoBehaviour {
+public class EnemyBehavior : MonoBehaviour
+{
     Rigidbody2D rigidbody;
     public Vector2 startPos;
     public float speed;
     float codeSpeed;
     public float deflectionSpeed;
     Ray2D ray;
-    Vector3 rayOffsetVector = new Vector3 (0,0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
+    Vector3 rayOffsetVector = new Vector3(0, 0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     TargetController target;
     bool shouldAbsorb;
     public float absorbSpeed;
@@ -39,8 +40,10 @@ public class EnemyBehavior : MonoBehaviour {
     LevelGenerator LG;
     SpriteRenderer ballSprite;
     Color originalColor;
-    bool isTimeFrozen;
+    bool isTimeFrozen = false;
     public float rotationSpeed;
+    public CanvasGroup whiteFlashCG;
+    bool flash = false;
 
     public static EnemyBehavior Instance;
 
@@ -113,9 +116,19 @@ public class EnemyBehavior : MonoBehaviour {
 
     private void Update()
     {
-        if(this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
+        if (this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
         {
             this.transform.position = Vector2.right * 1000;
+        }
+
+        if (flash)
+        {
+            whiteFlashCG.alpha -= Time.deltaTime * 3;
+            if (whiteFlashCG.alpha <= 0)
+            {
+                whiteFlashCG.alpha = 0;
+                flash = false;
+            }
         }
 
     }
@@ -153,7 +166,8 @@ public class EnemyBehavior : MonoBehaviour {
             {
                 StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
             }
-            StartCoroutine(FirstCollision());
+            //StartCoroutine(FirstCollisionCoroutine());
+            FirstCollision();
             firstCollision = false;
         }
 
@@ -177,7 +191,25 @@ public class EnemyBehavior : MonoBehaviour {
 
     }
 
-    IEnumerator FirstCollision()
+    void FirstCollision()
+    {
+        FlashWhite();
+
+        ballSprite.color = Color.white;
+        FallEffectMainMod.startColor = Color.white;
+        FallEffect.Stop();
+        FallEffect.Play();
+        animator.SetTrigger("Boost");
+        FirstImpact.Play();
+    }
+
+    void FlashWhite()
+    {
+        flash = true;
+        whiteFlashCG.alpha = 1;
+    }
+
+    IEnumerator FirstCollisionCoroutine()
     {
         LG.InvertColors();
         ballSprite.color = Color.white;
@@ -225,7 +257,7 @@ public class EnemyBehavior : MonoBehaviour {
             {
                 if (collision.gameObject.layer == 8)
                 {
-                    Physics2D.IgnoreLayerCollision(10,11);
+                    Physics2D.IgnoreLayerCollision(10, 11);
                     ShouldSpawn = false;
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
@@ -234,7 +266,8 @@ public class EnemyBehavior : MonoBehaviour {
                     ShouldShrink = true;
                     firstTriggerCollision = false;
 
-                    Debug.Log("ball should definetely be absorbing right now since shouldAbsorb = true, and ontriggerenter2d has been called");
+                    Debug.Log("ball should definetely be absorbing right now since\n shouldAbsorb = " + shouldAbsorb + ", and ontriggerenter2d has been called");
+                    Debug.Log("also the trigger the ball hit was " + collision.gameObject.name);
                 }
             }
         }
@@ -248,12 +281,6 @@ public class EnemyBehavior : MonoBehaviour {
                 PlayerMissed();
             }
         }
-    }
-
-    IEnumerator AbsorbDelay()
-    {
-        yield return new WaitForSeconds(0.15f);
-        shouldAbsorb = true;
     }
 
     void Absorb()
@@ -301,7 +328,7 @@ public class EnemyBehavior : MonoBehaviour {
         canAbsorb = false;
         StartCoroutine(SpawnDelay());
         wallHit = false;
-        Physics2D.IgnoreLayerCollision(10,11);
+        Physics2D.IgnoreLayerCollision(10, 11);
         ShouldSpawn = true;
         ShouldShrink = false;
         firstCollision = true;
@@ -384,7 +411,7 @@ public class EnemyBehavior : MonoBehaviour {
 
             float x = Random.value * 2.0f - 1.0f;
             float y = Random.value * 2.0f - 1.0f;
-            x *= Mathf.PerlinNoise(x,y) * intensity * damper;
+            x *= Mathf.PerlinNoise(x, y) * intensity * damper;
             y *= Mathf.PerlinNoise(x, y) * intensity * damper;
 
             mainCam.transform.localPosition = new Vector3(x, y, originalCamPos.z);
