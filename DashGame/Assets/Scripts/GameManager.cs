@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour {
     bool gameRunning;
     float timeScale = 1;
     bool paused;
+    public Text highScoreText;
+    public Text gameOverScore; //score when you loose for that run
+    public GameObject newHighScoreImage;
+    int highScore;
 
     public static GameManager Instance;
 
@@ -38,8 +42,9 @@ public class GameManager : MonoBehaviour {
     public GameObject CountdownPage;
     public GameObject SettingsPage;
     public GameObject GamePage;
+    public GameObject ScoreReview;
 
-    public enum pageState {Game, StartPage, GameOver,Paused,CountdownPage,SettingsPage};
+    public enum pageState {Game, StartPage, GameOver,Paused,CountdownPage,SettingsPage,ScoreReview};
     pageState currentPageState;
 
     public pageState GetCurrentPageState
@@ -161,7 +166,7 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
-
+                ScoreReview.SetActive(false);
                 break;
 
             case pageState.StartPage:
@@ -172,6 +177,7 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
+                ScoreReview.SetActive(false);
                 break;
 
             case pageState.GameOver:
@@ -182,6 +188,7 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
+                ScoreReview.SetActive(false);
                 break;
 
             case pageState.Paused:
@@ -192,6 +199,7 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(true);
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
+                ScoreReview.SetActive(false);
 
                 pauseButton.gameObject.SetActive(false);
 
@@ -205,6 +213,7 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(true);
                 SettingsPage.SetActive(false);
+                ScoreReview.SetActive(false);
 
                 pauseButton.gameObject.SetActive(true);
 
@@ -218,7 +227,20 @@ public class GameManager : MonoBehaviour {
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(true);
+                ScoreReview.SetActive(false);
                 break;
+
+            case pageState.ScoreReview:
+                currentPageState = pageState.ScoreReview;
+                GamePage.SetActive(false);
+                StartPage.SetActive(false);
+                GameOverPage.SetActive(false);
+                PauseMenu.SetActive(false);
+                CountdownPage.SetActive(false);
+                SettingsPage.SetActive(false);
+                ScoreReview.SetActive(true);
+                break;
+
         }
     }
 
@@ -276,6 +298,24 @@ public class GameManager : MonoBehaviour {
     {
         SetPageState(pageState.StartPage);
         ComeBackFromSettingsPage();
+    }
+
+    public void GoToScoreReview()
+    {
+        if (score > highScore)
+        {
+            PlayerPrefs.SetInt("HighScore", score);
+            newHighScoreImage.SetActive(true);
+        }
+        else
+        {
+            newHighScoreImage.SetActive(false);
+        }
+        gameOverScore.text = score.ToString();
+        highScore = PlayerPrefs.GetInt("HighScore");
+        highScoreText.text = highScore.ToString();
+
+        SetPageState(pageState.ScoreReview);
     }
 
     public int GetScore

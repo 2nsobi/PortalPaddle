@@ -123,14 +123,14 @@ public class LevelGenerator : MonoBehaviour
     LvlPrefab StartLevel; //for code use
     GameManager game;
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
-    LvlPrefab NextLvl;
+    LvlPrefab NextLvl, NextLvl4Transition;
     LvlPrefab CurrentLvl;
     LvlPrefab PreviousLvl;
     Obstacle NextObstacle;
     Obstacle CurrentObstacle;
     Obstacle PreviousObstacle;
     bool currentlyTransitioning;
-    bool playedOnce; // ateast one game session has been started since opening app, used to get rid of NullReferenceException when GameOverConfirmed() is called after app is opened
+    bool playedOnce = false; // ateast one game session has been started since opening app, used to get rid of NullReferenceException when GameOverConfirmed() is called after app is opened
     Vector3[] travelPath1;
     bool obstaclesShouldDespawn;
     int obstacleSpawnCounter;
@@ -170,6 +170,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject filters;
     Animator filtersAnimC;
     bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
+    bool obstaclesShouldBSpawning =false;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -181,7 +182,6 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameOverConfirmed += GameOverConfirmed;
         EnemyBehavior.AbsorbDone += AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDone;
-        //GameManager.Revive += MoveToNextLvl;
         GameManager.GoToSettingsPage += GoToSettingsPage;
         GameManager.ComeBackFromSettingsPage += ComeBackFromSettingsPage;
     }
@@ -192,7 +192,6 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
-        //GameManager.Revive -= MoveToNextLvl;
         GameManager.GoToSettingsPage -= GoToSettingsPage;
         GameManager.ComeBackFromSettingsPage -= ComeBackFromSettingsPage;
     }
@@ -371,6 +370,10 @@ public class LevelGenerator : MonoBehaviour
         gradientDespawner = null;
         activeObstacleTexture = null;
         gradientSpawned = false;
+        obstaclesShouldBSpawning = false;
+        NextLvl4Transition = null;
+        NextLvl = null;
+        NextObstacle = null;
 
         if (playedOnce)
         {
@@ -427,6 +430,7 @@ public class LevelGenerator : MonoBehaviour
             PreviousObstacle = null;
 
             CurrentLvl = StartLevel;
+            CurrentLvl.gameObject.SetActive(true);
             CurrentLvl.gameObject.transform.position = Vector3.zero;
 
             foreach (MultiPool level in levels)
@@ -434,6 +438,8 @@ public class LevelGenerator : MonoBehaviour
                 level.about2Spawn = true;
                 level.comeBack2 = true;
             }
+
+            filtersAnimC.SetTrigger("gameOver");
         }
     }
 
@@ -545,13 +551,14 @@ public class LevelGenerator : MonoBehaviour
 
     void AbsorbDone()
     {
+        NextLvl4Transition = NextLvl;
         StartCoroutine("transitionDelay");
     }
 
     IEnumerator transitionDelay()
     {
         yield return new WaitForSeconds(0.5f);
-        currentlyTransitioning = true;
+        Debug.Log("should be transitioning");
 
         if (cavesFilter)
         {
@@ -576,12 +583,14 @@ public class LevelGenerator : MonoBehaviour
                 filtersAnimC.SetTrigger("remove");
                 removeCaves2SkyFilter = false;
             }
+
             if (disableFilters)
             {
                 filtersAnimC.SetTrigger("disableFilters");
                 disableFilters = false;
             }
         }
+        currentlyTransitioning = true;
     }
 
     public void InvertColors()
@@ -602,14 +611,14 @@ public class LevelGenerator : MonoBehaviour
         if (currentlyTransitioning)
         {
             CurrentLvl.gameObject.transform.position = Vector2.Lerp(CurrentLvl.gameObject.transform.position, this.transform.position - levelOffset, transitionSpeed * Time.deltaTime);
-            NextLvl.gameObject.transform.position = Vector2.Lerp(NextLvl.gameObject.transform.position, Vector3.zero, transitionSpeed * Time.deltaTime);
+            NextLvl4Transition.gameObject.transform.position = Vector2.Lerp(NextLvl4Transition.gameObject.transform.position, Vector3.zero, transitionSpeed * Time.deltaTime);
 
-            if (NextLvl.gameObject.transform.position.y <= nextLvlThreshold)
+            if (NextLvl4Transition.gameObject.transform.position.y <= nextLvlThreshold)
             {
                 tempCurrLvl = CurrentLvl;
-                tempNextLvl = NextLvl;
+                tempNextLvl = NextLvl4Transition;
 
-                CurrentLvl = NextLvl;
+                CurrentLvl = NextLvl4Transition;
                 TransitionDone();
                 GenerateNextLvl();
                 currentlyTransitioning = false;
@@ -665,6 +674,7 @@ public class LevelGenerator : MonoBehaviour
                             StartCoroutine("SetGradient2Null");
                         }
                     }
+                    tempCurrLvl.gameObject.SetActive(false);
                     tempCurrLvl.hasObstacle = false;
                     finishTransitioning = false;
                 }
@@ -700,6 +710,8 @@ public class LevelGenerator : MonoBehaviour
         removeCaves2SkyFilter = true;
         caves2SkyFilter = true;
         cavesFilter = true;
+
+        filtersAnimC.ResetTrigger("gameOver");
     }
 
     void GenerateNextLvl()
@@ -865,6 +877,15 @@ public class LevelGenerator : MonoBehaviour
                 NextObstacle.gameObject.SetActive(true);
                 break;
             }
+        }
+
+        if (NextLvl.hasObstacle)
+        {
+            obstaclesShouldBSpawning = true;
+        }
+        if (obstaclesShouldBSpawning && !NextLvl.hasObstacle)
+        {
+            Debug.LogError(NextLvl.gameObject.name + "does not have an obstacle!!!");
         }
 
         NextLvlGenerated();
