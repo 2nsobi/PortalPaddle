@@ -120,6 +120,7 @@ public class LevelGenerator : MonoBehaviour
     public List<MultiPool> levels;
     public List<SinglePool> obstacles;
     public GameObject StartLvl;
+    public GameObject SettingsLvl;
     LvlPrefab StartLevel; //for code use
     GameManager game;
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
@@ -171,6 +172,10 @@ public class LevelGenerator : MonoBehaviour
     Animator filtersAnimC;
     bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
     bool obstaclesShouldBSpawning =false;
+    bool go2Settings = false;
+    bool comeBackFromSettings;
+    GameObject settingsLevel;
+    Vector3 offset2 = new Vector3(0, 10.6f);
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -179,25 +184,22 @@ public class LevelGenerator : MonoBehaviour
     private void OnEnable()
     {
         GameManager.GameStarted += GameStarted;
-        GameManager.GameOverConfirmed += GameOverConfirmed;
         EnemyBehavior.AbsorbDone += AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDone;
-        GameManager.GoToSettingsPage += GoToSettingsPage;
-        GameManager.ComeBackFromSettingsPage += ComeBackFromSettingsPage;
     }
 
     private void OnDisable()
     {
         GameManager.GameStarted -= GameStarted;
-        GameManager.GameOverConfirmed -= GameOverConfirmed;
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
-        GameManager.GoToSettingsPage -= GoToSettingsPage;
-        GameManager.ComeBackFromSettingsPage -= ComeBackFromSettingsPage;
     }
 
     private void Start()
     {
+        settingsLevel = Instantiate(SettingsLvl);
+        settingsLevel.SetActive(false);
+
         disableFilters = true;
         removeCaves2SkyFilter = true;
         caves2SkyFilter = true;
@@ -358,8 +360,9 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    void GameOverConfirmed()
+    public void GoBack2StartLvl()
     {
+        game.SetPageState(GameManager.pageState.StartPage);
         obstacleSpawnCounter = 0;
         levelSpawnCounter = 0;
         obstaclesShouldDespawn = false;
@@ -608,6 +611,43 @@ public class LevelGenerator : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (go2Settings)
+        {
+            if (settingsLevel.transform.position.y < -0.8f)
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.Lerp(CurrentLvl.gameObject.transform.position, this.transform.position + levelOffset, 4 * Time.deltaTime);
+                settingsLevel.transform.position = Vector2.Lerp(settingsLevel.transform.position, Vector3.zero, 4 * Time.deltaTime);
+            }
+            else
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.MoveTowards(CurrentLvl.gameObject.transform.position, this.transform.position + levelOffset, 2 * Time.deltaTime);
+                settingsLevel.transform.position = Vector2.MoveTowards(settingsLevel.transform.position, Vector3.zero, 2 * Time.deltaTime);
+                if (settingsLevel.transform.position.y == 0)
+                {
+                    go2Settings = false;
+                }
+            }
+        }
+
+        if (comeBackFromSettings)
+        {
+            if (CurrentLvl.gameObject.transform.position.y > 0.8f)
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.Lerp(CurrentLvl.gameObject.transform.position, Vector3.zero, 4 * Time.deltaTime);
+                settingsLevel.transform.position = Vector2.Lerp(settingsLevel.transform.position, this.transform.position - offset2, 4 * Time.deltaTime);
+            }
+            else
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.MoveTowards(CurrentLvl.gameObject.transform.position, Vector3.zero, 2 *  Time.deltaTime);
+                settingsLevel.transform.position = Vector2.MoveTowards(settingsLevel.transform.position, this.transform.position - offset2, 2 * Time.deltaTime);
+                if (CurrentLvl.gameObject.transform.position.y == 0)
+                {
+                    comeBackFromSettings = false;
+                    game.SetPageState(GameManager.pageState.StartPage);
+                }
+            }
+        }
+
         if (currentlyTransitioning)
         {
             CurrentLvl.gameObject.transform.position = Vector2.Lerp(CurrentLvl.gameObject.transform.position, this.transform.position - levelOffset, transitionSpeed * Time.deltaTime);
@@ -937,12 +977,22 @@ public class LevelGenerator : MonoBehaviour
 
     public void GoToSettingsPage()
     {
-
+        settingsLevel.SetActive(true);
+        settingsLevel.transform.position = new Vector2(0,-10.6f);
+        go2Settings = true;
     }
 
     public void ComeBackFromSettingsPage()
     {
+        comeBackFromSettings = true;
+    }
 
+    public bool PlayedOnce
+    {
+        get
+        {
+            return playedOnce;
+        }
     }
 
 }

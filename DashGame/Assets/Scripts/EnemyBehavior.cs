@@ -43,7 +43,11 @@ public class EnemyBehavior : MonoBehaviour
     bool isTimeFrozen = false;
     public float rotationSpeed;
     public CanvasGroup whiteFlashCG;
+    Image whiteFlashCGPanel;
     bool flash = false;
+    bool fade2Black = false;
+    bool fadeBack = false;
+    float deleteme = 0;
 
     public static EnemyBehavior Instance;
 
@@ -89,6 +93,8 @@ public class EnemyBehavior : MonoBehaviour
         wallHit = false;
         game = GameManager.Instance;
         LG = LevelGenerator.Instance;
+
+        whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
     }
 
     private void OnEnable()
@@ -131,6 +137,33 @@ public class EnemyBehavior : MonoBehaviour
             }
         }
 
+        if (fade2Black)
+        {
+            if (!fadeBack)
+            {
+                deleteme += Time.deltaTime;
+                whiteFlashCG.alpha += Time.deltaTime * 4;
+                if (whiteFlashCG.alpha >= 1)
+                {
+                    whiteFlashCG.alpha = 1;
+                    LG.GoBack2StartLvl(); //sent to levelgenerator
+                    target.RemoveTargets();
+                    fadeBack = true;
+                }
+            }
+            else
+            {
+                whiteFlashCG.alpha -= Time.deltaTime * 4;
+                if (whiteFlashCG.alpha <= 0)
+                {
+                    whiteFlashCG.alpha = 0;
+                    Debug.Log(deleteme);
+                    fade2Black = false;
+                    fadeBack = false;
+                }
+            }
+        }
+
     }
 
     private void FixedUpdate()
@@ -166,7 +199,6 @@ public class EnemyBehavior : MonoBehaviour
             {
                 StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
             }
-            //StartCoroutine(FirstCollisionCoroutine());
             FirstCollision();
             firstCollision = false;
         }
@@ -205,8 +237,16 @@ public class EnemyBehavior : MonoBehaviour
 
     void FlashWhite()
     {
+        whiteFlashCGPanel.color = Color.white;
         flash = true;
         whiteFlashCG.alpha = 1;
+    }
+
+    public void Fade2Black() //comes from gamemanager
+    {
+        whiteFlashCGPanel.color = Color.black;
+        fade2Black = true;
+        whiteFlashCG.alpha = 0;
     }
 
     IEnumerator FirstCollisionCoroutine()

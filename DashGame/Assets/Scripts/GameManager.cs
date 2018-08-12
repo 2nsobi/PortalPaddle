@@ -5,13 +5,17 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
     public PaddleController Paddle;
+    LevelGenerator LG;
+    EnemyBehavior ball;
     public Button pauseButton;
     public Text countdownText;
+    public Animator scoreReviewAnimC;
+    public Animator settingsPageAnimC;
+    public Button skipScoreReviewButton;
+    public Button replayButton;
     bool extraBall;
     int richochetCount;
     public GameObject extraBallSprite;
-    Coroutine pauseCoroutine = null;
-    Coroutine transitionCoroutine = null;
     TargetController TargetController;
     public Text scoreText;
     private int score;
@@ -22,19 +26,14 @@ public class GameManager : MonoBehaviour {
     public Text gameOverScore; //score when you loose for that run
     public GameObject newHighScoreImage;
     int highScore;
+    Coroutine disableReplayButtonC;
 
     public static GameManager Instance;
 
     public delegate void GameDelegate();
     public static event GameDelegate GameOverConfirmed; //when the game is confirmed to be over the next page is the main menu;
-    public static event GameDelegate GamePaused;
-    public static event GameDelegate GameResumed;
     public static event GameDelegate GameStarted;
     public static event GameDelegate Revive;
-    public static event GameDelegate GoToSettingsPage;
-    public static event GameDelegate ComeBackFromSettingsPage;
-
-    bool gameOver, gamePaused;
 
     public GameObject StartPage;
     public GameObject GameOverPage;
@@ -66,6 +65,8 @@ public class GameManager : MonoBehaviour {
         extraBall = false;
         Paddle = PaddleController.Instance;
         TargetController = TargetController.Instance;
+        LG = LevelGenerator.Instance;
+        ball = EnemyBehavior.Instance;
         Paddle.gameObject.SetActive(false);
         GoToStartPage();
         gameRunning = false;
@@ -154,7 +155,7 @@ public class GameManager : MonoBehaviour {
         StartCoroutine("GameErrorTest");
     }
 
-    void SetPageState(pageState page)
+    public void SetPageState(pageState page)
     {
         switch (page)
         {
@@ -255,6 +256,9 @@ public class GameManager : MonoBehaviour {
         extraBallSprite.SetActive(false);
         gameRunning = true;
         StartCoroutine("GameErrorTest");
+
+        replayButton.interactable = true;
+
         GameStarted();
     }
 
@@ -276,7 +280,13 @@ public class GameManager : MonoBehaviour {
     public void GoToSettings()
     {
         SetPageState(pageState.SettingsPage);
-        GoToSettingsPage();
+        LG.GoToSettingsPage();
+    }
+
+    public void ComeBackFromSettings()
+    {
+        settingsPageAnimC.SetTrigger("leave");
+        LG.ComeBackFromSettingsPage();
     }
 
     public void PauseGame()
@@ -290,14 +300,30 @@ public class GameManager : MonoBehaviour {
 
     public void GoToStartPage()
     {
-        SetPageState(pageState.StartPage);
+        replayButton.interactable = false;
+        if (LG.PlayedOnce)
+        {
+            StartCoroutine(EndGame());
+        }
+        else
+        {
+            SetPageState(pageState.StartPage);
+        }
         GameOverConfirmed();
     }
 
-    public void ComeBackFromSettings()
+    IEnumerator EndGame()//sent to enemybehavior
     {
-        SetPageState(pageState.StartPage);
-        ComeBackFromSettingsPage();
+        scoreReviewAnimC.SetTrigger("swipeOut");
+        yield return new WaitForSecondsRealtime(0.24f);//set this float to be the length of the swipeOut anim
+        ball.Fade2Black();
+    }
+
+    IEnumerator DisableReplayButon()
+    {
+        replayButton.interactable = false;
+        yield return new WaitForSecondsRealtime(0.8f); //set this float to be the length of the swipeIn anim
+        replayButton.interactable = true;
     }
 
     public void GoToScoreReview()
@@ -315,6 +341,8 @@ public class GameManager : MonoBehaviour {
         highScore = PlayerPrefs.GetInt("HighScore");
         highScoreText.text = highScore.ToString();
 
+        skipScoreReviewButton.interactable = true;
+        disableReplayButtonC = StartCoroutine(DisableReplayButon());
         SetPageState(pageState.ScoreReview);
     }
 
@@ -353,4 +381,11 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    public void skipScoreReviewAnim()
+    {
+        skipScoreReviewButton.interactable = false;
+        StopCoroutine(disableReplayButtonC);
+        replayButton.interactable = true;
+        scoreReviewAnimC.SetTrigger("skipAnim");
+    }
 }
