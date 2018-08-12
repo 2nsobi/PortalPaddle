@@ -409,9 +409,6 @@ public class TargetController : MonoBehaviour
         targets[0].transform.parent = null;
         targets[1].transform.parent = null;
 
-        targets[0].transform.position = Vector2.right * -1000;
-        targets[1].transform.position = Vector2.right * -1000;
-
         target1Travel = false;
         target2Travel = false;
         gameRunning = false;
@@ -421,6 +418,12 @@ public class TargetController : MonoBehaviour
         growShrink2 = false;
 
         targets[1].animator.ResetTrigger("GameStarted");
+    }
+
+    public void RemoveTargets()
+    {
+        targets[0].transform.position = Vector2.right * -1000;
+        targets[1].transform.position = Vector2.right * -1000;
     }
 
     void GameStarted()
