@@ -40,14 +40,12 @@ public class EnemyBehavior : MonoBehaviour
     LevelGenerator LG;
     SpriteRenderer ballSprite;
     Color originalColor;
-    bool isTimeFrozen = false;
     public float rotationSpeed;
     public CanvasGroup whiteFlashCG;
     Image whiteFlashCGPanel;
     bool flash = false;
     bool fade2Black = false;
     bool fadeBack = false;
-    float deleteme = 0;
 
     public static EnemyBehavior Instance;
 
@@ -141,13 +139,12 @@ public class EnemyBehavior : MonoBehaviour
         {
             if (!fadeBack)
             {
-                deleteme += Time.deltaTime;
                 whiteFlashCG.alpha += Time.deltaTime * 4;
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
                     LG.GoBack2StartLvl(); //sent to levelgenerator
-                    target.RemoveTargets();
+                    target.ResetTargets(); //sent to targetcontroller
                     fadeBack = true;
                 }
             }
@@ -157,7 +154,6 @@ public class EnemyBehavior : MonoBehaviour
                 if (whiteFlashCG.alpha <= 0)
                 {
                     whiteFlashCG.alpha = 0;
-                    Debug.Log(deleteme);
                     fade2Black = false;
                     fadeBack = false;
                 }
@@ -249,43 +245,14 @@ public class EnemyBehavior : MonoBehaviour
         whiteFlashCG.alpha = 0;
     }
 
-    IEnumerator FirstCollisionCoroutine()
-    {
-        LG.InvertColors();
-        ballSprite.color = Color.white;
-        FallEffectMainMod.startColor = Color.white;
-        FallEffect.Stop();
-        FallEffect.Play();
-        Time.timeScale = 0;
-        isTimeFrozen = true;
-        yield return new WaitForSecondsRealtime(0.2f);
-        Time.timeScale = game.TimeScale;
-        animator.SetTrigger("Boost");
-        isTimeFrozen = false;
-        FirstImpact.Play();
-        LG.InvertColors();
-        //if (!atCenter && !shouldAbsorb)
-        //{
-        //    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
-        //}
-    }
-
     //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
     //good practice for faulty 2D collision detection with fast moving objects
     IEnumerator CollisionDelay()
     {
-        if (firstCollision)
-        {
-            Physics2D.IgnoreLayerCollision(11, 12);
-            yield return new WaitForSeconds(0.21f);
-            Physics2D.IgnoreLayerCollision(11, 12, false);
-        }
-        else
-        {
-            Physics2D.IgnoreLayerCollision(11, 12);
-            yield return new WaitForSeconds(0.08f);
-            Physics2D.IgnoreLayerCollision(11, 12, false);
-        }
+        Physics2D.IgnoreLayerCollision(11, 12);
+        yield return new WaitForSeconds(0.08f);
+        Physics2D.IgnoreLayerCollision(11, 12, false);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -462,11 +429,4 @@ public class EnemyBehavior : MonoBehaviour
         mainCam.transform.position = originalCamPos;
     }
 
-    public bool IsTimeFrozen
-    {
-        get
-        {
-            return isTimeFrozen;
-        }
-    }
 }

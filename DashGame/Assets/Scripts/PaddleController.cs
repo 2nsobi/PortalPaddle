@@ -54,7 +54,8 @@ public class PaddleController : MonoBehaviour
         particlesArray = new ParticleSystem.Particle[ps.main.maxParticles];
         particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
         particleAnimator = particles.GetComponent<Animator>();
-        particles.transform.parent = transform;
+        particles.transform.parent = paddleCollider.transform;
+        particles.transform.localPosition = Vector2.zero;
     }
 
     private void Start()
@@ -80,7 +81,7 @@ public class PaddleController : MonoBehaviour
         paddleCollider.gameObject.SetActive(false);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         //When using multi touch make sure to use fingerID's to track fingers seperately
         foreach (Touch t in Input.touches)
@@ -133,24 +134,26 @@ public class PaddleController : MonoBehaviour
                     }
                     break;
                 case TouchPhase.Moved:
-                    if (!ball.IsTimeFrozen)
-                    {
-                        if (t.fingerId == 0)
-                        {
-                            childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
-                            childPaddle1.SetActive(true);
-                        }
 
-                        if (t.fingerId == 1)
-                        {
-                            childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
-                            childPaddle2.SetActive(true);
-                            MakePaddle();
-                        }
-                        if (Input.touchCount > 1)
-                        {
-                            MakePaddle();
-                        }
+                    if (t.fingerId == 0)
+                    {
+                        //rayDistance = Mathf.Clamp(Vector3.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength);
+                        //ray = new Ray2D(touch1Pos, newTouchPos - touch1Pos);
+                        //touch2Pos = ray.GetPoint(rayDistance);
+
+                        childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
+                        childPaddle1.SetActive(true);
+                    }
+
+                    if (t.fingerId == 1)
+                    {
+                        childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
+                        childPaddle2.SetActive(true);
+                    }
+
+                    if(Input.touchCount > 1)
+                    {
+                        childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                     }
                     break;
                 case TouchPhase.Ended:
@@ -167,10 +170,12 @@ public class PaddleController : MonoBehaviour
                     particleAnimator.ResetTrigger("particlesActivated");
                     break;
             }
+
         }
 
         if (Input.touchCount > 1)
         {
+            MakePaddle();
             paddleCollider.gameObject.SetActive(true);
         }
         else
@@ -195,7 +200,7 @@ public class PaddleController : MonoBehaviour
 
     void MakePaddle()
     {
-        paddleLength = Vector2.Distance(touch1Pos, touch2Pos) + 0.36f;
+        paddleLength = Vector2.Distance(touch1Pos, touch2Pos) + 0.35f;
         paddleCollider.size = new Vector2(paddleLength, 0.25f);
         paddleCollider.transform.position = (touch1Pos + touch2Pos) / 2;
         angle = Mathf.Atan2(Mathf.Abs(touch2Pos.y - touch1Pos.y), Mathf.Abs(touch2Pos.x - touch1Pos.x));
@@ -215,8 +220,8 @@ public class PaddleController : MonoBehaviour
     void AddParticleRenderer()
     {
         particles.gameObject.SetActive(true);
-        particles.transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
-        particles.transform.position = paddleCollider.transform.position;
+        //particles.transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
+        //particles.transform.position = paddleCollider.transform.position;
         particleScale = new Vector3(paddleLength, 0, 0);
         particleShape.scale = particleScale;
 
@@ -225,8 +230,13 @@ public class PaddleController : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             //make sure simulation space is world if you are trying to delete partiles not included in current shape area
-            if (((touch1Pos.x < touch2Pos.x) && (particlesArray[i].position.x < touch1Pos.x || particlesArray[i].position.x > touch2Pos.x)) ||
-                ((touch1Pos.x > touch2Pos.x) && (particlesArray[i].position.x > touch1Pos.x || particlesArray[i].position.x < touch2Pos.x)))
+            //if (((touch1Pos.x < touch2Pos.x) && (particlesArray[i].position.x < touch1Pos.x || particlesArray[i].position.x > touch2Pos.x)) ||
+            //    ((touch1Pos.x > touch2Pos.x) && (particlesArray[i].position.x > touch1Pos.x || particlesArray[i].position.x < touch2Pos.x)))
+            //{
+            //    particlesArray[i].remainingLifetime = -1;
+            //}
+            if(particlesArray[i].position.x > paddleCollider.transform.position.x +(paddleCollider.transform.position.x + touch1Pos.x)
+                || particlesArray[i].position.x < paddleCollider.transform.position.x - (paddleCollider.transform.position.x + touch1Pos.x))
             {
                 particlesArray[i].remainingLifetime = -1;
             }

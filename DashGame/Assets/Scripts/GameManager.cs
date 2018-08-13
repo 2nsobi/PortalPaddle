@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
     public PaddleController Paddle;
     LevelGenerator LG;
     EnemyBehavior ball;
@@ -27,6 +28,8 @@ public class GameManager : MonoBehaviour {
     public GameObject newHighScoreImage;
     int highScore;
     Coroutine disableReplayButtonC;
+    Coroutine pauseCoroutine;
+    bool pauseAllCoroutines = false;
 
     public static GameManager Instance;
 
@@ -43,7 +46,7 @@ public class GameManager : MonoBehaviour {
     public GameObject GamePage;
     public GameObject ScoreReview;
 
-    public enum pageState {Game, StartPage, GameOver,Paused,CountdownPage,SettingsPage,ScoreReview};
+    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview };
     pageState currentPageState;
 
     public pageState GetCurrentPageState
@@ -89,13 +92,29 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator Countdown()
     {
-        for(int i = 3; i > 0 ; i--)
+        for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
             yield return new WaitForSecondsRealtime(1);
+            while (pauseAllCoroutines)
+            {
+                yield return null;
+            }
         }
         CountdownPage.SetActive(false);
         Time.timeScale = timeScale;
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            pauseAllCoroutines = true;
+        }
+        else
+        {
+            pauseAllCoroutines = false;
+        }
     }
 
     void PlayerMissed()
@@ -273,7 +292,7 @@ public class GameManager : MonoBehaviour {
     public void ResumeGame()
     {
         SetPageState(pageState.CountdownPage);
-        StartCoroutine("Countdown");
+        pauseCoroutine = StartCoroutine(Countdown());
         Paddle.gameObject.SetActive(true);
     }
 
@@ -293,7 +312,10 @@ public class GameManager : MonoBehaviour {
     {
         SetPageState(pageState.Paused);
         Time.timeScale = 0;
-        StopCoroutine("Countdown"); // whenever trying to stop a coroutine make sure you start and stop it with its string name. This way all coroutines running with that name stop instead of the specific one that was started.
+        if (pauseCoroutine != null)
+        {
+            StopCoroutine(pauseCoroutine); // whenever trying to stop a coroutine make sure you start and stop it with its string name. This way all coroutines running with that name stop instead of the specific one that was started.
+        }
         Paddle.gameObject.SetActive(false);
         paused = true;
     }
@@ -315,14 +337,14 @@ public class GameManager : MonoBehaviour {
     IEnumerator EndGame()//sent to enemybehavior
     {
         scoreReviewAnimC.SetTrigger("swipeOut");
-        yield return new WaitForSecondsRealtime(0.24f);//set this float to be the length of the swipeOut anim
+        yield return new WaitForSeconds(0.24f);//set this float to be the length of the swipeOut anim
         ball.Fade2Black();
     }
 
     IEnumerator DisableReplayButon()
     {
         replayButton.interactable = false;
-        yield return new WaitForSecondsRealtime(0.8f); //set this float to be the length of the swipeIn anim
+        yield return new WaitForSeconds(0.8f); //set this float to be the length of the swipeIn anim
         replayButton.interactable = true;
     }
 
@@ -372,7 +394,7 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator GameErrorTest()
     {
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSeconds(40);
         while (paused)
         {
             yield return null;
