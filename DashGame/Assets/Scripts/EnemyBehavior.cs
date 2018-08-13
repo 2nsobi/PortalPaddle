@@ -250,7 +250,7 @@ public class EnemyBehavior : MonoBehaviour
     IEnumerator CollisionDelay()
     {
         Physics2D.IgnoreLayerCollision(11, 12);
-        yield return new WaitForSeconds(0.08f);
+        yield return new WaitForSeconds(0.09f);
         Physics2D.IgnoreLayerCollision(11, 12, false);
 
     }
