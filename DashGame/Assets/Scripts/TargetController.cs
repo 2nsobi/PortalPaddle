@@ -371,33 +371,35 @@ public class TargetController : MonoBehaviour
             if (!targets[i].inUse)
             {
                 targets[i].Use();
-                if (LG.GetCurrentLvlNumber == 1)
+                if (LG.GetNextLvlNumber == 1)
                 {
                     targets[i].transform.parent = nextLvl;
-                    targets[i].transform.localScale = defaultTargetSize;
+                    targets[i].transform.localScale = troubleshootingSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
-                if (LG.GetCurrentLvlNumber == 2)
+                if (LG.GetNextLvlNumber == 2)
                 {
                     targets[i].transform.parent = nextLvl;
-                    SelectTargetToGrowShrink(targets[i]);
+                    //SelectTargetToGrowShrink(targets[i]);
+                    targets[i].transform.localScale = troubleshootingSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
 
-                if(LG.GetCurrentLvlNumber == 3)
+                if(LG.GetNextLvlNumber == 3)
                 {
                     targets[i].transform.parent = nextLvl;
-                    targets[i].transform.localScale = defaultTargetSize;
-                    targets[i].transform.localPosition = nextObstaclePath[Random. Range(0, nextObstaclePath.Length-1)];
+                    targets[i].transform.localScale = troubleshootingSize;
+                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
                     SelectTargetToTravel(targets[i]);
                 }
                 
-                if (LG.GetCurrentLvlNumber >= 4)
+                if (LG.GetNextLvlNumber >= 4)
                 {
                     targets[i].transform.parent = nextLvl;
-                    SelectTargetToGrowShrink(targets[i]);
-                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length - 1)];
+                    //SelectTargetToGrowShrink(targets[i]);
+                    targets[i].transform.localScale = troubleshootingSize;
+                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
                     SelectTargetToTravel(targets[i]);
                 }
             }
@@ -408,6 +410,13 @@ public class TargetController : MonoBehaviour
     {
         targets[0].transform.parent = null;
         targets[1].transform.parent = null;
+    }
+
+    public void ResetTargets()
+    {
+
+        targets[0].transform.position = Vector2.right * -1000;
+        targets[1].transform.position = Vector2.right * -1000;
 
         target1Travel = false;
         target2Travel = false;
@@ -418,12 +427,6 @@ public class TargetController : MonoBehaviour
         growShrink2 = false;
 
         targets[1].animator.ResetTrigger("GameStarted");
-    }
-
-    public void RemoveTargets()
-    {
-        targets[0].transform.position = Vector2.right * -1000;
-        targets[1].transform.position = Vector2.right * -1000;
     }
 
     void GameStarted()
