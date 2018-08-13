@@ -15,9 +15,7 @@ public class PaddleController : MonoBehaviour
     float paddleLength;
     float angle;
     public GameObject particlePrefab;
-    ParticleSystem ps;
     Vector3 particleScale;
-    ParticleSystem.Particle[] particlesArray;
     GameObject particles;
     ParticleSystem.ShapeModule particleShape;
     Animator particleAnimator;
@@ -41,6 +39,7 @@ public class PaddleController : MonoBehaviour
         paddleCollider.gameObject.layer = 12;
         childPaddle1 = transform.Find("Paddle1").gameObject;
         childPaddle2 = transform.Find("Paddle2").gameObject;
+
         GameObject tapArea = GameObject.Find("tapArea");
 
         // to use RectTransformUtility.RectangleContainsScreenPoint correctly the RectTransform parameter must be set to the transform of the game object not the rect tranfsorm components rect transform
@@ -48,13 +47,10 @@ public class PaddleController : MonoBehaviour
         corners = new Vector3[4];
         tapAreaRect.GetWorldCorners(corners);
 
-        particles = Instantiate(particlePrefab, Vector2.right * 900, paddleCollider.transform.rotation) as GameObject;
-        //particles.transform.parent = paddleCollider.transform;
-        ps = particles.GetComponent<ParticleSystem>();
-        particlesArray = new ParticleSystem.Particle[ps.main.maxParticles];
+        particles = Instantiate(particlePrefab, Vector2.right * 900, paddleCollider.transform.rotation) as GameObject;        
         particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
         particleAnimator = particles.GetComponent<Animator>();
-        particles.transform.parent = paddleCollider.transform;
+        particles.transform.parent = transform;
         particles.transform.localPosition = Vector2.zero;
     }
 
@@ -126,9 +122,8 @@ public class PaddleController : MonoBehaviour
                             childPaddle2.SetActive(true);
                         }
                     }
-                    if (Input.touchCount > 1)
+                    if(Input.touchCount > 1)
                     {
-                        MakePaddle();
                         particleAnimator.ResetTrigger("particlesDeactivated");
                         particleAnimator.SetTrigger("particlesActivated");
                     }
@@ -137,10 +132,6 @@ public class PaddleController : MonoBehaviour
 
                     if (t.fingerId == 0)
                     {
-                        //rayDistance = Mathf.Clamp(Vector3.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength);
-                        //ray = new Ray2D(touch1Pos, newTouchPos - touch1Pos);
-                        //touch2Pos = ray.GetPoint(rayDistance);
-
                         childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
                         childPaddle1.SetActive(true);
                     }
@@ -210,6 +201,17 @@ public class PaddleController : MonoBehaviour
             angle *= -1;
         }
 
+        if (touch1Pos.x < paddleCollider.transform.position.x)
+        {
+            childPaddle2.transform.rotation = Quaternion.Euler(0, 0, 180);
+            childPaddle1.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            childPaddle1.transform.rotation = Quaternion.Euler(0, 0, 180);
+            childPaddle2.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
         paddleCollider.transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
 
         AddParticleRenderer();
@@ -219,29 +221,10 @@ public class PaddleController : MonoBehaviour
 
     void AddParticleRenderer()
     {
+        particles.transform.rotation = paddleCollider.transform.rotation;
+        particles.transform.position = paddleCollider.transform.position;
         particles.gameObject.SetActive(true);
-        //particles.transform.rotation = Quaternion.Euler(0, 0, angle * Mathf.Rad2Deg);
-        //particles.transform.position = paddleCollider.transform.position;
         particleScale = new Vector3(paddleLength, 0, 0);
         particleShape.scale = particleScale;
-
-        int count = ps.GetParticles(particlesArray);
-
-        for (int i = 0; i < count; i++)
-        {
-            //make sure simulation space is world if you are trying to delete partiles not included in current shape area
-            //if (((touch1Pos.x < touch2Pos.x) && (particlesArray[i].position.x < touch1Pos.x || particlesArray[i].position.x > touch2Pos.x)) ||
-            //    ((touch1Pos.x > touch2Pos.x) && (particlesArray[i].position.x > touch1Pos.x || particlesArray[i].position.x < touch2Pos.x)))
-            //{
-            //    particlesArray[i].remainingLifetime = -1;
-            //}
-            if(particlesArray[i].position.x > paddleCollider.transform.position.x +(paddleCollider.transform.position.x + touch1Pos.x)
-                || particlesArray[i].position.x < paddleCollider.transform.position.x - (paddleCollider.transform.position.x + touch1Pos.x))
-            {
-                particlesArray[i].remainingLifetime = -1;
-            }
-        }
-        ps.SetParticles(particlesArray, count);
-
     }
 }
