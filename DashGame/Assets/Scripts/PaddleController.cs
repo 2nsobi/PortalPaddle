@@ -29,6 +29,7 @@ public class PaddleController : MonoBehaviour
     Vector3 touchPos;
     Vector3 newTouchPos;
     EnemyBehavior ball;
+    bool particlesActivated = false;
 
     private void Awake()
     {
@@ -75,6 +76,11 @@ public class PaddleController : MonoBehaviour
     private void OnDisable()
     {
         paddleCollider.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        particleAnimator.SetBool("particlesActivated", particlesActivated);
     }
 
     private void FixedUpdate()
@@ -124,8 +130,7 @@ public class PaddleController : MonoBehaviour
                     }
                     if(Input.touchCount > 1)
                     {
-                        particleAnimator.ResetTrigger("particlesDeactivated");
-                        particleAnimator.SetTrigger("particlesActivated");
+                        particlesActivated = true;
                     }
                     break;
                 case TouchPhase.Moved:
@@ -157,8 +162,7 @@ public class PaddleController : MonoBehaviour
                     {
                         childPaddle2.SetActive(false);
                     }
-                    particleAnimator.SetTrigger("particlesDeactivated");
-                    particleAnimator.ResetTrigger("particlesActivated");
+                    particlesActivated = false;
                     break;
             }
 
