@@ -27,7 +27,6 @@ public class EnemyBehavior : MonoBehaviour
     ParticleSystem CollisionEffect;
     ParticleSystem FallEffect;
     ParticleSystem FirstImpact;
-    ParticleSystem.MainModule FallEffectMainMod;
     string targetHit; //Name of the target that was hit;
     bool ShouldSpawn;
     bool ShouldShrink;
@@ -47,6 +46,7 @@ public class EnemyBehavior : MonoBehaviour
     bool fade2Black = false;
     bool fadeBack = false;
     bool cantCollide = false;
+    bool pauseAllCoroutines = false;
 
     public static EnemyBehavior Instance;
 
@@ -69,7 +69,6 @@ public class EnemyBehavior : MonoBehaviour
         invulnerable = false;
         CollisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
         FallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
-        FallEffectMainMod = FallEffect.main;
         FirstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
         Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
@@ -96,6 +95,18 @@ public class EnemyBehavior : MonoBehaviour
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
     }
 
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            pauseAllCoroutines = true;
+        }
+        else
+        {
+            pauseAllCoroutines = false;
+        }
+    }
+
     private void OnEnable()
     {
         GameManager.GameOverConfirmed += GameOverConfirmed;
@@ -115,6 +126,10 @@ public class EnemyBehavior : MonoBehaviour
     IEnumerator SpawnDelay()
     {
         yield return new WaitForSeconds(1);
+        while(pauseAllCoroutines || game.Paused)
+        {
+            yield return null;
+        }
         transform.rotation = Quaternion.Euler(0, 0, 0);
         rigidbody.velocity = -transform.up.normalized * codeSpeed;
     }
@@ -227,8 +242,9 @@ public class EnemyBehavior : MonoBehaviour
     {
         FlashWhite();
 
-        ballSprite.color = Color.white;
-        FallEffectMainMod.startColor = Color.white;
+        CameraShake(CameraShakeIntensity, CameraShakeDuration);
+
+        ballSprite.color = new Color32(255, 255, 0, 255);
         FallEffect.Stop();
         FallEffect.Play();
         animator.SetTrigger("Boost");
@@ -255,6 +271,10 @@ public class EnemyBehavior : MonoBehaviour
     {
         Physics2D.IgnoreLayerCollision(11, 12);
         yield return new WaitForSeconds(0.09f);
+        while (pauseAllCoroutines || game.Paused)
+        {
+            yield return null;
+        }
         Physics2D.IgnoreLayerCollision(11, 12, false);
 
     }
@@ -374,12 +394,13 @@ public class EnemyBehavior : MonoBehaviour
         ballSpawner.transform.position = RandomXPos;
         this.transform.position = RandomXPos;
         canAbsorb = false;
-        StartCoroutine(SpawnDelay());
         wallHit = false;
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
         cantCollide = false;
+
+        StartCoroutine(SpawnDelay());
     }
 
     void Revive()
@@ -398,12 +419,13 @@ public class EnemyBehavior : MonoBehaviour
         ballSpawner.transform.position = RandomXPos;
         this.transform.position = RandomXPos;
         canAbsorb = false;
-        StartCoroutine(SpawnDelay());
         wallHit = false;
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
         cantCollide = false;
+
+        StartCoroutine(SpawnDelay());
     }
 
     public string GetTargetHit
@@ -431,6 +453,11 @@ public class EnemyBehavior : MonoBehaviour
             y *= Mathf.PerlinNoise(x, y) * intensity * damper;
 
             mainCam.transform.localPosition = new Vector3(x, y, originalCamPos.z);
+
+            while(pauseAllCoroutines || game.Paused)
+            {
+                yield return null;
+            }
 
             yield return null;
         }
