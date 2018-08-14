@@ -56,9 +56,11 @@ public class LevelGenerator : MonoBehaviour
         public Vector3[] path;
         public string obstacleTexture;
         SpriteRenderer[] obstacleSprites;
+        public bool attached2Lvl;
 
         public Obstacle(GameObject go)
         {
+            attached2Lvl = false;
             this.transform = go.transform;
             this.gameObject = go;
             Transform t = go.transform.Find("TargetTravelPath");
@@ -163,7 +165,8 @@ public class LevelGenerator : MonoBehaviour
     LvlPrefab tempNextLvl;
     static string activeLvlName;
     bool allPrefsInQHaveObstacle;//for spawnfrompool method
-    bool dothis; //for spawnfrompool method
+    bool allPrefsInQAttached2Lvl; // for spawnfrom obstacles method
+    bool dothis,dothis2; //for spawnfrompool method and spawnfrom obstacles method
     public GameObject filters;
     Animator filtersAnimC;
     bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
@@ -172,6 +175,8 @@ public class LevelGenerator : MonoBehaviour
     bool comeBackFromSettings;
     GameObject settingsLevel;
     Vector3 offset2 = new Vector3(0, 10.6f);
+    string tag4Obstacles;
+    bool pauseAllCoroutines = false;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -189,6 +194,18 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameStarted -= GameStarted;
         EnemyBehavior.AbsorbDone -= AbsorbDone;
         EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            pauseAllCoroutines = true;
+        }
+        else
+        {
+            pauseAllCoroutines = false;
+        }
     }
 
     private void Start()
@@ -499,47 +516,146 @@ public class LevelGenerator : MonoBehaviour
 
     public GameObject SpawnFromGradients(int lvlGradient)
     {
-
         GameObject objectToSpawn = lvlGradients[lvlGradient];
         return objectToSpawn;
     }
 
-    public Obstacle SpawnFromObstacles(string tag, Vector2 position, Quaternion rotation, LvlPrefab lvlPrefab, string texture, bool easy = false)
+    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, LvlPrefab lvlPrefab, string texture, bool easy = false)
     {
+        int number = rng.Next(minObstacle, maxObstacle);
+        tag4Obstacles = "Obstacle" + number;
+
+        dothis2 = true;
+        allPrefsInQAttached2Lvl = true;
         if (easy)
         {
             int num = rng.Next(1, ezObstacleCount + 1);
+            tag4Obstacles = "EasyObstacle" + num;
 
-            Obstacle obstacleToSpawn = ObstacleDict["EasyObstacle" + num].Dequeue();
+            Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
 
-            obstacleToSpawn.gameObject.transform.position = position;
-            obstacleToSpawn.gameObject.transform.rotation = rotation;
-            obstacleToSpawn.SetObstacleTextures(texture);
-            obstacleToSpawn.gameObject.SetActive(true);
-            obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+            if (obstacleToSpawn.attached2Lvl)
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
 
-            lvlPrefab.hasObstacle = true;
-            lvlPrefab.obstacle = obstacleToSpawn;
+                while (dothis2)
+                {
+                    while (allPrefsInQAttached2Lvl)
+                    {
+                        for(int i = 0; i< ObstacleDict[tag4Obstacles].Count; i++)
+                        {
+                            obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                            if (!obstacleToSpawn.attached2Lvl)
+                            {
+                                obstacleToSpawn.attached2Lvl = true;
+                                obstacleToSpawn.gameObject.transform.position = position;
+                                obstacleToSpawn.gameObject.transform.rotation = rotation;
+                                obstacleToSpawn.SetObstacleTextures(texture);
+                                obstacleToSpawn.gameObject.SetActive(true);
+                                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
 
-            ObstacleDict["EasyObstacle" + num].Enqueue(obstacleToSpawn);
+                                lvlPrefab.hasObstacle = true;
+                                lvlPrefab.obstacle = obstacleToSpawn;
+
+                                dothis2 = false;
+                                allPrefsInQAttached2Lvl = false;
+                            }
+                            ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                        }
+                        if (!allPrefsInQAttached2Lvl)
+                        {
+                            break;
+                        }
+
+                        int num2 = rng.Next(1, ezObstacleCount + 1);
+                        while(num2 == num)
+                        {
+                            num2 = rng.Next(1, ezObstacleCount + 1);
+                        }
+                        num = num2;
+                        tag4Obstacles = "Obstacle" + num2;
+                    }
+                }
+            }
+            else
+            {
+                obstacleToSpawn.attached2Lvl = true;
+                obstacleToSpawn.gameObject.transform.position = position;
+                obstacleToSpawn.gameObject.transform.rotation = rotation;
+                obstacleToSpawn.SetObstacleTextures(texture);
+                obstacleToSpawn.gameObject.SetActive(true);
+                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+
+                lvlPrefab.hasObstacle = true;
+                lvlPrefab.obstacle = obstacleToSpawn;
+
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+            }
 
             return obstacleToSpawn;
 
         }
         else
         {
-            Obstacle obstacleToSpawn = ObstacleDict[tag].Dequeue();
+            Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
 
-            obstacleToSpawn.gameObject.transform.position = position;
-            obstacleToSpawn.gameObject.transform.rotation = rotation;
-            obstacleToSpawn.SetObstacleTextures(texture);
-            obstacleToSpawn.gameObject.SetActive(true);
-            obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+            if (obstacleToSpawn.attached2Lvl)
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
 
-            lvlPrefab.hasObstacle = true;
-            lvlPrefab.obstacle = obstacleToSpawn;
+                while (dothis2)
+                {
+                    while (allPrefsInQAttached2Lvl)
+                    {
+                        for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
+                        {
+                            obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                            if (!obstacleToSpawn.attached2Lvl)
+                            {
+                                obstacleToSpawn.attached2Lvl = true;
+                                obstacleToSpawn.gameObject.transform.position = position;
+                                obstacleToSpawn.gameObject.transform.rotation = rotation;
+                                obstacleToSpawn.SetObstacleTextures(texture);
+                                obstacleToSpawn.gameObject.SetActive(true);
+                                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
 
-            ObstacleDict[tag].Enqueue(obstacleToSpawn);
+                                lvlPrefab.hasObstacle = true;
+                                lvlPrefab.obstacle = obstacleToSpawn;
+
+                                dothis2 = false;
+                                allPrefsInQAttached2Lvl = false;
+                            }
+                            ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                        }
+                        if (!allPrefsInQAttached2Lvl)
+                        {
+                            break;
+                        }
+
+                        int number2 = rng.Next(1, 10);
+                        while(number2 == number)
+                        {
+                            number2 = rng.Next(1, 10);
+                        }
+                        number = number2;
+                        tag4Obstacles = "Obstacle" + number2;
+                    }
+                }
+            }
+            else
+            {
+                obstacleToSpawn.attached2Lvl = true;
+                obstacleToSpawn.gameObject.transform.position = position;
+                obstacleToSpawn.gameObject.transform.rotation = rotation;
+                obstacleToSpawn.SetObstacleTextures(texture);
+                obstacleToSpawn.gameObject.SetActive(true);
+                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+
+                lvlPrefab.hasObstacle = true;
+                lvlPrefab.obstacle = obstacleToSpawn;
+
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+            }
 
             return obstacleToSpawn;
         }
@@ -553,7 +669,14 @@ public class LevelGenerator : MonoBehaviour
 
     IEnumerator transitionDelay()
     {
-        yield return new WaitForSeconds(0.5f);
+        for (float i = 0.0f; i < 0.5f; i+= 0.1f)
+        {
+            yield return new WaitForSeconds(0.1f);
+            while (pauseAllCoroutines || game.Paused)
+            {
+                yield return null;
+            }
+        }
         Debug.Log("should be transitioning");
 
         if (cavesFilter)
@@ -657,6 +780,8 @@ public class LevelGenerator : MonoBehaviour
                 {
                     if (CurrentLvl.hasObstacle)
                     {
+                        CurrentLvl.obstacle.attached2Lvl = false;
+
                         CurrentLvl.obstacle.gameObject.SetActive(false);
                         CurrentLvl.obstacle.transform.parent = null;
                         CurrentLvl.hasObstacle = false;
@@ -764,7 +889,7 @@ public class LevelGenerator : MonoBehaviour
                         lvlSpawnQ.Enqueue(gradientDespawner);
 
                         defaultLvl = SpawnFromPool("level3");
-                        SpawnFromObstacles("Obstacle" + rng.Next(1, 10), defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                        SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                         lvlSpawnQ.Enqueue(defaultLvl);
 
                         levels[2].about2Spawn = false;
@@ -784,15 +909,15 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[3].about2Spawn)
                 {
                     specialLvl = specialLvls[0];
-                    SpawnFromObstacles("Obstacle" + rng.Next(1, 10), specialLvl.gameObject.transform.position, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, 9, specialLvl.gameObject.transform.position, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(specialLvl);
 
                     transitionLvl = SpawnFromPool(2);
-                    SpawnFromObstacles("Obstacle" + rng.Next(1, 10), transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, 9, transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level4");
-                    SpawnFromObstacles("Obstacle" + rng.Next(1, 10), defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[3].about2Spawn = false;
@@ -813,11 +938,11 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[2].about2Spawn)
                 {
                     transitionLvl = SpawnFromPool(3);
-                    SpawnFromObstacles("Obstacle" + rng.Next(1, 10), transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
+                    SpawnFromObstacles(1, 9, transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level3");
-                    SpawnFromObstacles("Obstacle" + rng.Next(1, 10), defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1,9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[2].about2Spawn = false;
@@ -832,7 +957,7 @@ public class LevelGenerator : MonoBehaviour
         activeLvl = SpawnFromPool(activeLvlName);
         if (activeObstacleTexture != null)
         {
-            SpawnFromObstacles("Obstacle" + rng.Next(1, 10), activeLvl.gameObject.transform.position, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+            SpawnFromObstacles(1, 9, activeLvl.gameObject.transform.position, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
         }
         lvlSpawnQ.Enqueue(activeLvl);
 

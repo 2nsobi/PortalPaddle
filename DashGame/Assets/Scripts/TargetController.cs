@@ -49,7 +49,7 @@ public class TargetController : MonoBehaviour
         public bool inUse;
         public Transform transform;
         public Animator animator;
-        public Color color;
+
         public Target(Transform t, Animator anim, Color col)
         {
             transform = t;
@@ -103,7 +103,7 @@ public class TargetController : MonoBehaviour
             GameObject go = Instantiate(TargetPrefab, Vector2.right * -1000, Quaternion.identity);
             go.name = "Target" + i;
             Animator anim = go.GetComponent<Animator>();
-            targets[i] = new Target(go.transform, anim, Color.white);//new Color(137,0,188));
+            targets[i] = new Target(go.transform, anim, new Color32(255, 248, 57,255)); //lighter yellow color
         }
         targets[0].StopUsing();
         targets[1].Use();

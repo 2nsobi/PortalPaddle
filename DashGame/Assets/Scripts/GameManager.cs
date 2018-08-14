@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
             }
         }
         CountdownPage.SetActive(false);
+        paused = false;
         Time.timeScale = timeScale;
     }
 
@@ -159,10 +160,13 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReviveDelay()
     {
-        yield return new WaitForSeconds(0.6f);
-        while (pauseAllCoroutines)
+        for (float i = 0.0f; i < 0.6f; i+=0.1f)
         {
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
+            while (pauseAllCoroutines || paused)
+            {
+                yield return null;
+            }
         }
         Revive();
         canEndGame = true;
@@ -382,14 +386,28 @@ public class GameManager : MonoBehaviour
     IEnumerator EndGame()//sent to enemybehavior
     {
         scoreReviewAnimC.SetTrigger("swipeOut");
-        yield return new WaitForSeconds(0.24f);//set this float to be the length of the swipeOut anim
+        for (float i = 0.0f; i < 0.24f; i += 0.1f)//set this coroutine to be the length of the swipeOut anim
+        {
+            yield return new WaitForSeconds(0.1f);
+            while (pauseAllCoroutines)
+            {
+                yield return null;
+            }
+        }
         ball.Fade2Black();
     }
 
     IEnumerator DisableReplayButon()
     {
         replayButton.interactable = false;
-        yield return new WaitForSeconds(0.8f); //set this float to be the length of the swipeIn anim
+        for (float i = 0.0f; i < 0.8f; i += 0.1f)//set this coroutine to be the length of the swipeIn anim
+        {
+            yield return new WaitForSeconds(0.1f);
+            while (pauseAllCoroutines)
+            {
+                yield return null;
+            }
+        }
         gemsOnScreen = true;
         skipScoreReviewButton.interactable = false;
         replayButton.interactable = true;
@@ -447,10 +465,13 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameErrorTest()
     {
-        yield return new WaitForSeconds(40);
-        while (paused)
+        for (int i = 0; i < 40; i ++)//set this coroutine to be the length of the swipeIn anim
         {
-            yield return null;
+            yield return new WaitForSeconds(1);
+            while (pauseAllCoroutines ||paused)
+            {
+                yield return null;
+            }
         }
         Debug.LogError("Game Glitch");
 
@@ -463,5 +484,13 @@ public class GameManager : MonoBehaviour
         replayButton.interactable = true;
         scoreReviewAnimC.SetTrigger("skipAnim");
         gemsOnScreen = true;
+    }
+
+    public bool Paused
+    {
+        get
+        {
+            return paused;
+        }
     }
 }
