@@ -30,6 +30,7 @@ public class PaddleController : MonoBehaviour
     Vector3 newTouchPos;
     EnemyBehavior ball;
     bool particlesActivated = false;
+    CircleCollider2D endCollider1, endCollider2;
 
     private void Awake()
     {
@@ -39,7 +40,9 @@ public class PaddleController : MonoBehaviour
         paddleCollider.gameObject.tag = "Paddle";
         paddleCollider.gameObject.layer = 12;
         childPaddle1 = transform.Find("Paddle1").gameObject;
+        endCollider1 = childPaddle1.GetComponent<CircleCollider2D>();
         childPaddle2 = transform.Find("Paddle2").gameObject;
+        endCollider2 = childPaddle2.GetComponent<CircleCollider2D>();
 
         GameObject tapArea = GameObject.Find("tapArea");
 
@@ -80,7 +83,20 @@ public class PaddleController : MonoBehaviour
 
     private void Update()
     {
-        particleAnimator.SetBool("particlesActivated", particlesActivated);
+        if (particles.activeInHierarchy)
+        {
+            particleAnimator.SetBool("particlesActivated", particlesActivated);
+        }
+        if (paddleCollider.gameObject.activeInHierarchy)
+        {
+            endCollider1.enabled = false;
+            endCollider2.enabled = false;
+        }
+        else
+        {
+            endCollider1.enabled = true;
+            endCollider2.enabled = true;
+        }
     }
 
     private void FixedUpdate()

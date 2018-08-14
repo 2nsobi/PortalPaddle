@@ -373,6 +373,11 @@ public class LevelGenerator : MonoBehaviour
         {
             #region Disactivates All Level Prefabs
 
+            foreach(LvlPrefab prefab in lvlSpawnQ)
+            {
+                prefab.hasObstacle = false;
+                prefab.obstacle = null;
+            }
             lvlSpawnQ.Clear();
 
             foreach (List<Queue<LvlPrefab>> level in LvlComponentDict.Values)

@@ -46,6 +46,7 @@ public class EnemyBehavior : MonoBehaviour
     bool flash = false;
     bool fade2Black = false;
     bool fadeBack = false;
+    bool cantCollide = false;
 
     public static EnemyBehavior Instance;
 
@@ -182,39 +183,42 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Paddle")
+        if (!cantCollide)
         {
-            canAbsorb = true;
-            Physics2D.IgnoreLayerCollision(10, 11, false);
-            StartCoroutine("CollisionDelay");
-        }
+            if (collision.gameObject.tag == "Paddle")
+            {
+                canAbsorb = true;
+                Physics2D.IgnoreLayerCollision(10, 11, false);
+                StartCoroutine("CollisionDelay");
+            }
 
-        if (firstCollision)
-        {
+            if (firstCollision)
+            {
+                if (!atCenter && !shouldAbsorb)
+                {
+                    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+                }
+                FirstCollision();
+                firstCollision = false;
+            }
+
+            if (collision.gameObject.tag == "Wall")
+            {
+                wallHit = true;
+            }
+
+            ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
+            Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
+
+            float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, rotation);
+            codeSpeed = deflectionSpeed;
+            rigidbody.velocity = -transform.up.normalized * codeSpeed;
+
             if (!atCenter && !shouldAbsorb)
             {
-                StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
+                CollisionEffect.Play();
             }
-            FirstCollision();
-            firstCollision = false;
-        }
-
-        if (collision.gameObject.tag == "Wall")
-        {
-            wallHit = true;
-        }
-
-        ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
-        Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
-
-        float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, rotation);
-        codeSpeed = deflectionSpeed;
-        rigidbody.velocity = -transform.up.normalized * codeSpeed;
-
-        if (!atCenter && !shouldAbsorb)
-        {
-            CollisionEffect.Play();
         }
 
     }
@@ -268,13 +272,16 @@ public class EnemyBehavior : MonoBehaviour
                     ShouldSpawn = false;
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
+                    rigidbody.angularVelocity = 0;
                     shouldAbsorb = true;
                     targetTransform = collision.transform;
                     ShouldShrink = true;
                     firstTriggerCollision = false;
+                    cantCollide = true;
 
                     Debug.Log("ball should definetely be absorbing right now since\n shouldAbsorb = " + shouldAbsorb + ", and ontriggerenter2d has been called");
                     Debug.Log("also the trigger the ball hit was " + collision.gameObject.name);
+                    Debug.Log("velocity of ball = " + rigidbody.velocity);
                 }
             }
         }
@@ -372,6 +379,7 @@ public class EnemyBehavior : MonoBehaviour
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
+        cantCollide = false;
     }
 
     void Revive()
@@ -395,6 +403,7 @@ public class EnemyBehavior : MonoBehaviour
         codeSpeed = speed;
         firstCollision = true;
         firstTriggerCollision = true;
+        cantCollide = false;
     }
 
     public string GetTargetHit
