@@ -8,6 +8,7 @@ public class PaddleController : MonoBehaviour
     GameObject childPaddle1, childPaddle2;
     RectTransform tapAreaRect;
     Vector3[] corners; // corners of tapAreaRect in world space
+    public float paddleMoveSpeedLimit; //should be around 1000 
     public float offset; //used to offset childPaddle1 in ClampedPos() so that the sprite does not appear in the wall
     BoxCollider2D paddleCollider;
     Rigidbody2D paddleRigidBody; // for continuous collisions
@@ -31,6 +32,8 @@ public class PaddleController : MonoBehaviour
     EnemyBehavior ball;
     bool particlesActivated = false;
     CircleCollider2D endCollider1, endCollider2;
+    float touch1Speed, touch2Speed;
+    float clampedTouch1Speed, clampedTouch2Speed;
 
     private void Awake()
     {
@@ -39,6 +42,11 @@ public class PaddleController : MonoBehaviour
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";
         paddleCollider.gameObject.layer = 12;
+        paddleRigidBody = paddleCollider.gameObject.AddComponent<Rigidbody2D>();
+        paddleRigidBody.freezeRotation = true;
+        paddleRigidBody.bodyType = RigidbodyType2D.Kinematic;
+        paddleRigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
         childPaddle1 = transform.Find("Paddle1").gameObject;
         endCollider1 = childPaddle1.GetComponent<CircleCollider2D>();
         childPaddle2 = transform.Find("Paddle2").gameObject;
@@ -149,25 +157,25 @@ public class PaddleController : MonoBehaviour
                         particlesActivated = true;
                     }
                     break;
-                case TouchPhase.Moved:
 
+                case TouchPhase.Moved:
                     if (t.fingerId == 0)
                     {
-                        childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0);
-                        childPaddle1.SetActive(true);
+                        touch1Speed = t.deltaPosition.magnitude / t.deltaTime;
+                        clampedTouch1Speed = Mathf.Clamp(touch1Speed, 0, paddleMoveSpeedLimit);
+                        childPaddle1.transform.position = Vector2.Lerp(childPaddle1.transform.position, touch1Pos, clampedTouch1Speed * Time.deltaTime);
+                        childPaddle1.SetActive(true);// might glitch if this is not true
                     }
 
                     if (t.fingerId == 1)
                     {
-                        childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
-                        childPaddle2.SetActive(true);
-                    }
-
-                    if(Input.touchCount > 1)
-                    {
-                        childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
+                        touch2Speed = t.deltaPosition.magnitude / t.deltaTime;
+                        clampedTouch2Speed = Mathf.Clamp(touch2Speed, 0, paddleMoveSpeedLimit);
+                        childPaddle2.transform.position = Vector2.Lerp(childPaddle2.transform.position, touch2Pos, clampedTouch2Speed * Time.deltaTime);
+                        childPaddle2.SetActive(true); // might glitch if this is not true
                     }
                     break;
+
                 case TouchPhase.Ended:
                     if (t.fingerId == 0)
                     {
@@ -181,7 +189,6 @@ public class PaddleController : MonoBehaviour
                     particlesActivated = false;
                     break;
             }
-
         }
 
         if (Input.touchCount > 1)
@@ -211,17 +218,18 @@ public class PaddleController : MonoBehaviour
 
     void MakePaddle()
     {
-        paddleLength = Vector2.Distance(touch1Pos, touch2Pos) + 0.35f;
-        paddleCollider.size = new Vector2(paddleLength, 0.25f);
-        paddleCollider.transform.position = (touch1Pos + touch2Pos) / 2;
-        angle = Mathf.Atan2(Mathf.Abs(touch2Pos.y - touch1Pos.y), Mathf.Abs(touch2Pos.x - touch1Pos.x));
+        paddleLength = Vector2.Distance(childPaddle1.transform.position, childPaddle2.transform.position) + 0.35f;
+        paddleCollider.size = new Vector2(paddleLength, 0.3f);
+        paddleCollider.transform.position = (childPaddle1.transform.position + childPaddle2.transform.position) / 2;
+        angle = Mathf.Atan2(Mathf.Abs(childPaddle2.transform.position.y - childPaddle1.transform.position.y), Mathf.Abs(childPaddle2.transform.position.x - childPaddle1.transform.position.x));
 
-        if ((touch1Pos.y < touch2Pos.y && touch1Pos.x > touch2Pos.x) || (touch2Pos.y < touch1Pos.y && touch2Pos.x > touch1Pos.x)) // for when the right finger is in the 2nd quadrant or when the left finger is in the 4th quadrant of the xy plane
+        if ((childPaddle1.transform.position.y < childPaddle2.transform.position.y && childPaddle1.transform.position.x > childPaddle2.transform.position.x) 
+            || (childPaddle2.transform.position.y < childPaddle1.transform.position.y && childPaddle2.transform.position.x > childPaddle1.transform.position.x)) // for when the right finger is in the 2nd quadrant or when the left finger is in the 4th quadrant of the xy plane
         {
             angle *= -1;
         }
 
-        if (touch1Pos.x < paddleCollider.transform.position.x)
+        if (childPaddle1.transform.position.x < paddleCollider.transform.position.x)
         {
             childPaddle2.transform.rotation = Quaternion.Euler(0, 0, 180);
             childPaddle1.transform.rotation = Quaternion.Euler(0, 0, 0);

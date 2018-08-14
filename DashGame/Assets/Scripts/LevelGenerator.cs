@@ -468,7 +468,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 while (allPrefsInQHaveObstacle)
                 {
-                    for (int i = 0; i < LvlComponentDict[tag][0].Count; i++)
+                    for (int i = 0; i < LvlComponentDict[tag][0].Count-1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                     {
                         lvlPrefab2Spawn = LvlComponentDict[tag][0].Dequeue();
                         if (!lvlPrefab2Spawn.hasObstacle)
@@ -542,7 +542,7 @@ public class LevelGenerator : MonoBehaviour
                 {
                     while (allPrefsInQAttached2Lvl)
                     {
-                        for(int i = 0; i< ObstacleDict[tag4Obstacles].Count; i++)
+                        for(int i = 0; i< ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                         {
                             obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
                             if (!obstacleToSpawn.attached2Lvl)
@@ -607,7 +607,7 @@ public class LevelGenerator : MonoBehaviour
                 {
                     while (allPrefsInQAttached2Lvl)
                     {
-                        for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
+                        for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                         {
                             obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
                             if (!obstacleToSpawn.attached2Lvl)

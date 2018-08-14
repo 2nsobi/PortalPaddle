@@ -126,7 +126,7 @@ public class EnemyBehavior : MonoBehaviour
     IEnumerator SpawnDelay()
     {
         yield return new WaitForSeconds(1);
-        while(pauseAllCoroutines || game.Paused)
+        while (pauseAllCoroutines || game.Paused)
         {
             yield return null;
         }
@@ -204,7 +204,11 @@ public class EnemyBehavior : MonoBehaviour
             {
                 canAbsorb = true;
                 Physics2D.IgnoreLayerCollision(10, 11, false);
-                StartCoroutine("CollisionDelay");
+                Physics2D.IgnoreLayerCollision(11, 12);        // this makes it so that the paddle cant hit the ball again before it hits another collider
+            }
+            else
+            {
+                Physics2D.IgnoreLayerCollision(11, 12,false);
             }
 
             if (firstCollision)
@@ -222,6 +226,11 @@ public class EnemyBehavior : MonoBehaviour
                 wallHit = true;
             }
 
+            if (!atCenter && !shouldAbsorb)
+            {
+                CollisionEffect.Play();
+            }
+
             ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
             Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
 
@@ -230,10 +239,6 @@ public class EnemyBehavior : MonoBehaviour
             codeSpeed = deflectionSpeed;
             rigidbody.velocity = -transform.up.normalized * codeSpeed;
 
-            if (!atCenter && !shouldAbsorb)
-            {
-                CollisionEffect.Play();
-            }
         }
 
     }
@@ -263,20 +268,6 @@ public class EnemyBehavior : MonoBehaviour
         whiteFlashCGPanel.color = Color.black;
         fade2Black = true;
         whiteFlashCG.alpha = 0;
-    }
-
-    //if the player is moving the paddle quickly this will prevent the ball from stopping mid motion due to collision detection failure
-    //good practice for faulty 2D collision detection with fast moving objects
-    IEnumerator CollisionDelay()
-    {
-        Physics2D.IgnoreLayerCollision(11, 12);
-        yield return new WaitForSeconds(0.09f);
-        while (pauseAllCoroutines || game.Paused)
-        {
-            yield return null;
-        }
-        Physics2D.IgnoreLayerCollision(11, 12, false);
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -363,6 +354,7 @@ public class EnemyBehavior : MonoBehaviour
         StartCoroutine(SpawnDelay());
         wallHit = false;
         Physics2D.IgnoreLayerCollision(10, 11);
+        Physics2D.IgnoreLayerCollision(11, 12, false);
         ShouldSpawn = true;
         ShouldShrink = false;
         firstCollision = true;
@@ -399,6 +391,7 @@ public class EnemyBehavior : MonoBehaviour
         firstCollision = true;
         firstTriggerCollision = true;
         cantCollide = false;
+        Physics2D.IgnoreLayerCollision(11, 12, false);
 
         StartCoroutine(SpawnDelay());
     }
@@ -454,7 +447,7 @@ public class EnemyBehavior : MonoBehaviour
 
             mainCam.transform.localPosition = new Vector3(x, y, originalCamPos.z);
 
-            while(pauseAllCoroutines || game.Paused)
+            while (pauseAllCoroutines || game.Paused)
             {
                 yield return null;
             }

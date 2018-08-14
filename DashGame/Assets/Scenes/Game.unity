@@ -2155,6 +2155,15 @@ Prefab:
       propertyPath: whiteFlashCG
       value: 
       objectReference: {fileID: 1441164609}
+    - target: {fileID: 50737583090099972, guid: b9bf5a278012a6648a083b8ad4c0974e,
+        type: 2}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1364338094527812, guid: b9bf5a278012a6648a083b8ad4c0974e, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9bf5a278012a6648a083b8ad4c0974e, type: 2}
   m_IsPrefabAsset: 0
@@ -2768,6 +2777,11 @@ Prefab:
       propertyPath: pauseButtonRect
       value: 
       objectReference: {fileID: 1044134341}
+    - target: {fileID: 114120376560301194, guid: cba9e70764e17264ebe5e14852ae52f2,
+        type: 2}
+      propertyPath: paddleMoveSpeedLimit
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cba9e70764e17264ebe5e14852ae52f2, type: 2}
   m_IsPrefabAsset: 0
