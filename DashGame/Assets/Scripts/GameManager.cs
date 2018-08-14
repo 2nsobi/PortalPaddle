@@ -30,6 +30,12 @@ public class GameManager : MonoBehaviour
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
     bool pauseAllCoroutines = false;
+    Text scoreReviewGems, startPageGems;
+    bool gemsOnScreen = false;
+    float gems;
+    int newGems;
+    float t = 0.0f;
+    bool canEndGame = true;
 
     public static GameManager Instance;
 
@@ -59,6 +65,11 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+
+        PlayerPrefs.DeleteAll();
+
+
+
         Instance = this;
         Time.timeScale = timeScale;
     }
@@ -71,6 +82,13 @@ public class GameManager : MonoBehaviour
         LG = LevelGenerator.Instance;
         ball = EnemyBehavior.Instance;
         Paddle.gameObject.SetActive(false);
+
+        gems = PlayerPrefs.GetInt("gems");
+        scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
+        scoreReviewGems.text = gems.ToString();
+        startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
+        startPageGems.text = gems.ToString();
+
         GoToStartPage();
         gameRunning = false;
         paused = false;
@@ -119,25 +137,35 @@ public class GameManager : MonoBehaviour
 
     void PlayerMissed()
     {
-        if (!extraBall)
+        if (canEndGame)
         {
-            GameOver();
-        }
-        else
-        {
-            extraBall = false;
-            extraBallSprite.SetActive(false);
-            StartCoroutine("ReviveDelay");
+            Debug.Log("you " + (extraBall ? "have an extra ball" : "dont have an extra ball"));
+            if (!extraBall)
+            {
+                GameOver();
+            }
+            else
+            {
+                extraBall = false;
+                extraBallSprite.SetActive(false);
+                StartCoroutine(ReviveDelay());
 
-            StopCoroutine("GameErrorTest");
-            StartCoroutine("GameErrorTest");
+                StopCoroutine("GameErrorTest");
+                StartCoroutine("GameErrorTest");
+            }
+            canEndGame = false;
         }
     }
 
     IEnumerator ReviveDelay()
     {
         yield return new WaitForSeconds(0.6f);
+        while (pauseAllCoroutines)
+        {
+            yield return null;
+        }
         Revive();
+        canEndGame = true;
     }
 
     public bool hasExtraBall
@@ -198,6 +226,8 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+
+                gemsOnScreen = false;
                 break;
 
             case pageState.GameOver:
@@ -264,8 +294,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (gemsOnScreen)
+        {
+            t += 0.1f * Time.deltaTime;
+            gems = Mathf.Lerp(gems, newGems, t);
+            if(gems == newGems)
+            {
+                gemsOnScreen = false;
+            }
+            scoreReviewGems.text = Mathf.RoundToInt(gems).ToString();
+        }
+    }
+
     public void StartGame()
     {
+        canEndGame = true;
         extraBall = false;
         richochetCount = 0;
         score = 0;
@@ -345,11 +390,19 @@ public class GameManager : MonoBehaviour
     {
         replayButton.interactable = false;
         yield return new WaitForSeconds(0.8f); //set this float to be the length of the swipeIn anim
+        gemsOnScreen = true;
+        skipScoreReviewButton.interactable = false;
         replayButton.interactable = true;
     }
 
     public void GoToScoreReview()
     {
+        t = 0.0f;
+        gems = PlayerPrefs.GetInt("gems");
+        newGems = (int) gems + score;
+        scoreReviewGems.text = gems.ToString();
+        PlayerPrefs.SetInt("gems", newGems);
+        startPageGems.text = newGems.ToString();
         if (score > highScore)
         {
             PlayerPrefs.SetInt("HighScore", score);
@@ -409,5 +462,6 @@ public class GameManager : MonoBehaviour
         StopCoroutine(disableReplayButtonC);
         replayButton.interactable = true;
         scoreReviewAnimC.SetTrigger("skipAnim");
+        gemsOnScreen = true;
     }
 }
