@@ -38,14 +38,49 @@ public class LevelGenerator : MonoBehaviour
     public class LvlPrefab
     {
         public GameObject gameObject;
-        public bool hasObstacle;
         public Obstacle obstacle;
+        public bool hasObstacle;
+        public int obstacleCount;
 
         public LvlPrefab(GameObject go)
         {
             this.gameObject = go;
-            hasObstacle = false;
             obstacle = null;
+            hasObstacle = false;
+            obstacleCount = 0;
+        }
+
+        public void AttachObstacle(Obstacle ob, Vector2 position,Quaternion rotation, string texture)
+        {
+            if (!hasObstacle && obstacleCount == 0)
+            {
+                obstacleCount++;
+
+                hasObstacle = true;
+                this.obstacle = ob;
+
+                ob.attached2Lvl = true;
+                ob.transform.parent = this.gameObject.transform;
+                ob.transform.localPosition = position;
+                ob.transform.rotation = rotation;
+                ob.SetObstacleTextures(texture);
+                ob.gameObject.SetActive(true);
+            }
+        }
+
+        public void RemoveObstacle()
+        {
+            if (hasObstacle)
+            {
+                obstacle.attached2Lvl = false;
+                obstacle.gameObject.SetActive(false);
+                obstacle.transform.parent = null;
+
+                hasObstacle = false;
+                obstacle = null;
+
+                obstacleCount--;
+            }
         }
     }
 
@@ -164,19 +199,17 @@ public class LevelGenerator : MonoBehaviour
     LvlPrefab tempCurrLvl;
     LvlPrefab tempNextLvl;
     static string activeLvlName;
-    bool allPrefsInQHaveObstacle;//for spawnfrompool method
-    bool allPrefsInQAttached2Lvl; // for spawnfrom obstacles method
-    bool dothis,dothis2; //for spawnfrompool method and spawnfrom obstacles method
+    bool allPrefsInQAttached2Lvl = true; // for spawnfrom obstacles method
     public GameObject filters;
     Animator filtersAnimC;
     bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
-    bool obstaclesShouldBSpawning = false;
     bool go2Settings = false;
     bool comeBackFromSettings;
     GameObject settingsLevel;
     Vector3 offset2 = new Vector3(0, 10.6f);
     string tag4Obstacles;
     bool pauseAllCoroutines = false;
+    bool generateNextLvlSequence = true;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -354,6 +387,8 @@ public class LevelGenerator : MonoBehaviour
 
             ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
         }
+
+        Debug.Log(LvlComponentDict["level3"].Count);
     }
 
     public void ShufflePrefabsInLevels()
@@ -383,17 +418,15 @@ public class LevelGenerator : MonoBehaviour
         gradientDespawner = null;
         activeObstacleTexture = null;
         gradientSpawned = false;
-        obstaclesShouldBSpawning = false;
         NextLvl = null;
 
         if (playedOnce)
         {
             #region Disactivates All Level Prefabs
 
-            foreach(LvlPrefab prefab in lvlSpawnQ)
+            foreach (LvlPrefab prefab in lvlSpawnQ)
             {
-                prefab.hasObstacle = false;
-                prefab.obstacle = null;
+                prefab.RemoveObstacle();
             }
             lvlSpawnQ.Clear();
 
@@ -403,7 +436,7 @@ public class LevelGenerator : MonoBehaviour
                 {
                     foreach (LvlPrefab obj in prefabs)
                     {
-                        obj.hasObstacle = false;
+                        obj.RemoveObstacle();
                         obj.gameObject.transform.localPosition = Vector3.zero;
                         obj.gameObject.SetActive(false);
                     }
@@ -459,40 +492,30 @@ public class LevelGenerator : MonoBehaviour
     {
         LvlPrefab lvlPrefab2Spawn = LvlComponentDict[tag][0].Dequeue();
 
-        allPrefsInQHaveObstacle = true;
-        dothis = true;
         if (lvlPrefab2Spawn.hasObstacle)
         {
             LvlComponentDict[tag][0].Enqueue(lvlPrefab2Spawn);
-            while (dothis)
-            {
-                while (allPrefsInQHaveObstacle)
+            for(int j = 0 ; j < LvlComponentDict[tag].Count ; j++)
+            { 
+                for (int i = 0; i < LvlComponentDict[tag][0].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                 {
-                    for (int i = 0; i < LvlComponentDict[tag][0].Count-1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                    lvlPrefab2Spawn = LvlComponentDict[tag][0].Dequeue();
+                    if (!lvlPrefab2Spawn.hasObstacle)
                     {
-                        lvlPrefab2Spawn = LvlComponentDict[tag][0].Dequeue();
-                        if (!lvlPrefab2Spawn.hasObstacle)
-                        {
-                            allPrefsInQHaveObstacle = false;
-                            dothis = false;
-                        }
                         LvlComponentDict[tag][0].Enqueue(lvlPrefab2Spawn);
+                        FIFOList(LvlComponentDict[tag]);
+                        return lvlPrefab2Spawn;
                     }
-                    if (!allPrefsInQHaveObstacle)
-                    {
-                        break;
-                    }
-
-                    FIFOList(LvlComponentDict[tag]);
+                    LvlComponentDict[tag][0].Enqueue(lvlPrefab2Spawn);
                 }
+                FIFOList(LvlComponentDict[tag]);
             }
+            return null;
         }
         else
         {
             LvlComponentDict[tag][0].Enqueue(lvlPrefab2Spawn);
         }
-
-
         FIFOList(LvlComponentDict[tag]);
 
         return lvlPrefab2Spawn;
@@ -522,11 +545,9 @@ public class LevelGenerator : MonoBehaviour
 
     public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, LvlPrefab lvlPrefab, string texture, bool easy = false)
     {
-        int number = rng.Next(minObstacle, maxObstacle);
+        int number = rng.Next(minObstacle, maxObstacle + 1);
         tag4Obstacles = "Obstacle" + number;
 
-        dothis2 = true;
-        allPrefsInQAttached2Lvl = true;
         if (easy)
         {
             int num = rng.Next(1, ezObstacleCount + 1);
@@ -538,56 +559,35 @@ public class LevelGenerator : MonoBehaviour
             {
                 ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
 
-                while (dothis2)
+                while (allPrefsInQAttached2Lvl)
                 {
-                    while (allPrefsInQAttached2Lvl)
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                     {
-                        for(int i = 0; i< ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                        obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                        if (!obstacleToSpawn.attached2Lvl)
                         {
-                            obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
-                            if (!obstacleToSpawn.attached2Lvl)
-                            {
-                                obstacleToSpawn.attached2Lvl = true;
-                                obstacleToSpawn.gameObject.transform.position = position;
-                                obstacleToSpawn.gameObject.transform.rotation = rotation;
-                                obstacleToSpawn.SetObstacleTextures(texture);
-                                obstacleToSpawn.gameObject.SetActive(true);
-                                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+                            lvlPrefab.AttachObstacle(obstacleToSpawn, position, rotation, texture);
 
-                                lvlPrefab.hasObstacle = true;
-                                lvlPrefab.obstacle = obstacleToSpawn;
-
-                                dothis2 = false;
-                                allPrefsInQAttached2Lvl = false;
-                            }
                             ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
-                        }
-                        if (!allPrefsInQAttached2Lvl)
-                        {
-                            break;
-                        }
+                            return obstacleToSpawn;
 
-                        int num2 = rng.Next(1, ezObstacleCount + 1);
-                        while(num2 == num)
-                        {
-                            num2 = rng.Next(1, ezObstacleCount + 1);
                         }
-                        num = num2;
-                        tag4Obstacles = "Obstacle" + num2;
+                        ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
                     }
+
+                    int num2 = rng.Next(1, ezObstacleCount + 1);
+                    while (num2 == num)
+                    {
+                        num2 = rng.Next(1, ezObstacleCount + 1);
+                    }
+                    num = num2;
+                    tag4Obstacles = "Obstacle" + num2;
                 }
+
             }
             else
             {
-                obstacleToSpawn.attached2Lvl = true;
-                obstacleToSpawn.gameObject.transform.position = position;
-                obstacleToSpawn.gameObject.transform.rotation = rotation;
-                obstacleToSpawn.SetObstacleTextures(texture);
-                obstacleToSpawn.gameObject.SetActive(true);
-                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
-
-                lvlPrefab.hasObstacle = true;
-                lvlPrefab.obstacle = obstacleToSpawn;
+                lvlPrefab.AttachObstacle(obstacleToSpawn, position, rotation, texture);
 
                 ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
             }
@@ -602,57 +602,35 @@ public class LevelGenerator : MonoBehaviour
             if (obstacleToSpawn.attached2Lvl)
             {
                 ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
-
-                while (dothis2)
+                
+                while (allPrefsInQAttached2Lvl)
                 {
-                    while (allPrefsInQAttached2Lvl)
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
                     {
-                        for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                        obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                        if (!obstacleToSpawn.attached2Lvl)
                         {
-                            obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
-                            if (!obstacleToSpawn.attached2Lvl)
-                            {
-                                obstacleToSpawn.attached2Lvl = true;
-                                obstacleToSpawn.gameObject.transform.position = position;
-                                obstacleToSpawn.gameObject.transform.rotation = rotation;
-                                obstacleToSpawn.SetObstacleTextures(texture);
-                                obstacleToSpawn.gameObject.SetActive(true);
-                                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
+                            lvlPrefab.AttachObstacle(obstacleToSpawn, position, rotation, texture);
 
-                                lvlPrefab.hasObstacle = true;
-                                lvlPrefab.obstacle = obstacleToSpawn;
-
-                                dothis2 = false;
-                                allPrefsInQAttached2Lvl = false;
-                            }
                             ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                            return obstacleToSpawn;
                         }
-                        if (!allPrefsInQAttached2Lvl)
-                        {
-                            break;
-                        }
-
-                        int number2 = rng.Next(1, 10);
-                        while(number2 == number)
-                        {
-                            number2 = rng.Next(1, 10);
-                        }
-                        number = number2;
-                        tag4Obstacles = "Obstacle" + number2;
+                        ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
                     }
+
+                    int number2 = rng.Next(minObstacle, maxObstacle + 1);
+                    while (number2 == number)
+                    {
+                        number2 = rng.Next(minObstacle, maxObstacle + 1);
+                    }
+                    number = number2;
+                    tag4Obstacles = "Obstacle" + number2;
                 }
+
             }
             else
             {
-                obstacleToSpawn.attached2Lvl = true;
-                obstacleToSpawn.gameObject.transform.position = position;
-                obstacleToSpawn.gameObject.transform.rotation = rotation;
-                obstacleToSpawn.SetObstacleTextures(texture);
-                obstacleToSpawn.gameObject.SetActive(true);
-                obstacleToSpawn.transform.parent = lvlPrefab.gameObject.transform;
-
-                lvlPrefab.hasObstacle = true;
-                lvlPrefab.obstacle = obstacleToSpawn;
+                lvlPrefab.AttachObstacle(obstacleToSpawn, position, rotation, texture);
 
                 ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
             }
@@ -669,7 +647,7 @@ public class LevelGenerator : MonoBehaviour
 
     IEnumerator transitionDelay()
     {
-        for (float i = 0.0f; i < 0.5f; i+= 0.1f)
+        for (float i = 0.0f; i < 0.5f; i += 0.1f)
         {
             yield return new WaitForSeconds(0.1f);
             while (pauseAllCoroutines || game.Paused)
@@ -780,12 +758,7 @@ public class LevelGenerator : MonoBehaviour
                 {
                     if (CurrentLvl.hasObstacle)
                     {
-                        CurrentLvl.obstacle.attached2Lvl = false;
-
-                        CurrentLvl.obstacle.gameObject.SetActive(false);
-                        CurrentLvl.obstacle.transform.parent = null;
-                        CurrentLvl.hasObstacle = false;
-                        CurrentLvl.obstacle = null;
+                        CurrentLvl.RemoveObstacle();
                     }
 
                     CurrentLvl.gameObject.SetActive(false);
@@ -841,9 +814,7 @@ public class LevelGenerator : MonoBehaviour
 
     void GenerateNextLvl()
     {
-        bool threshold = true;
-
-        while (threshold)
+        while (generateNextLvlSequence)
         {
             if (game.GetScore >= 0)
             {
@@ -942,7 +913,7 @@ public class LevelGenerator : MonoBehaviour
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level3");
-                    SpawnFromObstacles(1,9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[2].about2Spawn = false;
@@ -955,11 +926,18 @@ public class LevelGenerator : MonoBehaviour
         }
 
         activeLvl = SpawnFromPool(activeLvlName);
-        if (activeObstacleTexture != null)
+        if (activeLvl != null)
         {
-            SpawnFromObstacles(1, 9, activeLvl.gameObject.transform.position, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+            if (activeObstacleTexture != null)
+            {
+                SpawnFromObstacles(1, 9, activeLvl.gameObject.transform.position, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+            }
+            lvlSpawnQ.Enqueue(activeLvl);
         }
-        lvlSpawnQ.Enqueue(activeLvl);
+        else
+        {
+            Debug.Log("activelvl = null!!!");
+        }
 
         levelSpawnCounter++;
         NextLvl = lvlSpawnQ.Dequeue();
@@ -995,13 +973,7 @@ public class LevelGenerator : MonoBehaviour
         if (NextLvl.hasObstacle)
         {
             obstacleSpawnCounter++;
-            NextLvl.obstacle.gameObject.SetActive(true);
-            obstaclesShouldBSpawning = true;
-        }
-
-        if (obstaclesShouldBSpawning && NextLvl.obstacle == null)
-        {
-            Debug.LogError(NextLvl.gameObject.name + "does not have an obstacle!!!");
+            //NextLvl.obstacle.gameObject.SetActive(true);
         }
 
         Debug.Log("LevelGenerator:\nNext lvl = " + NextLvl.gameObject.name
