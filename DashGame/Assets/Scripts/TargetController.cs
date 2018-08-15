@@ -14,7 +14,7 @@ public class TargetController : MonoBehaviour
     GameManager game;
     float randomSize;
     Vector3 defaultTargetSize = new Vector3(0.23f, 0.23f, 1);
-    Vector3 troubleshootingSize = new Vector3(0.5f, 0.5f, 1);
+    Vector3 troubleshootingSize = new Vector3(0.7f, 0.7f, 1);
     bool target1Travel;
     bool target2Travel;
     bool target1Hit, target2Hit;

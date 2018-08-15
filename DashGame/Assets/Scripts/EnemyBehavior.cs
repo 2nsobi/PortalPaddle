@@ -417,6 +417,7 @@ public class EnemyBehavior : MonoBehaviour
         firstCollision = true;
         firstTriggerCollision = true;
         cantCollide = false;
+        Physics2D.IgnoreLayerCollision(11, 12, false);
 
         StartCoroutine(SpawnDelay());
     }
