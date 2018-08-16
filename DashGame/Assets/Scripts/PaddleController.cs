@@ -34,6 +34,7 @@ public class PaddleController : MonoBehaviour
     CircleCollider2D endCollider1, endCollider2;
     float touch1Speed, touch2Speed;
     float clampedTouch1Speed, clampedTouch2Speed;
+    float clampedX, clampedY;
 
     private void Awake()
     {
@@ -139,7 +140,9 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            childPaddle1.transform.position = new Vector3(newTouchPos.x, newTouchPos.y, 0); // this is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
+                            Debug.Log(childPaddle1.transform.position);
+                            childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // this is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
+                            Debug.Log(childPaddle1.transform.position);
                             childPaddle1.SetActive(true);
                         }
                     }
@@ -151,10 +154,6 @@ public class PaddleController : MonoBehaviour
                             childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                             childPaddle2.SetActive(true);
                         }
-                    }
-                    if(Input.touchCount > 1)
-                    {
-                        particlesActivated = true;
                     }
                     break;
 
@@ -180,13 +179,15 @@ public class PaddleController : MonoBehaviour
                     if (t.fingerId == 0)
                     {
                         childPaddle1.SetActive(false);
+                        Debug.Log("touch1ended");
                     }
 
                     if (t.fingerId == 1)
                     {
                         childPaddle2.SetActive(false);
+                        Debug.Log("touch2ended");
                     }
-                    particlesActivated = false;
+                    Debug.Log("touchEnded");
                     break;
             }
         }
@@ -194,10 +195,13 @@ public class PaddleController : MonoBehaviour
         if (Input.touchCount > 1)
         {
             MakePaddle();
+            particles.gameObject.SetActive(true);
+            particlesActivated = true;
             paddleCollider.gameObject.SetActive(true);
         }
         else
         {
+            particlesActivated = false;
             paddleCollider.gameObject.SetActive(false);
         }
 
@@ -210,8 +214,8 @@ public class PaddleController : MonoBehaviour
 
     public Vector2 ClampedPos(Vector2 touchPosition) // for first touch
     {
-        float clampedX = Mathf.Clamp(touchPosition.x, corners[0].x + offset, corners[2].x - offset);
-        float clampedY = Mathf.Clamp(touchPosition.y, corners[0].y + offset, corners[2].y - offset);
+        clampedX = Mathf.Clamp(touchPosition.x, corners[0].x + offset, corners[2].x - offset);
+        clampedY = Mathf.Clamp(touchPosition.y, corners[0].y + offset, corners[2].y - offset);
 
         return new Vector2(clampedX, clampedY);
     }
