@@ -52,6 +52,7 @@ public class LevelGenerator : MonoBehaviour
 
         public void AttachObstacle(Obstacle ob, Vector2 position,Quaternion rotation, string texture)
         {
+            //obstacleCount++;
             if (!hasObstacle && obstacleCount == 0)
             {
                 obstacleCount++;
@@ -387,8 +388,6 @@ public class LevelGenerator : MonoBehaviour
 
             ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
         }
-
-        Debug.Log(LvlComponentDict["level3"].Count);
     }
 
     public void ShufflePrefabsInLevels()
@@ -860,7 +859,7 @@ public class LevelGenerator : MonoBehaviour
                         lvlSpawnQ.Enqueue(gradientDespawner);
 
                         defaultLvl = SpawnFromPool("level3");
-                        SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                        SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                         lvlSpawnQ.Enqueue(defaultLvl);
 
                         levels[2].about2Spawn = false;
@@ -880,15 +879,15 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[3].about2Spawn)
                 {
                     specialLvl = specialLvls[0];
-                    SpawnFromObstacles(1, 9, specialLvl.gameObject.transform.position, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, 9, Vector2.zero, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(specialLvl);
 
                     transitionLvl = SpawnFromPool(2);
-                    SpawnFromObstacles(1, 9, transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, 9, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level4");
-                    SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[3].about2Spawn = false;
@@ -909,11 +908,11 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[2].about2Spawn)
                 {
                     transitionLvl = SpawnFromPool(3);
-                    SpawnFromObstacles(1, 9, transitionLvl.gameObject.transform.position, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
+                    SpawnFromObstacles(1, 9, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level3");
-                    SpawnFromObstacles(1, 9, defaultLvl.gameObject.transform.position, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[2].about2Spawn = false;
@@ -930,7 +929,7 @@ public class LevelGenerator : MonoBehaviour
         {
             if (activeObstacleTexture != null)
             {
-                SpawnFromObstacles(1, 9, activeLvl.gameObject.transform.position, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+                SpawnFromObstacles(1, 9, Vector2.zero, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
             }
             lvlSpawnQ.Enqueue(activeLvl);
         }

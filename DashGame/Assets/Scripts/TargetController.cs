@@ -9,7 +9,7 @@ public class TargetController : MonoBehaviour
     Vector3[] spawnAreaCorners = new Vector3[4];
     CircleCollider2D collider; //used to account for the offset needed for the radius of the target
     public GameObject TargetPrefab;
-    public EnemyBehavior ball;
+    EnemyBehavior ball;
     LevelGenerator LG;
     GameManager game;
     float randomSize;
