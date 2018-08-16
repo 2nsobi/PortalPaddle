@@ -5,7 +5,30 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public PaddleController Paddle;
+    public class PaddlePrefab
+    {
+        public GameObject mainParticles; // always make the first child of this prefab for the right paddle end and the second for the left end
+        public GameObject rightEnd;
+        public GameObject leftEnd;
+
+        public PaddlePrefab(GameObject pref)
+        {
+            mainParticles = Instantiate(pref);
+            mainParticles.SetActive(false);
+
+            rightEnd = mainParticles.transform.GetChild(0).gameObject;
+            if (pref.transform.childCount>1)
+            {
+                leftEnd = pref.transform.GetChild(1).gameObject;
+            }
+            else
+            {
+                leftEnd = Instantiate(pref.transform.GetChild(0).gameObject);
+            }
+        }
+    }
+
+    PaddleController Paddle;
     LevelGenerator LG;
     EnemyBehavior ball;
     public Button pauseButton;
@@ -36,6 +59,9 @@ public class GameManager : MonoBehaviour
     int newGems;
     float t = 0.0f;
     bool canEndGame = true;
+    public GameObject[] paddlePrefabs;
+    PaddlePrefab[] paddles;
+    PaddlePrefab paddleInUse;
 
     public static GameManager Instance;
 
@@ -81,7 +107,6 @@ public class GameManager : MonoBehaviour
         TargetController = TargetController.Instance;
         LG = LevelGenerator.Instance;
         ball = EnemyBehavior.Instance;
-        Paddle.gameObject.SetActive(false);
 
         gems = PlayerPrefs.GetInt("gems");
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
@@ -89,12 +114,21 @@ public class GameManager : MonoBehaviour
         startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
         startPageGems.text = gems.ToString();
 
+        paddles = new PaddlePrefab[paddlePrefabs.Length];
+        for (int i = 0; i < paddlePrefabs.Length; i++)
+        {
+            paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
+        }
+        paddleInUse = paddles[0];
+        Paddle.SetPaddle(paddleInUse);
+        DeactivatePaddle();
+
         GoToStartPage();
         gameRunning = false;
         paused = false;
     }
 
-    private void OnEnable()
+    private void OnEnable() //this is called after start()
     {
         EnemyBehavior.PlayerMissed += PlayerMissed;
         TargetController.TargetHit += TargetHit;
@@ -121,6 +155,7 @@ public class GameManager : MonoBehaviour
         }
         CountdownPage.SetActive(false);
         paused = false;
+        Paddle.gameObject.SetActive(true);
         Time.timeScale = timeScale;
     }
 
@@ -320,21 +355,21 @@ public class GameManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
         SetPageState(pageState.Game);
-        Paddle.gameObject.SetActive(true);
         extraBallSprite.SetActive(false);
         gameRunning = true;
         StartCoroutine("GameErrorTest");
-
         replayButton.interactable = true;
+        Paddle.gameObject.SetActive(true);
 
         GameStarted();
     }
+
 
     public void GameOver()
     {
         StopCoroutine("GameErrorTest");
         gameRunning = false;
-        Paddle.gameObject.SetActive(false);
+        DeactivatePaddle();
         SetPageState(pageState.GameOver);
     }
 
@@ -342,7 +377,6 @@ public class GameManager : MonoBehaviour
     {
         SetPageState(pageState.CountdownPage);
         pauseCoroutine = StartCoroutine(Countdown());
-        Paddle.gameObject.SetActive(true);
     }
 
     public void GoToSettings()
@@ -365,7 +399,7 @@ public class GameManager : MonoBehaviour
         {
             StopCoroutine(pauseCoroutine); // whenever trying to stop a coroutine make sure you start and stop it with its string name. This way all coroutines running with that name stop instead of the specific one that was started.
         }
-        Paddle.gameObject.SetActive(false);
+        DeactivatePaddle();
         paused = true;
     }
 
@@ -492,5 +526,19 @@ public class GameManager : MonoBehaviour
         {
             return paused;
         }
+    }
+
+    public PaddlePrefab PaddleInUse
+    {
+        get
+        {
+            return paddleInUse;
+        }
+    }
+
+    public void DeactivatePaddle()
+    {
+        Paddle.DeactivatePaddle();
+        Paddle.gameObject.SetActive(false);
     }
 }

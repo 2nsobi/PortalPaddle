@@ -35,10 +35,19 @@ public class PaddleController : MonoBehaviour
     float touch1Speed, touch2Speed;
     float clampedTouch1Speed, clampedTouch2Speed;
     float clampedX, clampedY;
+    GameManager game;
 
     private void Awake()
     {
         Instance = this;
+
+        GameObject tapArea = GameObject.Find("tapArea");
+
+        // to use RectTransformUtility.RectangleContainsScreenPoint correctly the RectTransform parameter must be set to the transform of the game object not the rect tranfsorm components rect transform
+        tapAreaRect = tapArea.transform as RectTransform;
+        corners = new Vector3[4];
+        tapAreaRect.GetWorldCorners(corners);
+
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";
@@ -50,26 +59,33 @@ public class PaddleController : MonoBehaviour
 
         childPaddle1 = transform.Find("Paddle1").gameObject;
         endCollider1 = childPaddle1.GetComponent<CircleCollider2D>();
+        childPaddle1.SetActive(false);
+
         childPaddle2 = transform.Find("Paddle2").gameObject;
         endCollider2 = childPaddle2.GetComponent<CircleCollider2D>();
-
-        GameObject tapArea = GameObject.Find("tapArea");
-
-        // to use RectTransformUtility.RectangleContainsScreenPoint correctly the RectTransform parameter must be set to the transform of the game object not the rect tranfsorm components rect transform
-        tapAreaRect = tapArea.transform as RectTransform;
-        corners = new Vector3[4];
-        tapAreaRect.GetWorldCorners(corners);
-
-        particles = Instantiate(particlePrefab, Vector2.right * 900, paddleCollider.transform.rotation) as GameObject;        
-        particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
-        particleAnimator = particles.GetComponent<Animator>();
-        particles.transform.parent = transform;
-        particles.transform.localPosition = Vector2.zero;
+        childPaddle2.SetActive(false);
     }
 
     private void Start()
     {
         ball = EnemyBehavior.Instance;
+        game = GameManager.Instance;
+    }
+
+    public void SetPaddle(GameManager.PaddlePrefab paddle) // for a paddle to be a paddle it needs a right and left end and a main particles
+    {
+        paddle.rightEnd.transform.parent = childPaddle1.transform;
+        paddle.rightEnd.transform.localScale = Vector3.one;
+        paddle.rightEnd.transform.localPosition = Vector2.zero;
+        paddle.leftEnd.transform.parent = childPaddle2.transform;
+        paddle.leftEnd.transform.localScale = Vector3.one;
+        paddle.leftEnd.transform.localPosition = Vector2.zero;
+
+        particles = paddle.mainParticles;
+        particles.transform.parent = transform;
+        particles.transform.localPosition = Vector2.zero;
+        particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
+        particleAnimator = particles.GetComponent<Animator>();
     }
 
     public float GetDistanceDifferenceForWalls()// used to set initial wall position in levelgenerator class
@@ -77,21 +93,9 @@ public class PaddleController : MonoBehaviour
         return 2.69159f - Vector3.Distance(new Vector3(0, 0, 0), new Vector3(corners[0].x, 0, 0));
     }
 
-    private void OnEnable()
-    {
-        childPaddle1.SetActive(false);
-        childPaddle2.SetActive(false);
-        paddleCollider.gameObject.SetActive(false);
-        particles.gameObject.SetActive(false);
-    }
-
-    private void OnDisable()
-    {
-        paddleCollider.gameObject.SetActive(false);
-    }
-
     private void Update()
     {
+
         if (particles.activeInHierarchy)
         {
             particleAnimator.SetBool("particlesActivated", particlesActivated);
@@ -106,6 +110,7 @@ public class PaddleController : MonoBehaviour
             endCollider1.enabled = true;
             endCollider2.enabled = true;
         }
+
     }
 
     private void FixedUpdate()
@@ -140,9 +145,8 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            Debug.Log(childPaddle1.transform.position);
+                            childPaddle1.SetActive(true);
                             childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // this is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
-                            Debug.Log(childPaddle1.transform.position);
                             childPaddle1.SetActive(true);
                         }
                     }
@@ -151,6 +155,7 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
+                            childPaddle2.SetActive(true);
                             childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                             childPaddle2.SetActive(true);
                         }
@@ -195,7 +200,7 @@ public class PaddleController : MonoBehaviour
         if (Input.touchCount > 1)
         {
             MakePaddle();
-            particles.gameObject.SetActive(true);
+            particles.SetActive(true);
             particlesActivated = true;
             paddleCollider.gameObject.SetActive(true);
         }
@@ -210,6 +215,7 @@ public class PaddleController : MonoBehaviour
             childPaddle1.SetActive(false);
             childPaddle2.SetActive(false);
         }
+
     }
 
     public Vector2 ClampedPos(Vector2 touchPosition) // for first touch
@@ -227,7 +233,7 @@ public class PaddleController : MonoBehaviour
         paddleCollider.transform.position = (childPaddle1.transform.position + childPaddle2.transform.position) / 2;
         angle = Mathf.Atan2(Mathf.Abs(childPaddle2.transform.position.y - childPaddle1.transform.position.y), Mathf.Abs(childPaddle2.transform.position.x - childPaddle1.transform.position.x));
 
-        if ((childPaddle1.transform.position.y < childPaddle2.transform.position.y && childPaddle1.transform.position.x > childPaddle2.transform.position.x) 
+        if ((childPaddle1.transform.position.y < childPaddle2.transform.position.y && childPaddle1.transform.position.x > childPaddle2.transform.position.x)
             || (childPaddle2.transform.position.y < childPaddle1.transform.position.y && childPaddle2.transform.position.x > childPaddle1.transform.position.x)) // for when the right finger is in the 2nd quadrant or when the left finger is in the 4th quadrant of the xy plane
         {
             angle *= -1;
@@ -258,5 +264,12 @@ public class PaddleController : MonoBehaviour
         particles.gameObject.SetActive(true);
         particleScale = new Vector3(paddleLength, 0, 0);
         particleShape.scale = particleScale;
+    }
+
+    public void DeactivatePaddle()
+    {
+        childPaddle1.SetActive(false);
+        childPaddle2.SetActive(false);
+        particles.SetActive(false);
     }
 }
