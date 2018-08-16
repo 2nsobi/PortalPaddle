@@ -211,6 +211,7 @@ public class LevelGenerator : MonoBehaviour
     string tag4Obstacles;
     bool pauseAllCoroutines = false;
     bool generateNextLvlSequence = true;
+    float distanceDiff4Walls;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -266,13 +267,14 @@ public class LevelGenerator : MonoBehaviour
 
         currentlyTransitioning = false;
 
+        distanceDiff4Walls = paddle.GetDistanceDifferenceForWalls();
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
         material = StartLevel.gameObject.GetComponentInChildren<Renderer>().sharedMaterial;
         material.SetFloat("_InvertColors", 0);
         Transform wallW = StartLevel.gameObject.transform.GetChild(0);
         Transform wallE = StartLevel.gameObject.transform.GetChild(1);
-        wallW.localPosition = new Vector3(wallW.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW.localPosition.y, 0);
-        wallE.localPosition = new Vector3(wallE.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE.localPosition.y, 0);
+        wallW.localPosition = new Vector3(wallW.localPosition.x + distanceDiff4Walls, wallW.localPosition.y, 0);
+        wallE.localPosition = new Vector3(wallE.localPosition.x - distanceDiff4Walls, wallE.localPosition.y, 0);
         CurrentLvl = StartLevel;
 
         LvlComponentDict = new Dictionary<string, List<Queue<LvlPrefab>>>();
@@ -298,8 +300,8 @@ public class LevelGenerator : MonoBehaviour
                     LvlPrefab obj1 = new LvlPrefab(Instantiate(prefab));
                     Transform wallW0 = obj1.gameObject.transform.GetChild(0);
                     Transform wallE0 = obj1.gameObject.transform.GetChild(1);
-                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
-                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
+                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + distanceDiff4Walls, wallW0.localPosition.y, 0);
+                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - distanceDiff4Walls, wallE0.localPosition.y, 0);
                     obj1.gameObject.SetActive(false);
 
                     objectPool.Enqueue(obj1);
@@ -311,8 +313,8 @@ public class LevelGenerator : MonoBehaviour
             transitionLvls[k] = new LvlPrefab(Instantiate(level.transitionLvl));
             Transform wallW1 = transitionLvls[k].gameObject.transform.GetChild(0);
             Transform wallE1 = transitionLvls[k].gameObject.transform.GetChild(1);
-            wallW1.localPosition = new Vector3(wallW1.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW1.localPosition.y, 0);
-            wallE1.localPosition = new Vector3(wallE1.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE1.localPosition.y, 0);
+            wallW1.localPosition = new Vector3(wallW1.localPosition.x + distanceDiff4Walls, wallW1.localPosition.y, 0);
+            wallE1.localPosition = new Vector3(wallE1.localPosition.x - distanceDiff4Walls, wallE1.localPosition.y, 0);
             transitionLvls[k].gameObject.SetActive(false);
 
             if (level.specialLvlPrefabs.Length > 0)
@@ -350,8 +352,8 @@ public class LevelGenerator : MonoBehaviour
                     LvlPrefab obj1 = new LvlPrefab(Instantiate(go));
                     Transform wallW0 = obj1.gameObject.transform.GetChild(0);
                     Transform wallE0 = obj1.gameObject.transform.GetChild(1);
-                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + paddle.GetDistanceDifferenceForWalls(), wallW0.localPosition.y, 0);
-                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - paddle.GetDistanceDifferenceForWalls(), wallE0.localPosition.y, 0);
+                    wallW0.localPosition = new Vector3(wallW0.localPosition.x + distanceDiff4Walls, wallW0.localPosition.y, 0);
+                    wallE0.localPosition = new Vector3(wallE0.localPosition.x - distanceDiff4Walls, wallE0.localPosition.y, 0);
                     obj1.gameObject.SetActive(false);
                     specialLvls[k] = obj1;
                     k++;
