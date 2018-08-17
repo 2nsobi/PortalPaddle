@@ -12,7 +12,7 @@ public class PaddleController : MonoBehaviour
     public float offset; //used to offset childPaddle1 in ClampedPos() so that the sprite does not appear in the wall
     BoxCollider2D paddleCollider;
     Rigidbody2D paddleRigidBody; // for continuous collisions
-    Vector3 touch1Pos, touch2Pos;
+    Vector2 touch1Pos, touch2Pos;
     float paddleLength;
     float angle;
     public GameObject particlePrefab;
@@ -25,10 +25,8 @@ public class PaddleController : MonoBehaviour
     public static PaddleController Instance;
     public float maxPaddleLength; //subtracts length from the paddle;
     LayerMask background = 0;
-    float rayDistance;
-    Ray2D ray;
     Vector3 touchPos;
-    Vector3 newTouchPos;
+    Vector2 newTouchPos;
     EnemyBehavior ball;
     bool particlesActivated = false;
     CircleCollider2D endCollider1, endCollider2;
@@ -95,7 +93,6 @@ public class PaddleController : MonoBehaviour
 
     private void Update()
     {
-
         if (particles.activeInHierarchy)
         {
             particleAnimator.SetBool("particlesActivated", particlesActivated);
@@ -111,10 +108,6 @@ public class PaddleController : MonoBehaviour
             endCollider2.enabled = true;
         }
 
-    }
-
-    private void FixedUpdate()
-    {
         //When using multi touch make sure to use fingerID's to track fingers seperately
         foreach (Touch t in Input.touches)
         {
@@ -127,9 +120,8 @@ public class PaddleController : MonoBehaviour
             }
             if (t.fingerId == 1)
             {
-                rayDistance = Mathf.Clamp(Vector3.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength);
-                ray = new Ray2D(touch1Pos, newTouchPos - touch1Pos);
-                touch2Pos = ray.GetPoint(rayDistance);
+                //right math for getting vector between two points
+                touch2Pos = touch1Pos + Vector2.ClampMagnitude(newTouchPos - touch1Pos, Mathf.Clamp(Vector2.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength)); 
             }
 
             // this if block is used so that a paddle wont appear if the pause button is tapped
@@ -145,17 +137,16 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            childPaddle1.SetActive(true);
-                            childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // this is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
+                            childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // putting 0 is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
                             childPaddle1.SetActive(true);
                         }
                     }
 
-                    if (t.fingerId == 1)
+                    if (t.fingerId >= 1)
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            childPaddle2.SetActive(true);
+                            Debug.Log(touch2Pos);
                             childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                             childPaddle2.SetActive(true);
                         }
@@ -262,7 +253,7 @@ public class PaddleController : MonoBehaviour
         particles.transform.rotation = paddleCollider.transform.rotation;
         particles.transform.position = paddleCollider.transform.position;
         particles.gameObject.SetActive(true);
-        particleScale = new Vector3(paddleLength, 0, 0);
+        particleScale = new Vector2(paddleLength, 0);
         particleShape.scale = particleScale;
     }
 
