@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 leftEnd = Instantiate(pref.transform.GetChild(0).gameObject);
+                leftEnd.SetActive(false);
             }
         }
     }
@@ -119,7 +120,7 @@ public class GameManager : MonoBehaviour
         {
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
         }
-        paddleInUse = paddles[0];
+        paddleInUse = paddles[1];
         Paddle.SetPaddle(paddleInUse);
         DeactivatePaddle();
 

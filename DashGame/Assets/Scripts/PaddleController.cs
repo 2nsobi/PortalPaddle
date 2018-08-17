@@ -34,6 +34,7 @@ public class PaddleController : MonoBehaviour
     float clampedTouch1Speed, clampedTouch2Speed;
     float clampedX, clampedY;
     GameManager game;
+    GameManager.PaddlePrefab activePaddle;
 
     private void Awake()
     {
@@ -72,14 +73,21 @@ public class PaddleController : MonoBehaviour
 
     public void SetPaddle(GameManager.PaddlePrefab paddle) // for a paddle to be a paddle it needs a right and left end and a main particles
     {
-        paddle.rightEnd.transform.parent = childPaddle1.transform;
-        paddle.rightEnd.transform.localScale = Vector3.one;
-        paddle.rightEnd.transform.localPosition = Vector2.zero;
-        paddle.leftEnd.transform.parent = childPaddle2.transform;
-        paddle.leftEnd.transform.localScale = Vector3.one;
-        paddle.leftEnd.transform.localPosition = Vector2.zero;
+        activePaddle = paddle;
 
-        particles = paddle.mainParticles;
+        activePaddle.rightEnd.transform.parent = childPaddle1.transform;
+        activePaddle.rightEnd.SetActive(true);
+        activePaddle.rightEnd.transform.localScale = Vector3.one;
+        activePaddle.rightEnd.transform.localPosition = Vector2.zero;
+
+        activePaddle.leftEnd.transform.parent = childPaddle2.transform;
+        activePaddle.leftEnd.SetActive(true);
+        activePaddle.leftEnd.transform.localScale = Vector3.one;
+        activePaddle.leftEnd.transform.localPosition = Vector2.zero;
+
+
+
+        particles = activePaddle.mainParticles;
         particles.transform.parent = transform;
         particles.transform.localPosition = Vector2.zero;
         particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
