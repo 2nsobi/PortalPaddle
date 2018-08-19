@@ -9,7 +9,7 @@ public class TargetController : MonoBehaviour
     Vector3[] spawnAreaCorners = new Vector3[4];
     CircleCollider2D collider; //used to account for the offset needed for the radius of the target
     public GameObject TargetPrefab;
-    EnemyBehavior ball;
+    BallController ball;
     LevelGenerator LG;
     GameManager game;
     float randomSize;
@@ -83,7 +83,7 @@ public class TargetController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        ball = EnemyBehavior.Instance;
+        ball = BallController.Instance;
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
@@ -120,9 +120,9 @@ public class TargetController : MonoBehaviour
 
     private void OnEnable()
     {
-        EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
+        BallController.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         GameManager.GameStarted += GameStarted;
-        EnemyBehavior.AbsorbDone += AbsorbDone;
+        BallController.AbsorbDone += AbsorbDone;
         GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
         LevelGenerator.TransitionDone += TransitionDone;
@@ -130,9 +130,9 @@ public class TargetController : MonoBehaviour
 
     private void OnDisable()
     {
-        EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
+        BallController.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         GameManager.GameStarted -= GameStarted;
-        EnemyBehavior.AbsorbDone -= AbsorbDone;
+        BallController.AbsorbDone -= AbsorbDone;
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
         LevelGenerator.TransitionDone -= TransitionDone;

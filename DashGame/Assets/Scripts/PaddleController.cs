@@ -27,7 +27,7 @@ public class PaddleController : MonoBehaviour
     LayerMask background = 0;
     Vector3 touchPos;
     Vector2 newTouchPos;
-    EnemyBehavior ball;
+    BallController ball;
     bool particlesActivated = false;
     CircleCollider2D endCollider1, endCollider2;
     float touch1Speed, touch2Speed;
@@ -67,7 +67,7 @@ public class PaddleController : MonoBehaviour
 
     private void Start()
     {
-        ball = EnemyBehavior.Instance;
+        ball = BallController.Instance;
         game = GameManager.Instance;
     }
 

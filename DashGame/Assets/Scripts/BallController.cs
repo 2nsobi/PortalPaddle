@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyBehavior : MonoBehaviour
+public class BallController : MonoBehaviour
 {
     Rigidbody2D rigidbody;
     public Vector2 startPos;
@@ -39,6 +39,7 @@ public class EnemyBehavior : MonoBehaviour
     LevelGenerator LG;
     SpriteRenderer ballSprite;
     Color originalColor;
+    Color boostColor;
     public float rotationSpeed;
     public CanvasGroup whiteFlashCG;
     Image whiteFlashCGPanel;
@@ -47,8 +48,9 @@ public class EnemyBehavior : MonoBehaviour
     bool fadeBack = false;
     bool cantCollide = false;
     bool pauseAllCoroutines = false;
+    GameManager.BallPrefab activeBall;
 
-    public static EnemyBehavior Instance;
+    public static BallController Instance;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -59,7 +61,6 @@ public class EnemyBehavior : MonoBehaviour
     {
         Instance = this;
         mainCam = Camera.main;
-        animator = GetComponent<Animator>();
         shouldAbsorb = false;
         rigidbody = GetComponent<Rigidbody2D>();
         ballSpawner = GameObject.Find("BallSpawner");
@@ -67,14 +68,9 @@ public class EnemyBehavior : MonoBehaviour
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
-        CollisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
-        FallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
-        FirstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
         Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
         ShouldSpawn = false;
-        ballSprite = transform.Find("BallSprite").GetComponent<SpriteRenderer>();
-        originalColor = ballSprite.color;
 
         Physics2D.IgnoreLayerCollision(8, 10);
         Physics2D.IgnoreLayerCollision(8, 12);
@@ -93,6 +89,22 @@ public class EnemyBehavior : MonoBehaviour
         LG = LevelGenerator.Instance;
 
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
+    }
+
+    public void SetBall(GameManager.BallPrefab ball)
+    {
+        activeBall = ball;
+        activeBall.prefab.transform.SetParent(transform, false);
+        activeBall.prefab.gameObject.SetActive(true);
+
+        ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
+        CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
+        FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
+        FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
+
+        animator = activeBall.animator;
+        originalColor = activeBall.startColor;
+        boostColor = activeBall.boostColor;
     }
 
     private void OnApplicationFocus(bool focus)
@@ -136,10 +148,10 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Update()
     {
-        if (this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
-        {
-            this.transform.position = Vector2.right * 1000;
-        }
+        //if (this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
+        //{
+        //    this.transform.position = Vector2.right * 1000;
+        //}
 
         if (flash)
         {
@@ -180,20 +192,23 @@ public class EnemyBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
-
-        if (atCenter)
+        if (game.IsGameRunning)
         {
-            this.transform.position = target.GetCurrentTargetPos;
-        }
+            ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
 
-        if (shouldAbsorb)
-        {
-            Absorb();
-        }
+            if (atCenter)
+            {
+                this.transform.position = target.GetCurrentTargetPos;
+            }
 
-        animator.SetBool("ShouldSpawn", ShouldSpawn);
-        animator.SetBool("ShouldShrink", ShouldShrink);
+            if (shouldAbsorb)
+            {
+                Absorb();
+            }
+
+            animator.SetBool("ShouldSpawn", ShouldSpawn);
+            animator.SetBool("ShouldShrink", ShouldShrink);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -249,7 +264,7 @@ public class EnemyBehavior : MonoBehaviour
 
         CameraShake(CameraShakeIntensity, CameraShakeDuration);
 
-        ballSprite.color = new Color32(255, 255, 0, 255);
+        ballSprite.color = boostColor;
         FallEffect.Stop();
         FallEffect.Play();
         animator.SetTrigger("Boost");
