@@ -212,6 +212,8 @@ public class LevelGenerator : MonoBehaviour
     bool pauseAllCoroutines = false;
     bool generateNextLvlSequence = true;
     float distanceDiff4Walls;
+    bool comeBackFromShop = false;
+    public GameObject shop;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -220,15 +222,15 @@ public class LevelGenerator : MonoBehaviour
     private void OnEnable()
     {
         GameManager.GameStarted += GameStarted;
-        EnemyBehavior.AbsorbDone += AbsorbDone;
-        EnemyBehavior.AbsorbDoneAndRichochet += AbsorbDone;
+        BallController.AbsorbDone += AbsorbDone;
+        BallController.AbsorbDoneAndRichochet += AbsorbDone;
     }
 
     private void OnDisable()
     {
         GameManager.GameStarted -= GameStarted;
-        EnemyBehavior.AbsorbDone -= AbsorbDone;
-        EnemyBehavior.AbsorbDoneAndRichochet -= AbsorbDone;
+        BallController.AbsorbDone -= AbsorbDone;
+        BallController.AbsorbDoneAndRichochet -= AbsorbDone;
     }
 
     private void OnApplicationFocus(bool focus)
@@ -247,6 +249,8 @@ public class LevelGenerator : MonoBehaviour
     {
         settingsLevel = Instantiate(SettingsLvl);
         settingsLevel.SetActive(false);
+        shop = settingsLevel.transform.Find("ShopCanvas").gameObject;
+        shop.SetActive(false);
 
         disableFilters = true;
         removeCaves2SkyFilter = true;
@@ -744,6 +748,27 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
+        if (comeBackFromShop)
+        {
+            if (CurrentLvl.gameObject.transform.position.y > 0.8f)
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.Lerp(CurrentLvl.gameObject.transform.position, Vector3.zero, 4 * Time.deltaTime);
+                settingsLevel.transform.position = Vector2.Lerp(settingsLevel.transform.position, this.transform.position - offset2, 4 * Time.deltaTime);
+            }
+            else
+            {
+                CurrentLvl.gameObject.transform.position = Vector2.MoveTowards(CurrentLvl.gameObject.transform.position, Vector3.zero, 2 * Time.deltaTime);
+                settingsLevel.transform.position = Vector2.MoveTowards(settingsLevel.transform.position, this.transform.position - offset2, 2 * Time.deltaTime);
+                if (CurrentLvl.gameObject.transform.position.y == 0)
+                {
+                    comeBackFromShop = false;
+                    settingsLevel.SetActive(false);
+                    shop.SetActive(false);
+                    game.SetPageState(GameManager.pageState.StartPage);
+                }
+            }
+        }
+
         if (currentlyTransitioning)
         {
             if (NextLvl.gameObject.transform.position.y > finishTransitionThreshold)
@@ -1037,7 +1062,14 @@ public class LevelGenerator : MonoBehaviour
 
     public void ComeBackFromSettingsPage()
     {
+        go2Settings = false;
         comeBackFromSettings = true;
+    }
+
+    public void ComeBackFromShop()
+    {
+        go2Settings = false;
+        comeBackFromShop = true;
     }
 
     public bool PlayedOnce

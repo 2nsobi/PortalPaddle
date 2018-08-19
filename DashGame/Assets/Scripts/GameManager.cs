@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
         public GameObject mainParticles; // always make the first child of this prefab for the right paddle end and the second for the left end
         public GameObject rightEnd;
         public GameObject leftEnd;
+        public int index;
 
         public PaddlePrefab(GameObject pref)
         {
@@ -17,7 +18,7 @@ public class GameManager : MonoBehaviour
             mainParticles.SetActive(false);
 
             rightEnd = mainParticles.transform.GetChild(0).gameObject;
-            if (pref.transform.childCount>1)
+            if (pref.transform.childCount > 1)
             {
                 leftEnd = pref.transform.GetChild(1).gameObject;
             }
@@ -29,13 +30,59 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public class BallPrefab
+    {
+        public GameObject prefab; // the children of the ball prefab should be ordered as follows: ballsprite, collisioneffect, falleffect, firstimpact, trail
+        public GameObject ballSprite;
+        public GameObject collisionEffect;
+        public GameObject fallEffect;
+        public GameObject firstImpact;
+        public GameObject boostEffect;
+        public Animator animator;
+        public Color32 startColor;
+        public Color32 boostColor;
+        public int index;
+
+        public BallPrefab(PrefabWithColors pref)
+        {
+            prefab = Instantiate(pref.prefab);
+            prefab.SetActive(false);
+            prefab.transform.localPosition = Vector2.zero;
+
+            ballSprite = prefab.transform.GetChild(0).gameObject;
+            collisionEffect = prefab.transform.GetChild(1).gameObject;
+            fallEffect = prefab.transform.GetChild(2).gameObject;
+            firstImpact = prefab.transform.GetChild(3).gameObject;
+            try
+            {
+                boostEffect = prefab.transform.Find("BoostEffect").gameObject;
+            }
+            catch (System.NullReferenceException)
+            {
+            }
+
+            startColor = pref.startColor;
+            boostColor = pref.boostColor;
+            animator = prefab.GetComponent<Animator>();
+        }
+    }
+
+    [System.Serializable]
+    public class PrefabWithColors
+    {
+        public GameObject prefab;
+        public Color32 startColor; // start color should usually be this slightly grayish white : EAEAEA
+        public Color32 boostColor;
+    }
+
     PaddleController Paddle;
     LevelGenerator LG;
-    EnemyBehavior ball;
+    BallController ball;
     public Button pauseButton;
     public Text countdownText;
     public Animator scoreReviewAnimC;
-    public Animator settingsPageAnimC;
+    public Animator settingsPageAnimC; //for the settings page back button
+    public Animator shopPageAnimC; //for the shop page back button
     public Button skipScoreReviewButton;
     public Button replayButton;
     bool extraBall;
@@ -63,6 +110,9 @@ public class GameManager : MonoBehaviour
     public GameObject[] paddlePrefabs;
     PaddlePrefab[] paddles;
     PaddlePrefab paddleInUse;
+    public PrefabWithColors[] ballPrefabs;
+    BallPrefab[] balls;
+    BallPrefab ballInUse;
 
     public static GameManager Instance;
 
@@ -78,8 +128,9 @@ public class GameManager : MonoBehaviour
     public GameObject SettingsPage;
     public GameObject GamePage;
     public GameObject ScoreReview;
+    public GameObject ShopPage;
 
-    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview };
+    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage};
     pageState currentPageState;
 
     public pageState GetCurrentPageState
@@ -92,9 +143,15 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        /********************************************
+         DELETE THIS
+         **********************************************/
 
         PlayerPrefs.DeleteAll();
 
+        /********************************************
+        DELETE THIS
+        **********************************************/
 
 
         Instance = this;
@@ -107,7 +164,7 @@ public class GameManager : MonoBehaviour
         Paddle = PaddleController.Instance;
         TargetController = TargetController.Instance;
         LG = LevelGenerator.Instance;
-        ball = EnemyBehavior.Instance;
+        ball = BallController.Instance;
 
         gems = PlayerPrefs.GetInt("gems");
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
@@ -119,10 +176,20 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < paddlePrefabs.Length; i++)
         {
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
+            paddles[i].index = i;
         }
         paddleInUse = paddles[1];
         Paddle.SetPaddle(paddleInUse);
         DeactivatePaddle();
+
+        balls = new BallPrefab[ballPrefabs.Length];
+        for (int i = 0; i < ballPrefabs.Length; i++)
+        {
+            balls[i] = new BallPrefab(ballPrefabs[i]);
+            balls[i].index = i;
+        }
+        ballInUse = balls[1];
+        ball.SetBall(ballInUse);
 
         GoToStartPage();
         gameRunning = false;
@@ -131,14 +198,14 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable() //this is called after start()
     {
-        EnemyBehavior.PlayerMissed += PlayerMissed;
+        BallController.PlayerMissed += PlayerMissed;
         TargetController.TargetHit += TargetHit;
         TargetController.TargetHitAndRichochet += TargetHitAndRichochet;
     }
 
     private void OnDisable()
     {
-        EnemyBehavior.PlayerMissed -= PlayerMissed;
+        BallController.PlayerMissed -= PlayerMissed;
         TargetController.TargetHit -= TargetHit;
         TargetController.TargetHitAndRichochet -= TargetHitAndRichochet;
     }
@@ -196,7 +263,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReviveDelay()
     {
-        for (float i = 0.0f; i < 0.6f; i+=0.1f)
+        for (float i = 0.0f; i < 0.6f; i += 0.1f)
         {
             yield return new WaitForSeconds(0.1f);
             while (pauseAllCoroutines || paused)
@@ -255,6 +322,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
                 break;
 
             case pageState.StartPage:
@@ -266,6 +334,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
 
                 gemsOnScreen = false;
                 break;
@@ -279,6 +348,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
                 break;
 
             case pageState.Paused:
@@ -290,6 +360,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
 
                 pauseButton.gameObject.SetActive(false);
 
@@ -304,6 +375,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(true);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
 
                 pauseButton.gameObject.SetActive(true);
 
@@ -318,6 +390,7 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
+                ShopPage.SetActive(false);
                 break;
 
             case pageState.ScoreReview:
@@ -329,8 +402,22 @@ public class GameManager : MonoBehaviour
                 CountdownPage.SetActive(false);
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(true);
+                ShopPage.SetActive(false);
                 break;
 
+            case pageState.ShopPage:
+                currentPageState = pageState.ShopPage;
+                GamePage.SetActive(false);
+                StartPage.SetActive(false);
+                GameOverPage.SetActive(false);
+                PauseMenu.SetActive(false);
+                CountdownPage.SetActive(false);
+                SettingsPage.SetActive(false);
+                ScoreReview.SetActive(false);
+                ShopPage.SetActive(true);
+
+                LG.shop.SetActive(true);
+                break;
         }
     }
 
@@ -340,7 +427,7 @@ public class GameManager : MonoBehaviour
         {
             t += 0.1f * Time.deltaTime;
             gems = Mathf.Lerp(gems, newGems, t);
-            if(gems == newGems)
+            if (gems == newGems)
             {
                 gemsOnScreen = false;
             }
@@ -389,7 +476,21 @@ public class GameManager : MonoBehaviour
     public void ComeBackFromSettings()
     {
         settingsPageAnimC.SetTrigger("leave");
+        shopPageAnimC.SetTrigger("leave");
         LG.ComeBackFromSettingsPage();
+    }
+
+    public void GoToShop()
+    {
+        SetPageState(pageState.ShopPage);
+        LG.GoToSettingsPage();
+    }
+
+    public void ComeBackFromShop()
+    {
+        settingsPageAnimC.SetTrigger("leave");
+        shopPageAnimC.SetTrigger("leave");
+        LG.ComeBackFromShop();
     }
 
     public void PauseGame()
@@ -452,7 +553,7 @@ public class GameManager : MonoBehaviour
     {
         t = 0.0f;
         gems = PlayerPrefs.GetInt("gems");
-        newGems = (int) gems + score;
+        newGems = (int)gems + score;
         scoreReviewGems.text = gems.ToString();
         PlayerPrefs.SetInt("gems", newGems);
         startPageGems.text = newGems.ToString();
@@ -500,10 +601,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameErrorTest()
     {
-        for (int i = 0; i < 40; i ++)//set this coroutine to be the length of the swipeIn anim
+        for (int i = 0; i < 40; i++)//set this coroutine to be the length of the swipeIn anim
         {
             yield return new WaitForSeconds(1);
-            while (pauseAllCoroutines ||paused)
+            while (pauseAllCoroutines || paused)
             {
                 yield return null;
             }
