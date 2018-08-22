@@ -18,13 +18,13 @@ public class AdManager : MonoBehaviour
         /*******************************************************************************************************************************
          ADMOB
          ******************************************************************************************************************************/
-#if UNITY_ANDROID
+        #if UNITY_ANDROID
             string adUnitId = "ca-app-pub-3940256099942544/6300978111";
-#elif UNITY_IPHONE
+        #elif UNITY_IPHONE
             string adUnitId = "INSERT_IOS_AD_BANNER_ID_HERE";
-#else
+        #else
             string adUnitId = "unexpected_platform";
-#endif
+        #endif
 
         MobileAds.Initialize(adUnitId);
 
@@ -52,8 +52,13 @@ public class AdManager : MonoBehaviour
 
         bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
 
+        // for ad testing on test device
+        AdRequest request = new AdRequest.Builder()
+            .AddTestDevice("4C8738066533E90AE1E70F01646E63F3") //  <---------- test device id
+            .Build();
+
         //// Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
+        //AdRequest request = new AdRequest.Builder().Build();
 
         // Load the banner with the request.
         bannerView.LoadAd(request);

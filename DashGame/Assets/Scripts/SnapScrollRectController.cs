@@ -18,7 +18,8 @@ public class SnapScrollRectController : MonoBehaviour
         public int gemCost;
         public bool selected;
         public ParticleSystem.MainModule PSMainMod;
-        public SpriteRenderer spriteRenderer;
+        public ParticleSystem particleSystem = null;
+        public SpriteRenderer spriteRenderer = null;
         ShopController shopC = ShopController.Instance;
         public ShopController.buttonLayout buttonLayout;
 
@@ -54,7 +55,8 @@ public class SnapScrollRectController : MonoBehaviour
             }
             else
             {
-                PSMainMod = gameObject.GetComponent<ParticleSystem>().main;
+                particleSystem = gameObject.GetComponent<ParticleSystem>();
+                PSMainMod = particleSystem.main;
                 if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
                 {
                     originalColor = PSMainMod.startColor.color;
@@ -94,34 +96,55 @@ public class SnapScrollRectController : MonoBehaviour
 
         public void Unlock()
         {
-            PlayerPrefsX.SetBool(this.gameObject.name, true);
+            PlayerPrefsX.SetBool(gameObject.name, true);
+            unlocked = true;
 
-            if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
+            if (spriteRenderer != null)
             {
-                PSMainMod.startColor = originalColor;
+                spriteRenderer.color = originalColor;
             }
-            if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoGradients)
+            else
             {
-                PSMainMod.startColor = new ParticleSystem.MinMaxGradient(minGradient, maxGradient);
-            }
-            if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Gradient)
-            {
-                PSMainMod.startColor = originalGradient;
-            }
-            if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoColors)
-            {
-                PSMainMod.startColor = new ParticleSystem.MinMaxGradient(minColor, maxColor);
+                particleSystem.Clear();
+
+                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
+                {
+                    PSMainMod.startColor = originalColor;
+                }
+                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoGradients)
+                {
+                    PSMainMod.startColor = new ParticleSystem.MinMaxGradient(minGradient, maxGradient);
+                }
+                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Gradient)
+                {
+                    PSMainMod.startColor = originalGradient;
+                }
+                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoColors)
+                {
+                    PSMainMod.startColor = new ParticleSystem.MinMaxGradient(minColor, maxColor);
+                }
             }
         }
 
         public void Select()
         {
-            if (unlocked)
+            if (!unlocked)
             {
-                buttonLayout = ShopController.buttonLayout.selected;
-
-
+                Unlock();
             }
+
+            PlayerPrefsX.SetBool(gameObject.name + "Selected", true);
+            selected = true;
+
+            buttonLayout = ShopController.buttonLayout.selected;   
+        }
+
+        public void UnSelect()
+        {
+            PlayerPrefsX.SetBool(gameObject.name + "Selected", false);
+            selected = false;
+
+            buttonLayout = ShopController.buttonLayout.unlocked;
         }
     }
 
@@ -141,8 +164,9 @@ public class SnapScrollRectController : MonoBehaviour
     bool snap2End = false;
     Coroutine stopMovement;
     ShopController shopC;
+    public int selectedItemIndex = 0;
 
-    private void Start()
+    private void Awake()
     {
         shopC = ShopController.Instance;
 
@@ -162,9 +186,22 @@ public class SnapScrollRectController : MonoBehaviour
         itemSeperation = Mathf.Abs(items[0].anchoredPosition.x - items[1].anchoredPosition.x);
     }
 
-    public void SelectItem(ShopItem item)
+    public void SelectItem()
     {
+        UnselectAllItems();
+        shopItems[focalItemNum].Select();
+        selectedItemIndex = focalItemNum;
+    }
 
+    public void Go2Shop()
+    {
+        foreach (ShopItem item in shopItems)
+        {
+            if (item.particleSystem != null)
+            {
+                item.particleSystem.Clear(); //clear particles so that when you go to shop and they are locked they wont be colorful but instead gray
+            }
+        }
     }
 
     private void Update()
@@ -184,7 +221,7 @@ public class SnapScrollRectController : MonoBehaviour
             }
         }
 
-        shopC.SetButtonLayout(shopItems[focalItemNum]);
+        shopC.SetButtonLayout(shopItems[focalItemNum], shopItems[focalItemNum].gemCost);
 
         if (!swiping) // || (content2Scroll.anchoredPosition.x <= 0 && content2Scroll.anchoredPosition.x >= (distances2SnapPositon.Length - 1) * -itemSeperation))
         {
@@ -245,4 +282,28 @@ public class SnapScrollRectController : MonoBehaviour
         }
     }
 
+    public ShopItem FocalShopItem
+    {
+        get
+        {
+            return shopItems[focalItemNum];
+        }
+    }
+
+    public void UnselectAllItems()
+    {
+        foreach (ShopItem item in shopItems)
+        {
+            if (item.selected)
+            {
+                item.UnSelect();
+                break;
+            }
+        }
+    }
+
+    public void Go2Selected()
+    {
+        content2Scroll.anchoredPosition = new Vector2(selectedItemIndex * -itemSeperation,0);
+    }
 }
