@@ -6,7 +6,8 @@ using GoogleMobileAds.Api;
 public class AdManager : MonoBehaviour
 {
     public static AdManager Instance;
-    private BannerView bannerView;
+    BannerView bannerView;
+    string AndroidAdUnitId = "ca-app-pub-8748712167919890/3853099194"; // test ads ID is "ca-app-pub-3940256099942544/6300978111"
 
     private void Awake()
     {
@@ -19,7 +20,7 @@ public class AdManager : MonoBehaviour
          ADMOB
          ******************************************************************************************************************************/
         #if UNITY_ANDROID
-            string adUnitId = "ca-app-pub-3940256099942544/6300978111";
+            string adUnitId = AndroidAdUnitId;
         #elif UNITY_IPHONE
             string adUnitId = "INSERT_IOS_AD_BANNER_ID_HERE";
         #else
@@ -43,7 +44,7 @@ public class AdManager : MonoBehaviour
     private void RequestBanner()
     {
         #if UNITY_ANDROID
-            string adUnitId = "ca-app-pub-3940256099942544/6300978111";
+            string adUnitId = AndroidAdUnitId;
         #elif UNITY_IPHONE
             string adUnitId = "INSERT_IOS_AD_BANNER_ID_HERE";
         #else
@@ -54,7 +55,7 @@ public class AdManager : MonoBehaviour
 
         // for ad testing on test device
         AdRequest request = new AdRequest.Builder()
-            .AddTestDevice("4C8738066533E90AE1E70F01646E63F3") //  <---------- test device id
+            .AddTestDevice("D644E73D41BC75D3CCFAC969A9755E98") //  <---------- test device id
             .Build();
 
         //// Create an empty ad request.
