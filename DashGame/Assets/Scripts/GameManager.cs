@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
     bool pauseAllCoroutines = false;
-    Text scoreReviewGems, startPageGems;
+    Text scoreReviewGems, startPageGems, shopPageGems;
     bool gemsOnScreen = false;
     float gems;
     int newGems;
@@ -156,6 +156,7 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         Time.timeScale = timeScale;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     private void Start()
@@ -171,6 +172,8 @@ public class GameManager : MonoBehaviour
         scoreReviewGems.text = gems.ToString();
         startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
         startPageGems.text = gems.ToString();
+        shopPageGems = ShopPage.transform.Find("gems").GetComponent<Text>();
+        shopPageGems.text = gems.ToString();
 
         paddles = new PaddlePrefab[paddlePrefabs.Length];
         for (int i = 0; i < paddlePrefabs.Length; i++)
@@ -178,7 +181,7 @@ public class GameManager : MonoBehaviour
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
             paddles[i].index = i;
         }
-        paddleInUse = paddles[1];
+        paddleInUse = paddles[0];
         Paddle.SetPaddle(paddleInUse);
         DeactivatePaddle();
 
@@ -188,7 +191,7 @@ public class GameManager : MonoBehaviour
             balls[i] = new BallPrefab(ballPrefabs[i]);
             balls[i].index = i;
         }
-        ballInUse = balls[1];
+        ballInUse = balls[0];
         ball.SetBall(ballInUse);
 
         GoToStartPage();
@@ -483,7 +486,7 @@ public class GameManager : MonoBehaviour
     public void GoToShop()
     {
         SetPageState(pageState.ShopPage);
-        LG.GoToSettingsPage();
+        LG.GoToShop();
     }
 
     public void ComeBackFromShop()
@@ -556,7 +559,7 @@ public class GameManager : MonoBehaviour
         newGems = (int)gems + score;
         scoreReviewGems.text = gems.ToString();
         PlayerPrefs.SetInt("gems", newGems);
-        startPageGems.text = newGems.ToString();
+        UpdateGems(newGems);
         if (score > highScore)
         {
             PlayerPrefs.SetInt("HighScore", score);
@@ -573,6 +576,12 @@ public class GameManager : MonoBehaviour
         skipScoreReviewButton.interactable = true;
         disableReplayButtonC = StartCoroutine(DisableReplayButon());
         SetPageState(pageState.ScoreReview);
+    }
+
+    void UpdateGems(int gems) //updates the gem text on each page that has it
+    {
+        startPageGems.text = gems.ToString();
+        shopPageGems.text = gems.ToString();
     }
 
     public int GetScore

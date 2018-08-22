@@ -374,33 +374,74 @@ public class TargetController : MonoBehaviour
                 if (LG.GetNextLvlNumber == 1)
                 {
                     targets[i].transform.parent = nextLvl;
-                    targets[i].transform.localScale = troubleshootingSize;
+                    targets[i].transform.localScale = defaultTargetSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
                 if (LG.GetNextLvlNumber == 2)
                 {
                     targets[i].transform.parent = nextLvl;
-                    //SelectTargetToGrowShrink(targets[i]);
-                    targets[i].transform.localScale = troubleshootingSize;
-                    targets[i].transform.localPosition = RandomPos();
+
+                    targets[i].transform.localScale = defaultTargetSize;
+
+                    if (nextObstaclePath != null)
+                    {
+                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
+                        SelectTargetToTravel(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localPosition = RandomPos();
+                    }
                 }
 
                 if(LG.GetNextLvlNumber == 3)
                 {
                     targets[i].transform.parent = nextLvl;
-                    targets[i].transform.localScale = troubleshootingSize;
-                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                    SelectTargetToTravel(targets[i]);
+
+                    int randomNumber = Random.Range(1, 11);
+                    if (randomNumber % 2 == 0)
+                    {
+                        SelectTargetToGrowShrink(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localScale = defaultTargetSize;
+                    }
+
+                    if (nextObstaclePath != null)
+                    {
+                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
+                        SelectTargetToTravel(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localPosition = RandomPos();
+                    }
                 }
                 
                 if (LG.GetNextLvlNumber >= 4)
                 {
                     targets[i].transform.parent = nextLvl;
-                    //SelectTargetToGrowShrink(targets[i]);
-                    targets[i].transform.localScale = troubleshootingSize;
-                    targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                    SelectTargetToTravel(targets[i]);
+                    int randomNumber = Random.Range(1, 11);
+                    if (randomNumber % 2 == 0)
+                    {
+                        SelectTargetToGrowShrink(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localScale = defaultTargetSize;
+                    }
+
+                    if (nextObstaclePath != null)
+                    {
+                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
+                        SelectTargetToTravel(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localPosition = RandomPos();
+                    }
                 }
             }
         }

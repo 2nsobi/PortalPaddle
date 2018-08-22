@@ -214,6 +214,7 @@ public class LevelGenerator : MonoBehaviour
     float distanceDiff4Walls;
     bool comeBackFromShop = false;
     public GameObject shop;
+    ShopController shopC;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -248,6 +249,8 @@ public class LevelGenerator : MonoBehaviour
     private void Start()
     {
         settingsLevel = Instantiate(SettingsLvl);
+        shopC = ShopController.Instance; //singleton needs to be accessed here because the awake function atached to the shopcontroller script is not called until the object it is attached to is instantiated
+
         settingsLevel.SetActive(false);
         shop = settingsLevel.transform.Find("ShopCanvas").gameObject;
         shop.SetActive(false);
@@ -851,7 +854,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 1)
+            if (game.GetScore >= 10)
             {
                 if (levels[1].about2Spawn)
                 {
@@ -859,6 +862,7 @@ public class LevelGenerator : MonoBehaviour
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level2");
+                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[1].obstacleTexture,true);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     currentlySpawnedGradient = SpawnFromGradients(0);
@@ -870,19 +874,22 @@ public class LevelGenerator : MonoBehaviour
                     levels[1].about2Spawn = false;
                 }
                 activeLvlName = "level2";
+                activeObstacleTexture = levels[1].obstacleTexture;
+                activeObstacleDifficulty = true; // true as in easy
             }
             else
             {
                 break;
             }
 
-            if (game.GetScore >= 2)
+            if (game.GetScore >= 20)
             {
                 if (levels[2].about2Spawn)
                 {
                     if (levels[2].comeBack2)
                     {
                         gradientDespawner = SpawnFromPool(1); //gradientdespawner is considered to be the transitionlvl in this case
+                        SpawnFromObstacles(1, 9, Vector2.zero, gradientDespawner.gameObject.transform.rotation, gradientDespawner, levels[1].obstacleTexture, true);
                         lvlSpawnQ.Enqueue(gradientDespawner);
 
                         defaultLvl = SpawnFromPool("level3");
@@ -901,7 +908,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 3)
+            if (game.GetScore >= 40)
             {
                 if (levels[3].about2Spawn)
                 {
@@ -930,7 +937,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 4)
+            if (game.GetScore >= 80)
             {
                 if (levels[2].about2Spawn)
                 {
@@ -1058,6 +1065,14 @@ public class LevelGenerator : MonoBehaviour
         settingsLevel.SetActive(true);
         settingsLevel.transform.position = new Vector2(0, -10.6f);
         go2Settings = true;
+    }
+
+    public void GoToShop()
+    {
+        settingsLevel.SetActive(true);
+        settingsLevel.transform.position = new Vector2(0, -10.6f);
+        go2Settings = true;
+        shopC.Go2Shop();
     }
 
     public void ComeBackFromSettingsPage()
