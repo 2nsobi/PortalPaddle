@@ -83,7 +83,6 @@ public class TargetController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        ball = BallController.Instance;
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
@@ -116,6 +115,7 @@ public class TargetController : MonoBehaviour
     {
         LG = LevelGenerator.Instance;
         game = GameManager.Instance;
+        ball = BallController.Instance;
     }
 
     private void OnEnable()

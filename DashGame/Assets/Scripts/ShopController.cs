@@ -16,6 +16,7 @@ public class ShopController : MonoBehaviour
     public Button purchaseButton;
 
     string currentMenu = null;
+    Text purchaseButtonPrice;
     Text unlockButtonGemCost;
     GameObject ballSelectionMenu;
     GameObject paddleSelectionMenu;
@@ -35,6 +36,8 @@ public class ShopController : MonoBehaviour
         ballScrollRect = ballSelectionMenu.GetComponent<SnapScrollRectController>();
         paddleScrollRect = paddleSelectionMenu.GetComponent<SnapScrollRectController>();
         unlockButtonGemCost = unlockButton.GetComponentInChildren<Text>();
+        purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
+        purchaseButtonPrice.text = "$0.99";
     }
 
     public void SetButtonLayout(SnapScrollRectController.ShopItem item,int gemCost)
