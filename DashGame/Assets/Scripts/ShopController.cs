@@ -37,7 +37,7 @@ public class ShopController : MonoBehaviour
         paddleScrollRect = paddleSelectionMenu.GetComponent<SnapScrollRectController>();
         unlockButtonGemCost = unlockButton.GetComponentInChildren<Text>();
         purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
-        purchaseButtonPrice.text = "$0.99";
+        purchaseButtonPrice.text = "$1.29";
     }
 
     public void SetButtonLayout(SnapScrollRectController.ShopItem item,int gemCost)
