@@ -212,7 +212,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1612840011943172}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.52042484, y: -0.8172164, z: 0}
+  m_LocalPosition: {x: 0.60354686, y: -2.015711, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4827876436727830}
@@ -5051,7 +5051,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 4
+      minMaxState: 3
       minColor: {r: 1, g: 1, b: 1, a: 1}
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
@@ -5085,33 +5085,33 @@ ParticleSystem:
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
-        key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0, b: 0, a: 0}
-        key5: {r: 0, g: 0, b: 0, a: 0}
-        key6: {r: 0, g: 0, b: 0, a: 0}
+        key0: {r: 1, g: 0, b: 0, a: 1}
+        key1: {r: 0.91895115, g: 0.0031513628, b: 0.7941173, a: 1}
+        key2: {r: 0, g: 0.038882256, b: 1, a: 1}
+        key3: {r: 0.22646344, g: 0.764151, b: 0.18382876, a: 0}
+        key4: {r: 1, g: 0.5793855, b: 0, a: 0}
+        key5: {r: 1, g: 0.5311034, b: 0.0061328015, a: 0}
+        key6: {r: 1, g: 0, b: 0.07359362, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 0
-        ctime3: 0
-        ctime4: 0
-        ctime5: 0
-        ctime6: 0
+        ctime1: 14842
+        ctime2: 27756
+        ctime3: 40285
+        ctime4: 53970
+        ctime5: 59753
+        ctime6: 65535
         ctime7: 0
         atime0: 0
-        atime1: 65535
-        atime2: 0
+        atime1: 964
+        atime2: 65535
         atime3: 0
         atime4: 0
         atime5: 0
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_NumColorKeys: 2
-        m_NumAlphaKeys: 2
+        m_NumColorKeys: 7
+        m_NumAlphaKeys: 3
     startSize:
       serializedVersion: 2
       minMaxState: 0
@@ -13053,7 +13053,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 5121
+      m_Bits: 5120
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
