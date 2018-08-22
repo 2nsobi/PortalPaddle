@@ -178,7 +178,7 @@ public class SnapScrollRectController : MonoBehaviour
         for (int i = 0; i < content2Scroll.childCount; i++)
         {
             items[i] = content2Scroll.GetChild(i).GetComponent<RectTransform>();
-            shopItems[i] = new ShopItem(400, content2Scroll.GetChild(i).gameObject);
+            shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
         }
 
         distances2SnapPositon = new float[items.Length];

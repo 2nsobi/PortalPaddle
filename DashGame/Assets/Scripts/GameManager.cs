@@ -113,6 +113,8 @@ public class GameManager : MonoBehaviour
     public PrefabWithColors[] ballPrefabs;
     BallPrefab[] balls;
     BallPrefab ballInUse;
+    Coroutine gameErrorTest;
+    bool canContinue;
 
     public static GameManager Instance;
 
@@ -130,7 +132,7 @@ public class GameManager : MonoBehaviour
     public GameObject ScoreReview;
     public GameObject ShopPage;
 
-    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage};
+    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
     pageState currentPageState;
 
     public pageState GetCurrentPageState
@@ -249,7 +251,14 @@ public class GameManager : MonoBehaviour
             Debug.Log("you " + (extraBall ? "have an extra ball" : "dont have an extra ball"));
             if (!extraBall)
             {
-                GameOver();
+                if (canContinue)
+                {
+                    GameOver();
+                }
+                else
+                {
+                    EndGame();
+                }
             }
             else
             {
@@ -257,8 +266,8 @@ public class GameManager : MonoBehaviour
                 extraBallSprite.SetActive(false);
                 StartCoroutine(ReviveDelay());
 
-                StopCoroutine("GameErrorTest");
-                StartCoroutine("GameErrorTest");
+                StopCoroutine(gameErrorTest);
+                gameErrorTest = StartCoroutine(GameErrorTest());
             }
             canEndGame = false;
         }
@@ -292,8 +301,8 @@ public class GameManager : MonoBehaviour
         scoreText.text = score.ToString();
         richochetCount = 0;
 
-        StopCoroutine("GameErrorTest");
-        StartCoroutine("GameErrorTest");
+        StopCoroutine(gameErrorTest);
+        gameErrorTest = StartCoroutine(GameErrorTest());
     }
 
     void TargetHitAndRichochet()
@@ -308,8 +317,8 @@ public class GameManager : MonoBehaviour
             extraBallSprite.SetActive(true);
         }
 
-        StopCoroutine("GameErrorTest");
-        StartCoroutine("GameErrorTest");
+        StopCoroutine(gameErrorTest);
+        gameErrorTest = StartCoroutine(GameErrorTest());
     }
 
     public void SetPageState(pageState page)
@@ -448,20 +457,42 @@ public class GameManager : MonoBehaviour
         SetPageState(pageState.Game);
         extraBallSprite.SetActive(false);
         gameRunning = true;
-        StartCoroutine("GameErrorTest");
+        gameErrorTest = StartCoroutine(GameErrorTest());
         replayButton.interactable = true;
         Paddle.gameObject.SetActive(true);
+        canContinue = true;
 
         GameStarted();
     }
 
 
-    public void GameOver()
+    public void GameOver() //soft game over: can still continue after
     {
-        StopCoroutine("GameErrorTest");
+        StopCoroutine(gameErrorTest);
         gameRunning = false;
         DeactivatePaddle();
         SetPageState(pageState.GameOver);
+    }
+
+    public void EndGame() //this will actually end the game: so revive or continue
+    {
+        StopCoroutine(gameErrorTest);
+        gameRunning = false;
+        DeactivatePaddle();
+        GoToScoreReview();
+    }
+
+    public void Continue()
+    {
+        //insert rewarded video add
+
+        StartCoroutine(ReviveDelay());
+        Paddle.gameObject.SetActive(true);
+        gameRunning = true;
+        SetPageState(pageState.Game);
+        gameErrorTest = StartCoroutine(GameErrorTest());
+
+        canContinue = false;
     }
 
     public void ResumeGame()
@@ -513,7 +544,7 @@ public class GameManager : MonoBehaviour
         replayButton.interactable = false;
         if (LG.PlayedOnce)
         {
-            StartCoroutine(EndGame());
+            StartCoroutine(FadeOut());
         }
         else
         {
@@ -522,7 +553,7 @@ public class GameManager : MonoBehaviour
         GameOverConfirmed();
     }
 
-    IEnumerator EndGame()//sent to enemybehavior
+    IEnumerator FadeOut()//sent to enemybehavior
     {
         scoreReviewAnimC.SetTrigger("swipeOut");
         for (float i = 0.0f; i < 0.24f; i += 0.1f)//set this coroutine to be the length of the swipeOut anim
