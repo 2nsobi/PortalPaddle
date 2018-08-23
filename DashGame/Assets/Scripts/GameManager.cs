@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour
     BallPrefab ballInUse;
     Coroutine gameErrorTest;
     bool canContinue;
+    AdManager ads;
 
     public static GameManager Instance;
 
@@ -145,11 +146,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
+
         /********************************************
          DELETE THIS
          **********************************************/
 
-        PlayerPrefs.DeleteAll();
+        ZPlayerPrefs.DeleteAll();
 
         /********************************************
         DELETE THIS
@@ -168,8 +171,9 @@ public class GameManager : MonoBehaviour
         TargetController = TargetController.Instance;
         LG = LevelGenerator.Instance;
         ball = BallController.Instance;
+        ads = AdManager.Instance;
 
-        gems = PlayerPrefs.GetInt("gems");
+        gems = ZPlayerPrefs.GetInt("gems");
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
         scoreReviewGems.text = gems.ToString();
         startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
@@ -199,6 +203,8 @@ public class GameManager : MonoBehaviour
         GoToStartPage();
         gameRunning = false;
         paused = false;
+
+        print(Camera.main.aspect);
     }
 
     private void OnEnable() //this is called after start()
@@ -484,7 +490,7 @@ public class GameManager : MonoBehaviour
 
     public void Continue()
     {
-        //insert rewarded video add
+        //ads.ShowRewardVideo(false);
 
         StartCoroutine(ReviveDelay());
         Paddle.gameObject.SetActive(true);
@@ -551,6 +557,8 @@ public class GameManager : MonoBehaviour
             SetPageState(pageState.StartPage);
         }
         GameOverConfirmed();
+
+        //ads.ShowInterstitialOrNonSkipAd();
     }
 
     IEnumerator FadeOut()//sent to enemybehavior
@@ -586,14 +594,13 @@ public class GameManager : MonoBehaviour
     public void GoToScoreReview()
     {
         t = 0.0f;
-        gems = PlayerPrefs.GetInt("gems");
+        gems = ZPlayerPrefs.GetInt("gems");
         newGems = (int)gems + score;
         scoreReviewGems.text = gems.ToString();
-        PlayerPrefs.SetInt("gems", newGems);
-        UpdateGems(newGems);
+        UpdateGems(score);
         if (score > highScore)
         {
-            PlayerPrefs.SetInt("HighScore", score);
+            ZPlayerPrefs.SetInt("HighScore", score);
             newHighScoreImage.SetActive(true);
         }
         else
@@ -601,7 +608,7 @@ public class GameManager : MonoBehaviour
             newHighScoreImage.SetActive(false);
         }
         gameOverScore.text = score.ToString();
-        highScore = PlayerPrefs.GetInt("HighScore");
+        highScore = ZPlayerPrefs.GetInt("HighScore");
         highScoreText.text = highScore.ToString();
 
         skipScoreReviewButton.interactable = true;
@@ -609,10 +616,22 @@ public class GameManager : MonoBehaviour
         SetPageState(pageState.ScoreReview);
     }
 
-    void UpdateGems(int gems) //updates the gem text on each page that has it
+    public void UpdateGems(int gems2Add, bool subtract = false) //updates the gem text on each page that has it
     {
-        startPageGems.text = gems.ToString();
-        shopPageGems.text = gems.ToString();
+        if (!subtract)
+        {
+            int gemsTotal = ZPlayerPrefs.GetInt("gems") + gems2Add;
+            ZPlayerPrefs.SetInt("gems", gemsTotal);
+            startPageGems.text = gemsTotal.ToString();
+            shopPageGems.text = gemsTotal.ToString();
+        }
+        else
+        {
+            int gemsTotal = ZPlayerPrefs.GetInt("gems") - gems2Add;
+            ZPlayerPrefs.SetInt("gems", gemsTotal);
+            startPageGems.text = gemsTotal.ToString();
+            shopPageGems.text = gemsTotal.ToString();
+        }
     }
 
     public int GetScore

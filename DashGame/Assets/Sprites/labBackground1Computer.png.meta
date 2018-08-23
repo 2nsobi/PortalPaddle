@@ -1,15 +1,11 @@
 fileFormatVersion: 2
-guid: 57cc55fae7a1d2a4db1f78058a1eef2b
+guid: 99f333ca0e7611e4ebb7f2dcc1be3b90
 TextureImporter:
   fileIDToRecycleName:
-    21300000: labBackground2_0
-    21300002: labBackground2_1
-    21300004: labBackground2_2
-    21300006: labBackground2_3
-    21300008: labBackground2_4
-    21300010: labBackground2_5
-    21300012: labBackground2_6
-    21300014: labBackground2_7
+    21300000: labBackground1Computer_0
+    21300002: labBackground1Computer_1
+    21300004: labBackground1Computer_2
+    21300006: labBackground1Computer_3
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -68,7 +64,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -79,7 +75,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Standalone
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -90,7 +86,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: iPhone
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -101,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Android
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -114,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: labBackground2_0
+      name: labBackground1Computer_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,13 +124,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89a310c2ad0309f48952cace232a508a
+      spriteID: 6c1337a4b19b0cd40b3249ba4753ba8b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground2_1
+      name: labBackground1Computer_1
       rect:
         serializedVersion: 2
         x: 1920
@@ -148,7 +144,47 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a9a6fd821f604e041aca62f495a732be
+      spriteID: fc95fc16da493bd439445ba6082e5e2f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: labBackground1Computer_2
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9973687477e40b54eb9522edb26404b6
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: labBackground1Computer_3
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8067e12d42c2e57439af9833fd033197
       vertices: []
       indices: 
       edges: []
@@ -156,7 +192,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 3ce30f37a84fc8f459487c6512356eae
+    spriteID: fd4502b7439511a449f7b2fbc811efbc
     vertices: []
     indices: 
     edges: []
