@@ -216,6 +216,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject shop;
     ShopController shopC;
     ParticleSystem playButtonGlow;
+    ParticleSystem.MainModule playButtonGlowMainMod;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -278,6 +279,8 @@ public class LevelGenerator : MonoBehaviour
         distanceDiff4Walls = paddle.GetDistanceDifferenceForWalls();
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
         playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
+        playButtonGlowMainMod = playButtonGlow.main;
+
         material = StartLevel.gameObject.GetComponentInChildren<Renderer>().sharedMaterial;
         material.SetFloat("_InvertColors", 0);
         Transform wallW = StartLevel.gameObject.transform.GetChild(0);
@@ -419,6 +422,7 @@ public class LevelGenerator : MonoBehaviour
 
     public void GoBack2StartLvl()
     {
+        playButtonGlowMainMod.simulationSpeed = 1;
         playButtonGlow.Play();
 
         game.SetPageState(GameManager.pageState.StartPage);
@@ -833,6 +837,7 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
+        playButtonGlowMainMod.simulationSpeed = 6;
         playButtonGlow.Stop();
 
         ShufflePrefabsInLevels();
