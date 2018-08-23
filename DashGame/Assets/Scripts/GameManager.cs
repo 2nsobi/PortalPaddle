@@ -238,18 +238,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
-    private void OnApplicationFocus(bool focus)
-    {
-        if (!focus)
-        {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
-    }
-
     void PlayerMissed()
     {
         if (canEndGame)
@@ -631,6 +619,28 @@ public class GameManager : MonoBehaviour
             ZPlayerPrefs.SetInt("gems", gemsTotal);
             startPageGems.text = gemsTotal.ToString();
             shopPageGems.text = gemsTotal.ToString();
+        }
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        
+    }
+
+    private void OnApplicationQuit()
+    {
+        
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            pauseAllCoroutines = true;
+        }
+        else
+        {
+            pauseAllCoroutines = false;
         }
     }
 
