@@ -215,6 +215,7 @@ public class LevelGenerator : MonoBehaviour
     bool comeBackFromShop = false;
     public GameObject shop;
     ShopController shopC;
+    ParticleSystem playButtonGlow;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -276,6 +277,7 @@ public class LevelGenerator : MonoBehaviour
 
         distanceDiff4Walls = paddle.GetDistanceDifferenceForWalls();
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
+        playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
         material = StartLevel.gameObject.GetComponentInChildren<Renderer>().sharedMaterial;
         material.SetFloat("_InvertColors", 0);
         Transform wallW = StartLevel.gameObject.transform.GetChild(0);
@@ -417,6 +419,8 @@ public class LevelGenerator : MonoBehaviour
 
     public void GoBack2StartLvl()
     {
+        playButtonGlow.Play();
+
         game.SetPageState(GameManager.pageState.StartPage);
         obstacleSpawnCounter = 0;
         levelSpawnCounter = 0;
@@ -829,6 +833,8 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
+        playButtonGlow.Stop();
+
         ShufflePrefabsInLevels();
         GenerateNextLvl();
 

@@ -149,9 +149,9 @@ PlayerSettings:
   targetPixelDensity: 30
   resolutionScalingMode: 0
   androidSupportedAspectRatio: 2
-  androidMaxAspectRatio: 1.86
+  androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.nnobi.portalpaddle
+    Android: com.test2.boi
     Standalone: com.Company.ProductName
   buildNumber: {}
   AndroidBundleVersionCode: 1
@@ -839,9 +839,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 
-  projectName: Template_2D
-  organizationId: 
+  cloudProjectId: 056b6ad3-6af7-4a6b-b013-20c2bb6befef
+  projectName: PortalPaddle
+  organizationId: nnobinelo98
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

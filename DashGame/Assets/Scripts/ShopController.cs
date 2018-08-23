@@ -22,6 +22,8 @@ public class ShopController : MonoBehaviour
     GameObject paddleSelectionMenu;
     GameObject IAPmenu;
     SnapScrollRectController ballScrollRect, paddleScrollRect;
+    GameManager game;
+    AdManager ads;
 
     public enum buttonLayout { selected, unlocked, locked }
 
@@ -38,6 +40,12 @@ public class ShopController : MonoBehaviour
         unlockButtonGemCost = unlockButton.GetComponentInChildren<Text>();
         purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
         purchaseButtonPrice.text = "$1.29";
+    }
+
+    private void Start()
+    {
+        game = GameManager.Instance;
+        ads = AdManager.Instance;
     }
 
     public void SetButtonLayout(SnapScrollRectController.ShopItem item,int gemCost)
@@ -171,4 +179,8 @@ public class ShopController : MonoBehaviour
         }
     }
 
+    public void GetFreeGems()
+    {
+        //ads.ShowRewardVideo();
+    }
 }

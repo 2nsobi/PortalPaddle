@@ -165,6 +165,7 @@ public class SnapScrollRectController : MonoBehaviour
     Coroutine stopMovement;
     ShopController shopC;
     public int selectedItemIndex = 0;
+    GameManager game;
 
     private void Awake()
     {
@@ -186,11 +187,30 @@ public class SnapScrollRectController : MonoBehaviour
         itemSeperation = Mathf.Abs(items[0].anchoredPosition.x - items[1].anchoredPosition.x);
     }
 
+    private void Start()
+    {
+        game = GameManager.Instance;  
+    }
+
     public void SelectItem()
     {
-        UnselectAllItems();
-        shopItems[focalItemNum].Select();
-        selectedItemIndex = focalItemNum;
+        if (shopItems[focalItemNum].unlocked)
+        {
+            UnselectAllItems();
+            shopItems[focalItemNum].Select();
+            selectedItemIndex = focalItemNum;
+        }
+        else
+        {
+            if(shopItems[focalItemNum].gemCost <= ZPlayerPrefs.GetInt("gems"))
+            {
+                UnselectAllItems();
+                shopItems[focalItemNum].Select();
+                selectedItemIndex = focalItemNum;
+
+                game.UpdateGems(shopItems[focalItemNum].gemCost, true);
+            }
+        }
     }
 
     public void Go2Shop()
