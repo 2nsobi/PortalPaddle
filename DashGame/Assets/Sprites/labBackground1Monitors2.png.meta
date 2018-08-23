@@ -1,14 +1,13 @@
 fileFormatVersion: 2
-guid: 697aa41299649d947b971a179bf354e8
+guid: 2a15a3af99516624db54092458a4d760
 TextureImporter:
   fileIDToRecycleName:
-    21300000: labBackground1Monitors_0
-    21300002: labBackground1Monitors_1
-    21300004: labBackground1Monitors_2
-    21300006: labBackground1Monitors_3
-    21300008: labBackground1Monitors_4
-    21300010: labBackground1Monitors_5
-    2186277476908879412: ImportLogs
+    21300000: labBackground1Monitors2_0
+    21300002: labBackground1Monitors2_1
+    21300004: labBackground1Monitors2_2
+    21300006: labBackground1Monitors2_3
+    21300008: labBackground1Monitors2_4
+    21300010: labBackground1Monitors2_5
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -38,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: -1
     mipBias: -100
     wrapU: 1
@@ -67,8 +66,8 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 1
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -78,8 +77,8 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 1
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -89,8 +88,8 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: iPhone
-    maxTextureSize: 2048
-    resizeAlgorithm: 1
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -100,8 +99,8 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
     buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 1
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -113,13 +112,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: labBackground1Monitors_0
+      name: labBackground1Monitors2_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 2160
-        width: 1920
-        height: 1080
+        y: 512
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,19 +126,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1618d793eb6d2594c82ab24c97c16602
+      spriteID: 5f22ebbb931378247859bf72303fc473
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground1Monitors_1
+      name: labBackground1Monitors2_1
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 2160
-        width: 1920
-        height: 1080
+        x: 1024
+        y: 512
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,19 +146,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 076d6bf3e96f58b419fc01a788504a60
+      spriteID: 6747e975a08ad4e48b6a8e0cc33f2d5c
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground1Monitors_2
+      name: labBackground1Monitors2_2
       rect:
         serializedVersion: 2
         x: 0
-        y: 1080
-        width: 1920
-        height: 1080
+        y: 256
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,19 +166,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 06c75e2bb44ce2740bd9a13b16958f0e
+      spriteID: 69fcba45f41c090419004e14ae7b3afb
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground1Monitors_3
+      name: labBackground1Monitors2_3
       rect:
         serializedVersion: 2
-        x: 1920
-        y: 1080
-        width: 1920
-        height: 1080
+        x: 1024
+        y: 256
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,19 +186,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f77fc946caab7204982ff413cc01de0f
+      spriteID: ce66deb900988e1419a656aacbce1681
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground1Monitors_4
+      name: labBackground1Monitors2_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1920
-        height: 1080
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,19 +206,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 737eaeb7e173e56418363658c4cde364
+      spriteID: 0a56818fa7f112249a1091eb1ee99ab6
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: labBackground1Monitors_5
+      name: labBackground1Monitors2_5
       rect:
         serializedVersion: 2
-        x: 1920
+        x: 1024
         y: 0
-        width: 1920
-        height: 1080
+        width: 1024
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -227,7 +226,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9900637bbeb0fce49a0f6fbdaed7897d
+      spriteID: 4b92b56ef87e46f45b9889819753f6b4
       vertices: []
       indices: 
       edges: []
@@ -235,7 +234,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e38aa6ac1b0fcce47a5dda1741a53e9f
+    spriteID: 41e9a434e06fa8c478901aa40ccf2dcb
     vertices: []
     indices: 
     edges: []
