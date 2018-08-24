@@ -159,8 +159,7 @@ public class SnapScrollRectController : MonoBehaviour
 
             if (ball)
             {
-                BallController.Instance.SetBall(GameManager.Instance.balls[index]);
-                print("setball");
+                GameManager.Instance.SetBall(index);
             }
             else
             {
@@ -266,15 +265,6 @@ public class SnapScrollRectController : MonoBehaviour
             }
 
             ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
-
-            if (this.gameObject.name == "BallScollPanel")
-            {
-                ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
-            }
-            if (this.gameObject.name == "PaddleScollPanel")
-            {
-                ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
-            }
         }
     }
 
@@ -289,15 +279,6 @@ public class SnapScrollRectController : MonoBehaviour
         }
 
         ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
-
-        if (this.gameObject.name == "BallScollPanel")
-        {
-            ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
-        }
-        if (this.gameObject.name == "PaddleScollPanel")
-        {
-            ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
-        }
     }
 
     private void OnDisable()
@@ -307,21 +288,10 @@ public class SnapScrollRectController : MonoBehaviour
             if (item.valueChanged)
             {
                 item.SetPlayerPrefs();
-
-                ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
             }
         }
 
         ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
-
-        if (this.gameObject.name == "BallScollPanel")
-        {
-            ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
-        }
-        if (this.gameObject.name == "PaddleScollPanel")
-        {
-            ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
-        }
     }
 
     public void SelectItem()
@@ -461,6 +431,8 @@ public class SnapScrollRectController : MonoBehaviour
         if (selectedItemIndex == 0)
         {
             shopItems[0].selected = true;
+
+            shopItems[0].buttonLayout = ShopController.buttonLayout.selected;
         }
         content2Scroll.anchoredPosition = new Vector2(selectedItemIndex * -itemSeperation, 0);
     }

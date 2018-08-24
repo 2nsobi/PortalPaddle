@@ -96,7 +96,8 @@ public class BallController : MonoBehaviour
         if (activeBall == null)
         {
             activeBall = ball;
-            activeBall.prefab.transform.SetParent(transform,true);
+            activeBall.prefab.transform.parent = transform;
+            activeBall.prefab.transform.localPosition = Vector2.zero;
             activeBall.prefab.gameObject.SetActive(true);
 
             ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
@@ -104,9 +105,11 @@ public class BallController : MonoBehaviour
             FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
             FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
 
-            animator = activeBall.animator;
             originalColor = activeBall.startColor;
             boostColor = activeBall.boostColor;
+
+            animator = activeBall.animator;
+            ballSprite.color = originalColor;
         }
         else
         {
@@ -114,7 +117,8 @@ public class BallController : MonoBehaviour
             activeBall.prefab.SetActive(false);
 
             activeBall = ball;
-            activeBall.prefab.transform.SetParent(transform, true);
+            activeBall.prefab.transform.parent = transform;
+            activeBall.prefab.transform.localPosition = Vector2.zero;
             activeBall.prefab.gameObject.SetActive(true);
 
             ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
@@ -122,9 +126,11 @@ public class BallController : MonoBehaviour
             FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
             FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
 
-            animator = activeBall.animator;
             originalColor = activeBall.startColor;
             boostColor = activeBall.boostColor;
+
+            animator = activeBall.animator;
+            ballSprite.color = originalColor;
         }
     }
 
@@ -169,11 +175,6 @@ public class BallController : MonoBehaviour
 
     private void Update()
     {
-        //if (this.transform.localScale == Vector3.zero) //moves the ball each time it shrinks
-        //{
-        //    this.transform.position = Vector2.right * 1000;
-        //}
-
         if (flash)
         {
             whiteFlashCG.alpha -= Time.deltaTime * 3;
@@ -234,6 +235,7 @@ public class BallController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        print(collision.gameObject.name);
         if (!cantCollide)
         {
             if (collision.gameObject.tag == "Paddle")
@@ -244,7 +246,7 @@ public class BallController : MonoBehaviour
             }
             else
             {
-                Physics2D.IgnoreLayerCollision(11, 12,false);
+                Physics2D.IgnoreLayerCollision(11, 12, false);
             }
 
             if (firstCollision)
@@ -399,12 +401,16 @@ public class BallController : MonoBehaviour
 
     void GameOverConfirmed()
     {
-        ballSprite.color = originalColor;
+        if (activeBall != null)
+        {
+            ballSprite.color = originalColor;
+            animator.SetTrigger("GameOver");
+        }
+
         this.transform.position = Vector2.right * 1000;
         this.rigidbody.velocity = Vector2.zero;
         codeSpeed = speed;
 
-        animator.SetTrigger("GameOver");
         rigidbody.simulated = true;
     }
 

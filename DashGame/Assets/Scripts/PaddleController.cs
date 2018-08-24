@@ -101,6 +101,8 @@ public class PaddleController : MonoBehaviour
             activePaddle.leftEnd.transform.parent = null;
             activePaddle.leftEnd.SetActive(false);
 
+            activePaddle = paddle;
+
             activePaddle.rightEnd.transform.parent = childPaddle1.transform;
             activePaddle.rightEnd.SetActive(true);
             activePaddle.rightEnd.transform.localScale = Vector3.one;
@@ -124,114 +126,117 @@ public class PaddleController : MonoBehaviour
 
     private void Update()
     {
-        if (particles.activeInHierarchy)
+        if (game.IsGameRunning)
         {
-            particleAnimator.SetBool("particlesActivated", particlesActivated);
-        }
-        if (paddleCollider.gameObject.activeInHierarchy)
-        {
-            endCollider1.enabled = false;
-            endCollider2.enabled = false;
-        }
-        else
-        {
-            endCollider1.enabled = true;
-            endCollider2.enabled = true;
-        }
-
-        //When using multi touch make sure to use fingerID's to track fingers seperately
-        foreach (Touch t in Input.touches)
-        {
-            touchPos = Camera.main.ScreenToWorldPoint(t.position);
-            newTouchPos = ClampedPos(touchPos);
-
-            if (t.fingerId == 0)
+            if (particles.activeInHierarchy)
             {
-                touch1Pos = newTouchPos;
+                particleAnimator.SetBool("particlesActivated", particlesActivated);
             }
-            if (t.fingerId == 1)
+            if (paddleCollider.gameObject.activeInHierarchy)
             {
-                //right math for getting vector between two points
-                touch2Pos = touch1Pos + Vector2.ClampMagnitude(newTouchPos - touch1Pos, Mathf.Clamp(Vector2.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength)); 
+                endCollider1.enabled = false;
+                endCollider2.enabled = false;
+            }
+            else
+            {
+                endCollider1.enabled = true;
+                endCollider2.enabled = true;
             }
 
-            // this if block is used so that a paddle wont appear if the pause button is tapped
-            if ((touchPos.x > pauseButtonCorners[0].x && touchPos.x < pauseButtonCorners[3].x) && (touchPos.y > pauseButtonCorners[0].y && touchPos.y < pauseButtonCorners[1].y))
+            //When using multi touch make sure to use fingerID's to track fingers seperately
+            foreach (Touch t in Input.touches)
             {
-                return;
-            }
+                touchPos = Camera.main.ScreenToWorldPoint(t.position);
+                newTouchPos = ClampedPos(touchPos);
 
-            switch (t.phase)
-            {
-                case TouchPhase.Began:
-                    if (t.fingerId == 0)
-                    {
-                        if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
+                if (t.fingerId == 0)
+                {
+                    touch1Pos = newTouchPos;
+                }
+                if (t.fingerId == 1)
+                {
+                    //right math for getting vector between two points
+                    touch2Pos = touch1Pos + Vector2.ClampMagnitude(newTouchPos - touch1Pos, Mathf.Clamp(Vector2.Distance(touch1Pos, newTouchPos), 0, maxPaddleLength));
+                }
+
+                // this if block is used so that a paddle wont appear if the pause button is tapped
+                if ((touchPos.x > pauseButtonCorners[0].x && touchPos.x < pauseButtonCorners[3].x) && (touchPos.y > pauseButtonCorners[0].y && touchPos.y < pauseButtonCorners[1].y))
+                {
+                    return;
+                }
+
+                switch (t.phase)
+                {
+                    case TouchPhase.Began:
+                        if (t.fingerId == 0)
                         {
-                            childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // putting 0 is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
-                            childPaddle1.SetActive(true);
+                            if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
+                            {
+                                childPaddle1.transform.position = new Vector3(touch1Pos.x, touch1Pos.y, 0); // putting 0 is necessary so that the childPaddle1.transform.position.z is not set to the same z value as the camera(this will cause it to be cut off by the camera's near clipping plane
+                                childPaddle1.SetActive(true);
+                            }
                         }
-                    }
 
-                    if (t.fingerId >= 1)
-                    {
-                        if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
+                        if (t.fingerId >= 1)
                         {
-                            childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
-                            childPaddle2.SetActive(true);
+                            if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
+                            {
+                                childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
+                                childPaddle2.SetActive(true);
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case TouchPhase.Moved:
-                    if (t.fingerId == 0)
-                    {
-                        touch1Speed = t.deltaPosition.magnitude / t.deltaTime;
-                        clampedTouch1Speed = Mathf.Clamp(touch1Speed, 0, paddleMoveSpeedLimit);
-                        childPaddle1.transform.position = Vector2.Lerp(childPaddle1.transform.position, touch1Pos, clampedTouch1Speed * Time.deltaTime);
-                        childPaddle1.SetActive(true);// might glitch if this is not true
-                    }
+                    case TouchPhase.Moved:
+                        if (t.fingerId == 0)
+                        {
+                            touch1Speed = t.deltaPosition.magnitude / t.deltaTime;
+                            clampedTouch1Speed = Mathf.Clamp(touch1Speed, 0, paddleMoveSpeedLimit);
+                            childPaddle1.transform.position = Vector2.Lerp(childPaddle1.transform.position, touch1Pos, clampedTouch1Speed * Time.deltaTime);
+                            childPaddle1.SetActive(true);// might glitch if this is not true
+                        }
 
-                    if (t.fingerId == 1)
-                    {
-                        touch2Speed = t.deltaPosition.magnitude / t.deltaTime;
-                        clampedTouch2Speed = Mathf.Clamp(touch2Speed, 0, paddleMoveSpeedLimit);
-                        childPaddle2.transform.position = Vector2.Lerp(childPaddle2.transform.position, touch2Pos, clampedTouch2Speed * Time.deltaTime);
-                        childPaddle2.SetActive(true); // might glitch if this is not true
-                    }
-                    break;
+                        if (t.fingerId == 1)
+                        {
+                            touch2Speed = t.deltaPosition.magnitude / t.deltaTime;
+                            clampedTouch2Speed = Mathf.Clamp(touch2Speed, 0, paddleMoveSpeedLimit);
+                            childPaddle2.transform.position = Vector2.Lerp(childPaddle2.transform.position, touch2Pos, clampedTouch2Speed * Time.deltaTime);
+                            childPaddle2.SetActive(true); // might glitch if this is not true
+                        }
+                        break;
 
-                case TouchPhase.Ended:
-                    if (t.fingerId == 0)
-                    {
-                        childPaddle1.SetActive(false);
-                    }
+                    case TouchPhase.Ended:
+                        if (t.fingerId == 0)
+                        {
+                            childPaddle1.SetActive(false);
+                        }
 
-                    if (t.fingerId == 1)
-                    {
-                        childPaddle2.SetActive(false);
-                    }
-                    break;
+                        if (t.fingerId == 1)
+                        {
+                            childPaddle2.SetActive(false);
+                        }
+                        break;
+                }
             }
-        }
 
-        if (Input.touchCount > 1)
-        {
-            MakePaddle();
-            particles.SetActive(true);
-            particlesActivated = true;
-            paddleCollider.gameObject.SetActive(true);
-        }
-        else
-        {
-            particlesActivated = false;
-            paddleCollider.gameObject.SetActive(false);
-        }
+            if (Input.touchCount > 1)
+            {
+                MakePaddle();
+                particles.SetActive(true);
+                particlesActivated = true;
+                paddleCollider.gameObject.SetActive(true);
+            }
+            else
+            {
+                particlesActivated = false;
+                paddleCollider.gameObject.SetActive(false);
+            }
 
-        if (Input.touchCount == 0)
-        {
-            childPaddle1.SetActive(false);
-            childPaddle2.SetActive(false);
+            if (Input.touchCount == 0)
+            {
+                childPaddle1.SetActive(false);
+                childPaddle2.SetActive(false);
+            }
         }
 
     }
@@ -288,6 +293,9 @@ public class PaddleController : MonoBehaviour
     {
         childPaddle1.SetActive(false);
         childPaddle2.SetActive(false);
-        particles.SetActive(false);
+        if (particles != null)
+        {
+            particles.SetActive(false);
+        }
     }
 }
