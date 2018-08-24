@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
         public GameObject rightEnd;
         public GameObject leftEnd;
         public int index;
+        public SnapScrollRectController.ShopItem shopItem;
 
         public PaddlePrefab(GameObject pref)
         {
@@ -24,7 +25,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                leftEnd = Instantiate(pref.transform.GetChild(0).gameObject);
+                leftEnd = Instantiate(pref.transform.GetChild(0).gameObject,mainParticles.transform);
                 leftEnd.SetActive(false);
             }
         }
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
         public Color32 startColor;
         public Color32 boostColor;
         public int index;
+        public SnapScrollRectController.ShopItem shopItem;
 
         public BallPrefab(PrefabWithColors pref)
         {
@@ -90,7 +92,7 @@ public class GameManager : MonoBehaviour
     public GameObject extraBallSprite;
     TargetController TargetController;
     public Text scoreText;
-    private int score;
+    private int score = 0;
     bool gameRunning;
     float timeScale = 1;
     bool paused;
@@ -103,19 +105,21 @@ public class GameManager : MonoBehaviour
     bool pauseAllCoroutines = false;
     Text scoreReviewGems, startPageGems, shopPageGems;
     bool gemsOnScreen = false;
-    float gems;
+    float gems, tempGems;
     int newGems;
     float t = 0.0f;
     bool canEndGame = true;
     public GameObject[] paddlePrefabs;
-    PaddlePrefab[] paddles;
-    PaddlePrefab paddleInUse;
+    public PaddlePrefab[] paddles;
     public PrefabWithColors[] ballPrefabs;
-    BallPrefab[] balls;
-    BallPrefab ballInUse;
+    public BallPrefab[] balls;
     Coroutine gameErrorTest;
     bool canContinue;
     AdManager ads;
+    public Vector2 targetAspectRatio;
+    float thisDeviceCameraWidth;
+    bool dontMoveWalls = false;
+    PaddlePrefab selectedPaddle;
 
     public static GameManager Instance;
 
@@ -125,6 +129,7 @@ public class GameManager : MonoBehaviour
     public static event GameDelegate Revive;
 
     public GameObject StartPage;
+    public GameObject StartPageButtons;
     public GameObject GameOverPage;
     public GameObject PauseMenu;
     public GameObject CountdownPage;
@@ -144,6 +149,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public int Link2PaddleItem(string name)
+    {
+        for(int i = 0; i < paddles.Length; i++)
+        {
+            if((name.Substring(0,name.Length-1) + "(Clone)").Equals(paddles[i].mainParticles.name))
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int Link2BallItem(string name)
+    {
+        for (int i = 0; i < balls.Length; i++)
+        {
+            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(balls[i].prefab.name))
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     private void Awake()
     {
         ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
@@ -160,20 +189,15 @@ public class GameManager : MonoBehaviour
 
 
         Instance = this;
+
         Time.timeScale = timeScale;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-    }
 
-    private void Start()
-    {
-        extraBall = false;
-        Paddle = PaddleController.Instance;
-        TargetController = TargetController.Instance;
-        LG = LevelGenerator.Instance;
-        ball = BallController.Instance;
-        ads = AdManager.Instance;
+        ConfigureCamera(); //called here before the tap area rect is configured
 
         gems = ZPlayerPrefs.GetInt("gems");
+        highScore = ZPlayerPrefs.GetInt("HighScore");
+
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
         scoreReviewGems.text = gems.ToString();
         startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
@@ -187,9 +211,6 @@ public class GameManager : MonoBehaviour
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
             paddles[i].index = i;
         }
-        paddleInUse = paddles[0];
-        Paddle.SetPaddle(paddleInUse);
-        DeactivatePaddle();
 
         balls = new BallPrefab[ballPrefabs.Length];
         for (int i = 0; i < ballPrefabs.Length; i++)
@@ -197,14 +218,59 @@ public class GameManager : MonoBehaviour
             balls[i] = new BallPrefab(ballPrefabs[i]);
             balls[i].index = i;
         }
-        ballInUse = balls[0];
-        ball.SetBall(ballInUse);
+    }
+
+    public void SetPaddle(int index)
+    {
+        selectedPaddle = paddles[index];
+    }
+
+    /*********************************************
+    * In unity "The size value for orthographic camera basically decides the Height of the camera while the Aspect 
+    * Ratio of your game decides the width of the camera. When increasing the "height" size on the camera the width 
+    * is also increased to keep with the current aspect."
+    * 
+    * Also the [aspect ratio (width/height)] * [camera size] = camera width; 
+    ************************************************/
+    public void ConfigureCamera()
+    {
+        thisDeviceCameraWidth = (Camera.main.aspect * Camera.main.orthographicSize);
+        float desiredCameraWidth = (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize;
+
+        if (thisDeviceCameraWidth < desiredCameraWidth - 0.001f) //for some reason (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize does not equal what is should exactly
+        {
+            Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
+            dontMoveWalls = true;
+        }
+    }
+
+    public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
+    {
+        if (dontMoveWalls)
+        {
+            return 3.700936f; // x pos of wall at aspect ratio of 3.700936
+        }
+        return thisDeviceCameraWidth + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
+    }
+
+    private void Start()
+    {
+        
+        extraBall = false;
+        Paddle = PaddleController.Instance;
+        TargetController = TargetController.Instance;
+        LG = LevelGenerator.Instance;
+        ball = BallController.Instance;
+        ads = AdManager.Instance;
+
+        Paddle.SetPaddle(paddles[ZPlayerPrefs.GetInt("paddleInUse")]);
+        DeactivatePaddle();
+
+        ball.SetBall(balls[ZPlayerPrefs.GetInt("ballInUse")]);
 
         GoToStartPage();
         gameRunning = false;
         paused = false;
-
-        print(Camera.main.aspect);
     }
 
     private void OnEnable() //this is called after start()
@@ -321,8 +387,9 @@ public class GameManager : MonoBehaviour
         {
             case pageState.Game:
                 currentPageState = pageState.Game;
-                GamePage.SetActive(true);
+                GamePage.SetActive(true);             
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -335,6 +402,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.StartPage;
                 GamePage.SetActive(false);
                 StartPage.SetActive(true);
+                StartPageButtons.SetActive(true);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -349,6 +417,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.GameOver;
                 GamePage.SetActive(false);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(true);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -361,6 +430,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.Paused;
                 GamePage.SetActive(true);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(true);
                 CountdownPage.SetActive(false);
@@ -376,6 +446,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.CountdownPage;
                 GamePage.SetActive(true);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(true);
@@ -391,6 +462,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.SettingsPage;
                 GamePage.SetActive(false);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -403,6 +475,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.ScoreReview;
                 GamePage.SetActive(false);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -415,6 +488,7 @@ public class GameManager : MonoBehaviour
                 currentPageState = pageState.ShopPage;
                 GamePage.SetActive(false);
                 StartPage.SetActive(false);
+                StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
                 CountdownPage.SetActive(false);
@@ -432,12 +506,12 @@ public class GameManager : MonoBehaviour
         if (gemsOnScreen)
         {
             t += 0.1f * Time.deltaTime;
-            gems = Mathf.Lerp(gems, newGems, t);
-            if (gems == newGems)
+            tempGems = Mathf.Lerp(tempGems, newGems, t);
+            if (tempGems == newGems)
             {
                 gemsOnScreen = false;
             }
-            scoreReviewGems.text = Mathf.RoundToInt(gems).ToString();
+            scoreReviewGems.text = Mathf.RoundToInt(tempGems).ToString();
         }
     }
 
@@ -446,15 +520,19 @@ public class GameManager : MonoBehaviour
         canEndGame = true;
         extraBall = false;
         richochetCount = 0;
-        score = 0;
         scoreText.text = score.ToString();
         SetPageState(pageState.Game);
         extraBallSprite.SetActive(false);
         gameRunning = true;
         gameErrorTest = StartCoroutine(GameErrorTest());
         replayButton.interactable = true;
+
         Paddle.gameObject.SetActive(true);
+        Paddle.SetPaddle(selectedPaddle);
+
         canContinue = true;
+
+
 
         GameStarted();
     }
@@ -544,6 +622,7 @@ public class GameManager : MonoBehaviour
         {
             SetPageState(pageState.StartPage);
         }
+        score = 0;
         GameOverConfirmed();
 
         //ads.ShowInterstitialOrNonSkipAd();
@@ -582,13 +661,13 @@ public class GameManager : MonoBehaviour
     public void GoToScoreReview()
     {
         t = 0.0f;
-        gems = ZPlayerPrefs.GetInt("gems");
+        tempGems = gems;
         newGems = (int)gems + score;
         scoreReviewGems.text = gems.ToString();
         UpdateGems(score);
         if (score > highScore)
         {
-            ZPlayerPrefs.SetInt("HighScore", score);
+            highScore = score;
             newHighScoreImage.SetActive(true);
         }
         else
@@ -596,7 +675,6 @@ public class GameManager : MonoBehaviour
             newHighScoreImage.SetActive(false);
         }
         gameOverScore.text = score.ToString();
-        highScore = ZPlayerPrefs.GetInt("HighScore");
         highScoreText.text = highScore.ToString();
 
         skipScoreReviewButton.interactable = true;
@@ -608,28 +686,32 @@ public class GameManager : MonoBehaviour
     {
         if (!subtract)
         {
-            int gemsTotal = ZPlayerPrefs.GetInt("gems") + gems2Add;
-            ZPlayerPrefs.SetInt("gems", gemsTotal);
-            startPageGems.text = gemsTotal.ToString();
-            shopPageGems.text = gemsTotal.ToString();
+            gems += gems2Add;
+            startPageGems.text = gems.ToString();
+            shopPageGems.text = gems.ToString();
         }
         else
         {
-            int gemsTotal = ZPlayerPrefs.GetInt("gems") - gems2Add;
-            ZPlayerPrefs.SetInt("gems", gemsTotal);
-            startPageGems.text = gemsTotal.ToString();
-            shopPageGems.text = gemsTotal.ToString();
+            gems -= gems2Add;
+            startPageGems.text = gems.ToString();
+            shopPageGems.text = gems.ToString();
         }
     }
 
+    //only updating Zplayerprefs when player is not using app to prevent lag while in use
     private void OnApplicationPause(bool pause)
     {
-        
+        if (pause)
+        {
+            ZPlayerPrefs.SetInt("gems", (int)gems);
+            ZPlayerPrefs.SetInt("HighScore", score);
+        }
     }
 
     private void OnApplicationQuit()
     {
-        
+        ZPlayerPrefs.SetInt("gems", (int)gems);
+        ZPlayerPrefs.SetInt("HighScore", score);
     }
 
     private void OnApplicationFocus(bool focus)
@@ -637,6 +719,9 @@ public class GameManager : MonoBehaviour
         if (!focus)
         {
             pauseAllCoroutines = true;
+
+            ZPlayerPrefs.SetInt("gems", (int)gems);
+            ZPlayerPrefs.SetInt("HighScore", highScore);
         }
         else
         {
@@ -699,17 +784,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public PaddlePrefab PaddleInUse
-    {
-        get
-        {
-            return paddleInUse;
-        }
-    }
-
     public void DeactivatePaddle()
     {
         Paddle.DeactivatePaddle();
         Paddle.gameObject.SetActive(false);
+    }
+
+    public int Gems
+    {
+        get { return (int) gems; }
     }
 }

@@ -6,8 +6,7 @@ using UnityEngine;
 public class PaddleController : MonoBehaviour
 {
     GameObject childPaddle1, childPaddle2;
-    RectTransform tapAreaRect;
-    Vector3[] corners; // corners of tapAreaRect in world space
+    Vector3[] corners;
     public float paddleMoveSpeedLimit; //should be around 1000 
     public float offset; //used to offset childPaddle1 in ClampedPos() so that the sprite does not appear in the wall
     BoxCollider2D paddleCollider;
@@ -15,7 +14,6 @@ public class PaddleController : MonoBehaviour
     Vector2 touch1Pos, touch2Pos;
     float paddleLength;
     float angle;
-    public GameObject particlePrefab;
     Vector3 particleScale;
     GameObject particles;
     ParticleSystem.ShapeModule particleShape;
@@ -34,18 +32,11 @@ public class PaddleController : MonoBehaviour
     float clampedTouch1Speed, clampedTouch2Speed;
     float clampedX, clampedY;
     GameManager game;
-    GameManager.PaddlePrefab activePaddle;
+    GameManager.PaddlePrefab activePaddle = null;
 
     private void Awake()
     {
         Instance = this;
-
-        GameObject tapArea = GameObject.Find("tapArea");
-
-        // to use RectTransformUtility.RectangleContainsScreenPoint correctly the RectTransform parameter must be set to the transform of the game object not the rect tranfsorm components rect transform
-        tapAreaRect = tapArea.transform as RectTransform;
-        corners = new Vector3[4];
-        tapAreaRect.GetWorldCorners(corners);
 
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
@@ -69,34 +60,66 @@ public class PaddleController : MonoBehaviour
     {
         ball = BallController.Instance;
         game = GameManager.Instance;
+
+        GameObject tapArea = GameObject.Find("tapArea");
+
+        // to use RectTransformUtility.RectangleContainsScreenPoint correctly the RectTransform parameter must be set to the transform of the game object not the rect tranfsorm components rect transform
+        RectTransform tapAreaRect = tapArea.transform as RectTransform;
+        corners = new Vector3[4];
+        tapAreaRect.GetWorldCorners(corners);
     }
 
     public void SetPaddle(GameManager.PaddlePrefab paddle) // for a paddle to be a paddle it needs a right and left end and a main particles
     {
-        activePaddle = paddle;
+        if (activePaddle == null)
+        {
+            activePaddle = paddle;
 
-        activePaddle.rightEnd.transform.parent = childPaddle1.transform;
-        activePaddle.rightEnd.SetActive(true);
-        activePaddle.rightEnd.transform.localScale = Vector3.one;
-        activePaddle.rightEnd.transform.localPosition = Vector2.zero;
+            activePaddle.rightEnd.transform.parent = childPaddle1.transform;
+            activePaddle.rightEnd.SetActive(true);
+            activePaddle.rightEnd.transform.localScale = Vector3.one;
+            activePaddle.rightEnd.transform.localPosition = Vector2.zero;
 
-        activePaddle.leftEnd.transform.parent = childPaddle2.transform;
-        activePaddle.leftEnd.SetActive(true);
-        activePaddle.leftEnd.transform.localScale = Vector3.one;
-        activePaddle.leftEnd.transform.localPosition = Vector2.zero;
+            activePaddle.leftEnd.transform.parent = childPaddle2.transform;
+            activePaddle.leftEnd.SetActive(true);
+            activePaddle.leftEnd.transform.localScale = Vector3.one;
+            activePaddle.leftEnd.transform.localPosition = Vector2.zero;
 
 
 
-        particles = activePaddle.mainParticles;
-        particles.transform.parent = transform;
-        particles.transform.localPosition = Vector2.zero;
-        particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
-        particleAnimator = particles.GetComponent<Animator>();
-    }
+            particles = activePaddle.mainParticles;
+            particles.transform.parent = transform;
+            particles.transform.localPosition = Vector2.zero;
+            particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
+            particleAnimator = particles.GetComponent<Animator>();
+        }
+        else
+        {
+            activePaddle.rightEnd.transform.parent = null;
+            activePaddle.rightEnd.SetActive(false);
 
-    public float GetDistanceDifferenceForWalls()// used to set initial wall position in levelgenerator class
-    {
-        return 2.69159f - Vector3.Distance(new Vector3(0, 0, 0), new Vector3(corners[0].x, 0, 0));
+            activePaddle.leftEnd.transform.parent = null;
+            activePaddle.leftEnd.SetActive(false);
+
+            activePaddle.rightEnd.transform.parent = childPaddle1.transform;
+            activePaddle.rightEnd.SetActive(true);
+            activePaddle.rightEnd.transform.localScale = Vector3.one;
+            activePaddle.rightEnd.transform.localPosition = Vector2.zero;
+
+            activePaddle.leftEnd.transform.parent = childPaddle2.transform;
+            activePaddle.leftEnd.SetActive(true);
+            activePaddle.leftEnd.transform.localScale = Vector3.one;
+            activePaddle.leftEnd.transform.localPosition = Vector2.zero;
+
+
+
+            particles = activePaddle.mainParticles;
+            particles.transform.parent = transform;
+            particles.transform.localPosition = Vector2.zero;
+            particleShape = particles.GetComponent<ParticleSystem>().shape; //to edit the shape of a particle system you must use a temp var (particlesyste.shapmodule) to store the the particlesytem.shape and then edit the temp var from there
+            particleAnimator = particles.GetComponent<Animator>();
+        }
+
     }
 
     private void Update()
@@ -154,7 +177,6 @@ public class PaddleController : MonoBehaviour
                     {
                         if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                         {
-                            Debug.Log(touch2Pos);
                             childPaddle2.transform.position = new Vector3(touch2Pos.x, touch2Pos.y, 0);
                             childPaddle2.SetActive(true);
                         }
@@ -183,15 +205,12 @@ public class PaddleController : MonoBehaviour
                     if (t.fingerId == 0)
                     {
                         childPaddle1.SetActive(false);
-                        Debug.Log("touch1ended");
                     }
 
                     if (t.fingerId == 1)
                     {
                         childPaddle2.SetActive(false);
-                        Debug.Log("touch2ended");
                     }
-                    Debug.Log("touchEnded");
                     break;
             }
         }

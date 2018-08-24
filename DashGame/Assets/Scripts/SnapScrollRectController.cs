@@ -22,73 +22,89 @@ public class SnapScrollRectController : MonoBehaviour
         public SpriteRenderer spriteRenderer = null;
         ShopController shopC = ShopController.Instance;
         public ShopController.buttonLayout buttonLayout;
+        public bool valueChanged = false; // for if a playerpref value changed
+        public int index;
+        public bool ball; // true if ball, false if paddle
 
-        public ShopItem(int gemCost, GameObject GO)
+        public ShopItem(int gemCost, GameObject GO, bool defaultItem = false)
         {
-            this.gemCost = gemCost;
-            gameObject = GO;
-            unlocked = PlayerPrefsX.GetBool(gameObject.name);
-            selected = PlayerPrefsX.GetBool(gameObject.name + "Selected");
+            if (defaultItem)
+            {
+                gameObject = GO;
 
-            if (!unlocked)
-            {
-                buttonLayout = ShopController.buttonLayout.locked;
-            }
-            else
-            {
+                unlocked = true;
+                selected = PlayerPrefsX.GetBool(gameObject.name + "Selected");
+
                 buttonLayout = ShopController.buttonLayout.unlocked;
             }
-
-            if (selected)
-            {
-                buttonLayout = ShopController.buttonLayout.selected;
-            }
-
-            if (gameObject.name[gameObject.name.Length - 1].ToString() == "S")
-            {
-                spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-                originalColor = spriteRenderer.color;
-                if (!unlocked)
-                {
-                    spriteRenderer.color = new Color32(61, 61, 61, 255);
-                }
-            }
             else
             {
-                particleSystem = gameObject.GetComponent<ParticleSystem>();
-                PSMainMod = particleSystem.main;
-                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
+
+                this.gemCost = gemCost;
+                gameObject = GO;
+                unlocked = PlayerPrefsX.GetBool(gameObject.name);
+                selected = PlayerPrefsX.GetBool(gameObject.name + "Selected");
+
+                if (!unlocked)
                 {
-                    originalColor = PSMainMod.startColor.color;
+                    buttonLayout = ShopController.buttonLayout.locked;
+                }
+                else
+                {
+                    buttonLayout = ShopController.buttonLayout.unlocked;
+                }
+
+                if (selected)
+                {
+                    buttonLayout = ShopController.buttonLayout.selected;
+                }
+
+                if (gameObject.name[gameObject.name.Length - 1].ToString() == "S")
+                {
+                    spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                    originalColor = spriteRenderer.color;
                     if (!unlocked)
                     {
-                        PSMainMod.startColor = new ParticleSystem.MinMaxGradient(new Color32(61, 61, 61, 255));
+                        spriteRenderer.color = new Color32(61, 61, 61, 255);
                     }
                 }
-                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoGradients)
+                else
                 {
-                    maxGradient = PSMainMod.startColor.gradientMax;
-                    minGradient = PSMainMod.startColor.gradientMin;
-                    if (!unlocked)
+                    particleSystem = gameObject.GetComponent<ParticleSystem>();
+                    PSMainMod = particleSystem.main;
+                    if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
                     {
-                        PSMainMod.startColor = new ParticleSystem.MinMaxGradient(shopC.blackGrayGradient, shopC.blackGrayGradient);
+                        originalColor = PSMainMod.startColor.color;
+                        if (!unlocked)
+                        {
+                            PSMainMod.startColor = new ParticleSystem.MinMaxGradient(new Color32(61, 61, 61, 255));
+                        }
                     }
-                }
-                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Gradient)
-                {
-                    originalGradient = PSMainMod.startColor.gradient;
-                    if (!unlocked)
+                    if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoGradients)
                     {
-                        PSMainMod.startColor = new ParticleSystem.MinMaxGradient(shopC.blackGrayGradient);
+                        maxGradient = PSMainMod.startColor.gradientMax;
+                        minGradient = PSMainMod.startColor.gradientMin;
+                        if (!unlocked)
+                        {
+                            PSMainMod.startColor = new ParticleSystem.MinMaxGradient(shopC.blackGrayGradient, shopC.blackGrayGradient);
+                        }
                     }
-                }
-                if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoColors)
-                {
-                    maxColor = PSMainMod.startColor.colorMax;
-                    minColor = PSMainMod.startColor.colorMin;
-                    if (!unlocked)
+                    if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Gradient)
                     {
-                        PSMainMod.startColor = new ParticleSystem.MinMaxGradient(Color.black, new Color32(61, 61, 61, 255));
+                        originalGradient = PSMainMod.startColor.gradient;
+                        if (!unlocked)
+                        {
+                            PSMainMod.startColor = new ParticleSystem.MinMaxGradient(shopC.blackGrayGradient);
+                        }
+                    }
+                    if (PSMainMod.startColor.mode == ParticleSystemGradientMode.TwoColors)
+                    {
+                        maxColor = PSMainMod.startColor.colorMax;
+                        minColor = PSMainMod.startColor.colorMin;
+                        if (!unlocked)
+                        {
+                            PSMainMod.startColor = new ParticleSystem.MinMaxGradient(Color.black, new Color32(61, 61, 61, 255));
+                        }
                     }
                 }
             }
@@ -96,8 +112,9 @@ public class SnapScrollRectController : MonoBehaviour
 
         public void Unlock()
         {
-            PlayerPrefsX.SetBool(gameObject.name, true);
             unlocked = true;
+
+            valueChanged = true;
 
             if (spriteRenderer != null)
             {
@@ -105,8 +122,6 @@ public class SnapScrollRectController : MonoBehaviour
             }
             else
             {
-                particleSystem.Clear();
-
                 if (PSMainMod.startColor.mode == ParticleSystemGradientMode.Color)
                 {
                     PSMainMod.startColor = originalColor;
@@ -123,28 +138,49 @@ public class SnapScrollRectController : MonoBehaviour
                 {
                     PSMainMod.startColor = new ParticleSystem.MinMaxGradient(minColor, maxColor);
                 }
+
+                particleSystem.Clear();
+                particleSystem.Simulate(10);
+                particleSystem.Play();
             }
         }
 
         public void Select()
         {
+            valueChanged = true;
             if (!unlocked)
             {
                 Unlock();
             }
 
-            PlayerPrefsX.SetBool(gameObject.name + "Selected", true);
             selected = true;
 
-            buttonLayout = ShopController.buttonLayout.selected;   
+            buttonLayout = ShopController.buttonLayout.selected;
+
+            if (ball)
+            {
+                BallController.Instance.SetBall(GameManager.Instance.balls[index]);
+                print("setball");
+            }
+            else
+            {
+                GameManager.Instance.SetPaddle(index);
+            }
         }
 
         public void UnSelect()
         {
-            PlayerPrefsX.SetBool(gameObject.name + "Selected", false);
+            valueChanged = true;
+
             selected = false;
 
             buttonLayout = ShopController.buttonLayout.unlocked;
+        }
+
+        public void SetPlayerPrefs()
+        {
+            PlayerPrefsX.SetBool(gameObject.name, unlocked);
+            PlayerPrefsX.SetBool(gameObject.name + "Selected", selected);
         }
     }
 
@@ -165,31 +201,127 @@ public class SnapScrollRectController : MonoBehaviour
     Coroutine stopMovement;
     ShopController shopC;
     public int selectedItemIndex = 0;
+    int activeItemIndexLink;
     GameManager game;
 
     private void Awake()
     {
-        shopC = ShopController.Instance;
-
         scrollRect = GetComponent<ScrollRect>();
-        scrollRect.horizontalNormalizedPosition = 1;
+    }
 
+    private void OnEnable()
+    {
+        shopC = ShopController.Instance;
+        game = GameManager.Instance;
+    }
+
+    private void Start()
+    {
         items = new RectTransform[content2Scroll.childCount];
         shopItems = new ShopItem[content2Scroll.childCount];
         for (int i = 0; i < content2Scroll.childCount; i++)
         {
             items[i] = content2Scroll.GetChild(i).GetComponent<RectTransform>();
-            shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
+
+            if (i == 0)
+            {
+                shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject, true);
+            }
+            else
+            {
+                shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
+            }
+
+            if (this.gameObject.name == "BallScollPanel")
+            {
+                shopItems[i].index = game.Link2BallItem(shopItems[i].gameObject.name);
+                shopItems[i].ball = true;
+            }
+            if (this.gameObject.name == "PaddleScollPanel")
+            {
+                shopItems[i].index = game.Link2PaddleItem(shopItems[i].gameObject.name);
+                shopItems[i].ball = false;
+            }
         }
 
         distances2SnapPositon = new float[items.Length];
 
         itemSeperation = Mathf.Abs(items[0].anchoredPosition.x - items[1].anchoredPosition.x);
+
+        selectedItemIndex = ZPlayerPrefs.GetInt("selectedItemIndex" + gameObject.name);
+
+        activeItemIndexLink = ZPlayerPrefs.GetInt("activeItemIndexLink" + gameObject.name);
     }
 
-    private void Start()
+    private void OnApplicationPause(bool pause)
     {
-        game = GameManager.Instance;  
+        if (pause)
+        {
+            foreach (ShopItem item in shopItems)
+            {
+                if (item.valueChanged)
+                {
+                    item.SetPlayerPrefs();
+                }
+            }
+
+            ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+
+            if (this.gameObject.name == "BallScollPanel")
+            {
+                ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
+            }
+            if (this.gameObject.name == "PaddleScollPanel")
+            {
+                ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
+            }
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        foreach (ShopItem item in shopItems)
+        {
+            if (item.valueChanged)
+            {
+                item.SetPlayerPrefs();
+            }
+        }
+
+        ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+
+        if (this.gameObject.name == "BallScollPanel")
+        {
+            ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
+        }
+        if (this.gameObject.name == "PaddleScollPanel")
+        {
+            ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (ShopItem item in shopItems)
+        {
+            if (item.valueChanged)
+            {
+                item.SetPlayerPrefs();
+
+                ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+            }
+        }
+
+        ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+
+        if (this.gameObject.name == "BallScollPanel")
+        {
+            ZPlayerPrefs.SetInt("ballInUse", activeItemIndexLink);
+        }
+        if (this.gameObject.name == "PaddleScollPanel")
+        {
+            ZPlayerPrefs.SetInt("paddleInUse", activeItemIndexLink);
+        }
     }
 
     public void SelectItem()
@@ -199,14 +331,16 @@ public class SnapScrollRectController : MonoBehaviour
             UnselectAllItems();
             shopItems[focalItemNum].Select();
             selectedItemIndex = focalItemNum;
+            activeItemIndexLink = shopItems[focalItemNum].index;
         }
         else
         {
-            if(shopItems[focalItemNum].gemCost <= ZPlayerPrefs.GetInt("gems"))
+            if (shopItems[focalItemNum].gemCost <= game.Gems)
             {
                 UnselectAllItems();
                 shopItems[focalItemNum].Select();
                 selectedItemIndex = focalItemNum;
+                activeItemIndexLink = shopItems[focalItemNum].index;
 
                 game.UpdateGems(shopItems[focalItemNum].gemCost, true);
             }
@@ -324,6 +458,10 @@ public class SnapScrollRectController : MonoBehaviour
 
     public void Go2Selected()
     {
-        content2Scroll.anchoredPosition = new Vector2(selectedItemIndex * -itemSeperation,0);
+        if (selectedItemIndex == 0)
+        {
+            shopItems[0].selected = true;
+        }
+        content2Scroll.anchoredPosition = new Vector2(selectedItemIndex * -itemSeperation, 0);
     }
 }
