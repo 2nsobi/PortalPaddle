@@ -371,17 +371,17 @@ public class TargetController : MonoBehaviour
             if (!targets[i].inUse)
             {
                 targets[i].Use();
+
+                targets[i].transform.parent = nextLvl;
+
                 if (LG.GetNextLvlNumber == 1)
                 {
-                    targets[i].transform.parent = nextLvl;
                     targets[i].transform.localScale = defaultTargetSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
                 if (LG.GetNextLvlNumber == 2)
                 {
-                    targets[i].transform.parent = nextLvl;
-
                     targets[i].transform.localScale = defaultTargetSize;
 
                     if (nextObstaclePath != null)
@@ -397,8 +397,6 @@ public class TargetController : MonoBehaviour
 
                 if(LG.GetNextLvlNumber == 3)
                 {
-                    targets[i].transform.parent = nextLvl;
-
                     int randomNumber = Random.Range(1, 11);
                     if (randomNumber % 2 == 0)
                     {
@@ -422,7 +420,6 @@ public class TargetController : MonoBehaviour
                 
                 if (LG.GetNextLvlNumber >= 4)
                 {
-                    targets[i].transform.parent = nextLvl;
                     int randomNumber = Random.Range(1, 11);
                     if (randomNumber % 2 == 0)
                     {

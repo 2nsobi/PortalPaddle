@@ -48,7 +48,7 @@ public class BallController : MonoBehaviour
     bool fadeBack = false;
     bool cantCollide = false;
     bool pauseAllCoroutines = false;
-    GameManager.BallPrefab activeBall;
+    GameManager.BallPrefab activeBall = null;
 
     public static BallController Instance;
 
@@ -93,18 +93,39 @@ public class BallController : MonoBehaviour
 
     public void SetBall(GameManager.BallPrefab ball)
     {
-        activeBall = ball;
-        activeBall.prefab.transform.SetParent(transform, false);
-        activeBall.prefab.gameObject.SetActive(true);
+        if (activeBall == null)
+        {
+            activeBall = ball;
+            activeBall.prefab.transform.SetParent(transform,true);
+            activeBall.prefab.gameObject.SetActive(true);
 
-        ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
-        CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
-        FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
-        FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
+            ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
+            CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
+            FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
+            FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
 
-        animator = activeBall.animator;
-        originalColor = activeBall.startColor;
-        boostColor = activeBall.boostColor;
+            animator = activeBall.animator;
+            originalColor = activeBall.startColor;
+            boostColor = activeBall.boostColor;
+        }
+        else
+        {
+            activeBall.prefab.transform.parent = null;
+            activeBall.prefab.SetActive(false);
+
+            activeBall = ball;
+            activeBall.prefab.transform.SetParent(transform, true);
+            activeBall.prefab.gameObject.SetActive(true);
+
+            ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
+            CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
+            FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
+            FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
+
+            animator = activeBall.animator;
+            originalColor = activeBall.startColor;
+            boostColor = activeBall.boostColor;
+        }
     }
 
     private void OnApplicationFocus(bool focus)

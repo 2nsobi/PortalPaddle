@@ -258,12 +258,12 @@ public class LvlMaker : MonoBehaviour
         {
             return path[iterator];
         }
-        catch (System.IndexOutOfRangeException e)
+        catch (System.IndexOutOfRangeException)
         {
             testPath = false;
             Debug.Log("Nevermind. You have to set the circle path before you test it. Click again to set path.");
         }
-        catch (System.NullReferenceException e)
+        catch (System.NullReferenceException)
         {
             testPath = false;
             Debug.Log("Nevermind. You have to set the circle path before you test it. Click again to set path.");
