@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         public GameObject collisionEffect;
         public GameObject fallEffect;
         public GameObject firstImpact;
-        public GameObject boostEffect;
+        public GameObject boostEffect = null;
         public Animator animator;
         public Color32 startColor;
         public Color32 boostColor;
@@ -120,6 +120,9 @@ public class GameManager : MonoBehaviour
     float thisDeviceCameraWidth;
     bool dontMoveWalls = false;
     PaddlePrefab selectedPaddle;
+    BallPrefab selectedBall;
+    bool paddleChanged = true;
+    bool ballChanged = true;
 
     public static GameManager Instance;
 
@@ -178,13 +181,13 @@ public class GameManager : MonoBehaviour
         ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
 
         /********************************************
-         DELETE THIS
+         DELETE THING BELOW
          **********************************************/
 
-        ZPlayerPrefs.DeleteAll();
+        //ZPlayerPrefs.DeleteAll();
 
         /********************************************
-        DELETE THIS
+        DELETE THING ABOVE
         **********************************************/
 
 
@@ -220,9 +223,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetBall(int index)
+    {
+        selectedBall = balls[index];
+        ballChanged = true;
+    }
+
     public void SetPaddle(int index)
     {
         selectedPaddle = paddles[index];
+        paddleChanged = true;
     }
 
     /*********************************************
@@ -263,10 +273,10 @@ public class GameManager : MonoBehaviour
         ball = BallController.Instance;
         ads = AdManager.Instance;
 
-        Paddle.SetPaddle(paddles[ZPlayerPrefs.GetInt("paddleInUse")]);
+        selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         DeactivatePaddle();
 
-        ball.SetBall(balls[ZPlayerPrefs.GetInt("ballInUse")]);
+        selectedBall = balls[ZPlayerPrefs.GetInt("ballInUse")];
 
         GoToStartPage();
         gameRunning = false;
@@ -528,11 +538,19 @@ public class GameManager : MonoBehaviour
         replayButton.interactable = true;
 
         Paddle.gameObject.SetActive(true);
-        Paddle.SetPaddle(selectedPaddle);
+        if (paddleChanged)
+        {
+            Paddle.SetPaddle(selectedPaddle);
+            paddleChanged = false;
+        }
+
+        if (ballChanged)
+        {
+            ball.SetBall(selectedBall);
+            ballChanged = false;
+        }
 
         canContinue = true;
-
-
 
         GameStarted();
     }
@@ -705,6 +723,9 @@ public class GameManager : MonoBehaviour
         {
             ZPlayerPrefs.SetInt("gems", (int)gems);
             ZPlayerPrefs.SetInt("HighScore", score);
+
+            ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+            ZPlayerPrefs.SetInt("ballInUse",selectedBall.index);
         }
     }
 
@@ -712,6 +733,9 @@ public class GameManager : MonoBehaviour
     {
         ZPlayerPrefs.SetInt("gems", (int)gems);
         ZPlayerPrefs.SetInt("HighScore", score);
+
+        ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+        ZPlayerPrefs.SetInt("ballInUse", selectedBall.index);
     }
 
     private void OnApplicationFocus(bool focus)
@@ -722,6 +746,9 @@ public class GameManager : MonoBehaviour
 
             ZPlayerPrefs.SetInt("gems", (int)gems);
             ZPlayerPrefs.SetInt("HighScore", highScore);
+
+            ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+            ZPlayerPrefs.SetInt("ballInUse", selectedBall.index);
         }
         else
         {

@@ -1,6 +1,9 @@
 <dependencies>
   <packages>
+    <package>com.android.support:support-v4:25.2.0</package>
     <package>com.google.android.gms:play-services-ads:15.0.1</package>
+    <package>com.google.android.gms:play-services-ads:9.8</package>
+    <package>com.google.android.gms:play-services-location:9.8</package>
   </packages>
   <files>
     <file>Assets/Plugins/Android/android.arch.core.common-1.0.0.jar</file>
