@@ -19,6 +19,8 @@ namespace Unity.Appodeal.Xcode
         public bool AsBoolean()  { return ((PlistElementBoolean)this).value; }
         public PlistElementArray AsArray() { return (PlistElementArray)this; }
         public PlistElementDict AsDict()   { return (PlistElementDict)this; }
+        public float AsReal() { return ((PlistElementReal)this).value; }
+        public DateTime AsDate() { return ((PlistElementDate)this).value; }
 
         public PlistElement this[string key]
         {
@@ -41,11 +43,25 @@ namespace Unity.Appodeal.Xcode
         public int value;
     }
 
+    public class PlistElementReal : PlistElement
+    {
+        public PlistElementReal(float v) { value = v; }
+
+        public float value;
+    }
+
     public class PlistElementBoolean : PlistElement
     {
         public PlistElementBoolean(bool v) { value = v; }
 
         public bool value;
+    }
+
+    public class PlistElementDate : PlistElement
+    {
+        public PlistElementDate(DateTime date) { value = date; }
+
+        public DateTime value;
     }
 
     public class PlistElementDict : PlistElement
@@ -80,6 +96,16 @@ namespace Unity.Appodeal.Xcode
         public void SetBoolean(string key, bool val)
         {
             values[key] = new PlistElementBoolean(val);
+        }
+
+        public void SetDate(string key, DateTime val)
+        {
+            values[key] = new PlistElementDate(val);
+        }
+
+        public void SetReal(string key, float val)
+        {
+            values[key] = new PlistElementReal(val);
         }
 
         public PlistElementArray CreateArray(string key)
@@ -118,6 +144,16 @@ namespace Unity.Appodeal.Xcode
             values.Add(new PlistElementBoolean(val));
         }
 
+        public void AddDate(DateTime val)
+        {
+            values.Add(new PlistElementDate(val));
+        }
+
+        public void AddReal(float val)
+        {
+            values.Add(new PlistElementReal(val));
+        }
+
         public PlistElementArray AddArray()
         {
             var v = new PlistElementArray();
@@ -137,6 +173,8 @@ namespace Unity.Appodeal.Xcode
     {
         public PlistElementDict root;
         public string version;
+
+        private XDocumentType documentType;
 
         public PlistDocument()
         {
@@ -158,25 +196,30 @@ namespace Unity.Appodeal.Xcode
         // LINQ serializes XML DTD declaration with an explicit empty 'internal subset'
         // (a pair of square brackets at the end of Doctype declaration).
         // Even though this is valid XML, XCode does not like it, hence this workaround.
-        internal static string CleanDtdToString(XDocument doc)
+        internal static string CleanDtdToString(XDocument doc, XDocumentType documentType)
         {
             // LINQ does not support changing the DTD of existing XDocument instances,
             // so we create a dummy document for printing of the Doctype declaration.
             // A single dummy element is added to force LINQ not to omit the declaration.
             // Also, utf-8 encoding is forced since this is the encoding we use when writing to file in UpdateInfoPlist.
-            if (doc.DocumentType != null)
+            if (documentType != null)
             {
                 XDocument tmpDoc =
                     new XDocument(new XDeclaration("1.0", "utf-8", null),
-                                  new XDocumentType(doc.DocumentType.Name, doc.DocumentType.PublicId, doc.DocumentType.SystemId, null),
+                                  new XDocumentType(documentType.Name, documentType.PublicId, documentType.SystemId, null),
                                   new XElement(doc.Root.Name));
-                return "" + tmpDoc.Declaration + "\n" + tmpDoc.DocumentType + "\n" + doc.Root;
+                return "" + tmpDoc.Declaration + "\n" + tmpDoc.DocumentType + "\n" + doc.Root + "\n";
             }
             else
             {
                 XDocument tmpDoc = new XDocument(new XDeclaration("1.0", "utf-8", null), new XElement(doc.Root.Name));
-                return "" + tmpDoc.Declaration + Environment.NewLine + doc.Root;
+                return "" + tmpDoc.Declaration + Environment.NewLine + doc.Root + "\n";
             }
+        }
+
+        internal static string CleanDtdToString(XDocument doc)
+        {
+            return CleanDtdToString(doc, doc.DocumentType);
         }
 
         private static string GetText(XElement xml)
@@ -199,7 +242,7 @@ namespace Unity.Appodeal.Xcode
                     for (int i = 0; i < children.Count - 1; i++)
                     {
                         if (children[i].Name != "key")
-                            throw new Exception("Malformed plist file");
+                            throw new Exception("Malformed plist file. Found '"+children[i].Name+"' where 'key' was expected.");
                         string key = GetText(children[i]).Trim();
                         var newChild = ReadElement(children[i+1]);
                         if (newChild != null)
@@ -232,6 +275,20 @@ namespace Unity.Appodeal.Xcode
                         return new PlistElementInteger(r);
                     return null;
                 }
+                case "real":
+                {
+                    float f;
+                    if (float.TryParse(GetText(xml), out f))
+                        return new PlistElementReal(f);
+                    return null;
+                }
+                case "date":
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(GetText(xml), out date))
+                        return new PlistElementDate(date.ToUniversalTime());
+                    return null;
+                }
                 case "true":
                     return new PlistElementBoolean(true);
                 case "false":
@@ -239,6 +296,17 @@ namespace Unity.Appodeal.Xcode
                 default:
                     return null;
             }
+        }
+
+        public void Create()
+        {
+            const string doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                               "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" +
+                               "<plist version=\"1.0\">" +
+                               "<dict>" +
+                               "</dict>" +
+                               "</plist>";
+            ReadFromString(doc);
         }
 
         public void ReadFromFile(string path)
@@ -263,6 +331,7 @@ namespace Unity.Appodeal.Xcode
             root = dict as PlistElementDict;
             if (root == null)
                 throw new Exception("Malformed plist file");
+            documentType = doc.DocumentType;
         }
 
         private static XElement WriteElement(PlistElement el)
@@ -281,6 +350,16 @@ namespace Unity.Appodeal.Xcode
             {
                 var realEl = el as PlistElementString;
                 return new XElement("string", realEl.value);
+            }
+            if (el is PlistElementReal)
+            {
+                var realEl = el as PlistElementReal;
+                return new XElement("real", realEl.value.ToString());
+            }
+            if (el is PlistElementDate)
+            {
+                var realEl = el as PlistElementDate;
+                return new XElement("date", realEl.value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ"));
             }
             if (el is PlistElementDict)
             {
@@ -315,7 +394,8 @@ namespace Unity.Appodeal.Xcode
 
         public void WriteToFile(string path)
         {
-            File.WriteAllText(path, WriteToString());
+            System.Text.Encoding utf8WithoutBom = new System.Text.UTF8Encoding(false);
+            File.WriteAllText(path, WriteToString(), utf8WithoutBom);
         }
 
         public void WriteToStream(TextWriter tw)
@@ -332,8 +412,8 @@ namespace Unity.Appodeal.Xcode
 
             var doc = new XDocument();
             doc.Add(rootEl);
-            return CleanDtdToString(doc);
+            return CleanDtdToString(doc, documentType).Replace("\r\n", "\n");
         }
     }
 
-} // namespace Unity.Appodeal.Xcode
+} // namespace UnityEditor.iOS.XCode

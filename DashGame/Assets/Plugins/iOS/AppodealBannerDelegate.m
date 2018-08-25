@@ -31,4 +31,10 @@
     }
 }
 
+-(void) bannerDidExpired{
+    if(self.bannerDidExpiredCallback){
+        self.bannerDidExpiredCallback();
+    }
+}
+
 @end

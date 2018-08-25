@@ -7,5 +7,6 @@ namespace AppodealAds.Unity.Common {
 		void onInterstitialShown();
 		void onInterstitialClosed();
 		void onInterstitialClicked();
+        void onInterstitialExpired();
 	}
 }

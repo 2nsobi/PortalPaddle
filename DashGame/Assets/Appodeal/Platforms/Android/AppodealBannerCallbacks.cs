@@ -29,6 +29,10 @@ namespace AppodealAds.Unity.Android
 		void onBannerClicked() {
 			listener.onBannerClicked();
 		}
+
+        void onBannerExpired(){
+            listener.onBannerExpired();
+        }
 	}
 #else
 	{

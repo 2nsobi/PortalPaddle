@@ -8,14 +8,12 @@ namespace AppodealAds.Unity
 	{
 		internal static IAppodealAdsClient GetAppodealAdsClient()
 		{
-			#if UNITY_EDITOR
-			return null;
-			#elif UNITY_ANDROID
+			#if UNITY_ANDROID && !UNITY_EDITOR
 			return new AppodealAds.Unity.Android.AndroidAppodealClient();
-			#elif UNITY_IPHONE
+			#elif UNITY_IPHONE && !UNITY_EDITOR
 			return AppodealAds.Unity.iOS.AppodealAdsClient.Instance;
 			#else
-			return null;
+			return new AppodealAds.Unity.Dummy.DummyClient();
 			#endif
 		}
 	}

@@ -14,8 +14,8 @@ namespace AppodealAds.Unity.Android
 			this.listener = listener;
 		}
 		
-		void onRewardedVideoLoaded() {
-			listener.onRewardedVideoLoaded();
+		void onRewardedVideoLoaded(bool precache) {
+            listener.onRewardedVideoLoaded(precache);
 		}
 		
 		void onRewardedVideoFailedToLoad() {
@@ -26,17 +26,21 @@ namespace AppodealAds.Unity.Android
 			listener.onRewardedVideoShown();
 		}
 
-		void onRewardedVideoFinished(int amount, AndroidJavaObject name) {
+        void onRewardedVideoFinished(double amount, AndroidJavaObject name) {
 			listener.onRewardedVideoFinished(amount, null);
 		}
 		
-		void onRewardedVideoFinished(int amount, string name) {
+        void onRewardedVideoFinished(double amount, string name) {
 			listener.onRewardedVideoFinished(amount, name);
 		}
 		
 		void onRewardedVideoClosed(bool finished) {
 			listener.onRewardedVideoClosed(finished);
 		}
+
+        void onRewardedVideoExpired(){
+            listener.onRewardedVideoExpired();
+        }
 
 	}
 #else

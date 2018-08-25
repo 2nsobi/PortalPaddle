@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Unity.Appodeal.Xcode
 {
-    public class JsonElement
+    internal class JsonElement
     {
         protected JsonElement() {}
 
@@ -24,28 +24,28 @@ namespace Unity.Appodeal.Xcode
         }
     }
 
-    public class JsonElementString : JsonElement
+    internal class JsonElementString : JsonElement
     {
         public JsonElementString(string v) { value = v; }
 
         public string value;
     }
 
-    public class JsonElementInteger : JsonElement
+    internal class JsonElementInteger : JsonElement
     {
         public JsonElementInteger(int v) { value = v; }
 
         public int value;
     }
 
-    public class JsonElementBoolean : JsonElement
+    internal class JsonElementBoolean : JsonElement
     {
         public JsonElementBoolean(bool v) { value = v; }
 
         public bool value;
     }
 
-    public class JsonElementDict : JsonElement
+    internal class JsonElementDict : JsonElement
     {
         public JsonElementDict() : base() {}
 
@@ -103,7 +103,7 @@ namespace Unity.Appodeal.Xcode
         }
     }
 
-    public class JsonElementArray : JsonElement
+    internal class JsonElementArray : JsonElement
     {
         public JsonElementArray() : base() {}
         public List<JsonElement> values = new List<JsonElement>();
@@ -139,7 +139,7 @@ namespace Unity.Appodeal.Xcode
         }
     }
 
-    public class JsonDocument
+    internal class JsonDocument
     {
         public JsonElementDict root;
         public string indentString = "  ";
@@ -254,4 +254,4 @@ namespace Unity.Appodeal.Xcode
     }
 
 
-} // namespace Unity.Appodeal.Xcode
+} // namespace UnityEditor.iOS.Xcode

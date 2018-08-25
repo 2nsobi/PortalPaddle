@@ -1,11 +1,9 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 
 // Example script showing how to invoke the Appodeal Ads Unity plugin.
-public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdListener, INonSkippableVideoAdListener, IRewardedVideoAdListener, IPermissionGrantedListener {
+public class AppodealDemo : MonoBehaviour, IPermissionGrantedListener, IInterstitialAdListener, IBannerAdListener, IMrecAdListener, INonSkippableVideoAdListener, IRewardedVideoAdListener {
 
 	#if UNITY_EDITOR && !UNITY_ANDROID && !UNITY_IPHONE
 		string appKey = "";
@@ -18,14 +16,15 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 	#endif
 
 	string interstitialLabel = "CACHE INTERSTITIAL";
+    string rewardedLabel = "Loading";
 
-	int buttonWidth, buttonHeight, toggleSize;
+	int buttonWidth, buttonHeight, heightScale, widthScale, toggleSize;
 	GUIStyle buttonStyle;
 
-	private bool testingToggle;
-	private bool loggingToggle;
+	bool testingToggle;
+	bool loggingToggle;
 
-	void Awake () {
+	public void Awake() {
 		Appodeal.requestAndroidMPermissions(this);
 	}
 
@@ -45,6 +44,7 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 		Appodeal.disableNetwork("appnext");
 		Appodeal.disableNetwork("amazon_ads", Appodeal.BANNER);
 
+
 		Appodeal.disableLocationPermissionCheck();
 		Appodeal.disableWriteExternalStoragePermissionCheck();
 
@@ -58,59 +58,68 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 		Appodeal.setChildDirectedTreatment(false);
 		Appodeal.muteVideosIfCallsMuted(true);
 		Appodeal.setAutoCache(Appodeal.INTERSTITIAL, false);
-		
-		Appodeal.initialize (appKey, Appodeal.INTERSTITIAL | Appodeal.BANNER_VIEW | Appodeal.REWARDED_VIDEO);
+
+        Appodeal.setExtraData(ExtraData.APPSFLYER_ID, "1527256526604-2129416");
+
+        int gdpr = PlayerPrefs.GetInt("result_gdpr_sdk", 0);
+        Debug.Log("result_gdpr_sdk: " + gdpr);
+        Appodeal.initialize (appKey, Appodeal.INTERSTITIAL | Appodeal.BANNER_VIEW | Appodeal.REWARDED_VIDEO | Appodeal.MREC, gdpr == 1);
 
 		Appodeal.setBannerCallbacks (this);
 		Appodeal.setInterstitialCallbacks (this);
-		Appodeal.setRewardedVideoCallbacks(this);
+		Appodeal.setRewardedVideoCallbacks (this);
+        Appodeal.setMrecCallbacks(this);
 
-		Appodeal.setCustomRule("newBoolean", true);
-		Appodeal.setCustomRule("newInt", 1234567890);
-		Appodeal.setCustomRule("newDouble", 123.123456789);
-		Appodeal.setCustomRule("newString", "newStringFromSDK");
+        Appodeal.setSegmentFilter("newBoolean", true);
+        Appodeal.setSegmentFilter("newInt", 1234567890);
+        Appodeal.setSegmentFilter("newDouble", 123.123456789);
+        Appodeal.setSegmentFilter("newString", "newStringFromSDK");
 	}
-
-
-
+	
 	void OnGUI() {
 		InitStyles();
 
-		if (GUI.Toggle(new Rect(Screen.width / 10, Screen.height / 10 - Screen.height / 15, toggleSize * 3, toggleSize), testingToggle, new GUIContent("Testing"))) {
+        if (GUI.Toggle(new Rect(widthScale, heightScale - Screen.height / 18, toggleSize * 3, toggleSize), testingToggle, new GUIContent("Testing"))) {
 			testingToggle = true;
 		} else {
 			testingToggle = false;
 		}
 
-		if (GUI.Toggle(new Rect(Screen.width / 2, Screen.height / 10 - Screen.height / 15, toggleSize * 3, toggleSize), loggingToggle, new GUIContent("Logging"))) {
+        if (GUI.Toggle(new Rect(Screen.width / 2, heightScale - Screen.height / 18, toggleSize * 3, toggleSize), loggingToggle, new GUIContent("Logging"))) {
 			loggingToggle = true;
 		} else {
 			loggingToggle = false;
 		}
 		
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10, buttonWidth, buttonHeight), "INITIALIZE", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale, buttonWidth, buttonHeight), "INITIALIZE", buttonStyle))
 			Init();
 		
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + Screen.height / 10, buttonWidth, buttonHeight), interstitialLabel, buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + heightScale, buttonWidth, buttonHeight), interstitialLabel, buttonStyle))
 			showInterstitial();
 
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 2 * Screen.height / 10, buttonWidth, buttonHeight), "SHOW REWARDED VIDEO", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 2 * heightScale, buttonWidth, buttonHeight), rewardedLabel, buttonStyle))
 			showRewardedVideo();
 
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 3 * Screen.height / 10, buttonWidth, buttonHeight), "SHOW BANNER", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 3 * heightScale, buttonWidth, buttonHeight), "SHOW BANNER", buttonStyle))
 			showBanner();
 
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 4 * Screen.height / 10, buttonWidth, buttonHeight), "HIDE BANNER", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 4 * heightScale, buttonWidth, buttonHeight), "HIDE BANNER", buttonStyle))
 			hideBanner();
 
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 5 * Screen.height / 10, buttonWidth, buttonHeight), "SHOW BANNER VIEW", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 5 * heightScale, buttonWidth, buttonHeight), "SHOW BANNER VIEW", buttonStyle))
 			showBannerView();
 
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 6 * Screen.height / 10, buttonWidth, buttonHeight), "HIDE BANNER VIEW", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 6 * heightScale, buttonWidth, buttonHeight), "HIDE BANNER VIEW", buttonStyle))
 			hideBannerView();
 
+        if (GUI.Button(new Rect(widthScale, heightScale + 7 * heightScale, buttonWidth, buttonHeight), "SHOW MREC VIEW", buttonStyle))
+            showMrecView();
+
+        if (GUI.Button(new Rect(widthScale, heightScale + 8 * heightScale, buttonWidth, buttonHeight), "HIDE MREC VIEW", buttonStyle))
+            hideMrecView();
+
 		#if UNITY_ANDROID
-		if (GUI.Button(new Rect(Screen.width / 10, Screen.height / 10 + 7 * Screen.height / 10, buttonWidth, buttonHeight), "SHOW TEST SCREEN", buttonStyle))
+        if (GUI.Button(new Rect(widthScale, heightScale + 9 * heightScale, buttonWidth, buttonHeight), "SHOW TEST SCREEN", buttonStyle))
 			Appodeal.showTestScreen();
 		#endif
 
@@ -119,8 +128,9 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 	private void InitStyles() {
 		if(buttonStyle == null) {
 			buttonWidth = Screen.width - Screen.width / 5;
-			buttonHeight = Screen.height / 15;
-
+			buttonHeight = Screen.height / 18;
+            heightScale = Screen.height / 15;
+            widthScale = Screen.width / 10;
 			toggleSize = Screen.height / 20;
 
 			buttonStyle = new GUIStyle(GUI.skin.button);
@@ -159,6 +169,7 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 	}
 
 	public void showRewardedVideo() {
+		Debug.Log ("Predicted eCPM for Rewarded Video: " + Appodeal.getPredictedEcpm (Appodeal.REWARDED_VIDEO));
 		Debug.Log("Reward currency: " + Appodeal.getRewardParameters().Key + ", amount: " + Appodeal.getRewardParameters().Value);
 		if(Appodeal.canShow(Appodeal.REWARDED_VIDEO)) {
 			Appodeal.show (Appodeal.REWARDED_VIDEO);
@@ -173,6 +184,10 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 		Appodeal.showBannerView(Screen.currentResolution.height - Screen.currentResolution.height / 10, Appodeal.BANNER_HORIZONTAL_CENTER, "banner_view");
 	}
 
+    public void showMrecView() {
+        Appodeal.showMrecView(Screen.currentResolution.height - Screen.currentResolution.height / 10, Appodeal.BANNER_HORIZONTAL_CENTER, "mrec_view");
+    }
+
 	public void hideBanner() {
 		Appodeal.hide (Appodeal.BANNER);
 	}
@@ -181,6 +196,9 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 		Appodeal.hideBannerView ();
 	}
 
+    public void hideMrecView() {
+        Appodeal.hideMrecView();
+    }
 
 	void OnApplicationFocus(bool hasFocus) {
 		if(hasFocus) {
@@ -190,47 +208,60 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 
 
 	#region Banner callback handlers
-
-	public void onBannerLoaded(bool isPrecache) { Debug.Log("Banner loaded, isPrecache:" + isPrecache); }
-	public void onBannerFailedToLoad() { Debug.Log("Banner failed"); }
-	public void onBannerShown() { Debug.Log("Banner opened"); }
-	public void onBannerClicked() { Debug.Log("banner clicked"); }
-
+	public void onBannerLoaded(bool precache) { print("banner loaded"); }
+	public void onBannerFailedToLoad() { print("banner failed"); }
+	public void onBannerShown() { print("banner opened"); }
+	public void onBannerClicked() { print("banner clicked"); }
+    public void onBannerExpired() { print("banner expired");  }
 	#endregion
 
+    #region Mrec callback handlers
+    public void onMrecLoaded(bool precache) { print("mrec loaded"); }
+    public void onMrecFailedToLoad() { print("mrec failed"); }
+    public void onMrecShown() { print("mrec opened"); }
+    public void onMrecClicked() { print("mrec clicked"); }
+    public void onMrecExpired() { print("mrec expired"); }
+    #endregion
+
 	#region Interstitial callback handlers
-	
-	public void onInterstitialLoaded(bool isPrecache) { 
-		interstitialLabel = "SHOW INTERSTITIAL";
-		Debug.Log("Interstitial loaded"); 
-	}
-	public void onInterstitialFailedToLoad() { Debug.Log("Interstitial failed to load"); }
-	public void onInterstitialShown() { 
-		interstitialLabel = "CACHE INTERSTITIAL";	
-		Debug.Log("Interstitial opened"); 
-	}
-	public void onInterstitialClicked() { Debug.Log("Interstitial clicked"); }
-	public void onInterstitialClosed() { Debug.Log("Interstitial closed"); }
-	
+	public void onInterstitialLoaded(bool isPrecache) {
+        interstitialLabel = "SHOW INTERSTITIAL";
+        print("Appodeal. Interstitial loaded"); 
+    }
+	public void onInterstitialFailedToLoad() { print("Appodeal. Interstitial failed"); }
+	public void onInterstitialShown() {
+        interstitialLabel = "CACHE INTERSTITIAL";
+        print("Appodeal. Interstitial opened"); 
+    }
+	public void onInterstitialClosed() { print("Appodeal. Interstitial closed"); }
+	public void onInterstitialClicked() { print("Appodeal. Interstitial clicked"); }
+    public void onInterstitialExpired() { print("Appodeal. Interstitial expired"); }
 	#endregion
 
 	#region Non Skippable Video callback handlers
-	public void onNonSkippableVideoLoaded() { Debug.Log("NonSkippable Video loaded"); }
+	public void onNonSkippableVideoLoaded(bool isPrecache) { Debug.Log("NonSkippable Video loaded"); }
 	public void onNonSkippableVideoFailedToLoad() { Debug.Log("NonSkippable Video failed to load"); }
 	public void onNonSkippableVideoShown() { Debug.Log("NonSkippable Video opened"); }
 	public void onNonSkippableVideoClosed(bool isFinished) { Debug.Log("NonSkippable Video, finished:" + isFinished); }
 	public void onNonSkippableVideoFinished() { Debug.Log("NonSkippable Video finished"); }
+    public void onNonSkippableVideoExpired() { Debug.Log("NonSkippable Video expired"); }
 	#endregion
 
 	#region Rewarded Video callback handlers
-	public void onRewardedVideoLoaded() { Debug.Log("Rewarded Video loaded"); }
-	public void onRewardedVideoFailedToLoad() { Debug.Log("Rewarded Video failed to load"); }
-	public void onRewardedVideoShown() { Debug.Log("Rewarded Video opened"); }
-	public void onRewardedVideoClosed(bool isFinished) { Debug.Log("Rewarded Video closed, finished:" + isFinished); }
-	public void onRewardedVideoFinished(int amount, string name) { Debug.Log("Rewarded Video Reward: " + amount + " " + name); }
-	#endregion
+	public void onRewardedVideoLoaded(bool isPrecache) {
+        rewardedLabel = "SHOW REWARDED";
+        print("Appodeal. Video loaded"); 
+    }
+	public void onRewardedVideoFailedToLoad() { print("Appodeal. Video failed"); }
+	public void onRewardedVideoShown() {
+        rewardedLabel = "Loading";
+        print("Appodeal. Video shown"); 
+    }
+	public void onRewardedVideoClosed(bool finished) { print("Appodeal. Video closed"); }
+	public void onRewardedVideoFinished(double amount, string name) { print("Appodeal. Reward: " + amount + " " + name); }
+    public void onRewardedVideoExpired() { print("Appodeal. Video expired"); }
+	#endregion	
 
-	#region Permission Grant callback handlers
 	public void writeExternalStorageResponse(int result) { 
 		if(result == 0) {
 			Debug.Log("WRITE_EXTERNAL_STORAGE permission granted"); 
@@ -245,6 +276,5 @@ public class AppodealDemo : MonoBehaviour, IInterstitialAdListener, IBannerAdLis
 			Debug.Log("ACCESS_COARSE_LOCATION permission grant refused"); 
 		}
 	}
-	#endregion
 
 }

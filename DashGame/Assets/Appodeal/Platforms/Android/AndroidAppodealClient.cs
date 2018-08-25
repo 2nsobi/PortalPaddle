@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using UnityEngine;
+﻿using UnityEngine;
 using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 
@@ -10,7 +7,7 @@ namespace AppodealAds.Unity.Android {
 	
 	public class AndroidAppodealClient : IAppodealAdsClient {
 		
-        private bool isShow;
+        bool isShow;
 		AndroidJavaClass appodealClass;
 		AndroidJavaClass appodealUnityClass;
 		AndroidJavaClass appodealBannerClass;
@@ -18,6 +15,61 @@ namespace AppodealAds.Unity.Android {
 		AndroidJavaObject userSettings;
 		AndroidJavaObject activity;
 		AndroidJavaObject popupWindow, resources, displayMetrics, window, decorView, attributes, rootView;
+
+        public const int NONE = 0;
+        public const int INTERSTITIAL = 3;
+        public const int BANNER = 4;
+        public const int BANNER_BOTTOM = 8;
+        public const int BANNER_TOP = 16;
+        public const int BANNER_VIEW = 64;
+        public const int MREC = 256;
+        public const int REWARDED_VIDEO = 128;
+
+        int nativeAdTypesForType(int adTypes)
+        {
+            int nativeAdTypes = 0;
+
+            if ((adTypes & Appodeal.INTERSTITIAL) > 0) {
+                nativeAdTypes |= Appodeal.INTERSTITIAL;
+            }
+
+            if ((adTypes & Appodeal.BANNER) > 0)
+            {
+                nativeAdTypes |= Appodeal.BANNER;
+            }
+
+            if ((adTypes & Appodeal.BANNER_VIEW) > 0)
+            {
+                nativeAdTypes |= Appodeal.BANNER_VIEW;
+            }
+
+            if ((adTypes & Appodeal.BANNER_TOP) > 0)
+            {
+                nativeAdTypes |= Appodeal.BANNER_TOP;
+            }
+
+            if ((adTypes & Appodeal.BANNER_BOTTOM) > 0)
+            {
+                nativeAdTypes |= Appodeal.BANNER_BOTTOM;
+            }
+
+            if ((adTypes & Appodeal.MREC) > 0)
+            {
+                nativeAdTypes |= 256;
+            }
+
+            if ((adTypes & Appodeal.REWARDED_VIDEO) > 0)
+            {
+                nativeAdTypes |= Appodeal.REWARDED_VIDEO;
+            }
+
+            if ((adTypes & Appodeal.NON_SKIPPABLE_VIDEO) > 0)
+            {
+                nativeAdTypes |= Appodeal.REWARDED_VIDEO;
+            }
+
+            return nativeAdTypes;
+        }
 
 		public AndroidJavaClass getAppodealClass() {
 			if (appodealClass == null) {
@@ -49,18 +101,24 @@ namespace AppodealAds.Unity.Android {
 			return activity;
 		}
 
-		public void initialize(string appKey, int adTypes)  {
-			getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion());
+		public void initialize(string appKey, int adTypes){
+			initialize(appKey, adTypes, true);
+            
+		}
+
+		public void initialize(string appKey, int adTypes, bool hasConsent)  {
+            getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion);
+            disableNetwork("mobvista");
 			#if UNITY_5_6_0 || UNITY_5_6_1
-				getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), true, false);
+				getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion, true, false);
 				getAppodealClass().CallStatic("disableNetwork", getActivity(), "amazon_ads", Appodeal.BANNER);
 			#endif
 
 			if((adTypes & Appodeal.BANNER_VIEW) > 0) {
-				getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), false, false);
+				getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion, false, false);
 				getAppodealClass().CallStatic("disableNetwork", getActivity(), "amazon_ads", Appodeal.BANNER);
 			}
-			getAppodealClass().CallStatic("initialize", getActivity(), appKey, adTypes);
+			getAppodealClass().CallStatic("initialize", getActivity(), appKey, nativeAdTypesForType(adTypes), hasConsent);
 		}
 
 		public bool show(int adTypes) {
@@ -74,6 +132,10 @@ namespace AppodealAds.Unity.Android {
 		public bool showBannerView(int YAxis, int XAxis, string Placement) {
 			return getAppodealBannerInstance().Call<bool>("showBannerView", getActivity(), XAxis, YAxis, Placement);
 		}
+
+        public bool showMrecView(int YAxis, int XAxis, string Placement) {
+            return getAppodealBannerInstance().Call<bool>("showMrecView", getActivity(), XAxis, YAxis, Placement);
+        }
 
 		public bool isLoaded(int adTypes) {
 			return getAppodealClass().CallStatic<bool>("isLoaded", adTypes);
@@ -90,6 +152,10 @@ namespace AppodealAds.Unity.Android {
 		public void hideBannerView() {
 			getAppodealBannerInstance().Call("hideBannerView", getActivity());	
 		}
+
+        public void hideMrecView() {
+            getAppodealBannerInstance().Call("hideMrecView", getActivity());
+        }
 
 		public bool isPrecache(int adTypes) {
 			return getAppodealClass().CallStatic<bool>("isPrecache", adTypes);
@@ -185,21 +251,41 @@ namespace AppodealAds.Unity.Android {
 			return getAppodealClass().CallStatic<bool>("canShow", adTypes, placement);
 		}
 		
-		public void setCustomRule(string name, bool value) {
-			getAppodealClass().CallStatic("setCustomRule", name, value);
+        public void setSegmentFilter(string name, bool value) {
+            getAppodealClass().CallStatic("setSegmentFilter", name, value);
 		}
 
-		public void setCustomRule(string name, int value) {
-			getAppodealClass().CallStatic("setCustomRule", name, value);
+        public void setSegmentFilter(string name, int value) {
+            getAppodealClass().CallStatic("setSegmentFilter", name, value);
 		}
 
-		public void setCustomRule(string name, double value) {
-			getAppodealClass().CallStatic("setCustomRule", name, value);
+        public void setSegmentFilter(string name, double value) {
+            getAppodealClass().CallStatic("setSegmentFilter", name, value);
 		}
 
-		public void setCustomRule(string name, string value) {
-			getAppodealClass().CallStatic("setCustomRule", name, value);
+        public void setSegmentFilter(string name, string value) {
+            getAppodealClass().CallStatic("setSegmentFilter", name, value);
 		}
+
+        public void setExtraData(string key, bool value)
+        {
+            getAppodealClass().CallStatic("setExtraData", key, value);
+        }
+
+        public void setExtraData(string key, int value)
+        {
+            getAppodealClass().CallStatic("setExtraData", key, value);
+        }
+
+        public void setExtraData(string key, double value)
+        {
+            getAppodealClass().CallStatic("setExtraData", key, value);
+        }
+
+        public void setExtraData(string key, string value)
+        {
+            getAppodealClass().CallStatic("setExtraData", key, value);
+        }
 		
 		public void trackInAppPurchase(double amount, string currency) {
 			getAppodealClass().CallStatic("trackInAppPurchase", getActivity(), amount, currency);
@@ -210,10 +296,10 @@ namespace AppodealAds.Unity.Android {
 			return reward.Get<string>("second");
 		}
 
-		public int getRewardAmount(string placement) {
+        public double getRewardAmount(string placement) {
 			AndroidJavaObject reward = getAppodealClass().CallStatic<AndroidJavaObject>("getRewardParameters", placement);
-			AndroidJavaObject integerValue = reward.Get<AndroidJavaObject>("first");
-			return integerValue.Call<int>("intValue");
+            AndroidJavaObject doubleValue = reward.Get<AndroidJavaObject>("first");
+            return doubleValue.Call<double>("doubleValue");
 		}
 
 		public string getRewardCurrency() {
@@ -221,10 +307,14 @@ namespace AppodealAds.Unity.Android {
 			return reward.Get<string>("second");
 		}
 
-		public int getRewardAmount() {
+        public double getRewardAmount() {
 			AndroidJavaObject reward = getAppodealClass().CallStatic<AndroidJavaObject>("getRewardParameters");
-			AndroidJavaObject integerValue = reward.Get<AndroidJavaObject>("first");
-			return integerValue.Call<int>("intValue");
+			AndroidJavaObject doubleValue = reward.Get<AndroidJavaObject>("first");
+            return doubleValue.Call<double>("doubleValue");
+		}
+
+		public double getPredictedEcpm(int adType) {
+			return getAppodealClass().CallStatic<double>("getPredictedEcpm", adType);
 		}
 
 		//User Settings
@@ -273,6 +363,10 @@ namespace AppodealAds.Unity.Android {
 		public void setBannerCallbacks(IBannerAdListener listener) {
 			getAppodealClass().CallStatic("setBannerCallbacks", new AppodealBannerCallbacks(listener));
 		}
+
+        public void setMrecCallbacks(IMrecAdListener listener) {
+            getAppodealClass().CallStatic("setMrecCallbacks", new AppodealMrecCallbacks(listener));
+        }
 
 		public void requestAndroidMPermissions(IPermissionGrantedListener listener)  {
 			getAppodealClass().CallStatic("requestAndroidMPermissions", getActivity(), new AppodealPermissionCallbacks(listener));

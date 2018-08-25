@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System;
 
-
 namespace Unity.Appodeal.Xcode.PBX
 {
     internal class PBXObjectData
@@ -21,6 +20,16 @@ namespace Unity.Appodeal.Xcode.PBX
         internal PBXElementDict GetPropertiesWhenSerializing() 
         { 
             return m_Properties; 
+        }
+
+        /*  Returns the internal properties dictionary which the user may manipulate directly.
+            If any of the properties are modified, UpdateVars() must be called before any other
+            operation affecting the given Xcode document is executed.
+        */
+        internal PBXElementDict GetPropertiesRaw()
+        {
+            UpdateProps();
+            return m_Properties;
         }
         
         // returns null if it does not exist
@@ -78,6 +87,8 @@ namespace Unity.Appodeal.Xcode.PBX
         public string fileRef;
         public string compileFlags;
         public bool weak;
+        public bool codeSignOnCopy;
+        public bool removeHeadersOnCopy;
         public List<string> assetTags;
         
         private static PropertyCommentChecker checkerData = new PropertyCommentChecker(new string[]{
@@ -95,10 +106,48 @@ namespace Unity.Appodeal.Xcode.PBX
             buildFile.fileRef = fileRefGUID;
             buildFile.compileFlags = compileFlags;
             buildFile.weak = weak;
+            buildFile.codeSignOnCopy = false;
+            buildFile.removeHeadersOnCopy = false;
             buildFile.assetTags = new List<string>();
             return buildFile;
         }
-        
+
+        PBXElementDict UpdatePropsAttribute(PBXElementDict settings, bool value, string attributeName)
+        {
+            PBXElementArray attrs = null;
+            if (value)
+            {
+                if (settings == null)
+                    settings = m_Properties.CreateDict("settings");
+            }
+            if (settings != null && settings.Contains("ATTRIBUTES"))
+                attrs = settings["ATTRIBUTES"].AsArray();
+
+            if (value)
+            {
+                if (attrs == null)
+                    attrs = settings.CreateArray("ATTRIBUTES");
+
+                bool exists = attrs.values.Any(attr => 
+                {
+                    return attr is PBXElementString && attr.AsString() == attributeName;
+                });
+
+                if (!exists)
+                    attrs.AddString(attributeName);
+            }
+            else
+            {
+                if (attrs != null)
+                {
+                    attrs.values.RemoveAll(el => (el is PBXElementString && el.AsString() == attributeName));
+                    if (attrs.values.Count == 0)
+                        settings.Remove("ATTRIBUTES");
+                }
+            }
+            return settings;
+        }
+
         public override void UpdateProps()
         {
             SetPropertyString("fileRef", fileRef);
@@ -119,35 +168,9 @@ namespace Unity.Appodeal.Xcode.PBX
                     settings.Remove("COMPILER_FLAGS");
             }
 
-            if (weak)
-            {
-                if (settings == null)
-                    settings = m_Properties.CreateDict("settings");
-                PBXElementArray attrs = null;
-                if (settings.Contains("ATTRIBUTES"))
-                    attrs = settings["ATTRIBUTES"].AsArray();
-                else
-                    attrs = settings.CreateArray("ATTRIBUTES");
-                    
-                bool exists = false;
-                foreach (var value in attrs.values)
-                {
-                    if (value is PBXElementString && value.AsString() == "Weak")
-                        exists = true;
-                }
-                if (!exists)
-                    attrs.AddString("Weak");
-            }
-            else
-            {
-                if (settings != null && settings.Contains("ATTRIBUTES"))
-                {
-                    var attrs = settings["ATTRIBUTES"].AsArray();
-                    attrs.values.RemoveAll(el => (el is PBXElementString && el.AsString() == "Weak"));
-                    if (attrs.values.Count == 0)
-                        settings.Remove("ATTRIBUTES");
-                }
-            }
+            settings = UpdatePropsAttribute(settings, weak, "Weak");
+            settings = UpdatePropsAttribute(settings, codeSignOnCopy, "CodeSignOnCopy");
+            settings = UpdatePropsAttribute(settings, removeHeadersOnCopy, "RemoveHeadersOnCopy");
             
             if (assetTags.Count > 0)
             {
@@ -186,6 +209,10 @@ namespace Unity.Appodeal.Xcode.PBX
                     {
                         if (value is PBXElementString && value.AsString() == "Weak")
                             weak = true;
+                        if (value is PBXElementString && value.AsString() == "CodeSignOnCopy")
+                            codeSignOnCopy = true;
+                        if (value is PBXElementString && value.AsString() == "RemoveHeadersOnCopy")
+                            removeHeadersOnCopy = true;
                     }
                 }
                 if (dict.Contains("ASSET_TAGS"))
@@ -411,6 +438,7 @@ namespace Unity.Appodeal.Xcode.PBX
         public string buildConfigList; // guid
         public string name;
         public GUIDList dependencies;
+        public string productReference; // guid
 
         private static PropertyCommentChecker checkerData = new PropertyCommentChecker(new string[]{
             "buildPhases/*",
@@ -433,6 +461,7 @@ namespace Unity.Appodeal.Xcode.PBX
             res.SetPropertyList("buildRules", new List<string>());
             res.dependencies = new GUIDList();
             res.name = name;
+            res.productReference = productRef;
             res.SetPropertyString("productName", name);
             res.SetPropertyString("productReference", productRef);
             res.SetPropertyString("productType", productType);
@@ -443,6 +472,7 @@ namespace Unity.Appodeal.Xcode.PBX
         {
             SetPropertyString("buildConfigurationList", buildConfigList);
             SetPropertyString("name", name);
+            SetPropertyString("productReference", productReference);
             SetPropertyList("buildPhases", phases);
             SetPropertyList("dependencies", dependencies);
         }
@@ -450,6 +480,7 @@ namespace Unity.Appodeal.Xcode.PBX
         {
             buildConfigList = GetPropertyString("buildConfigurationList");
             name = GetPropertyString("name");
+            productReference = GetPropertyString("productReference");
             phases = GetPropertyList("buildPhases");
             dependencies = GetPropertyList("dependencies");
         }
@@ -527,16 +558,18 @@ namespace Unity.Appodeal.Xcode.PBX
         internal override PropertyCommentChecker checker { get { return checkerData; } }
 
         public string name;
+        public string dstPath;
+        public string dstSubfolderSpec;
 
         // name may be null
-        public static PBXCopyFilesBuildPhaseData Create(string name, string subfolderSpec)
+        public static PBXCopyFilesBuildPhaseData Create(string name, string dstPath, string subfolderSpec)
         {
             var res = new PBXCopyFilesBuildPhaseData();
             res.guid = PBXGUID.Generate();
             res.SetPropertyString("isa", "PBXCopyFilesBuildPhase");
             res.SetPropertyString("buildActionMask", "2147483647");
-            res.SetPropertyString("dstPath", "");
-            res.SetPropertyString("dstSubfolderSpec", subfolderSpec);
+            res.dstPath = dstPath;
+            res.dstSubfolderSpec = subfolderSpec;
             res.files = new List<string>();
             res.SetPropertyString("runOnlyForDeploymentPostprocessing", "0");
             res.name = name;
@@ -547,31 +580,52 @@ namespace Unity.Appodeal.Xcode.PBX
         {
             SetPropertyList("files", files);
             SetPropertyString("name", name);
+            SetPropertyString("dstPath", dstPath);
+            SetPropertyString("dstSubfolderSpec", dstSubfolderSpec);
         }
+
         public override void UpdateVars()
         {
             files = GetPropertyList("files");
             name = GetPropertyString("name");
+            dstPath = GetPropertyString("dstPath");
+            dstSubfolderSpec = GetPropertyString("dstSubfolderSpec");
         }
     }
 
-    internal class PBXShellScriptBuildPhaseData : PBXObjectData
+    internal class PBXShellScriptBuildPhaseData : FileGUIDListBase
     {
-        public GUIDList files;
+        public string name;
+        public string shellPath;
+        public string shellScript;
 
-        private static PropertyCommentChecker checkerData = new PropertyCommentChecker(new string[]{
-            "files/*",
-        });
-        
-        internal override PropertyCommentChecker checker { get { return checkerData; } }
-        
+        public static PBXShellScriptBuildPhaseData Create(string name, string shellPath, string shellScript)
+        {
+            var res = new PBXShellScriptBuildPhaseData();
+            res.guid = PBXGUID.Generate();
+            res.SetPropertyString("isa", "PBXShellScriptBuildPhase");
+            res.SetPropertyString("buildActionMask", "2147483647");
+            res.files = new List<string>();
+            res.SetPropertyString("runOnlyForDeploymentPostprocessing", "0");
+            res.name = name;
+            res.shellPath = shellPath;
+            res.shellScript = shellScript;
+            return res;
+        }
+
         public override void UpdateProps()
         {
-            SetPropertyList("files", files);
+            base.UpdateProps();
+            SetPropertyString("name", name);
+            SetPropertyString("shellPath", shellPath);
+            SetPropertyString("shellScript", shellScript);
         }
         public override void UpdateVars()
         {
-            files = GetPropertyList("files");
+            base.UpdateVars();
+            name = GetPropertyString("name");
+            shellPath = GetPropertyString("shellPath");
+            shellScript = GetPropertyString("shellScript");
         }
     }
 
@@ -596,6 +650,30 @@ namespace Unity.Appodeal.Xcode.PBX
             val.RemoveAll(v => v == value);
         }
 
+        public void RemoveValueList(IEnumerable<string> values)
+        {
+            List<string> valueList = new List<string>(values);
+            if (valueList.Count == 0)
+                return;
+            for (int i = 0; i < val.Count - valueList.Count; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < valueList.Count; j++)
+                {
+                    if (val[i + j] != valueList[j])
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match)
+                {
+                    val.RemoveRange(i, valueList.Count);
+                    return;
+                }
+            }
+        }
+
         public static BuildConfigEntryData FromNameValue(string name, string value)
         {
             BuildConfigEntryData ret = new BuildConfigEntryData();
@@ -609,13 +687,14 @@ namespace Unity.Appodeal.Xcode.PBX
     {
         protected SortedDictionary<string, BuildConfigEntryData> entries = new SortedDictionary<string, BuildConfigEntryData>();
         public string name { get { return GetPropertyString("name"); } }
+        public string baseConfigurationReference; // may be null
 
         // Note that QuoteStringIfNeeded does its own escaping. Double-escaping with quotes is
         // required to please Xcode that does not handle paths with spaces if they are not 
         // enclosed in quotes.
         static string EscapeWithQuotesIfNeeded(string name, string value)
         {
-            if (name != "LIBRARY_SEARCH_PATHS")
+            if (name != "LIBRARY_SEARCH_PATHS" && name != "FRAMEWORK_SEARCH_PATHS")
                 return value;
             if (!value.Contains(" "))
                 return value;
@@ -649,6 +728,12 @@ namespace Unity.Appodeal.Xcode.PBX
                 entries[name].RemoveValue(EscapeWithQuotesIfNeeded(name, value));
         }
 
+        public void RemovePropertyValueList(string name, IEnumerable<string> valueList)
+        {
+            if (entries.ContainsKey(name))
+                entries[name].RemoveValueList(valueList);
+        }
+
         // name should be either release or debug
         public static XCBuildConfigurationData Create(string name)
         {
@@ -661,6 +746,8 @@ namespace Unity.Appodeal.Xcode.PBX
         
         public override void UpdateProps()
         {
+            SetPropertyString("baseConfigurationReference", baseConfigurationReference);
+
             var dict = m_Properties.CreateDict("buildSettings");
             foreach (var kv in entries)
             {
@@ -678,6 +765,8 @@ namespace Unity.Appodeal.Xcode.PBX
         }
         public override void UpdateVars()
         {
+            baseConfigurationReference = GetPropertyString("baseConfigurationReference");
+
             entries = new SortedDictionary<string, BuildConfigEntryData>();
             if (m_Properties.Contains("buildSettings"))
             {
@@ -807,6 +896,11 @@ namespace Unity.Appodeal.Xcode.PBX
         public List<string> targets = new List<string>();
         public List<string> knownAssetTags = new List<string>();
         public string buildConfigList;
+        // the name of the entitlements file required for some capabilities.
+        public string entitlementsFile;
+        public List<PBXCapabilityType.TargetCapabilityPair> capabilities = new List<PBXCapabilityType.TargetCapabilityPair>();
+        public Dictionary<string, string> teamIDs = new Dictionary<string, string>();
+
 
         public void AddReference(string productGroup, string projectRef)
         {
@@ -838,6 +932,28 @@ namespace Unity.Appodeal.Xcode.PBX
                 var tags = attrs.CreateArray("knownAssetTags");
                 foreach (var tag in knownAssetTags)
                     tags.AddString(tag);
+            }
+
+            // Enable the capabilities.
+            foreach (var cap in capabilities)
+            {
+               var attrs = m_Properties.Contains("attributes") ? m_Properties["attributes"].AsDict() : m_Properties.CreateDict("attributes");
+               var targAttr = attrs.Contains("TargetAttributes") ? attrs["TargetAttributes"].AsDict() : attrs.CreateDict("TargetAttributes");
+               var target = targAttr.Contains(cap.targetGuid) ? targAttr[cap.targetGuid].AsDict() : targAttr.CreateDict(cap.targetGuid);
+               var sysCap = target.Contains("SystemCapabilities") ? target["SystemCapabilities"].AsDict() : target.CreateDict("SystemCapabilities");
+
+               var capabilityId = cap.capability.id;
+               var currentCapability = sysCap.Contains(capabilityId) ? sysCap[capabilityId].AsDict() : sysCap.CreateDict(capabilityId);
+               currentCapability.SetString("enabled", "1");
+            }
+
+            // Set the team id
+            foreach (KeyValuePair<string, string> teamID in teamIDs)
+            {
+               var attrs = m_Properties.Contains("attributes") ? m_Properties["attributes"].AsDict() : m_Properties.CreateDict("attributes");
+               var targAttr = attrs.Contains("TargetAttributes") ? attrs["TargetAttributes"].AsDict() : attrs.CreateDict("TargetAttributes");
+               var target = targAttr.Contains(teamID.Key) ? targAttr[teamID.Key].AsDict() : targAttr.CreateDict(teamID.Key);
+               target.SetString("DevelopmentTeam", teamID.Value);
             }
         }
 
@@ -872,9 +988,31 @@ namespace Unity.Appodeal.Xcode.PBX
                     foreach (var tag in tags.values)
                         knownAssetTags.Add(tag.AsString());
                 }
+
+                capabilities = new List<PBXCapabilityType.TargetCapabilityPair>();
+                teamIDs = new Dictionary<string, string>();
+
+                if (el.Contains("TargetAttributes"))
+                {
+                    var targetAttr = el["TargetAttributes"].AsDict();
+                    foreach (var attr in targetAttr.values)
+                    {
+                        if (attr.Key == "DevelopmentTeam")
+                        {
+                            teamIDs.Add(attr.Key, attr.Value.AsString());
+                        }
+
+                        if (attr.Key == "SystemCapabilities")
+                        {
+                            var caps = el["SystemCapabilities"].AsDict();
+                            foreach (var cap in caps.values)
+                                capabilities.Add(new PBXCapabilityType.TargetCapabilityPair(attr.Key, PBXCapabilityType.StringToPBXCapabilityType(cap.Value.AsString())));
+                        }
+                    }
+                }
             }
         }
     }
 
-} // namespace Unity.Appodeal.Xcode
+} // namespace UnityEditor.iOS.Xcode
 

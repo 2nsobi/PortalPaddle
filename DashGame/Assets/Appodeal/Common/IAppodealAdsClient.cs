@@ -1,11 +1,10 @@
-﻿using System;
-using AppodealAds.Unity;
-using AppodealAds.Unity.Api;
+﻿using AppodealAds.Unity.Api;
 
 namespace AppodealAds.Unity.Common {
 	public interface IAppodealAdsClient {
 
-		void initialize(String appKey, int type);
+		void initialize(string appKey, int type);
+		void initialize(string appKey, int type, bool hasConsent);
 
 		bool show(int adTypes);
 		bool show(int adTypes, string placement);
@@ -17,7 +16,9 @@ namespace AppodealAds.Unity.Common {
 
 		void onResume();
 		bool showBannerView(int YAxis, int XGravity, string Placement);
+        bool showMrecView(int YAxis, int XGravity, string Placement);
 		void hideBannerView();
+        void hideMrecView();
 		void setSmartBanners(bool value);
 		void setBannerAnimation(bool value);
 		void setBannerBackground(bool value);
@@ -36,14 +37,19 @@ namespace AppodealAds.Unity.Common {
 
 		bool canShow(int adTypes);
 		bool canShow(int adTypes, string placement);
-		void setCustomRule(string name, bool value);
-		void setCustomRule(string name, int value);
-		void setCustomRule(string name, double value);
-		void setCustomRule(string name, string value);
+        void setSegmentFilter(string name, bool value);
+        void setSegmentFilter(string name, int value);
+        void setSegmentFilter(string name, double value);
+        void setSegmentFilter(string name, string value);
+        void setExtraData(string key, bool value);
+        void setExtraData(string key, int value);
+        void setExtraData(string key, double value);
+        void setExtraData(string key, string value);
 		string getRewardCurrency(string placement);
-		int getRewardAmount(string placement);
+        double getRewardAmount(string placement);
 		string getRewardCurrency();
-		int getRewardAmount();
+        double getRewardAmount();
+		double getPredictedEcpm(int adTypes);
 
 		void setTriggerOnLoadedOnPrecache (int adTypes, bool onLoadedTriggerBoth);
 
@@ -57,6 +63,7 @@ namespace AppodealAds.Unity.Common {
 		void setNonSkippableVideoCallbacks (INonSkippableVideoAdListener listener);
 		void setRewardedVideoCallbacks (IRewardedVideoAdListener listener);
 		void setBannerCallbacks (IBannerAdListener listener);
+        void setMrecCallbacks(IMrecAdListener listener);
 		void requestAndroidMPermissions(IPermissionGrantedListener listener);
 
 	}

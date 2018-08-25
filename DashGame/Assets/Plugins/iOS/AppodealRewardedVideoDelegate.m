@@ -2,9 +2,9 @@
 
 @implementation AppodealRewardedVideoDelegate
 
--(void) rewardedVideoDidLoadAd {
+-(void) rewardedVideoDidLoadAdIsPrecache:(BOOL)precache {
     if(self.rewardedVideoDidLoadAdCallback) {
-        self.rewardedVideoDidLoadAdCallback();
+        self.rewardedVideoDidLoadAdCallback(precache);
     }
 }
 
@@ -14,26 +14,31 @@
     }
 }
 
--(void) rewardedVideoDidFailToPresent { }
+-(void) rewardedVideoDidFailToPresentWithError:(NSError *)error { }
 
 -(void) rewardedVideoDidPresent {
     if(self.rewardedVideoDidPresentCallback) {
-        _isFnishedVideo = false;
         self.rewardedVideoDidPresentCallback();
     }
 }
 
--(void) rewardedVideoWillDismiss {
+-(void) rewardedVideoWillDismissAndWasFullyWatched:(BOOL)wasFullyWatched {
     if(self.rewardedVideoWillDismissCallback) {
-        self.rewardedVideoWillDismissCallback(_isFnishedVideo);
+        self.rewardedVideoWillDismissCallback(wasFullyWatched);
     }
 }
 
 - (void)rewardedVideoDidFinish:(NSUInteger)rewardAmount name:(NSString *)rewardName {
     if (self.rewardedVideoDidFinishCallback) {
-        _isFnishedVideo = true;
-        self.rewardedVideoDidFinishCallback((int)rewardAmount, [rewardName UTF8String]);
+        self.rewardedVideoDidFinishCallback((double)rewardAmount, [rewardName UTF8String]);
+    }
+}
+
+- (void)rewardedVideoDidExpired{
+    if(self.rewardedVideoDidExpireCallback){
+        self.rewardedVideoDidExpireCallback();
     }
 }
 
 @end
+
