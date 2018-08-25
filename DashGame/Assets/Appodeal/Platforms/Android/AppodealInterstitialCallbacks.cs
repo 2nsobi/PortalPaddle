@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using AppodealAds.Unity.Common;
 
 namespace AppodealAds.Unity.Android 
@@ -33,6 +32,10 @@ namespace AppodealAds.Unity.Android
 		void onInterstitialClosed() {
 			listener.onInterstitialClosed();
 		}
+
+        void onInterstitialExpired() {
+            listener.onInterstitialExpired();
+        }
 	}
 #else
 	{

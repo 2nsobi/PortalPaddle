@@ -2,9 +2,9 @@
 
 @implementation AppodealBannerViewDelegate
 
-- (void)bannerViewDidLoadAd:(APDBannerView *)bannerView {
+- (void)bannerViewDidLoadAd:(APDBannerView *)bannerView isPrecache:(BOOL)precache {
     if(self.bannerViewDidLoadAdCallback) {
-        self.bannerViewDidLoadAdCallback(false);
+        self.bannerViewDidLoadAdCallback(precache);
     }
 }
 
@@ -23,6 +23,12 @@
 - (void)bannerView:(APDBannerView *)bannerView didFailToLoadAdWithError:(NSError *)error {
     if(self.bannerViewDidFailToLoadAdCallback) {
         self.bannerViewDidFailToLoadAdCallback();
+    }
+}
+
+- (void)bannerViewExpired:(APDBannerView *)bannerView{
+    if(self.bannerViewDidExpiredCallback){
+        self.bannerViewDidExpiredCallback();
     }
 }
 

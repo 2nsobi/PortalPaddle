@@ -2,10 +2,11 @@ using System;
 
 namespace AppodealAds.Unity.Common {
 	public interface INonSkippableVideoAdListener {
-		void onNonSkippableVideoLoaded();
+		void onNonSkippableVideoLoaded(bool isPrecache);
 		void onNonSkippableVideoFailedToLoad();
 		void onNonSkippableVideoShown();
 		void onNonSkippableVideoFinished();
 		void onNonSkippableVideoClosed(bool finished);
+        void onNonSkippableVideoExpired();
 	}
 }

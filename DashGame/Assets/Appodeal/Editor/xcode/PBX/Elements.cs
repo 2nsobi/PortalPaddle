@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 
-
-namespace Unity.Appodeal.Xcode
+namespace Unity.Appodeal.Xcode.PBX
 {
     
     class PBXElement
@@ -102,5 +101,5 @@ namespace Unity.Appodeal.Xcode
         }
     }
 
-} // namespace Unity.Appodeal.Xcode
+} // namespace UnityEditor.iOS.Xcode
 

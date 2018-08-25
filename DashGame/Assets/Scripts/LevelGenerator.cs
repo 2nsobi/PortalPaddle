@@ -1135,6 +1135,7 @@ public class LevelGenerator : MonoBehaviour
     {
         settingsLevel.transform.position = new Vector2(0, -10.8f);
         go2Settings = true;
+        shop.SetActive(false);
     }
 
     public void GoToShop()

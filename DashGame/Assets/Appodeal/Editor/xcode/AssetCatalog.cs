@@ -121,7 +121,7 @@ namespace Unity.Appodeal.Xcode
 
         AssetFolder OpenFolderForResource(string relativePath)
         {
-            var pathItems = PBX.Utils.SplitPath(relativePath).ToList();
+            var pathItems = PBXPath.Split(relativePath).ToList();
 
             // remove path filename
             pathItems.RemoveAt(pathItems.Count - 1);
@@ -157,13 +157,19 @@ namespace Unity.Appodeal.Xcode
             return folder.OpenImageStack(Path.GetFileName(relativePath));
         }
 
+        public AssetBrandAssetGroup OpenBrandAssetGroup(string relativePath)
+        {
+            var folder = OpenFolderForResource(relativePath);
+            return folder.OpenBrandAssetGroup(Path.GetFileName(relativePath));
+        }
+
         // Checks if a folder with given path exists and returns it if it does.
         // Otherwise, creates a new folder. Parent folders are created if needed.
         public AssetFolder OpenFolder(string relativePath)
         {
             if (relativePath == null)
                 return root;
-            var pathItems = PBX.Utils.SplitPath(relativePath);
+            var pathItems = PBXPath.Split(relativePath);
             if (pathItems.Length == 0)
                 return root;
             AssetFolder folder = root;
@@ -180,7 +186,7 @@ namespace Unity.Appodeal.Xcode
         public AssetFolder OpenNamespacedFolder(string relativeBasePath, string namespacePath)
         {
             var folder = OpenFolder(relativeBasePath);
-            var pathItems = PBX.Utils.SplitPath(namespacePath);
+            var pathItems = PBXPath.Split(namespacePath);
             foreach (var pathItem in pathItems)
             {
                 folder = folder.OpenFolder(pathItem);
@@ -191,7 +197,12 @@ namespace Unity.Appodeal.Xcode
 
         public void Write()
         {
-            m_Root.Write();
+            Write(null);
+        }
+
+        public void Write(List<string> warnings)
+        {
+            m_Root.Write(warnings);
         }
     }
 
@@ -221,7 +232,7 @@ namespace Unity.Appodeal.Xcode
             return info;
         }
 
-        public abstract void Write();
+        public abstract void Write(List<string> warnings);
     }
 
     internal class AssetFolder : AssetCatalogItem
@@ -315,6 +326,19 @@ namespace Unity.Appodeal.Xcode
             m_Items.Add(imageStack);
             return imageStack;
         }
+        
+        // Checks if a brand asset with given name exists and returns it if it does.
+        // Otherwise, creates a new brand asset.
+        public AssetBrandAssetGroup OpenBrandAssetGroup(string name)
+        {
+            var item = GetExistingItemWithType<AssetBrandAssetGroup>(name);
+            if (item != null)
+                return item;
+            
+            var brandAsset = new AssetBrandAssetGroup(m_Path, name, authorId);
+            m_Items.Add(brandAsset);
+            return brandAsset;
+        }
 
         // Returns the requested item or null if not found
         public AssetCatalogItem GetChild(string name)
@@ -341,7 +365,7 @@ namespace Unity.Appodeal.Xcode
             doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
         }
 
-        public override void Write()
+        public override void Write(List<string> warnings)
         {
             if (Directory.Exists(m_Path))
                 Directory.Delete(m_Path, true); // ensure we start from clean state
@@ -349,7 +373,7 @@ namespace Unity.Appodeal.Xcode
             WriteJson();
 
             foreach (var item in m_Items)
-                item.Write();
+                item.Write(warnings);
         }
     }
 
@@ -423,6 +447,33 @@ namespace Unity.Appodeal.Xcode
                     item.SetString(kv.Key, kv.Value);
             }
         }
+
+        // Returns the filename of the resulting file
+        protected string CopyFileToSet(string path, HashSet<string> existingFilenames, List<string> warnings)
+        {
+            var filename = Path.GetFileName(path);
+            if (!File.Exists(path))
+            {
+                if (warnings != null)
+                    warnings.Add("File not found: " + path);
+            }
+            else
+            {
+                // ensure that we don't create duplicate filenames
+                int index = 1;
+                string filenameBase = Path.GetFileNameWithoutExtension(filename);
+                string extension = Path.GetExtension(filename);
+
+                while (existingFilenames.Contains(filename))
+                {
+                    filename = String.Format("{0}-{1}{2}", filenameBase, index, extension);
+                    index++;
+                }
+                existingFilenames.Add(filename);
+                File.Copy(path, Path.Combine(m_Path, filename));
+            }
+            return filename;
+        }
     }
 
     internal class AssetDataSet : AssetCatalogItemWithVariants
@@ -456,7 +507,7 @@ namespace Unity.Appodeal.Xcode
             AddVariant(new DataSetVariant(requirement, path, typeIdentifier));
         }
 
-        public override void Write()
+        public override void Write(List<string> warnings)
         {
             Directory.CreateDirectory(m_Path);
 
@@ -467,10 +518,11 @@ namespace Unity.Appodeal.Xcode
 
             var data = doc.root.CreateArray("data");
 
+            var existingFilenames = new HashSet<string>();
+
             foreach (DataSetVariant item in m_Variants)
             {
-                var filename = Path.GetFileName(item.path);
-                File.Copy(item.path, Path.Combine(m_Path, filename));
+                var filename = CopyFileToSet(item.path, existingFilenames, warnings);
 
                 var docItem = data.AddDict();
                 docItem.SetString("filename", filename);
@@ -590,7 +642,7 @@ namespace Unity.Appodeal.Xcode
             docInsets.SetInteger("right", resizing.right);
         }
 
-        public override void Write()
+        public override void Write(List<string> warnings)
         {
             Directory.CreateDirectory(m_Path);
             var doc = new JsonDocument();
@@ -599,10 +651,11 @@ namespace Unity.Appodeal.Xcode
 
             var images = doc.root.CreateArray("images");
 
+            var existingFilenames = new HashSet<string>();
+
             foreach (ImageSetVariant item in m_Variants)
             {
-                var filename = Path.GetFileName(item.path);
-                File.Copy(item.path, Path.Combine(m_Path, filename));
+                var filename = CopyFileToSet(item.path, existingFilenames, warnings);
 
                 var docItem = images.AddDict();
                 docItem.SetString("filename", filename);
@@ -645,7 +698,7 @@ namespace Unity.Appodeal.Xcode
             return m_Imageset;
         }
 
-        public override void Write()
+        public override void Write(List<string> warnings)
         {
             Directory.CreateDirectory(m_Path);
             var doc = new JsonDocument();
@@ -660,7 +713,7 @@ namespace Unity.Appodeal.Xcode
                 reference.SetString("matching-style", "fully-qualified-name");
             }
             if (m_Imageset != null)
-                m_Imageset.Write();
+                m_Imageset.Write(warnings);
 
             doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
         }
@@ -687,7 +740,7 @@ namespace Unity.Appodeal.Xcode
             return newLayer;
         }
 
-        public override void Write()
+        public override void Write(List<string> warnings)
         {
             Directory.CreateDirectory(m_Path);
             var doc = new JsonDocument();
@@ -696,7 +749,7 @@ namespace Unity.Appodeal.Xcode
             var docLayers = doc.root.CreateArray("layers");
             foreach (var layer in m_Layers)
             {
-                layer.Write();
+                layer.Write(warnings);
  
                 var docLayer = docLayers.AddDict();
                 docLayer.SetString("filename", Path.GetFileName(layer.path));
@@ -704,5 +757,74 @@ namespace Unity.Appodeal.Xcode
             doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
         }
     }
+    
+    class AssetBrandAssetGroup : AssetCatalogItem
+    {
+        class AssetBrandAssetItem
+        {
+            internal string idiom = null;
+            internal string role = null;
+            internal int width, height;
+            internal AssetCatalogItem item = null;
+            
+        }
 
-} // namespace Unity.Appodeal.Xcode
+        List<AssetBrandAssetItem> m_Items = new List<AssetBrandAssetItem>();
+        
+        internal AssetBrandAssetGroup(string assetCatalogPath, string name, string authorId) : base(name, authorId)
+        {
+            m_Path = Path.Combine(assetCatalogPath, name + ".brandassets");
+        }
+        
+        void AddItem(AssetCatalogItem item, string idiom, string role, int width, int height)
+        {
+            foreach (var it in m_Items)
+            {
+                if (it.item.name == item.name)
+                    throw new Exception("An item with given name already exists");
+            }
+            var newItem = new AssetBrandAssetItem();
+            newItem.item = item;
+            newItem.idiom = idiom;
+            newItem.role = role;
+            newItem.width = width;
+            newItem.height = height;
+            m_Items.Add(newItem);
+        }
+
+        public AssetImageSet OpenImageSet(string name, string idiom, string role, int width, int height)
+        {
+            var newItem = new AssetImageSet(m_Path, name, authorId);
+            AddItem(newItem, idiom, role, width, height);
+            return newItem;
+        }
+
+        public AssetImageStack OpenImageStack(string name, string idiom, string role, int width, int height)
+        {
+            var newItem = new AssetImageStack(m_Path, name, authorId);
+            AddItem(newItem, idiom, role, width, height);
+            return newItem;
+        }
+        
+        public override void Write(List<string> warnings)
+        {
+            Directory.CreateDirectory(m_Path);
+            var doc = new JsonDocument();
+            WriteInfoToJson(doc);
+            
+            var docAssets = doc.root.CreateArray("assets");
+            foreach (var item in m_Items)
+            {
+                var docAsset = docAssets.AddDict();
+                docAsset.SetString("size", String.Format("{0}x{1}", item.width, item.height));
+                docAsset.SetString("idiom", item.idiom);
+                docAsset.SetString("role", item.role);
+                docAsset.SetString("filename", Path.GetFileName(item.item.path));
+                
+                item.item.Write(warnings);
+            }
+            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
+        }
+    }
+
+} // namespace UnityEditor.iOS.Xcode

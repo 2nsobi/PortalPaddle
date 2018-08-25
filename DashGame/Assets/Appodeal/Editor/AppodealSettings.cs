@@ -1,14 +1,11 @@
-using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine;
 
 [InitializeOnLoad]
-#endif
 public class AppodealSettings : ScriptableObject
 {
-	#if UNITY_EDITOR
-    [MenuItem("Appodeal/SDK Documentation")]
+	[MenuItem("Appodeal/SDK Documentation")]
 	public static void OpenDocumentation()
 	{
 		string url = "http://www.appodeal.com/sdk/choose_framework?framework=2&full=1&platform=1";
@@ -21,6 +18,5 @@ public class AppodealSettings : ScriptableObject
 		string url = "http://www.appodeal.com";
 		Application.OpenURL(url);
 	}
-	#endif
-
 }
+#endif

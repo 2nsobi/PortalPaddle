@@ -135,7 +135,8 @@ namespace Unity.Appodeal.Xcode.PBX
         Framework,
         Source,
         Resource,
-        CopyFile
+        CopyFile, 
+        ShellScript
     }
 
     internal class FileTypeUtils
@@ -164,47 +165,57 @@ namespace Unity.Appodeal.Xcode.PBX
         private static readonly Dictionary<string, FileTypeDesc> types =
             new Dictionary<string, FileTypeDesc>
         {
-            { ".a",         new FileTypeDesc("archive.ar",              PBXFileType.Framework) },
-            { ".app",       new FileTypeDesc("wrapper.application",     PBXFileType.NotBuildable, true) },
-            { ".appex",     new FileTypeDesc("wrapper.app-extension",   PBXFileType.CopyFile) },
-            { ".bin",       new FileTypeDesc("archive.macbinary",       PBXFileType.Resource) },
-            { ".s",         new FileTypeDesc("sourcecode.asm",          PBXFileType.Source) },
-            { ".c",         new FileTypeDesc("sourcecode.c.c",          PBXFileType.Source) },
-            { ".cc",        new FileTypeDesc("sourcecode.cpp.cpp",      PBXFileType.Source) },
-            { ".cpp",       new FileTypeDesc("sourcecode.cpp.cpp",      PBXFileType.Source) },
-            { ".swift",     new FileTypeDesc("sourcecode.swift",        PBXFileType.Source) },
-            { ".dll",       new FileTypeDesc("file",                    PBXFileType.NotBuildable) },
-            { ".framework", new FileTypeDesc("wrapper.framework",       PBXFileType.Framework) },
-            { ".h",         new FileTypeDesc("sourcecode.c.h",          PBXFileType.NotBuildable) },
-            { ".pch",       new FileTypeDesc("sourcecode.c.h",          PBXFileType.NotBuildable) },
-            { ".icns",      new FileTypeDesc("image.icns",              PBXFileType.Resource) },
-            { ".xcassets",  new FileTypeDesc("folder.assetcatalog",     PBXFileType.Resource) },
-            { ".inc",       new FileTypeDesc("sourcecode.inc",          PBXFileType.NotBuildable) },
-            { ".m",         new FileTypeDesc("sourcecode.c.objc",       PBXFileType.Source) },
-            { ".mm",        new FileTypeDesc("sourcecode.cpp.objcpp",   PBXFileType.Source ) },
-            { ".nib",       new FileTypeDesc("wrapper.nib",             PBXFileType.Resource) },
-            { ".plist",     new FileTypeDesc("text.plist.xml",          PBXFileType.Resource) },
-            { ".png",       new FileTypeDesc("image.png",               PBXFileType.Resource) },
-            { ".rtf",       new FileTypeDesc("text.rtf",                PBXFileType.Resource) },
-            { ".tiff",      new FileTypeDesc("image.tiff",              PBXFileType.Resource) },
-            { ".txt",       new FileTypeDesc("text",                    PBXFileType.Resource) },
-            { ".json",      new FileTypeDesc("text.json",               PBXFileType.Resource) },
-            { ".xcodeproj", new FileTypeDesc("wrapper.pb-project",      PBXFileType.NotBuildable) },
-            { ".xib",       new FileTypeDesc("file.xib",                PBXFileType.Resource) },
-            { ".strings",   new FileTypeDesc("text.plist.strings",      PBXFileType.Resource) },
-            { ".storyboard",new FileTypeDesc("file.storyboard",         PBXFileType.Resource) },
-            { ".bundle",    new FileTypeDesc("wrapper.plug-in",         PBXFileType.Resource) },
-            { ".dylib",     new FileTypeDesc("compiled.mach-o.dylib",   PBXFileType.Framework) },
-            { ".tbd",       new FileTypeDesc("sourcecode.text-based-dylib-definition",   PBXFileType.Framework) }
+            { "a",         new FileTypeDesc("archive.ar",              PBXFileType.Framework) },
+            { "aif",       new FileTypeDesc("sound.aif",               PBXFileType.Resource) },
+            { "app",       new FileTypeDesc("wrapper.application",     PBXFileType.NotBuildable, true) },
+            { "appex",     new FileTypeDesc("wrapper.app-extension",   PBXFileType.CopyFile) },
+            { "bin",       new FileTypeDesc("archive.macbinary",       PBXFileType.Resource) },
+            { "s",         new FileTypeDesc("sourcecode.asm",          PBXFileType.Source) },
+            { "c",         new FileTypeDesc("sourcecode.c.c",          PBXFileType.Source) },
+            { "cc",        new FileTypeDesc("sourcecode.cpp.cpp",      PBXFileType.Source) },
+            { "cpp",       new FileTypeDesc("sourcecode.cpp.cpp",      PBXFileType.Source) },
+            { "swift",     new FileTypeDesc("sourcecode.swift",        PBXFileType.Source) },
+            { "dll",       new FileTypeDesc("file",                    PBXFileType.NotBuildable) },
+            { "framework", new FileTypeDesc("wrapper.framework",       PBXFileType.Framework) },
+            { "h",         new FileTypeDesc("sourcecode.c.h",          PBXFileType.NotBuildable) },
+            { "pch",       new FileTypeDesc("sourcecode.c.h",          PBXFileType.NotBuildable) },
+            { "icns",      new FileTypeDesc("image.icns",              PBXFileType.Resource) },
+            { "xcassets",  new FileTypeDesc("folder.assetcatalog",     PBXFileType.Resource) },
+            { "inc",       new FileTypeDesc("sourcecode.inc",          PBXFileType.NotBuildable) },
+            { "m",         new FileTypeDesc("sourcecode.c.objc",       PBXFileType.Source) },
+            { "mm",        new FileTypeDesc("sourcecode.cpp.objcpp",   PBXFileType.Source ) },
+            { "mp3",       new FileTypeDesc("sound.mp3",               PBXFileType.Resource) },
+            { "nib",       new FileTypeDesc("wrapper.nib",             PBXFileType.Resource) },
+            { "plist",     new FileTypeDesc("text.plist.xml",          PBXFileType.Resource) },
+            { "png",       new FileTypeDesc("image.png",               PBXFileType.Resource) },
+            { "rtf",       new FileTypeDesc("text.rtf",                PBXFileType.Resource) },
+            { "tiff",      new FileTypeDesc("image.tiff",              PBXFileType.Resource) },
+            { "txt",       new FileTypeDesc("text",                    PBXFileType.Resource) },
+            { "json",      new FileTypeDesc("text.json",               PBXFileType.Resource) },
+            { "xcodeproj", new FileTypeDesc("wrapper.pb-project",      PBXFileType.NotBuildable) },
+            { "xib",       new FileTypeDesc("file.xib",                PBXFileType.Resource) },
+            { "strings",   new FileTypeDesc("text.plist.strings",      PBXFileType.Resource) },
+            { "storyboard",new FileTypeDesc("file.storyboard",         PBXFileType.Resource) },
+            { "bundle",    new FileTypeDesc("wrapper.plug-in",         PBXFileType.Resource) },
+            { "dylib",     new FileTypeDesc("compiled.mach-o.dylib",   PBXFileType.Framework) },
+            { "tbd",       new FileTypeDesc("sourcecode.text-based-dylib-definition",  PBXFileType.Framework) },
+            { "wav",       new FileTypeDesc("sound.wav",               PBXFileType.Resource) }
         };
+
+        public static string TrimExtension(string ext)
+        {
+            return ext.TrimStart('.');
+        }
 
         public static bool IsKnownExtension(string ext)
         {
+            ext = TrimExtension(ext);
             return types.ContainsKey(ext);
         }
 
         internal static bool IsFileTypeExplicit(string ext)
         {
+            ext = TrimExtension(ext);
             if (types.ContainsKey(ext))
                 return types[ext].isExplicit;
             return false;
@@ -212,6 +223,7 @@ namespace Unity.Appodeal.Xcode.PBX
 
         public static PBXFileType GetFileType(string ext, bool isFolderRef)
         {
+            ext = TrimExtension(ext);
             if (isFolderRef)
                 return PBXFileType.Resource;
             if (!types.ContainsKey(ext))
@@ -221,6 +233,7 @@ namespace Unity.Appodeal.Xcode.PBX
 
         public static string GetTypeName(string ext)
         {
+            ext = TrimExtension(ext);
             if (types.ContainsKey(ext))
                 return types[ext].name;
             // Xcode actually checks the file contents to determine the file type.
@@ -232,6 +245,7 @@ namespace Unity.Appodeal.Xcode.PBX
 
         public static bool IsBuildableFile(string ext)
         {
+            ext = TrimExtension(ext);
             if (!types.ContainsKey(ext))
                 return true;
             if (types[ext].type != PBXFileType.NotBuildable)
@@ -241,6 +255,7 @@ namespace Unity.Appodeal.Xcode.PBX
 
         public static bool IsBuildable(string ext, bool isFolderReference)
         {
+            ext = TrimExtension(ext);
             if (isFolderReference)
                 return true;
             return IsBuildableFile(ext);
@@ -285,7 +300,7 @@ namespace Unity.Appodeal.Xcode.PBX
                                            PBXSourceTree.Developer, PBXSourceTree.Sdk, PBXSourceTree.Source};
         }
     }
-    
+
     internal class Utils
     {
         /// Replaces '\' with '/'. We need to apply this function to all paths that come from the user
@@ -307,11 +322,11 @@ namespace Unity.Appodeal.Xcode.PBX
                 resTree = tree1;
                 return;
             }
-            
+
             resPath = path2;
             resTree = tree2;
         }
-        
+
         public static string CombinePaths(string path1, string path2)
         {
             if (path2.StartsWith("/"))
@@ -324,7 +339,7 @@ namespace Unity.Appodeal.Xcode.PBX
                 return path1;
             return path1 + "/" + path2;
         }
-        
+
         public static string GetDirectoryFromPath(string path)
         {
             int pos = path.LastIndexOf('/');
@@ -333,7 +348,7 @@ namespace Unity.Appodeal.Xcode.PBX
             else
                 return path.Substring(0, pos);
         }
-        
+
         public static string GetFilenameFromPath(string path)
         {
             int pos = path.LastIndexOf('/');
@@ -346,8 +361,8 @@ namespace Unity.Appodeal.Xcode.PBX
         public static string[] SplitPath(string path)
         {
             if (string.IsNullOrEmpty(path))
-                return new string[]{};
-            return path.Split(new[]{'/'}, StringSplitOptions.RemoveEmptyEntries);
+                return new string[] { };
+            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 

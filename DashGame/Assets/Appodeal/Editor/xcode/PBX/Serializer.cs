@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 
 namespace Unity.Appodeal.Xcode.PBX
-{    
+{
     class PropertyCommentChecker
     {
         private int m_Level;
@@ -255,5 +255,5 @@ namespace Unity.Appodeal.Xcode.PBX
         }
     }
     
-} // namespace Unity.Appodeal.Xcode
+} // namespace UnityEditor.iOS.Xcode
 

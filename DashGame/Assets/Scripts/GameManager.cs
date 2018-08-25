@@ -141,6 +141,8 @@ public class GameManager : MonoBehaviour
     public GameObject ScoreReview;
     public GameObject ShopPage;
 
+    public GameObject GDPRConsentForm;
+
     public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
     pageState currentPageState;
 
@@ -179,6 +181,15 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
+
+        if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
+        {
+            GDPRConsentForm.SetActive(true);
+        }
+        else
+        {
+            GDPRConsentForm.SetActive(false);
+        }
 
         /********************************************
          DELETE THING BELOW
@@ -574,7 +585,7 @@ public class GameManager : MonoBehaviour
 
     public void Continue()
     {
-        //ads.ShowRewardVideo(false);
+        ads.ShowRewardVideo(false);
 
         StartCoroutine(ReviveDelay());
         Paddle.gameObject.SetActive(true);
@@ -643,7 +654,10 @@ public class GameManager : MonoBehaviour
         score = 0;
         GameOverConfirmed();
 
-        //ads.ShowInterstitialOrNonSkipAd();
+        if (LG.PlayedOnce)
+        {
+            ads.ShowInterstitialOrNonSkipAd();
+        }
     }
 
     IEnumerator FadeOut()//sent to enemybehavior
@@ -721,11 +735,17 @@ public class GameManager : MonoBehaviour
     {
         if (pause)
         {
+            pauseAllCoroutines = true;
+
             ZPlayerPrefs.SetInt("gems", (int)gems);
             ZPlayerPrefs.SetInt("HighScore", score);
 
             ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
             ZPlayerPrefs.SetInt("ballInUse",selectedBall.index);
+        }
+        else
+        {
+            pauseAllCoroutines = false;
         }
     }
 
@@ -740,15 +760,9 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        if (!focus)
+        if(!focus)
         {
             pauseAllCoroutines = true;
-
-            ZPlayerPrefs.SetInt("gems", (int)gems);
-            ZPlayerPrefs.SetInt("HighScore", highScore);
-
-            ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
-            ZPlayerPrefs.SetInt("ballInUse", selectedBall.index);
         }
         else
         {

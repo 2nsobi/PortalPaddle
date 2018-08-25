@@ -12,5 +12,6 @@ typedef void (*AppodealInterstitialDidLoadCallback) (BOOL isPrecache);
 @property (assign, nonatomic) AppodealInterstitialCallbacks interstitialDidDismissCallback;
 @property (assign, nonatomic) AppodealInterstitialCallbacks interstitialDidClickCallback;
 @property (assign, nonatomic) AppodealInterstitialCallbacks interstitialDidFailToPresentCallback;
+@property (assign, nonatomic) AppodealInterstitialCallbacks interstitialsDidExpiredCallback;
 
 @end

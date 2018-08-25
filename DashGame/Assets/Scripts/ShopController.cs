@@ -181,7 +181,6 @@ public class ShopController : MonoBehaviour
 
     public void GetFreeGems()
     {
-        //ads.ShowRewardVideo();
-        game.UpdateGems(500);
+        ads.ShowRewardVideo();
     }
 }

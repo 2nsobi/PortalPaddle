@@ -69,3 +69,6 @@ TagManager:
   - name: UI
     uniqueID: 1693609387
     locked: 0
+  - name: GDPR
+    uniqueID: 1407910351
+    locked: 0

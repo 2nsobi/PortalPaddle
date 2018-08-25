@@ -6,5 +6,6 @@ namespace AppodealAds.Unity.Common {
 		void onBannerFailedToLoad();
 		void onBannerShown();
 		void onBannerClicked();
+        void onBannerExpired();
 	}
 }

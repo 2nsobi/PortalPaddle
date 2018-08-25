@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 
-// Basr classes for section handling
+// Base classes for section handling
 
 namespace Unity.Appodeal.Xcode.PBX
 {
@@ -119,4 +119,4 @@ namespace Unity.Appodeal.Xcode.PBX
         }
     }
 
-} // Unity.Appodeal.Xcode
+} // UnityEditor.iOS.Xcode

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 17b6f99b16ae54017960f493dfcffdae
-timeCreated: 1504052784
+guid: edd2b4c687b624ea9867bbafb8c7b77a
+timeCreated: 1532100667
 licenseType: Pro
 PluginImporter:
   serializedVersion: 2
@@ -11,7 +11,7 @@ PluginImporter:
   platformData:
     data:
       first:
-        '': data
+        Any: 
       second:
         enabled: 0
         settings: {}
