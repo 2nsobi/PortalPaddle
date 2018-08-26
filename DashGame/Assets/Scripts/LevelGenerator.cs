@@ -43,7 +43,6 @@ public class LevelGenerator : MonoBehaviour
 
         public void AttachObstacle(Obstacle ob, Vector2 position, Quaternion rotation, string texture)
         {
-            //obstacleCount++;
             if (!hasObstacle && obstacleCount == 0)
             {
                 obstacleCount++;
@@ -144,7 +143,6 @@ public class LevelGenerator : MonoBehaviour
     public float finishTransitionThreshold; //number used to determine when the next lvl becomes teh current lvl
     static Dictionary<string, List<Queue<LvlPrefab>>> LvlComponentDict; //for background use mainly
     static Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
-    static Dictionary<string, Queue<GameObject>> CustomLvlQsDict;
     public List<ObstacleTexture> obstacleTextures;
     public static List<ObstacleTexture> obstacletextures;
     public List<MultiPool> levels;
@@ -296,7 +294,6 @@ public class LevelGenerator : MonoBehaviour
 
         LvlComponentDict = new Dictionary<string, List<Queue<LvlPrefab>>>();
         ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
-        CustomLvlQsDict = new Dictionary<string, Queue<GameObject>>();
 
         transitionLvls = new LvlPrefab[levels.Count];
 
@@ -382,22 +379,16 @@ public class LevelGenerator : MonoBehaviour
         foreach (SinglePool obstacleType in obstacles)
         {
             Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
-            Queue<Obstacle> easyObstaclePool = new Queue<Obstacle>();
-
-            for (int i = 0; i < obstacleType.size; i++)
-            {
-                Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
-
-                ob.gameObject.SetActive(false);
-                obstaclePool.Enqueue(ob);
-            }
 
             if (obstacleType.easy)
             {
+                Queue<Obstacle> easyObstaclePool = new Queue<Obstacle>();
+
                 for (int i = 0; i < obstacleType.size; i++)
                 {
                     GameObject go = Instantiate(obstacleType.prefab);
                     go.name = obstacleType.prefab.name + "_easy";
+
                     Obstacle ob1 = new Obstacle(go);
 
                     ob1.gameObject.SetActive(false);
@@ -405,6 +396,14 @@ public class LevelGenerator : MonoBehaviour
                 }
                 ezObstacleCount++;
                 ObstacleDict.Add("EasyObstacle" + ezObstacleCount, easyObstaclePool);
+            }
+
+            for (int i = 0; i < obstacleType.size; i++)
+            {
+                Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
+
+                ob.gameObject.SetActive(false);
+                obstaclePool.Enqueue(ob);
             }
 
             ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
@@ -535,7 +534,7 @@ public class LevelGenerator : MonoBehaviour
             LvlComponentDict[tag][0].Enqueue(lvlPrefab2Spawn);
             for (int j = 0; j < LvlComponentDict[tag].Count; j++)
             {
-                for (int i = 0; i < LvlComponentDict[tag][0].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                for (int i = 0; i < LvlComponentDict[tag][0].Count; i++)
                 {
                     lvlPrefab2Spawn = LvlComponentDict[tag][0].Dequeue();
                     if (!lvlPrefab2Spawn.hasObstacle)
@@ -599,7 +598,7 @@ public class LevelGenerator : MonoBehaviour
 
                 while (allPrefsInQAttached2Lvl)
                 {
-                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
                     {
                         obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
                         if (!obstacleToSpawn.attached2Lvl)
@@ -643,7 +642,7 @@ public class LevelGenerator : MonoBehaviour
 
                 while (allPrefsInQAttached2Lvl)
                 {
-                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count - 1; i++) // -1 cause u already know that one prefab in the q has an obstacle
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
                     {
                         obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
                         if (!obstacleToSpawn.attached2Lvl)
@@ -1015,20 +1014,23 @@ public class LevelGenerator : MonoBehaviour
             break;
         }
 
-        activeLvl = SpawnFromPool(activeLvlName);
-        if (activeLvl != null)
+        if (lvlSpawnQ.Count <= 5) //limit the amount of lvls being queued to prevent obstacle theft errors
         {
-            if (activeObstacleTexture != null)
+            activeLvl = SpawnFromPool(activeLvlName);
+            if (activeLvl != null)
             {
-                SpawnFromObstacles(1, 9, Vector2.zero, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
-            }
+                if (activeObstacleTexture != null)
+                {
+                    SpawnFromObstacles(1, 9, Vector2.zero, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+                }
 
-            lvlSpawnQ.Enqueue(activeLvl);
+                lvlSpawnQ.Enqueue(activeLvl);
 
-            if (startOfGame)
-            {
-                LvlPrefab tempLvl = SpawnFromPool(activeLvlName);
-                lvlSpawnQ.Enqueue(tempLvl);
+                if (startOfGame)
+                {
+                    LvlPrefab tempLvl = SpawnFromPool(activeLvlName);
+                    lvlSpawnQ.Enqueue(tempLvl);
+                }
             }
         }
 

@@ -98,6 +98,7 @@ public class BallController : MonoBehaviour
             activeBall = ball;
             activeBall.prefab.transform.parent = transform;
             activeBall.prefab.transform.localPosition = Vector2.zero;
+            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, 0);
             activeBall.prefab.gameObject.SetActive(true);
 
             ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
@@ -119,6 +120,7 @@ public class BallController : MonoBehaviour
             activeBall = ball;
             activeBall.prefab.transform.parent = transform;
             activeBall.prefab.transform.localPosition = Vector2.zero;
+            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, 0);
             activeBall.prefab.gameObject.SetActive(true);
 
             ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();

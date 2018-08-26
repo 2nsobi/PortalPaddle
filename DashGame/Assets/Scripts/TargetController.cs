@@ -376,13 +376,13 @@ public class TargetController : MonoBehaviour
 
                 if (LG.GetNextLvlNumber == 1)
                 {
-                    targets[i].transform.localScale = defaultTargetSize;
+                    targets[i].transform.localScale = troubleshootingSize;
                     targets[i].transform.localPosition = RandomPos();
                 }
                 
                 if (LG.GetNextLvlNumber == 2)
                 {
-                    targets[i].transform.localScale = defaultTargetSize;
+                    targets[i].transform.localScale = troubleshootingSize;
 
                     if (nextObstaclePath != null)
                     {
@@ -404,7 +404,7 @@ public class TargetController : MonoBehaviour
                     }
                     else
                     {
-                        targets[i].transform.localScale = defaultTargetSize;
+                        targets[i].transform.localScale = troubleshootingSize;
                     }
 
                     if (nextObstaclePath != null)

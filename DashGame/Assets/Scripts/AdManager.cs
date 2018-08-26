@@ -12,9 +12,10 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     Coroutine showRewardVidDelay;
     Coroutine showInterstitialDelay;
     GameManager game;
-    bool giveReward;
-    bool paused = false;
-    bool outOfFocus = false;
+    bool giveReward = false;
+    string appKey;
+    bool bannerActive = false;
+    int activeRewardAmount;
 
     private void Awake()
     {
@@ -25,27 +26,49 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     {
         game = GameManager.Instance;
 
-        string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
+        appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
         Appodeal.disableLocationPermissionCheck();
 
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
+            {
+                int SDKLvl = version.GetStatic<int>("SDK_INT");
+
+                if (SDKLvl > 18)
+                {
+                    Appodeal.disableWriteExternalStoragePermissionCheck();
+                }
+            }
+        }
+
         Appodeal.setTesting(true);
+        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
         Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
         Appodeal.setAutoCache(Appodeal.BANNER, true);
-        
+
+        if (ZPlayerPrefs.GetInt("result_gdpr") != 0)
+        {
+            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
+            Appodeal.setRewardedVideoCallbacks(this);
+            Appodeal.setBannerCallbacks(this);
+
+            Appodeal.show(Appodeal.BANNER_BOTTOM);
+
+            showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+            showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
+        }
+    }
+
+    public void InitializeAds()
+    {
         Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
         Appodeal.setRewardedVideoCallbacks(this);
         Appodeal.setBannerCallbacks(this);
 
-        if (Appodeal.isLoaded(Appodeal.BANNER))
-        {
-            Appodeal.show(Appodeal.BANNER_BOTTOM);
-        }
-        else if (Appodeal.isPrecache(Appodeal.BANNER))
-        {
-            Appodeal.show(Appodeal.BANNER_BOTTOM);
-        }
+        Appodeal.show(Appodeal.BANNER_BOTTOM);
 
         showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
         showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
@@ -69,10 +92,12 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     {
         if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO) && canShowRewardVid)
         {
-            giveReward = false;
             Appodeal.show(Appodeal.REWARDED_VIDEO);
 
             showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+
+            StopCoroutine(showInterstitialDelay);
+            showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
         }
         else
         {
@@ -99,19 +124,30 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
+    void OnApplicationPause(bool pause)
+    {
+        if(!pause)
+        {
+            if (giveReward)
+            {
+                game.UpdateGems(activeRewardAmount);
+                giveReward = false;
+            }
+        }
+    }
+
     public void ShowRewardVideo(bool givereward = true)
     {
         if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
         {
             if (givereward)
             {
-                giveReward = true;
+                Appodeal.show(Appodeal.REWARDED_VIDEO, "reward1"); //reward1 is name of your placemnt on appodeal
             }
             else
             {
-                giveReward = false;
+                Appodeal.show(Appodeal.REWARDED_VIDEO, "noReward"); //reward1 is name of your placemnt on appodeal
             }
-            Appodeal.show(Appodeal.REWARDED_VIDEO);
         }
     }
 
@@ -127,22 +163,32 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     public void onRewardedVideoFinished(double amount, string name)
     {
-        if (giveReward)
+        if(amount > 0)
         {
-            game.UpdateGems(500);
+            giveReward = true;
+            activeRewardAmount = (int) amount;
         }
     }
 
     public void onBannerLoaded(bool isPrecache)
     {
-        Appodeal.show(Appodeal.BANNER_BOTTOM);
+        if (!bannerActive)
+        {
+            Appodeal.show(Appodeal.BANNER_BOTTOM);
+        }
     }
 
     public void onBannerFailedToLoad() { }
 
-    public void onBannerShown() { }
+    public void onBannerShown()
+    {
+        bannerActive = true;
+    }
 
-    public void onBannerClicked() { }  
+    public void onBannerClicked() { }
 
-    public void onBannerExpired() { }
+    public void onBannerExpired()
+    {
+        bannerActive = false;
+    }
 }

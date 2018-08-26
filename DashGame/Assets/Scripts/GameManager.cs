@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
     bool pauseAllCoroutines = false;
-    Text scoreReviewGems, startPageGems, shopPageGems;
+    Text scoreReviewGems;
     bool gemsOnScreen = false;
     float gems, tempGems;
     int newGems;
@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour
     BallPrefab selectedBall;
     bool paddleChanged = true;
     bool ballChanged = true;
+    bool updateGems = false;
 
     public static GameManager Instance;
 
@@ -140,6 +141,7 @@ public class GameManager : MonoBehaviour
     public GameObject GamePage;
     public GameObject ScoreReview;
     public GameObject ShopPage;
+    public Text GemsText;
 
     public GameObject GDPRConsentForm;
 
@@ -180,17 +182,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
-
-        if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
-        {
-            GDPRConsentForm.SetActive(true);
-        }
-        else
-        {
-            GDPRConsentForm.SetActive(false);
-        }
-
         /********************************************
          DELETE THING BELOW
          **********************************************/
@@ -202,22 +193,33 @@ public class GameManager : MonoBehaviour
         **********************************************/
 
 
+
+
+        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
+
+        if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
+        {
+            GDPRConsentForm.SetActive(true);
+        }
+        else
+        {
+            GDPRConsentForm.SetActive(false);
+        }
+
         Instance = this;
 
         Time.timeScale = timeScale;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
         ConfigureCamera(); //called here before the tap area rect is configured
-
+   
         gems = ZPlayerPrefs.GetInt("gems");
         highScore = ZPlayerPrefs.GetInt("HighScore");
 
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
         scoreReviewGems.text = gems.ToString();
-        startPageGems = StartPage.transform.Find("gems").GetComponent<Text>();
-        startPageGems.text = gems.ToString();
-        shopPageGems = ShopPage.transform.Find("gems").GetComponent<Text>();
-        shopPageGems.text = gems.ToString();
+
+        GemsText.text = gems.ToString();
 
         paddles = new PaddlePrefab[paddlePrefabs.Length];
         for (int i = 0; i < paddlePrefabs.Length; i++)
@@ -417,6 +419,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.StartPage:
@@ -430,6 +433,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(true);
 
                 gemsOnScreen = false;
                 break;
@@ -445,6 +449,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.Paused:
@@ -458,6 +463,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(false);
 
@@ -474,6 +480,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(true);
 
@@ -490,6 +497,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.ScoreReview:
@@ -503,6 +511,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(true);
                 ShopPage.SetActive(false);
+                GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.ShopPage:
@@ -516,6 +525,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(true);
+                GemsText.gameObject.SetActive(true);
 
                 LG.shop.SetActive(true);
                 break;
@@ -534,6 +544,11 @@ public class GameManager : MonoBehaviour
             }
             scoreReviewGems.text = Mathf.RoundToInt(tempGems).ToString();
         }
+    }
+
+    public void StartUpdatingGems()
+    {
+        updateGems = true;
     }
 
     public void StartGame()
@@ -719,14 +734,12 @@ public class GameManager : MonoBehaviour
         if (!subtract)
         {
             gems += gems2Add;
-            startPageGems.text = gems.ToString();
-            shopPageGems.text = gems.ToString();
+            GemsText.text = gems.ToString();
         }
         else
         {
             gems -= gems2Add;
-            startPageGems.text = gems.ToString();
-            shopPageGems.text = gems.ToString();
+            GemsText.text = gems.ToString();
         }
     }
 
