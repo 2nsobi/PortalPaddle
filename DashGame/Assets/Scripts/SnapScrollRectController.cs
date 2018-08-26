@@ -247,9 +247,9 @@ public class SnapScrollRectController : MonoBehaviour
 
         itemSeperation = Mathf.Abs(items[0].anchoredPosition.x - items[1].anchoredPosition.x);
 
-        selectedItemIndex = ZPlayerPrefs.GetInt("selectedItemIndex" + gameObject.name);
+        selectedItemIndex = PlayerPrefs.GetInt("selectedItemIndex" + gameObject.name); // used to move scroll rect to right item
 
-        activeItemIndexLink = ZPlayerPrefs.GetInt("activeItemIndexLink" + gameObject.name);
+        activeItemIndexLink = ZPlayerPrefs.GetInt("activeItemIndexLink" + gameObject.name); //used to select item in respective controller class
     }
 
     private void OnApplicationPause(bool pause)
@@ -264,7 +264,7 @@ public class SnapScrollRectController : MonoBehaviour
                 }
             }
 
-            ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+            PlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
         }
     }
 
@@ -278,7 +278,7 @@ public class SnapScrollRectController : MonoBehaviour
             }
         }
 
-        ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+        PlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
     }
 
     private void OnDisable()
@@ -291,7 +291,7 @@ public class SnapScrollRectController : MonoBehaviour
             }
         }
 
-        ZPlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
+        PlayerPrefs.SetInt("selectedItemIndex" + gameObject.name, selectedItemIndex);
     }
 
     public void SelectItem()

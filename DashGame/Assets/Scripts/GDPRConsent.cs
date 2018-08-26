@@ -13,6 +13,8 @@ public class GDPRConsent : MonoBehaviour {
         ZPlayerPrefs.SetInt("result_gdpr_sdk", 1);
         mainPanel.gameObject.SetActive(false);
         yesPanel.gameObject.SetActive(true);
+
+        AdManager.Instance.InitializeAds();
     }
 
     public void onNoClick()
@@ -21,6 +23,8 @@ public class GDPRConsent : MonoBehaviour {
         ZPlayerPrefs.SetInt("result_gdpr_sdk", 0);
         mainPanel.gameObject.SetActive(false);
         noPanel.gameObject.SetActive(true);
+
+        AdManager.Instance.InitializeAds();
     }
 
     public void onPLClick()
@@ -30,6 +34,6 @@ public class GDPRConsent : MonoBehaviour {
 
     public void onCloseClick()
     {
-        GameManager.Instance.GDPRConsentForm.SetActive(false);
+        GameManager.Instance.GDPRConsentForm.SetActive(false);    
     }
 }
