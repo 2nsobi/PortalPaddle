@@ -16,6 +16,7 @@ public class LevelGenerator : MonoBehaviour
         public GameObject transitionLvl;
         public bool about2Spawn;
         public bool comeBack2; // can this lvl type spawn again?
+        public bool hasWalls;
     }
 
     [System.Serializable]
@@ -278,12 +279,9 @@ public class LevelGenerator : MonoBehaviour
         distanceDiff4Walls = game.GetDistanceDifferenceForWalls();
 
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
-
         labMonitorsAnimC = StartLevel.gameObject.transform.Find("labBackground1Monitors2_0").GetComponent<Animator>();
-
         playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
         playButtonGlowMainMod = playButtonGlow.main;
-
         material = StartLevel.gameObject.GetComponentInChildren<Renderer>().sharedMaterial;
         material.SetFloat("_InvertColors", 0);
         Transform wallW = StartLevel.gameObject.transform.GetChild(0);
@@ -312,10 +310,13 @@ public class LevelGenerator : MonoBehaviour
                 for (int i = 0; i < level.sizePerPrefab; i++)
                 {
                     LvlPrefab obj1 = new LvlPrefab(Instantiate(prefab));
-                    Transform wallW0 = obj1.gameObject.transform.GetChild(0);
-                    Transform wallE0 = obj1.gameObject.transform.GetChild(1);
-                    wallW0.localPosition = new Vector3(-distanceDiff4Walls, wallW0.localPosition.y, 0);
-                    wallE0.localPosition = new Vector3(distanceDiff4Walls, wallE0.localPosition.y, 0);
+                    if (level.hasWalls)
+                    {
+                        Transform wallW0 = obj1.gameObject.transform.GetChild(0);
+                        Transform wallE0 = obj1.gameObject.transform.GetChild(1);
+                        wallW0.localPosition = new Vector3(-distanceDiff4Walls, wallW0.localPosition.y, 0);
+                        wallE0.localPosition = new Vector3(distanceDiff4Walls, wallE0.localPosition.y, 0);
+                    }
                     obj1.gameObject.SetActive(false);
 
                     objectPool.Enqueue(obj1);
@@ -325,10 +326,6 @@ public class LevelGenerator : MonoBehaviour
             LvlComponentDict.Add(level.tag, lvlPrefabs);
 
             transitionLvls[k] = new LvlPrefab(Instantiate(level.transitionLvl));
-            Transform wallW1 = transitionLvls[k].gameObject.transform.GetChild(0);
-            Transform wallE1 = transitionLvls[k].gameObject.transform.GetChild(1);
-            wallW1.localPosition = new Vector3(-distanceDiff4Walls, wallW1.localPosition.y, 0);
-            wallE1.localPosition = new Vector3(distanceDiff4Walls, wallE1.localPosition.y, 0);
             transitionLvls[k].gameObject.SetActive(false);
 
             if (level.specialLvlPrefabs.Length > 0)
@@ -364,10 +361,6 @@ public class LevelGenerator : MonoBehaviour
                 foreach (GameObject go in level.specialLvlPrefabs)
                 {
                     LvlPrefab obj1 = new LvlPrefab(Instantiate(go));
-                    Transform wallW0 = obj1.gameObject.transform.GetChild(0);
-                    Transform wallE0 = obj1.gameObject.transform.GetChild(1);
-                    wallW0.localPosition = new Vector3(-distanceDiff4Walls, wallW0.localPosition.y, 0);
-                    wallE0.localPosition = new Vector3(distanceDiff4Walls, wallE0.localPosition.y, 0);
                     obj1.gameObject.SetActive(false);
                     specialLvls[k] = obj1;
                     k++;
