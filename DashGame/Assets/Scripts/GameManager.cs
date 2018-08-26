@@ -44,12 +44,15 @@ public class GameManager : MonoBehaviour
         public Color32 boostColor;
         public int index;
         public SnapScrollRectController.ShopItem shopItem;
+        public Rigidbody2D rigidbody;
 
         public BallPrefab(PrefabWithColors pref)
         {
             prefab = Instantiate(pref.prefab);
             prefab.SetActive(false);
             prefab.transform.localPosition = Vector2.zero;
+
+            rigidbody = prefab.GetComponent<Rigidbody2D>();
 
             ballSprite = prefab.transform.GetChild(0).gameObject;
             collisionEffect = prefab.transform.GetChild(1).gameObject;

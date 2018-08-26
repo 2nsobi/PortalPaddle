@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
-    Rigidbody2D rigidbody;
     public Vector2 startPos;
     public float speed;
     float codeSpeed;
@@ -62,13 +61,11 @@ public class BallController : MonoBehaviour
         Instance = this;
         mainCam = Camera.main;
         shouldAbsorb = false;
-        rigidbody = GetComponent<Rigidbody2D>();
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
         codeSpeed = speed;
         atCenter = false;
         invulnerable = false;
-        Vector3 vector = new Vector2(0, GetComponent<CircleCollider2D>().radius * this.transform.localScale.x + 10);
         ShouldShrink = false;
         ShouldSpawn = false;
 
@@ -172,7 +169,7 @@ public class BallController : MonoBehaviour
             yield return null;
         }
         transform.rotation = Quaternion.Euler(0, 0, 0);
-        rigidbody.velocity = -transform.up.normalized * codeSpeed;
+        activeBall.rigidbody.velocity = -transform.up.normalized * codeSpeed;
     }
 
     private void Update()
@@ -222,7 +219,7 @@ public class BallController : MonoBehaviour
 
             if (atCenter)
             {
-                this.transform.position = target.GetCurrentTargetPos;
+                activeBall.prefab.transform.position = target.GetCurrentTargetPos;
             }
 
             if (shouldAbsorb)
@@ -275,9 +272,9 @@ public class BallController : MonoBehaviour
             Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
 
             float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
+            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, rotation);
             codeSpeed = deflectionSpeed;
-            rigidbody.velocity = -transform.up.normalized * codeSpeed;
+            activeBall.rigidbody.velocity = -transform.up.normalized * codeSpeed;
 
         }
 
@@ -322,8 +319,8 @@ public class BallController : MonoBehaviour
                     Physics2D.IgnoreLayerCollision(10, 11);
                     ShouldSpawn = false;
                     invulnerable = true;
-                    rigidbody.velocity = Vector2.zero;
-                    rigidbody.angularVelocity = 0;
+                    activeBall.rigidbody.velocity = Vector2.zero;
+                    activeBall.rigidbody.angularVelocity = 0;
                     shouldAbsorb = true;
                     targetTransform = collision.transform;
                     ShouldShrink = true;
@@ -332,7 +329,7 @@ public class BallController : MonoBehaviour
 
                     Debug.Log("ball should definetely be absorbing right now since\n shouldAbsorb = " + shouldAbsorb + ", and ontriggerenter2d has been called");
                     Debug.Log("also the trigger the ball hit was " + collision.gameObject.name);
-                    Debug.Log("velocity of ball = " + rigidbody.velocity);
+                    Debug.Log("velocity of ball = " + activeBall.rigidbody.velocity);
                 }
             }
         }
@@ -341,8 +338,8 @@ public class BallController : MonoBehaviour
             if (!invulnerable)
             {
                 ShouldSpawn = false;
-                rigidbody.velocity = Vector2.zero;
-                rigidbody.simulated = false;
+                activeBall.rigidbody.velocity = Vector2.zero;
+                activeBall.rigidbody.simulated = false;
                 PlayerMissed();
             }
         }
@@ -354,14 +351,14 @@ public class BallController : MonoBehaviour
         {
             if (target.IsMoving())
             {
-                this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
+                activeBall.prefab.transform.position = Vector2.MoveTowards(activeBall.prefab.transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
             }
             else
             {
-                this.transform.position = Vector2.MoveTowards(this.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
+                activeBall.prefab.transform.position = Vector2.MoveTowards(activeBall.prefab.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
             }
 
-            if (this.transform.position == target.GetCurrentTargetPos)
+            if (activeBall.prefab.transform.position == target.GetCurrentTargetPos)
             {
                 atCenter = true;
                 shouldAbsorb = false;
@@ -388,7 +385,7 @@ public class BallController : MonoBehaviour
         spawnerAnimator.SetTrigger("GameStarted");
         animator.SetTrigger("GameStarted");
 
-        this.transform.position = startPos;
+        activeBall.prefab.transform.position = startPos;
         ballSpawner.transform.position = startPos;
         canAbsorb = false;
         StartCoroutine(SpawnDelay());
@@ -409,11 +406,15 @@ public class BallController : MonoBehaviour
             animator.SetTrigger("GameOver");
         }
 
-        this.transform.position = Vector2.right * 1000;
-        this.rigidbody.velocity = Vector2.zero;
-        codeSpeed = speed;
+        if (LG.PlayedOnce)
+        {
+            activeBall.prefab.transform.position = Vector2.right * 1000;
+            activeBall.rigidbody.velocity = Vector2.zero;
 
-        rigidbody.simulated = true;
+            activeBall.rigidbody.simulated = true;
+        }
+
+        codeSpeed = speed;
     }
 
     void TransitionDone()
@@ -426,9 +427,9 @@ public class BallController : MonoBehaviour
         atCenter = false;
         invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
-        rigidbody.velocity = Vector2.zero;
+        activeBall.rigidbody.velocity = Vector2.zero;
         ballSpawner.transform.position = RandomXPos;
-        this.transform.position = RandomXPos;
+        activeBall.prefab.transform.position = RandomXPos;
         canAbsorb = false;
         wallHit = false;
         codeSpeed = speed;
@@ -442,7 +443,7 @@ public class BallController : MonoBehaviour
 
     void Revive()
     {
-        rigidbody.simulated = true;
+        activeBall.rigidbody.simulated = true;
         ballSprite.color = originalColor;
         animator.SetTrigger("ImmediateSpawn");
         spawnerAnimator.SetTrigger("GameStarted");
@@ -452,9 +453,9 @@ public class BallController : MonoBehaviour
         atCenter = false;
         invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
-        rigidbody.velocity = Vector2.zero;
+        activeBall.rigidbody.velocity = Vector2.zero;
         ballSpawner.transform.position = RandomXPos;
-        this.transform.position = RandomXPos;
+        activeBall.prefab.transform.position = RandomXPos;
         canAbsorb = false;
         wallHit = false;
         codeSpeed = speed;
