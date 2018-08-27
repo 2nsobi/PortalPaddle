@@ -159,7 +159,7 @@ public class SnapScrollRectController : MonoBehaviour
 
             if (ball)
             {
-                GameManager.Instance.SetBall(index);
+                BallController.Instance.SetBall(index);
             }
             else
             {
@@ -233,7 +233,7 @@ public class SnapScrollRectController : MonoBehaviour
 
             if (this.gameObject.name == "BallScollPanel")
             {
-                shopItems[i].index = game.Link2BallItem(shopItems[i].gameObject.name);
+                shopItems[i].index = BallController.Instance.Link2BallItem(shopItems[i].gameObject.name);
                 shopItems[i].ball = true;
             }
             if (this.gameObject.name == "PaddleScollPanel")
