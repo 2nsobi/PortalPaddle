@@ -31,55 +31,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public class BallPrefab
-    {
-        public GameObject prefab; // the children of the ball prefab should be ordered as follows: ballsprite, collisioneffect, falleffect, firstimpact, trail
-        public GameObject ballSprite;
-        public GameObject collisionEffect;
-        public GameObject fallEffect;
-        public GameObject firstImpact;
-        public GameObject boostEffect = null;
-        public Animator animator;
-        public Color32 startColor;
-        public Color32 boostColor;
-        public int index;
-        public SnapScrollRectController.ShopItem shopItem;
-        public Rigidbody2D rigidbody;
-
-        public BallPrefab(PrefabWithColors pref)
-        {
-            prefab = Instantiate(pref.prefab);
-            prefab.SetActive(false);
-            prefab.transform.localPosition = Vector2.zero;
-
-            rigidbody = prefab.GetComponent<Rigidbody2D>();
-
-            ballSprite = prefab.transform.GetChild(0).gameObject;
-            collisionEffect = prefab.transform.GetChild(1).gameObject;
-            fallEffect = prefab.transform.GetChild(2).gameObject;
-            firstImpact = prefab.transform.GetChild(3).gameObject;
-            try
-            {
-                boostEffect = prefab.transform.Find("BoostEffect").gameObject;
-            }
-            catch (System.NullReferenceException)
-            {
-            }
-
-            startColor = pref.startColor;
-            boostColor = pref.boostColor;
-            animator = prefab.GetComponent<Animator>();
-        }
-    }
-
-    [System.Serializable]
-    public class PrefabWithColors
-    {
-        public GameObject prefab;
-        public Color32 startColor; // start color should usually be this slightly grayish white : EAEAEA
-        public Color32 boostColor;
-    }
-
     PaddleController Paddle;
     LevelGenerator LG;
     BallController ball;
@@ -114,16 +65,13 @@ public class GameManager : MonoBehaviour
     bool canEndGame = true;
     public GameObject[] paddlePrefabs;
     public PaddlePrefab[] paddles;
-    public PrefabWithColors[] ballPrefabs;
-    public BallPrefab[] balls;
     Coroutine gameErrorTest;
     bool canContinue;
     AdManager ads;
     public Vector2 targetAspectRatio;
-    float thisDeviceCameraWidth;
+    float thisDeviceCameraRadius;
     bool dontMoveWalls = false;
     PaddlePrefab selectedPaddle;
-    BallPrefab selectedBall;
     bool paddleChanged = true;
     bool ballChanged = true;
     bool updateGems = false;
@@ -164,18 +112,6 @@ public class GameManager : MonoBehaviour
         for(int i = 0; i < paddles.Length; i++)
         {
             if((name.Substring(0,name.Length-1) + "(Clone)").Equals(paddles[i].mainParticles.name))
-            {
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    public int Link2BallItem(string name)
-    {
-        for (int i = 0; i < balls.Length; i++)
-        {
-            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(balls[i].prefab.name))
             {
                 return i;
             }
@@ -230,19 +166,6 @@ public class GameManager : MonoBehaviour
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
             paddles[i].index = i;
         }
-
-        balls = new BallPrefab[ballPrefabs.Length];
-        for (int i = 0; i < ballPrefabs.Length; i++)
-        {
-            balls[i] = new BallPrefab(ballPrefabs[i]);
-            balls[i].index = i;
-        }
-    }
-
-    public void SetBall(int index)
-    {
-        selectedBall = balls[index];
-        ballChanged = true;
     }
 
     public void SetPaddle(int index)
@@ -260,14 +183,19 @@ public class GameManager : MonoBehaviour
     ************************************************/
     public void ConfigureCamera()
     {
-        thisDeviceCameraWidth = (Camera.main.aspect * Camera.main.orthographicSize);
+        thisDeviceCameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
         float desiredCameraWidth = (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize;
 
-        if (thisDeviceCameraWidth < desiredCameraWidth - 0.001f) //for some reason (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize does not equal what is should exactly
+        if (thisDeviceCameraRadius < desiredCameraWidth - 0.001f) //for some reason (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize does not equal what is should exactly
         {
             Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
             dontMoveWalls = true;
         }
+    }
+
+    public float GetCameraRadius()
+    {
+        return thisDeviceCameraRadius;
     }
 
     public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
@@ -276,7 +204,7 @@ public class GameManager : MonoBehaviour
         {
             return 3.700936f; // x pos of wall at aspect ratio of 3.700936
         }
-        return thisDeviceCameraWidth + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
+        return thisDeviceCameraRadius + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
     }
 
     private void Start()
@@ -291,8 +219,6 @@ public class GameManager : MonoBehaviour
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         DeactivatePaddle();
-
-        selectedBall = balls[ZPlayerPrefs.GetInt("ballInUse")];
 
         GoToStartPage();
         gameRunning = false;
@@ -575,7 +501,6 @@ public class GameManager : MonoBehaviour
 
         if (ballChanged)
         {
-            ball.SetBall(selectedBall);
             ballChanged = false;
         }
 
@@ -757,7 +682,6 @@ public class GameManager : MonoBehaviour
             ZPlayerPrefs.SetInt("HighScore", score);
 
             ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
-            ZPlayerPrefs.SetInt("ballInUse",selectedBall.index);
         }
         else
         {
@@ -771,7 +695,6 @@ public class GameManager : MonoBehaviour
         ZPlayerPrefs.SetInt("HighScore", score);
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
-        ZPlayerPrefs.SetInt("ballInUse", selectedBall.index);
     }
 
     private void OnApplicationFocus(bool focus)

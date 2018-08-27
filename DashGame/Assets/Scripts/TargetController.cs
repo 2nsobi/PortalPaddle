@@ -35,6 +35,7 @@ public class TargetController : MonoBehaviour
     Vector3[] nextObstaclePath;
     float targetRadius = 2.53f; //based on 2d circle collider radius
     float targetSpawnOffset;
+    static System.Random rng = new System.Random();
 
     public static TargetController Instance;
 
@@ -486,12 +487,17 @@ public class TargetController : MonoBehaviour
         return new Vector2(Random.Range(spawnAreaCorners[0].x + (targetSpawnOffset), spawnAreaCorners[3].x - (targetSpawnOffset)), Random.Range(spawnAreaCorners[0].y + (targetSpawnOffset), spawnAreaCorners[2].y - (targetSpawnOffset)));
     }
 
-    public int RandomSpawnAreaXRange
+    public float RandomSpawnAreaXRange
     {
         get
         {
-            return (int)Random.Range(spawnAreaCorners[0].x + (0.66f), spawnAreaCorners[3].x - (0.66f)); //float comes from measuring radius of ballspawner
+            return RandomFloat(spawnAreaCorners[0].x + (0.64f), spawnAreaCorners[3].x - (0.64f)); //float comes from measuring radius of ballspawner
         }
+    }
+
+    float RandomFloat(double min, double max)
+    {
+        return (float)(min + rng.NextDouble() * (max-min));
     }
 
     public Vector3 GetCurrentTargetPos

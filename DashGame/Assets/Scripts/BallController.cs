@@ -5,9 +5,8 @@ using UnityEngine.UI;
 public class BallController : MonoBehaviour
 {
     public Vector2 startPos;
-    public float speed;
-    float codeSpeed;
-    public float deflectionSpeed;
+    public float initialSpeed;
+    public float boostSpeed;
     Ray2D ray;
     Vector3 rayOffsetVector = new Vector3(0, 0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     TargetController target;
@@ -17,7 +16,6 @@ public class BallController : MonoBehaviour
     bool canAbsorb; //ball will only be absorbed after it is deflectd off of the paddle;
     GameObject ballSpawner;
     Animator spawnerAnimator;
-    Transform targetTransform;
     bool wallHit;
     Vector2 RandomXPos;
     GameManager game;
@@ -47,7 +45,9 @@ public class BallController : MonoBehaviour
     bool fadeBack = false;
     bool cantCollide = false;
     bool pauseAllCoroutines = false;
-    GameManager.BallPrefab activeBall = null;
+    int selectedBallIndex;
+    public GameObject[] ballPrefabs;
+    Ball[] balls;
 
     public static BallController Instance;
 
@@ -60,20 +60,23 @@ public class BallController : MonoBehaviour
     {
         Instance = this;
         mainCam = Camera.main;
-        shouldAbsorb = false;
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
-        codeSpeed = speed;
-        atCenter = false;
-        invulnerable = false;
-        ShouldShrink = false;
-        ShouldSpawn = false;
 
         Physics2D.IgnoreLayerCollision(8, 10);
         Physics2D.IgnoreLayerCollision(8, 12);
         Physics2D.IgnoreLayerCollision(8, 13);
         Physics2D.IgnoreLayerCollision(8, 0);
         Physics2D.IgnoreLayerCollision(8, 9);
+
+        balls = new Ball[ballPrefabs.Length];
+
+        for (int i = 0; i < ballPrefabs.Length; i++)
+        {
+            GameObject ballPref = Instantiate(ballPrefabs[i]);
+            balls[i] = ballPref.GetComponent<Ball>();
+            balls[i].gameObject.SetActive(false);
+        }
     }
 
     private void Start()
@@ -86,51 +89,25 @@ public class BallController : MonoBehaviour
         LG = LevelGenerator.Instance;
 
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
+
+        selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
     }
 
-    public void SetBall(GameManager.BallPrefab ball)
+    public int Link2BallItem(string name)
     {
-        if (activeBall == null)
+        for (int i = 0; i < balls.Length; i++)
         {
-            activeBall = ball;
-            activeBall.prefab.transform.parent = transform;
-            activeBall.prefab.transform.localPosition = Vector2.zero;
-            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, 0);
-            activeBall.prefab.gameObject.SetActive(true);
-
-            ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
-            CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
-            FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
-            FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
-
-            originalColor = activeBall.startColor;
-            boostColor = activeBall.boostColor;
-
-            animator = activeBall.animator;
-            ballSprite.color = originalColor;
+            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(balls[i].name))
+            {
+                return i;
+            }
         }
-        else
-        {
-            activeBall.prefab.transform.parent = null;
-            activeBall.prefab.SetActive(false);
+        return 0;
+    }
 
-            activeBall = ball;
-            activeBall.prefab.transform.parent = transform;
-            activeBall.prefab.transform.localPosition = Vector2.zero;
-            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, 0);
-            activeBall.prefab.gameObject.SetActive(true);
-
-            ballSprite = activeBall.ballSprite.GetComponent<SpriteRenderer>();
-            CollisionEffect = activeBall.collisionEffect.GetComponent<ParticleSystem>();
-            FallEffect = activeBall.fallEffect.GetComponent<ParticleSystem>();
-            FirstImpact = activeBall.firstImpact.GetComponent<ParticleSystem>();
-
-            originalColor = activeBall.startColor;
-            boostColor = activeBall.boostColor;
-
-            animator = activeBall.animator;
-            ballSprite.color = originalColor;
-        }
+    public void SetBall(int index)
+    {
+        selectedBallIndex = index;
     }
 
     private void OnApplicationFocus(bool focus)
@@ -145,9 +122,26 @@ public class BallController : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void OnApplicationPause(bool pause)
     {
-        GameManager.GameOverConfirmed += GameOverConfirmed;
+        if (pause)
+        {
+            pauseAllCoroutines = true;
+            ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+        }
+        else
+        {
+            pauseAllCoroutines = false;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+    }
+
+    private void OnEnable()
+    { 
         GameManager.GameStarted += GameStarted;
         LevelGenerator.TransitionDone += TransitionDone;
         GameManager.Revive += Revive;
@@ -155,7 +149,6 @@ public class BallController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.GameOverConfirmed -= GameOverConfirmed;
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
         GameManager.Revive -= Revive;
@@ -168,8 +161,7 @@ public class BallController : MonoBehaviour
         {
             yield return null;
         }
-        transform.rotation = Quaternion.Euler(0, 0, 0);
-        activeBall.rigidbody.velocity = -transform.up.normalized * codeSpeed;
+
     }
 
     private void Update()
@@ -211,89 +203,7 @@ public class BallController : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
-        if (game.IsGameRunning)
-        {
-            ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
-
-            if (atCenter)
-            {
-                activeBall.prefab.transform.position = target.GetCurrentTargetPos;
-            }
-
-            if (shouldAbsorb)
-            {
-                Absorb();
-            }
-
-            animator.SetBool("ShouldSpawn", ShouldSpawn);
-            animator.SetBool("ShouldShrink", ShouldShrink);
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        print(collision.gameObject.name);
-        if (!cantCollide)
-        {
-            if (collision.gameObject.tag == "Paddle")
-            {
-                canAbsorb = true;
-                Physics2D.IgnoreLayerCollision(10, 11, false);
-                Physics2D.IgnoreLayerCollision(11, 12);        // this makes it so that the paddle cant hit the ball again before it hits another collider
-            }
-            else
-            {
-                Physics2D.IgnoreLayerCollision(11, 12, false);
-            }
-
-            if (firstCollision)
-            {
-                if (!atCenter && !shouldAbsorb)
-                {
-                    StartCoroutine(CameraShake(CameraShakeIntensity, CameraShakeDuration));
-                }
-                FirstCollision();
-                firstCollision = false;
-            }
-
-            if (collision.gameObject.tag == "Wall")
-            {
-                wallHit = true;
-            }
-
-            if (!atCenter && !shouldAbsorb)
-            {
-                CollisionEffect.Play();
-            }
-
-            ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
-            Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
-
-            float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
-            activeBall.prefab.transform.rotation = Quaternion.Euler(0, 0, rotation);
-            codeSpeed = deflectionSpeed;
-            activeBall.rigidbody.velocity = -transform.up.normalized * codeSpeed;
-
-        }
-
-    }
-
-    void FirstCollision()
-    {
-        FlashWhite();
-
-        CameraShake(CameraShakeIntensity, CameraShakeDuration);
-
-        ballSprite.color = boostColor;
-        FallEffect.Stop();
-        FallEffect.Play();
-        animator.SetTrigger("Boost");
-        FirstImpact.Play();
-    }
-
-    void FlashWhite()
+    public void FlashWhite()
     {
         whiteFlashCGPanel.color = Color.white;
         flash = true;
@@ -307,164 +217,40 @@ public class BallController : MonoBehaviour
         whiteFlashCG.alpha = 0;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (canAbsorb)
-        {
-            targetHit = collision.gameObject.name;
-            if (firstTriggerCollision)
-            {
-                if (collision.gameObject.layer == 8)
-                {
-                    Physics2D.IgnoreLayerCollision(10, 11);
-                    ShouldSpawn = false;
-                    invulnerable = true;
-                    activeBall.rigidbody.velocity = Vector2.zero;
-                    activeBall.rigidbody.angularVelocity = 0;
-                    shouldAbsorb = true;
-                    targetTransform = collision.transform;
-                    ShouldShrink = true;
-                    firstTriggerCollision = false;
-                    cantCollide = true;
-
-                    Debug.Log("ball should definetely be absorbing right now since\n shouldAbsorb = " + shouldAbsorb + ", and ontriggerenter2d has been called");
-                    Debug.Log("also the trigger the ball hit was " + collision.gameObject.name);
-                    Debug.Log("velocity of ball = " + activeBall.rigidbody.velocity);
-                }
-            }
-        }
-        if (collision.gameObject.layer == 9)
-        {
-            if (!invulnerable)
-            {
-                ShouldSpawn = false;
-                activeBall.rigidbody.velocity = Vector2.zero;
-                activeBall.rigidbody.simulated = false;
-                PlayerMissed();
-            }
-        }
-    }
-
-    void Absorb()
-    {
-        if (canAbsorb)
-        {
-            if (target.IsMoving())
-            {
-                activeBall.prefab.transform.position = Vector2.MoveTowards(activeBall.prefab.transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
-            }
-            else
-            {
-                activeBall.prefab.transform.position = Vector2.MoveTowards(activeBall.prefab.transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
-            }
-
-            if (activeBall.prefab.transform.position == target.GetCurrentTargetPos)
-            {
-                atCenter = true;
-                shouldAbsorb = false;
-            }
-
-            if (!shouldAbsorb)
-            {
-                if (wallHit)
-                {
-                    AbsorbDoneAndRichochet();
-                    return;
-                }
-                else
-                {
-                    AbsorbDone();
-                    return;
-                }
-            }
-        }
-    }
-
     void GameStarted()
     {
+        balls[selectedBallIndex].gameObject.SetActive(true);
+        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+
         spawnerAnimator.SetTrigger("GameStarted");
-        animator.SetTrigger("GameStarted");
-
-        activeBall.prefab.transform.position = startPos;
         ballSpawner.transform.position = startPos;
-        canAbsorb = false;
-        StartCoroutine(SpawnDelay());
-        wallHit = false;
-        Physics2D.IgnoreLayerCollision(10, 11);
-        Physics2D.IgnoreLayerCollision(11, 12, false);
-        ShouldSpawn = true;
-        ShouldShrink = false;
-        firstCollision = true;
-        firstTriggerCollision = true;
-    }
-
-    void GameOverConfirmed()
-    {
-        if (activeBall != null)
-        {
-            ballSprite.color = originalColor;
-            animator.SetTrigger("GameOver");
-        }
-
-        if (LG.PlayedOnce)
-        {
-            activeBall.prefab.transform.position = Vector2.right * 1000;
-            activeBall.rigidbody.velocity = Vector2.zero;
-
-            activeBall.rigidbody.simulated = true;
-        }
-
-        codeSpeed = speed;
     }
 
     void TransitionDone()
     {
-        ballSprite.color = originalColor;
-        ShouldSpawn = true;
-        ShouldShrink = false;
-        spawnerAnimator.SetTrigger("GameStarted");
-        Physics2D.IgnoreLayerCollision(10, 11);
-        atCenter = false;
-        invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
-        activeBall.rigidbody.velocity = Vector2.zero;
-        ballSpawner.transform.position = RandomXPos;
-        activeBall.prefab.transform.position = RandomXPos;
-        canAbsorb = false;
-        wallHit = false;
-        codeSpeed = speed;
-        firstCollision = true;
-        firstTriggerCollision = true;
-        cantCollide = false;
-        Physics2D.IgnoreLayerCollision(11, 12, false);
 
-        StartCoroutine(SpawnDelay());
+        balls[selectedBallIndex].gameObject.SetActive(true);
+        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+        spawnerAnimator.SetTrigger("GameStarted");
+        ballSpawner.transform.position = RandomXPos;
     }
 
     void Revive()
     {
-        activeBall.rigidbody.simulated = true;
-        ballSprite.color = originalColor;
-        animator.SetTrigger("ImmediateSpawn");
-        spawnerAnimator.SetTrigger("GameStarted");
-        ShouldSpawn = true;
-        ShouldShrink = false;
-        Physics2D.IgnoreLayerCollision(10, 11);
-        atCenter = false;
-        invulnerable = false;
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
-        activeBall.rigidbody.velocity = Vector2.zero;
-        ballSpawner.transform.position = RandomXPos;
-        activeBall.prefab.transform.position = RandomXPos;
-        canAbsorb = false;
-        wallHit = false;
-        codeSpeed = speed;
-        firstCollision = true;
-        firstTriggerCollision = true;
-        cantCollide = false;
-        Physics2D.IgnoreLayerCollision(11, 12, false);
 
-        StartCoroutine(SpawnDelay());
+        balls[selectedBallIndex].gameObject.SetActive(true);
+        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+        spawnerAnimator.SetTrigger("GameStarted");
+        ballSpawner.transform.position = RandomXPos;
+    }
+
+    public void SetTargetHit(string target)
+    {
+        targetHit = target;
     }
 
     public string GetTargetHit
@@ -475,21 +261,26 @@ public class BallController : MonoBehaviour
         }
     }
 
-    IEnumerator CameraShake(float intensity, float duration)
+    public void CameraShake()
+    {
+        StartCoroutine(ShakeCamera());
+    }
+
+    public IEnumerator ShakeCamera()
     {
         float elapsedTime = 0;
 
-        while (elapsedTime < duration)
+        while (elapsedTime < CameraShakeDuration)
         {
             elapsedTime += Time.deltaTime;
 
-            float percentComplete = elapsedTime / duration;
+            float percentComplete = elapsedTime / CameraShakeDuration;
             float damper = 1.0f - Mathf.Clamp(4.0f * percentComplete - 3.0f, 0.0f, 1.0f);
 
             float x = Random.value * 2.0f - 1.0f;
             float y = Random.value * 2.0f - 1.0f;
-            x *= Mathf.PerlinNoise(x, y) * intensity * damper;
-            y *= Mathf.PerlinNoise(x, y) * intensity * damper;
+            x *= Mathf.PerlinNoise(x, y) * CameraShakeIntensity * damper;
+            y *= Mathf.PerlinNoise(x, y) * CameraShakeIntensity * damper;
 
             mainCam.transform.localPosition = new Vector3(x, y, originalCamPos.z);
 
