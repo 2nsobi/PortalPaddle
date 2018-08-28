@@ -210,6 +210,7 @@ public class LevelGenerator : MonoBehaviour
     bool previousLvlActive = false;
     Animator labMonitorsAnimC;
     BallController ballC;
+    TargetController target;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -275,6 +276,7 @@ public class LevelGenerator : MonoBehaviour
         paddle = PaddleController.Instance;
         shopC = ShopController.Instance; //singleton needs to be accessed here because the awake function atached to the shopcontroller script is not called until the object it is attached to is instantiated
         ballC = BallController.Instance;
+        target = TargetController.Instance;
 
         currentlyTransitioning = false;
 
@@ -1049,6 +1051,7 @@ public class LevelGenerator : MonoBehaviour
         {
             nextLvlNumber = 2;
             ballC.IncreaseDropSpeed(4.75f);
+            target.IncreaseTravelSpeed(3);
         }
         else if (NextLvl.gameObject.tag == "level3")
         {
@@ -1056,17 +1059,20 @@ public class LevelGenerator : MonoBehaviour
             {
                 nextLvlNumber = 5;
                 ballC.IncreaseDropSpeed(8.25f);
+                target.IncreaseTravelSpeed(5);
             }
             else
             {
                 nextLvlNumber = 3;
                 ballC.IncreaseDropSpeed(6.5f);
+                target.IncreaseTravelSpeed(4);
             }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
             ballC.IncreaseDropSpeed(10);
+            target.IncreaseTravelSpeed(6);
         }
         NextLvl.gameObject.SetActive(true);
         NextLvl.gameObject.transform.position = transform.position + levelOffset;

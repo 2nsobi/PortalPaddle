@@ -1651,7 +1651,7 @@ RectTransform:
   - {fileID: 717587574}
   - {fileID: 1618470805}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3059,7 +3059,7 @@ MonoBehaviour:
     easy: 1
   - prefab: {fileID: 1148993049131072, guid: dd9dfbf1f406a9d40a73734edbadaeea, type: 2}
     size: 4
-    easy: 0
+    easy: 1
   - prefab: {fileID: 1859614768542120, guid: acb44aa9db01b6043bfb3fdc752f5ea1, type: 2}
     size: 4
     easy: 0
@@ -3072,6 +3072,9 @@ MonoBehaviour:
   - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
     size: 4
     easy: 0
+  - prefab: {fileID: 1503209895976950, guid: 3b15005f23b2f294dbf8139b0ae6eb75, type: 2}
+    size: 4
+    easy: 1
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   SettingsLvl: {fileID: 1164789961757968, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
     type: 2}
@@ -4697,7 +4700,7 @@ Prefab:
     - target: {fileID: 224516854300814748, guid: 9deba5469f2d7f24b8bdce5d6debdd7b,
         type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224516854300814748, guid: 9deba5469f2d7f24b8bdce5d6debdd7b,
         type: 2}
@@ -5305,7 +5308,7 @@ RectTransform:
   m_Children:
   - {fileID: 573976923}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

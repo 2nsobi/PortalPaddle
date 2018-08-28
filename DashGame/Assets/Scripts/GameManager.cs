@@ -204,8 +204,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void Start()
-    {
-        
+    {       
         extraBall = false;
         Paddle = PaddleController.Instance;
         TargetController = TargetController.Instance;
@@ -270,8 +269,8 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                extraBall = false;
-                extraBallSprite.SetActive(false);
+                //extraBall = false;
+                //extraBallSprite.SetActive(false);
                 StartCoroutine(ReviveDelay());
 
                 StopCoroutine(gameErrorTest);
@@ -283,7 +282,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReviveDelay()
     {
-        for (float i = 0.0f; i < 1.4f; i += 0.1f)  //make sure this delay is longer than the length of the ball shrink anim which is 1.3 seconds
+        for (float i = 0.0f; i < 1.8f; i += 0.1f)  //make sure this delay is longer than the length of the ball shrink anim which is 1.3 seconds
         {
             yield return new WaitForSeconds(0.1f);
             while (pauseAllCoroutines || paused)
@@ -479,7 +478,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         canEndGame = true;
-        extraBall = false;
+        extraBall = true;
         richochetCount = 0;
         scoreText.text = score.ToString();
         SetPageState(pageState.Game);
