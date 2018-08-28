@@ -103,8 +103,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4922878145490716}
   - component: {fileID: 95371584867485598}
-  - component: {fileID: 58717163228788902}
-  - component: {fileID: 114131646250797970}
   m_Layer: 11
   m_Name: White2YellowGhost
   m_TagString: ghost
@@ -184,7 +182,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1981438222022684}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.3552451, y: -2.3814435, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.07000001, y: 0.07000001, z: 1}
   m_Children:
   - {fileID: 4407400973981580}
@@ -195,21 +193,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58717163228788902
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1981438222022684}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.08, y: 0.06}
-  serializedVersion: 2
-  m_Radius: 2.1
 --- !u!95 &95371584867485598
 Animator:
   serializedVersion: 3
@@ -329,18 +312,6 @@ TrailRenderer:
   m_MinVertexDistance: 0
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &114131646250797970
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1981438222022684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1948b4503feb2794ba1009ba268da712, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  host: {fileID: 114979718029260796, guid: d388221a148741c48aa81d7d5580220d, type: 2}
 --- !u!198 &198028871467312396
 ParticleSystem:
   m_ObjectHideFlags: 1

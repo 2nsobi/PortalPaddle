@@ -48,6 +48,7 @@ public class Ball : MonoBehaviour
     TrailRenderer tempTrail,tempTrail2;
     bool wrappedAround = false;
     ParticleSystem.MainModule[] mainMods;
+    bool noTrail = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -58,7 +59,7 @@ public class Ball : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
-        mainMods = new ParticleSystem.MainModule[2];
+        mainMods = new ParticleSystem.MainModule[3];
 
         ballSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         collisionEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
@@ -66,16 +67,36 @@ public class Ball : MonoBehaviour
         fallEffect = transform.GetChild(2).GetComponent<ParticleSystem>();
         firstImpact = transform.GetChild(3).GetComponent<ParticleSystem>();
         mainMods[1] = firstImpact.main;
-        hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
+        try
+        {
+            hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
+        }
+        catch(System.NullReferenceException)
+        {
+            noTrail = true;
+        }
+
+        try
+        {
+            mainMods[2] = transform.Find("BoostEffect").GetComponent<ParticleSystem>().main;
+        }
+        catch (System.NullReferenceException) { }
 
         ghostBall1 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
         ghostBall1.SetActive(false);
         ghost1AnimC = ghostBall1.GetComponent<Animator>();
-        ghost1Trail = ghostBall1.transform.Find("Trail").GetComponent<TrailRenderer>();
+        if (!noTrail)
+        {
+            ghost1Trail = ghostBall1.transform.Find("Trail").GetComponent<TrailRenderer>();
+        }
+
         ghostBall2 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
         ghostBall2.SetActive(false);
         ghost2AnimC = ghostBall2.GetComponent<Animator>();
-        ghost2Trail = ghostBall2.transform.Find("Trail").GetComponent<TrailRenderer>();
+        if (!noTrail)
+        {
+            ghost2Trail = ghostBall2.transform.Find("Trail").GetComponent<TrailRenderer>();
+        }
 
         rigidbody = GetComponent<Rigidbody2D>();
 
@@ -101,11 +122,6 @@ public class Ball : MonoBehaviour
         firstTriggerCollision = true;
         cantCollide = false;
         wrappingEnabled = false;
-
-        for (int i = 0; i < mainMods.Length; i++)
-        {
-            mainMods[i].simulationSpeed = 1;
-        }
 
         SetAnimTrigs("Boost",true);
         SetAnimTrigs("ImmediateShrink", true);
@@ -183,64 +199,111 @@ public class Ball : MonoBehaviour
 
     void PositionGhosts()
     {
-        ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);  //ghost1 is always to the left
+        if (rigidbody.velocity.y >= 0)
+        {
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
 
-        ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y); //ghost2 is always to the right
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+        }
+        else
+        {
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
+
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+        }
     }
 
     void SwapWithGhost()
     {
         if (OnScreen(ghostBall1.transform.position))
         {
-            hostTrail.transform.parent = null;
-            ghost1Trail.transform.parent = null;
-            ghost2Trail.transform.parent = null;
-            ghost2Trail.Clear();
-            ghost2Trail.gameObject.SetActive(false);
+            if (!noTrail)
+            {
+                hostTrail.transform.parent = null;
+                ghost1Trail.transform.parent = null;
+                ghost2Trail.transform.parent = null;
+                ghost2Trail.Clear();
+                ghost2Trail.gameObject.SetActive(false);
+            }
 
             transform.position = ghostBall1.transform.position;
-            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);
-            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y);
+            if (rigidbody.velocity.y >= 0)
+            {
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
 
-            tempTrail = hostTrail;
-            tempTrail2 = ghost2Trail;
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+            }
+            else
+            {
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
 
-            ghost1Trail.transform.SetParent(transform, true);
-            hostTrail = ghost1Trail;
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+            }
 
-            tempTrail.transform.SetParent(ghostBall2.transform, true);
-            ghost2Trail = tempTrail;
+            if (!noTrail)
+            {
+                tempTrail = hostTrail;
+                tempTrail2 = ghost2Trail;
 
-            tempTrail2.transform.SetParent(ghostBall1.transform, false);
-            ghost1Trail = tempTrail2;
-            ghost1Trail.transform.localPosition = Vector2.zero;
-            ghost1Trail.gameObject.SetActive(true);
+                ghost1Trail.transform.SetParent(transform, true);
+                ghost1Trail.transform.localPosition = Vector2.zero;
+                hostTrail = ghost1Trail;
+
+                tempTrail.transform.SetParent(ghostBall2.transform, true);
+                tempTrail.transform.localPosition = Vector2.zero;
+                ghost2Trail = tempTrail;
+
+                tempTrail2.transform.SetParent(ghostBall1.transform, false);
+                tempTrail2.transform.localPosition = Vector2.zero;
+                ghost1Trail = tempTrail2;
+                ghost1Trail.transform.localPosition = Vector2.zero;
+                ghost1Trail.gameObject.SetActive(true);
+            }
         }
         else
         {
-            hostTrail.transform.parent = null;
-            ghost1Trail.transform.parent = null;
-            ghost2Trail.transform.parent = null;
-            ghost1Trail.Clear();
-            ghost1Trail.gameObject.SetActive(false);
+            if (!noTrail)
+            {
+                hostTrail.transform.parent = null;
+                ghost1Trail.transform.parent = null;
+                ghost2Trail.transform.parent = null;
+                ghost1Trail.Clear();
+                ghost1Trail.gameObject.SetActive(false);
+            }
 
             transform.position = ghostBall2.transform.position;
-            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);
-            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y);
+            if (rigidbody.velocity.y >= 0)
+            {
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
 
-            tempTrail = hostTrail;
-            tempTrail2 = ghost1Trail;
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+            }
+            else
+            {
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
 
-            ghost2Trail.transform.SetParent(transform, true);
-            hostTrail = ghost2Trail;
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+            }
 
-            tempTrail.transform.SetParent(ghostBall1.transform,true);
-            ghost1Trail = tempTrail;
+            if (!noTrail)
+            {
+                tempTrail = hostTrail;
+                tempTrail2 = ghost1Trail;
 
-            tempTrail2.transform.SetParent(ghostBall2.transform,false);
-            ghost2Trail = tempTrail2;
-            ghost2Trail.transform.localPosition = Vector2.zero;
-            ghost2Trail.gameObject.SetActive(true);
+                ghost2Trail.transform.SetParent(transform, true);
+                ghost2Trail.transform.localPosition = Vector2.zero;
+                hostTrail = ghost2Trail;
+
+                tempTrail.transform.SetParent(ghostBall1.transform, true);
+                tempTrail.transform.localPosition = Vector2.zero;
+                ghost1Trail = tempTrail;
+
+                tempTrail2.transform.SetParent(ghostBall2.transform, false);
+                tempTrail2.transform.localPosition = Vector2.zero;
+                ghost2Trail = tempTrail2;
+                ghost2Trail.transform.localPosition = Vector2.zero;
+                ghost2Trail.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -337,12 +400,39 @@ public class Ball : MonoBehaviour
     {
         for (int i = 0; i < mainMods.Length; i++)
         {
-            mainMods[i].simulationSpeed = 1.5f;
+            if (i == 2)
+            {
+                try
+                {
+                    mainMods[i].simulationSpeed *= 1.5f;
+                }
+                catch (System.NullReferenceException) { }
+            }
+            else
+            {
+                mainMods[i].simulationSpeed = 1.5f;
+            }
         }
     }
 
     public void GoAway()
     {
+        for (int i = 0; i < mainMods.Length; i++)
+        {
+            if (i == 2)
+            {
+                try
+                {
+                    mainMods[i].simulationSpeed /= 1.5f;
+                }
+                catch (System.NullReferenceException) { }
+            }
+            else
+            {
+                mainMods[i].simulationSpeed = 1;
+            }
+        }
+
         if ((!atCenter || shouldAbsorb) && invulnerable)
         {
             if (wallHit || wrappedAround)
@@ -468,6 +558,7 @@ public class Ball : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        print(collision.gameObject.name);
         if (canAbsorb)
         {
             targetHit = collision.gameObject.name;
@@ -483,10 +574,6 @@ public class Ball : MonoBehaviour
                     ShouldShrink = true;
                     firstTriggerCollision = false;
                     cantCollide = true;
-
-                    Debug.Log("ball should definetely be absorbing right now since\n shouldAbsorb = " + shouldAbsorb + ", and ontriggerenter2d has been called");
-                    Debug.Log("also the trigger the ball hit was " + collision.gameObject.name);
-                    Debug.Log("velocity of ball = " + rigidbody.velocity);
                 }
             }
         }
