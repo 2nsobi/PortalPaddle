@@ -689,7 +689,6 @@ public class LevelGenerator : MonoBehaviour
                 yield return null;
             }
         }
-        Debug.Log("should be transitioning");
 
         if (cavesFilter)
         {

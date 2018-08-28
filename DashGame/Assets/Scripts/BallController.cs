@@ -64,6 +64,8 @@ public class BallController : MonoBehaviour
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
 
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
+
+        selectedBallIndex = 4;
     }
 
     public int Link2BallItem(string name)
