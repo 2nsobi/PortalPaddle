@@ -4,57 +4,36 @@ using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
+    public float absorbSpeed;
     public Vector2 startPos;
     public float initialSpeed;
     public float boostSpeed;
-    Ray2D ray;
-    Vector3 rayOffsetVector = new Vector3(0, 0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
-    TargetController target;
-    bool shouldAbsorb;
-    public float absorbSpeed;
-    Animator animator;
-    bool canAbsorb; //ball will only be absorbed after it is deflectd off of the paddle;
-    GameObject ballSpawner;
-    Animator spawnerAnimator;
-    bool wallHit;
-    Vector2 RandomXPos;
-    GameManager game;
-    bool atCenter;
-    bool invulnerable;
-    ParticleSystem CollisionEffect;
-    ParticleSystem FallEffect;
-    ParticleSystem FirstImpact;
-    string targetHit; //Name of the target that was hit;
-    bool ShouldSpawn;
-    bool ShouldShrink;
-    Camera mainCam;
-    readonly Vector3 originalCamPos = new Vector3(0, 0, -50);
     public float CameraShakeIntensity;
     public float CameraShakeDuration;
-    bool firstCollision; //first collision with paddle
-    bool firstTriggerCollision; //for first collision with a target
+    public GameObject[] ballPrefabs;
+
+    TargetController target;
+    GameObject ballSpawner;
     LevelGenerator LG;
-    SpriteRenderer ballSprite;
-    Color originalColor;
-    Color boostColor;
-    public float rotationSpeed;
+    GameManager game;
+
+    float startSpeed;
+    Animator spawnerAnimator;
+    Vector2 RandomXPos;
+    string targetHit; //Name of the target that was hit;
+    Camera mainCam;
+    readonly Vector3 originalCamPos = new Vector3(0, 0, -50);     
     public CanvasGroup whiteFlashCG;
     Image whiteFlashCGPanel;
     bool flash = false;
     bool fade2Black = false;
     bool fadeBack = false;
-    bool cantCollide = false;
     bool pauseAllCoroutines = false;
     int selectedBallIndex;
-    public GameObject[] ballPrefabs;
     Ball[] balls;
+    float tempSpeed;
 
     public static BallController Instance;
-
-    public delegate void BallDelegate();
-    public static event BallDelegate PlayerMissed;
-    public static event BallDelegate AbsorbDone; // specific event for TargetController so its animation matches up with the balls
-    public static event BallDelegate AbsorbDoneAndRichochet;
 
     private void Awake()
     {
@@ -62,12 +41,7 @@ public class BallController : MonoBehaviour
         mainCam = Camera.main;
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
-
-        Physics2D.IgnoreLayerCollision(8, 10);
-        Physics2D.IgnoreLayerCollision(8, 12);
-        Physics2D.IgnoreLayerCollision(8, 13);
-        Physics2D.IgnoreLayerCollision(8, 0);
-        Physics2D.IgnoreLayerCollision(8, 9);
+        startSpeed = initialSpeed;
 
         balls = new Ball[ballPrefabs.Length];
 
@@ -84,7 +58,6 @@ public class BallController : MonoBehaviour
         //whenever you are retrieving a singleton of another class make sure it is after the singleton is creaeted in that class
         //So pretty much always create a singleton in awake and then retrieve it in start
         target = TargetController.Instance;
-        wallHit = false;
         game = GameManager.Instance;
         LG = LevelGenerator.Instance;
 
@@ -105,8 +78,15 @@ public class BallController : MonoBehaviour
         return 0;
     }
 
+    public void IncreaseDropSpeed(float speed) //original speed is 3
+    {
+        startSpeed = speed;
+    }
+
     public void SetBall(int index)
     {
+        balls[selectedBallIndex].gameObject.SetActive(false);
+
         selectedBallIndex = index;
     }
 
@@ -186,6 +166,8 @@ public class BallController : MonoBehaviour
                     whiteFlashCG.alpha = 1;
                     LG.GoBack2StartLvl(); //sent to levelgenerator
                     target.ResetTargets(); //sent to targetcontroller
+                    balls[selectedBallIndex].gameObject.SetActive(false);
+                    startSpeed = initialSpeed;
                     fadeBack = true;
                 }
             }
@@ -220,7 +202,8 @@ public class BallController : MonoBehaviour
     void GameStarted()
     {
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(startSpeed, boostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+        tempSpeed = startSpeed;
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = startPos;
@@ -231,7 +214,8 @@ public class BallController : MonoBehaviour
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(startSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        tempSpeed = startSpeed;
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
@@ -242,7 +226,7 @@ public class BallController : MonoBehaviour
         RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(initialSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(tempSpeed, boostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;

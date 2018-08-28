@@ -433,6 +433,8 @@ public class SnapScrollRectController : MonoBehaviour
             shopItems[0].selected = true;
 
             shopItems[0].buttonLayout = ShopController.buttonLayout.selected;
+
+            BallController.Instance.SetBall(shopItems[0].index);
         }
         content2Scroll.anchoredPosition = new Vector2(selectedItemIndex * -itemSeperation, 0);
     }

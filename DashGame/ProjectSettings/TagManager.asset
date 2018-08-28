@@ -14,6 +14,7 @@ TagManager:
   - obstacle
   - gradient
   - caves2Sky
+  - ghost
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - Paddle
   - Particles
   - DeleteParticles
-  - 
+  - Floor
   - 
   - 
   - 

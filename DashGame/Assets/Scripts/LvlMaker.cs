@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LvlMaker : MonoBehaviour
 {
+    public GameObject startPageButtons; 
     public GameObject pathCircle;
     public GameObject square;
     public GameObject circle;
     public GameObject triangle;
-    public GameObject wall;
+    public GameObject wallObstacle;
+    public GameObject triangle2;
     public GameObject customSprite;
     public GameObject ReferenceTarget;
     GameObject refTarg;
@@ -29,9 +32,11 @@ public class LvlMaker : MonoBehaviour
     Vector3[] path4Travel;
     Vector3 nextPoint;
     int pointCounter;
+    string activeObjName;
 
     private void Start()
     {
+        startPageButtons.SetActive(false);
         activeObject = null;
         renameObstacle = new GameObject("renameObstacle");
         renameObstacle.transform.parent = this.transform;
@@ -56,16 +61,25 @@ public class LvlMaker : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             activeObject = square;
+            activeObjName = "square";
             Debug.Log("activeObject = " + activeObject.name);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             activeObject = circle;
+            activeObjName = "circle";
             Debug.Log("activeObject = " + activeObject.name);
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             activeObject = triangle;
+            activeObjName = "triangle";
+            Debug.Log("activeObject = " + activeObject.name);
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            activeObject = triangle2;
+            activeObjName = "triangle2";
             Debug.Log("activeObject = " + activeObject.name);
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
@@ -75,7 +89,8 @@ public class LvlMaker : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            activeObject = wall;
+            activeObject = wallObstacle;
+            activeObjName = "wallObstacle";
             Debug.Log("activeObject = " + activeObject.name);
         }
         if (Input.GetKeyDown(KeyCode.Alpha7))
@@ -181,7 +196,8 @@ public class LvlMaker : MonoBehaviour
             {
                 try
                 {
-                    Instantiate(activeObject, point2, Quaternion.identity, renameObstacle.transform);
+                    GameObject obj = Instantiate(activeObject, point2, Quaternion.identity, renameObstacle.transform);
+                    obj.name = activeObjName;
                 }
                 catch (System.ArgumentException e)
                 {

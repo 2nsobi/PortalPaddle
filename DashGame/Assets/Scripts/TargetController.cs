@@ -9,7 +9,7 @@ public class TargetController : MonoBehaviour
     Vector3[] spawnAreaCorners = new Vector3[4];
     CircleCollider2D collider; //used to account for the offset needed for the radius of the target
     public GameObject TargetPrefab;
-    BallController ball;
+    BallController ballC;
     LevelGenerator LG;
     GameManager game;
     float randomSize;
@@ -35,7 +35,7 @@ public class TargetController : MonoBehaviour
     Vector3[] nextObstaclePath;
     float targetRadius = 2.53f; //based on 2d circle collider radius
     float targetSpawnOffset;
-    static System.Random rng = new System.Random();
+    static CryptoRandom rng = new CryptoRandom();
 
     public static TargetController Instance;
 
@@ -116,14 +116,14 @@ public class TargetController : MonoBehaviour
     {
         LG = LevelGenerator.Instance;
         game = GameManager.Instance;
-        ball = BallController.Instance;
+        ballC = BallController.Instance;
     }
 
     private void OnEnable()
     {
-        BallController.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
+        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         GameManager.GameStarted += GameStarted;
-        BallController.AbsorbDone += AbsorbDone;
+        Ball.AbsorbDone += AbsorbDone;
         GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
         LevelGenerator.TransitionDone += TransitionDone;
@@ -131,9 +131,9 @@ public class TargetController : MonoBehaviour
 
     private void OnDisable()
     {
-        BallController.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         GameManager.GameStarted -= GameStarted;
-        BallController.AbsorbDone -= AbsorbDone;
+        Ball.AbsorbDone -= AbsorbDone;
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
         LevelGenerator.TransitionDone -= TransitionDone;
@@ -283,11 +283,11 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                if (ball.GetTargetHit == "Target0")
+                if (ballC.GetTargetHit == "Target0")
                 {
                     target1Hit = true;
                 }
-                if (ball.GetTargetHit == "Target1")
+                if (ballC.GetTargetHit == "Target1")
                 {
                     target2Hit = true;
                 }
@@ -304,11 +304,11 @@ public class TargetController : MonoBehaviour
         {
             if (targets[i].inUse)
             {
-                if (ball.GetTargetHit == "Target0")
+                if (ballC.GetTargetHit == "Target0")
                 {
                     target1Hit = true;
                 }
-                if (ball.GetTargetHit == "Target1")
+                if (ballC.GetTargetHit == "Target1")
                 {
                     target2Hit = true;
                 }
@@ -377,13 +377,22 @@ public class TargetController : MonoBehaviour
 
                 if (LG.GetNextLvlNumber == 1)
                 {
-                    targets[i].transform.localScale = troubleshootingSize;
-                    targets[i].transform.localPosition = RandomPos();
+                    targets[i].transform.localScale = defaultTargetSize;
+
+                    if (nextObstaclePath != null)
+                    {
+                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
+                        SelectTargetToTravel(targets[i]);
+                    }
+                    else
+                    {
+                        targets[i].transform.localPosition = RandomPos();
+                    }
                 }
                 
                 if (LG.GetNextLvlNumber == 2)
                 {
-                    targets[i].transform.localScale = troubleshootingSize;
+                    targets[i].transform.localScale = defaultTargetSize;
 
                     if (nextObstaclePath != null)
                     {
@@ -405,7 +414,7 @@ public class TargetController : MonoBehaviour
                     }
                     else
                     {
-                        targets[i].transform.localScale = troubleshootingSize;
+                        targets[i].transform.localScale = defaultTargetSize;
                     }
 
                     if (nextObstaclePath != null)
@@ -484,7 +493,7 @@ public class TargetController : MonoBehaviour
 
     public Vector2 RandomPos()
     {
-        return new Vector2(Random.Range(spawnAreaCorners[0].x + (targetSpawnOffset), spawnAreaCorners[3].x - (targetSpawnOffset)), Random.Range(spawnAreaCorners[0].y + (targetSpawnOffset), spawnAreaCorners[2].y - (targetSpawnOffset)));
+        return new Vector2(RandomFloat(spawnAreaCorners[0].x + (targetSpawnOffset), spawnAreaCorners[3].x - (targetSpawnOffset)), RandomFloat(spawnAreaCorners[0].y + (targetSpawnOffset), spawnAreaCorners[2].y - (targetSpawnOffset)));
     }
 
     public float RandomSpawnAreaXRange

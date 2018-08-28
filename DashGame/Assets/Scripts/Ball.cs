@@ -7,12 +7,14 @@ public class Ball : MonoBehaviour
 
     public Color32 startColor; // start color should usually be this slightly grayish white : EAEAEA
     public Color32 boostColor;
+    public GameObject ghost;
 
     SpriteRenderer ballSprite;
     ParticleSystem collisionEffect;
     ParticleSystem fallEffect;
     ParticleSystem firstImpact;
     ParticleSystem boostEffect;
+    TrailRenderer hostTrail;
     Animator animator;
     GameManager game;
     Ray2D ray;
@@ -33,14 +35,18 @@ public class Ball : MonoBehaviour
     bool firstTriggerCollision = true; //for first collision with a target
     GameObject ghostBall1;
     GameObject ghostBall2;
+    TrailRenderer ghost1Trail, ghost2Trail;
+    Animator ghost1AnimC, ghost2AnimC;
     string targetHit; //Name of the target that was hit;
-    bool isWrapping = false;
+    bool wrappingEnabled = false;
     bool wrappingRightNow = false;
     bool pauseAllCoroutines = false;
-    bool goAway = false;
     float cameraRadius;
-    float ballWidth = 0.147f; //got from measuring ball collider radius
+    float ballRadius = 0.147f; //got from measuring ball collider radius
     Vector2 newPos;
+    bool spawnedIn = false;
+    TrailRenderer tempTrail,tempTrail2;
+    bool wrappedAround = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -55,9 +61,16 @@ public class Ball : MonoBehaviour
         collisionEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
         fallEffect = transform.GetChild(2).GetComponent<ParticleSystem>();
         firstImpact = transform.GetChild(3).GetComponent<ParticleSystem>();
+        hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
 
-        ghostBall1 = transform.Find("GhostBall1").gameObject;
-        ghostBall2 = transform.Find("GhostBall2").gameObject;
+        ghostBall1 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
+        ghostBall1.SetActive(false);
+        ghost1AnimC = ghostBall1.GetComponent<Animator>();
+        ghost1Trail = ghostBall1.transform.Find("Trail").GetComponent<TrailRenderer>();
+        ghostBall2 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
+        ghostBall2.SetActive(false);
+        ghost2AnimC = ghostBall2.GetComponent<Animator>();
+        ghost2Trail = ghostBall2.transform.Find("Trail").GetComponent<TrailRenderer>();
 
         rigidbody = GetComponent<Rigidbody2D>();
 
@@ -65,7 +78,27 @@ public class Ball : MonoBehaviour
         target = TargetController.Instance;
         ballC = BallController.Instance;
 
-        cameraRadius = game.GetCameraRadius();
+        cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
+    }
+
+    private void OnEnable()
+    {
+        rigidbody.simulated = true;
+        ballSprite.color = startColor;
+        ShouldShrink = false;
+        Physics2D.IgnoreLayerCollision(10, 11);
+        Physics2D.IgnoreLayerCollision(11, 12, false);
+        atCenter = false;
+        invulnerable = false;
+        shouldBoost = false;
+        canAbsorb = false;
+        firstCollision = true;
+        firstTriggerCollision = true;
+        cantCollide = false;
+        wrappingEnabled = false;
+
+        SetAnimTrigs("Boost",true);
+        SetAnimTrigs("ImmediateShrink", true);
     }
 
     public void Spawn(float initialVel, float boostVel, float absorbSpd, Vector2 position, Quaternion rotation, bool wrapping)
@@ -79,47 +112,131 @@ public class Ball : MonoBehaviour
 
         if (wrapping)
         {
-            isWrapping = true;
+            wrappingEnabled = true;
 
             ghostBall1.SetActive(true);
             ghostBall2.SetActive(true);
-
-            PositionGhosts();
         }
         else
         {
             ghostBall1.SetActive(false);
             ghostBall2.SetActive(false);
+
         }
 
-        animator.SetTrigger("GameStarted");
         StartCoroutine(DropDelay());
+    }
+
+    void SetAnimTrigs(string trigger, bool reset = false)
+    {
+        if (!reset)
+        {
+            if (wrappingEnabled)
+            {
+                animator.SetTrigger(trigger);
+                ghost1AnimC.SetTrigger(trigger);
+                ghost2AnimC.SetTrigger(trigger);
+            }
+            else
+            {
+                animator.SetTrigger(trigger);
+            }
+        }
+        else
+        {
+            if (wrappingEnabled)
+            {
+                animator.ResetTrigger(trigger);
+                ghost1AnimC.ResetTrigger(trigger);
+                ghost2AnimC.ResetTrigger(trigger);
+            }
+            else
+            {
+                animator.ResetTrigger(trigger);
+            }
+        }
+    }
+
+    void SetAnimBools(string boolName, bool value)
+    {
+        if (wrappingEnabled)
+        {
+            animator.SetBool(boolName, value);
+            ghost1AnimC.SetBool(boolName, value);
+            ghost2AnimC.SetBool(boolName, value);
+        }
+        else
+        {
+            animator.SetBool(boolName, value);
+        }
     }
 
     void PositionGhosts()
     {
-        ghostBall1.transform.localPosition = new Vector2(cameraRadius*2 / transform.localScale.x, 0);
-        ghostBall1.transform.rotation = this.transform.rotation;
+        ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);  //ghost1 is always to the left
 
-        ghostBall2.transform.localPosition = new Vector2(-cameraRadius*2 / transform.localScale.x, 0);
-        ghostBall2.transform.rotation = this.transform.rotation;
+        ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y); //ghost2 is always to the right
     }
 
     void SwapWithGhost()
     {
         if (OnScreen(ghostBall1.transform.position))
         {
+            hostTrail.transform.parent = null;
+            ghost1Trail.transform.parent = null;
+            ghost2Trail.transform.parent = null;
+            ghost2Trail.Clear();
+            ghost2Trail.gameObject.SetActive(false);
+
             transform.position = ghostBall1.transform.position;
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y);
+
+            tempTrail = hostTrail;
+            tempTrail2 = ghost2Trail;
+
+            ghost1Trail.transform.SetParent(transform, true);
+            hostTrail = ghost1Trail;
+
+            tempTrail.transform.SetParent(ghostBall2.transform, true);
+            ghost2Trail = tempTrail;
+
+            tempTrail2.transform.SetParent(ghostBall1.transform, false);
+            ghost1Trail = tempTrail2;
+            ghost1Trail.transform.localPosition = Vector2.zero;
+            ghost1Trail.gameObject.SetActive(true);
         }
         else
         {
+            hostTrail.transform.parent = null;
+            ghost1Trail.transform.parent = null;
+            ghost2Trail.transform.parent = null;
+            ghost1Trail.Clear();
+            ghost1Trail.gameObject.SetActive(false);
+
             transform.position = ghostBall2.transform.position;
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y);
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y);
+
+            tempTrail = hostTrail;
+            tempTrail2 = ghost1Trail;
+
+            ghost2Trail.transform.SetParent(transform, true);
+            hostTrail = ghost2Trail;
+
+            tempTrail.transform.SetParent(ghostBall1.transform,true);
+            ghost1Trail = tempTrail;
+
+            tempTrail2.transform.SetParent(ghostBall2.transform,false);
+            ghost2Trail = tempTrail2;
+            ghost2Trail.transform.localPosition = Vector2.zero;
+            ghost2Trail.gameObject.SetActive(true);
         }
     }
 
     bool OnScreen(Vector2 pos)
     {
-        if(pos.x > -cameraRadius - ballWidth || pos.x < cameraRadius + ballWidth)
+        if (pos.x > -(cameraRadius + ballRadius) && pos.x < cameraRadius + ballRadius)
         {
             return true;
         }
@@ -128,21 +245,21 @@ public class Ball : MonoBehaviour
 
     public void Wrap()
     {
+        PositionGhosts();
         if (OnScreen(transform.position))
         {
             wrappingRightNow = false;
             return;
         }
 
-        newPos = transform.position; 
+        newPos = transform.position;
 
-        if(!wrappingRightNow)
+        if (!wrappingRightNow)
         {
             newPos = -newPos;
 
             wrappingRightNow = true;
         }
-
         SwapWithGhost();
     }
 
@@ -153,6 +270,7 @@ public class Ball : MonoBehaviour
         {
             yield return null;
         }
+        spawnedIn = true;
         rigidbody.velocity = initialVelocity * Vector2.down;
     }
 
@@ -180,68 +298,56 @@ public class Ball : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        rigidbody.simulated = true;
-        ballSprite.color = startColor;
-        ShouldShrink = false;
-        Physics2D.IgnoreLayerCollision(10, 11);
-        Physics2D.IgnoreLayerCollision(11, 12, false);
-        atCenter = false;
-        invulnerable = false;
-        shouldBoost = false;
-        canAbsorb = false;
-        wallHit = false;
-        firstCollision = true;
-        firstTriggerCollision = true;
-        cantCollide = false;
-    }
-
-    private void OnDisable()
-    {
-        rigidbody.velocity = Vector2.zero;
-    }
-
     private void Update()
     {
-        animator.SetBool("ShouldBoost", shouldBoost);
-        animator.SetBool("ShouldShrink", ShouldShrink);
+        SetAnimBools("ShouldShrink", ShouldShrink);
     }
 
     private void FixedUpdate()
     {
-        if (game.IsGameRunning)
+        ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
+
+        if (atCenter)
         {
-            ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
+            transform.position = target.GetCurrentTargetPos;
+        }
 
-            if (atCenter)
-            {
-                transform.position = target.GetCurrentTargetPos;
-            }
+        if (shouldAbsorb)
+        {
+            Absorb();
+        }
 
-            if (shouldAbsorb)
-            {
-                Absorb();
-            }
-
-            if(ballSprite.transform.localScale == Vector3.zero)
-            {
-                if (ShouldShrink)
-                {
-                    GoAway();
-                }
-            }
-
-            if (isWrapping)
-            {
-                Wrap();
-            }
+        if (wrappingEnabled)
+        {
+            Wrap();
         }
     }
 
     public void GoAway()
     {
-        this.gameObject.SetActive(false);
+        if ((!atCenter || shouldAbsorb) && invulnerable)
+        {
+            if (wallHit || wrappedAround)
+            {
+                wallHit = false;
+                wrappedAround = false;
+
+                ballC.SetTargetHit(targetHit);
+                AbsorbDoneAndRichochet();
+                return;
+            }
+            else
+            {
+                ballC.SetTargetHit(targetHit);
+                AbsorbDone();
+                return;
+            }
+        }
+
+        rigidbody.velocity = Vector2.zero;
+        ghostBall1.SetActive(false);
+        ghostBall2.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     void Absorb()
@@ -251,10 +357,14 @@ public class Ball : MonoBehaviour
             if (target.IsMoving())
             {
                 transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
+                print(target.GetCurrentTargetPos);
+                print(transform.position);
             }
             else
             {
                 transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
+                print(target.GetCurrentTargetPos);
+                print(transform.position);
             }
 
             if (transform.position == target.GetCurrentTargetPos)
@@ -265,8 +375,11 @@ public class Ball : MonoBehaviour
 
             if (!shouldAbsorb)
             {
-                if (wallHit)
+                if (wallHit || wrappedAround)
                 {
+                    wallHit = false;
+                    wrappedAround = false;
+
                     ballC.SetTargetHit(targetHit);
                     AbsorbDoneAndRichochet();
                     return;
@@ -286,9 +399,9 @@ public class Ball : MonoBehaviour
         print(collision.gameObject.name);
         if (!cantCollide)
         {
-            if (collision.gameObject.tag == "Paddle")
+            canAbsorb = true;
+            if (collision.gameObject.tag == "Paddle" || collision.gameObject.tag == "Floor")
             {
-                canAbsorb = true;
                 Physics2D.IgnoreLayerCollision(10, 11, false);
                 Physics2D.IgnoreLayerCollision(11, 12);        // this makes it so that the paddle cant hit the ball again before it hits another collider
             }
@@ -324,6 +437,8 @@ public class Ball : MonoBehaviour
 
     void FirstCollision()
     {
+        SetAnimTrigs("Boost");
+
         ballC.FlashWhite();
 
         ballC.CameraShake();
@@ -365,6 +480,7 @@ public class Ball : MonoBehaviour
             {
                 rigidbody.velocity = Vector2.zero;
                 rigidbody.simulated = false;
+                SetAnimTrigs("ImmediateShrink");
                 PlayerMissed();
             }
         }

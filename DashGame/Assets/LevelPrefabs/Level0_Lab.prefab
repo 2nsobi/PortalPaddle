@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4096227675994940}
   - component: {fileID: 61720303956093732}
-  m_Layer: 12
+  m_Layer: 15
   m_Name: floorCollider
   m_TagString: Paddle
   m_Icon: {fileID: 0}
