@@ -47,6 +47,7 @@ public class Ball : MonoBehaviour
     bool spawnedIn = false;
     TrailRenderer tempTrail,tempTrail2;
     bool wrappedAround = false;
+    ParticleSystem.MainModule[] mainMods;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -57,10 +58,14 @@ public class Ball : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
+        mainMods = new ParticleSystem.MainModule[2];
+
         ballSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
         collisionEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
+        mainMods[0] = collisionEffect.main;
         fallEffect = transform.GetChild(2).GetComponent<ParticleSystem>();
         firstImpact = transform.GetChild(3).GetComponent<ParticleSystem>();
+        mainMods[1] = firstImpact.main;
         hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
 
         ghostBall1 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
@@ -96,6 +101,11 @@ public class Ball : MonoBehaviour
         firstTriggerCollision = true;
         cantCollide = false;
         wrappingEnabled = false;
+
+        for (int i = 0; i < mainMods.Length; i++)
+        {
+            mainMods[i].simulationSpeed = 1;
+        }
 
         SetAnimTrigs("Boost",true);
         SetAnimTrigs("ImmediateShrink", true);
@@ -323,6 +333,14 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void KillParticles()
+    {
+        for (int i = 0; i < mainMods.Length; i++)
+        {
+            mainMods[i].simulationSpeed = 1.5f;
+        }
+    }
+
     public void GoAway()
     {
         if ((!atCenter || shouldAbsorb) && invulnerable)
@@ -363,8 +381,6 @@ public class Ball : MonoBehaviour
             else
             {
                 transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
-                print(target.GetCurrentTargetPos);
-                print(transform.position);
             }
 
             if (transform.position == target.GetCurrentTargetPos)

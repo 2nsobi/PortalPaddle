@@ -19,6 +19,8 @@ public class TargetController : MonoBehaviour
     bool target2Travel;
     bool target1Hit, target2Hit;
     public float travelSpeed;
+    float codeTravelSpeed;
+    float tempSpeed;
     int pointCounter1, pointCounter2;
     Vector3[] travelPath1;
     Vector3[] travelPath2;
@@ -84,6 +86,7 @@ public class TargetController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        codeTravelSpeed = travelSpeed;
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
@@ -197,7 +200,7 @@ public class TargetController : MonoBehaviour
         if (target1Travel)
         {
             nextPoint1 = PointOnPath(travelPath1, pointCounter1);
-            targets[0].transform.localPosition = Vector2.MoveTowards(targets[0].transform.localPosition, nextPoint1, Time.deltaTime * travelSpeed);
+            targets[0].transform.localPosition = Vector2.MoveTowards(targets[0].transform.localPosition, nextPoint1, Time.deltaTime * tempSpeed);
             if (targets[0].transform.localPosition == nextPoint1)
             {
                 pointCounter1 += 1;
@@ -211,7 +214,7 @@ public class TargetController : MonoBehaviour
         if (target2Travel)
         {
             nextPoint2 = PointOnPath(travelPath2, pointCounter2);
-            targets[1].transform.localPosition = Vector2.MoveTowards(targets[1].transform.localPosition, nextPoint2, Time.deltaTime * travelSpeed);
+            targets[1].transform.localPosition = Vector2.MoveTowards(targets[1].transform.localPosition, nextPoint2, Time.deltaTime * tempSpeed);
             if (targets[1].transform.localPosition == nextPoint2)
             {
                 pointCounter2 += 1;
@@ -362,10 +365,16 @@ public class TargetController : MonoBehaviour
         }
     }
 
+    public void IncreaseTravelSpeed(float speed) // initial travel speed started at 2
+    {
+        codeTravelSpeed = speed;
+    }
+
     void NextLvlGenerated()
     {
         nextLvl = LG.GetNextLvl;
         nextObstaclePath = LG.GetNextObstaclePath;
+        tempSpeed = codeTravelSpeed;
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -521,7 +530,7 @@ public class TargetController : MonoBehaviour
     {
         get
         {
-            return travelSpeed;
+            return codeTravelSpeed;
         }
     }
 
