@@ -1099,26 +1099,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 19.9, y: 2}
   m_EdgeRadius: 0
---- !u!1 &629851502 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1458717066935190, guid: 981dc63280a176241b2b475215ec86db,
-    type: 2}
-  m_PrefabInternal: {fileID: 1404918822}
---- !u!58 &629851503
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 629851502}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2.45
 --- !u!1 &659132870
 GameObject:
   m_ObjectHideFlags: 0
@@ -2894,7 +2874,7 @@ Transform:
   - {fileID: 1214664742}
   - {fileID: 1854724281}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1240515137
 MonoBehaviour:
@@ -2963,9 +2943,21 @@ MonoBehaviour:
       shape: {fileID: 21300000, guid: 82d6697d46b7d414c8bb236e7d167c03, type: 3}
     - tag: wallObstacle
       shape: {fileID: 21300000, guid: fa83f0d171a705142a5362e21a43ce38, type: 3}
+  - tag: caves
+    shapes:
+    - tag: circle
+      shape: {fileID: 21300000, guid: c18a603b69d5bc6449577d49920e5a33, type: 3}
+    - tag: square
+      shape: {fileID: 21300000, guid: 58cee3349cd75a044a4446de28156437, type: 3}
+    - tag: triangle
+      shape: {fileID: 21300000, guid: f95f3934a296cf44282f8ea61f37b74a, type: 3}
+    - tag: triangle2
+      shape: {fileID: 21300000, guid: 9773f597f2348914e8a04c6f351070c8, type: 3}
+    - tag: wallObstacle
+      shape: {fileID: 21300000, guid: 0bd70985fb6a69a4a9a45ea1b5849485, type: 3}
   levels:
   - tag: level1
-    obstacleTexture: 
+    obstacleTexture: caves
     prefabs:
     - {fileID: 1831677732409898, guid: cce79fa86d8c026438c447803d5f14fd, type: 2}
     - {fileID: 1251016965803998, guid: f5d18ca7429b9b148bad51fbd7c4f972, type: 2}
@@ -3035,25 +3027,49 @@ MonoBehaviour:
   - prefab: {fileID: 1780568989254076, guid: f3857d98a513e6c4cb207611b9973b2b, type: 2}
     size: 4
     easy: 1
-  - prefab: {fileID: 1170332822515162, guid: c35d9c46deec19f40baf92a3b8a6521a, type: 2}
-    size: 4
-    easy: 1
   - prefab: {fileID: 1627138184999594, guid: a51bcf341f4e23646ac5c7421304bbd2, type: 2}
     size: 4
     easy: 0
-  - prefab: {fileID: 1297736825545294, guid: 8bfdce11c6892464f9c38f4136a6b167, type: 2}
+  - prefab: {fileID: 1170332822515162, guid: c35d9c46deec19f40baf92a3b8a6521a, type: 2}
     size: 4
-    easy: 0
-  - prefab: {fileID: 1966692494583278, guid: 131a9c5423613cd4f9c8f1df2f2df5a9, type: 2}
+    easy: 1
+  - prefab: {fileID: 1297736825545294, guid: 8bfdce11c6892464f9c38f4136a6b167, type: 2}
     size: 4
     easy: 0
   - prefab: {fileID: 1000583257671416, guid: 860707aa297201c4d8ddb13e05d49546, type: 2}
     size: 4
-    easy: 0
+    easy: 1
   - prefab: {fileID: 1157972592696636, guid: 1fbc925e0dfbb42499d2dae3a4aacb6a, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1000665242978818, guid: 45b44dd74511da149a17fddf21d87207, type: 2}
     size: 4
     easy: 1
   - prefab: {fileID: 1351860417301378, guid: c99f408458c2e2c48882f70fabd646ed, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1042604345095420, guid: 17e621be53a4e6b4c997782d8727cd78, type: 2}
+    size: 4
+    easy: 1
+  - prefab: {fileID: 1966692494583278, guid: 131a9c5423613cd4f9c8f1df2f2df5a9, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1873670714628186, guid: 019e5676e91c283418aee5be7e515fc6, type: 2}
+    size: 4
+    easy: 1
+  - prefab: {fileID: 1148993049131072, guid: dd9dfbf1f406a9d40a73734edbadaeea, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1859614768542120, guid: acb44aa9db01b6043bfb3fdc752f5ea1, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1888698245684188, guid: c61c4f0015586e948bffa1f8e3cc5d9f, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
+    size: 4
+    easy: 0
+  - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
     size: 4
     easy: 0
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
@@ -3072,13 +3088,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2536eaccfd4d26e4f95bc936a98b2ed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startPageButtons: {fileID: 573976922}
   pathCircle: {fileID: 1696653882052094, guid: e91981c43c9d3af41910569df5f628fc, type: 2}
-  square: {fileID: 1346584648747552, guid: 917a055fe035d2648a28823cfdae943c, type: 2}
+  square: {fileID: 1317317838467676, guid: ea053752afe680b4a884b6f792322be5, type: 2}
   circle: {fileID: 1862150040289592, guid: 32b8ef6e6f98a5d498c5f6294fcc9650, type: 2}
   triangle: {fileID: 1000633006158390, guid: f090af36e44d58c49b647bf10cfdaff3, type: 2}
-  wall: {fileID: 1065557284023646, guid: 34f995d8e8467bb4581a786dff714824, type: 2}
+  wallObstacle: {fileID: 1065557284023646, guid: 34f995d8e8467bb4581a786dff714824,
+    type: 2}
+  triangle2: {fileID: 1889992240540192, guid: b7fb3917cbe888a428c0469ea36a5286, type: 2}
   customSprite: {fileID: 0}
-  ReferenceTarget: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
+  ReferenceTarget: {fileID: 1750892524372548, guid: d783056b3c6dfb244bd22283976256ce,
     type: 2}
   blankCanvas: {fileID: 1756012092053584, guid: 3261b3a571632d747ac1fe8c20a8523c,
     type: 2}
@@ -3096,17 +3115,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cede78e2615a6d94897e6ec3c22e2ad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPos: {x: 0, y: 3.5}
-  initialSpeed: 0
-  boostSpeed: 0
   absorbSpeed: 3
+  startPos: {x: 0, y: 3.5}
+  initialSpeed: 3
+  boostSpeed: 25
   CameraShakeIntensity: 0.09
   CameraShakeDuration: 0.3
-  rotationSpeed: 50
-  whiteFlashCG: {fileID: 1441164609}
   ballPrefabs:
-  - {fileID: 1612840011943172, guid: 56dda025fa3b8624b95d74700a5c382d, type: 2}
   - {fileID: 1454624447210184, guid: d388221a148741c48aa81d7d5580220d, type: 2}
+  - {fileID: 1612840011943172, guid: 56dda025fa3b8624b95d74700a5c382d, type: 2}
+  whiteFlashCG: {fileID: 1441164609}
 --- !u!1 &1246721658
 GameObject:
   m_ObjectHideFlags: 0
@@ -3658,7 +3676,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1579133680
 GameObject:
@@ -4679,7 +4697,7 @@ Prefab:
     - target: {fileID: 224516854300814748, guid: 9deba5469f2d7f24b8bdce5d6debdd7b,
         type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 224516854300814748, guid: 9deba5469f2d7f24b8bdce5d6debdd7b,
         type: 2}

@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour
         ConfigureCamera(); //called here before the tap area rect is configured
    
         gems = ZPlayerPrefs.GetInt("gems");
+        gems = 1000;
         highScore = ZPlayerPrefs.GetInt("HighScore");
 
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
@@ -193,11 +194,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public float GetCameraRadius()
-    {
-        return thisDeviceCameraRadius;
-    }
-
     public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
     {
         if (dontMoveWalls)
@@ -227,14 +223,14 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable() //this is called after start()
     {
-        BallController.PlayerMissed += PlayerMissed;
+        Ball.PlayerMissed += PlayerMissed;
         TargetController.TargetHit += TargetHit;
         TargetController.TargetHitAndRichochet += TargetHitAndRichochet;
     }
 
     private void OnDisable()
     {
-        BallController.PlayerMissed -= PlayerMissed;
+        Ball.PlayerMissed -= PlayerMissed;
         TargetController.TargetHit -= TargetHit;
         TargetController.TargetHitAndRichochet -= TargetHitAndRichochet;
     }
@@ -287,7 +283,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReviveDelay()
     {
-        for (float i = 0.0f; i < 0.6f; i += 0.1f)
+        for (float i = 0.0f; i < 1.4f; i += 0.1f)  //make sure this delay is longer than the length of the ball shrink anim which is 1.3 seconds
         {
             yield return new WaitForSeconds(0.1f);
             while (pauseAllCoroutines || paused)
@@ -322,7 +318,7 @@ public class GameManager : MonoBehaviour
         score += 2;
         scoreText.text = score.ToString();
         richochetCount++;
-        if (richochetCount == 1)
+        if (richochetCount == 5)
         {
             extraBall = true;
             richochetCount = 0;

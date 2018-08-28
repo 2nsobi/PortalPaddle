@@ -164,7 +164,7 @@ public class LevelGenerator : MonoBehaviour
     PaddleController paddle;
     bool switchColors;
     Material material;
-    static System.Random rng = new System.Random();
+    static CryptoRandom rng = new CryptoRandom();
     Queue<LvlPrefab> tempQ;
     LvlPrefab[] transitionLvls;
     LvlPrefab[] specialLvls;
@@ -209,6 +209,7 @@ public class LevelGenerator : MonoBehaviour
     bool moveSettings = true;
     bool previousLvlActive = false;
     Animator labMonitorsAnimC;
+    BallController ballC;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -225,15 +226,15 @@ public class LevelGenerator : MonoBehaviour
     private void OnEnable()
     {
         GameManager.GameStarted += GameStarted;
-        BallController.AbsorbDone += AbsorbDone;
-        BallController.AbsorbDoneAndRichochet += AbsorbDone;
+        Ball.AbsorbDone += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDone;
     }
 
     private void OnDisable()
     {
         GameManager.GameStarted -= GameStarted;
-        BallController.AbsorbDone -= AbsorbDone;
-        BallController.AbsorbDoneAndRichochet -= AbsorbDone;
+        Ball.AbsorbDone -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDone;
     }
 
     private void OnApplicationFocus(bool focus)
@@ -273,6 +274,7 @@ public class LevelGenerator : MonoBehaviour
         game = GameManager.Instance;
         paddle = PaddleController.Instance;
         shopC = ShopController.Instance; //singleton needs to be accessed here because the awake function atached to the shopcontroller script is not called until the object it is attached to is instantiated
+        ballC = BallController.Instance;
 
         currentlyTransitioning = false;
 
@@ -896,6 +898,8 @@ public class LevelGenerator : MonoBehaviour
             if (game.GetScore >= 0)
             {
                 activeLvlName = "level1";
+                activeObstacleTexture = levels[0].obstacleTexture;
+                activeObstacleDifficulty = true; // true as in easy
             }
             else
             {
@@ -907,10 +911,11 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[1].about2Spawn)
                 {
                     transitionLvl = SpawnFromPool(0);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[1].obstacleTexture, true);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level2");
-                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[1].obstacleTexture, true);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[1].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     currentlySpawnedGradient = SpawnFromGradients(0);
@@ -923,7 +928,7 @@ public class LevelGenerator : MonoBehaviour
                 }
                 activeLvlName = "level2";
                 activeObstacleTexture = levels[1].obstacleTexture;
-                activeObstacleDifficulty = true; // true as in easy
+                activeObstacleDifficulty = false; // true as in easy
             }
             else
             {
@@ -937,12 +942,12 @@ public class LevelGenerator : MonoBehaviour
                     if (levels[2].comeBack2)
                     {
                         gradientDespawner = SpawnFromPool(1); //gradientdespawner is considered to be the transitionlvl in this case
-                        SpawnFromObstacles(1, 9, Vector2.zero, gradientDespawner.gameObject.transform.rotation, gradientDespawner, levels[1].obstacleTexture, true);
+                        SpawnFromObstacles(1, obstacles.Count, Vector2.zero, gradientDespawner.gameObject.transform.rotation, gradientDespawner, levels[1].obstacleTexture, true);
                         lvlSpawnQ.Enqueue(gradientDespawner);
                         Debug.Log("gradientDespawner has been enqueed with obstacle");
 
                         defaultLvl = SpawnFromPool("level3");
-                        SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                        SpawnFromObstacles(1, obstacles.Count, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                         lvlSpawnQ.Enqueue(defaultLvl);
 
                         levels[2].about2Spawn = false;
@@ -962,15 +967,15 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[3].about2Spawn)
                 {
                     specialLvl = specialLvls[0];
-                    SpawnFromObstacles(1, 9, Vector2.zero, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, specialLvl.gameObject.transform.rotation, specialLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(specialLvl);
 
                     transitionLvl = SpawnFromPool(2);
-                    SpawnFromObstacles(1, 9, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level4");
-                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[3].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[3].about2Spawn = false;
@@ -991,11 +996,11 @@ public class LevelGenerator : MonoBehaviour
                 if (levels[2].about2Spawn)
                 {
                     transitionLvl = SpawnFromPool(3);
-                    SpawnFromObstacles(1, 9, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, transitionLvl.gameObject.transform.rotation, transitionLvl, levels[3].obstacleTexture, true);
                     lvlSpawnQ.Enqueue(transitionLvl);
 
                     defaultLvl = SpawnFromPool("level3");
-                    SpawnFromObstacles(1, 9, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
                     lvlSpawnQ.Enqueue(defaultLvl);
 
                     levels[2].about2Spawn = false;
@@ -1014,7 +1019,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 if (activeObstacleTexture != null)
                 {
-                    SpawnFromObstacles(1, 9, Vector2.zero, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, activeLvl.gameObject.transform.rotation, activeLvl, activeObstacleTexture, activeObstacleDifficulty);
                 }
 
                 lvlSpawnQ.Enqueue(activeLvl);
@@ -1022,6 +1027,7 @@ public class LevelGenerator : MonoBehaviour
                 if (startOfGame)
                 {
                     LvlPrefab tempLvl = SpawnFromPool(activeLvlName);
+                    SpawnFromObstacles(1, obstacles.Count, Vector2.zero, tempLvl.gameObject.transform.rotation, tempLvl, activeObstacleTexture, activeObstacleDifficulty);
                     lvlSpawnQ.Enqueue(tempLvl);
                 }
             }
@@ -1042,14 +1048,25 @@ public class LevelGenerator : MonoBehaviour
         else if (NextLvl.gameObject.tag == "level2")
         {
             nextLvlNumber = 2;
+            ballC.IncreaseDropSpeed(4.75f);
         }
         else if (NextLvl.gameObject.tag == "level3")
         {
-            nextLvlNumber = 3;
+            if (nextLvlNumber >= 4)
+            {
+                nextLvlNumber = 5;
+                ballC.IncreaseDropSpeed(8.25f);
+            }
+            else
+            {
+                nextLvlNumber = 3;
+                ballC.IncreaseDropSpeed(6.5f);
+            }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
+            ballC.IncreaseDropSpeed(10);
         }
         NextLvl.gameObject.SetActive(true);
         NextLvl.gameObject.transform.position = transform.position + levelOffset;
