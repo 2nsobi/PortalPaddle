@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
     public Animator shopPageAnimC; //for the shop page back button
     public Button skipScoreReviewButton;
     public Button replayButton;
+    public GameObject GameOverZoneN;
+    public GameObject GameOverZoneS;
     bool extraBall;
     int richochetCount;
     public GameObject extraBallSprite;
@@ -269,8 +271,8 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                //extraBall = false;
-                //extraBallSprite.SetActive(false);
+                extraBall = false;
+                extraBallSprite.SetActive(false);
                 StartCoroutine(ReviveDelay());
 
                 StopCoroutine(gameErrorTest);
@@ -317,7 +319,7 @@ public class GameManager : MonoBehaviour
         score += 2;
         scoreText.text = score.ToString();
         richochetCount++;
-        if (richochetCount == 5)
+        if (richochetCount == 2)
         {
             extraBall = true;
             richochetCount = 0;
