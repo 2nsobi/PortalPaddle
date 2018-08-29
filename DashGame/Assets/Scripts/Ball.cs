@@ -49,6 +49,7 @@ public class Ball : MonoBehaviour
     bool wrappedAround = false;
     ParticleSystem.MainModule[] mainMods;
     bool noTrail = false;
+    bool noFirstImpact = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -61,12 +62,19 @@ public class Ball : MonoBehaviour
 
         mainMods = new ParticleSystem.MainModule[3];
 
-        ballSprite = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        collisionEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
+        ballSprite = transform.Find("BallSprite").GetComponent<SpriteRenderer>();
+        collisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
         mainMods[0] = collisionEffect.main;
-        fallEffect = transform.GetChild(2).GetComponent<ParticleSystem>();
-        firstImpact = transform.GetChild(3).GetComponent<ParticleSystem>();
-        mainMods[1] = firstImpact.main;
+        fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
+        try
+        {
+            firstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
+            mainMods[1] = firstImpact.main;
+        }
+        catch(System.NullReferenceException)
+        {
+            noFirstImpact = true;
+        }
         try
         {
             hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
@@ -374,6 +382,15 @@ public class Ball : MonoBehaviour
     private void Update()
     {
         SetAnimBools("ShouldShrink", ShouldShrink);
+
+        if(transform.position.y < -4.95f)
+        {
+            if (!invulnerable && canAbsorb)
+            {
+                SetAnimTrigs("ImmediateShrink");
+                canAbsorb = false;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -410,7 +427,11 @@ public class Ball : MonoBehaviour
             }
             else
             {
-                mainMods[i].simulationSpeed = 1.5f;
+                try
+                {
+                    mainMods[i].simulationSpeed = 1.5f;
+                }
+                catch (System.NullReferenceException) { }
             }
         }
     }
@@ -429,7 +450,11 @@ public class Ball : MonoBehaviour
             }
             else
             {
-                mainMods[i].simulationSpeed = 1;
+                try
+                {
+                    mainMods[i].simulationSpeed = 1;
+                }
+                catch (System.NullReferenceException) { }
             }
         }
 
@@ -505,9 +530,9 @@ public class Ball : MonoBehaviour
         print(collision.gameObject.name);
         if (!cantCollide)
         {
-            canAbsorb = true;
             if (collision.gameObject.tag == "Paddle" || collision.gameObject.tag == "Floor")
             {
+                canAbsorb = true;
                 Physics2D.IgnoreLayerCollision(10, 11, false);
                 Physics2D.IgnoreLayerCollision(11, 12);        // this makes it so that the paddle cant hit the ball again before it hits another collider
             }
@@ -550,10 +575,11 @@ public class Ball : MonoBehaviour
         ballC.CameraShake();
 
         ballSprite.color = boostColor;
-        fallEffect.Stop();
-        fallEffect.Play();
         shouldBoost = true;
-        firstImpact.Play();
+        if (!noFirstImpact)
+        {
+            firstImpact.Play();
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -587,5 +613,10 @@ public class Ball : MonoBehaviour
                 PlayerMissed();
             }
         }
+    }
+
+    public void TurnGray()
+    {
+        ballC.TurnGray();
     }
 }

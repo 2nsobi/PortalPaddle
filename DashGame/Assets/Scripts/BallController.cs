@@ -32,6 +32,8 @@ public class BallController : MonoBehaviour
     int selectedBallIndex;
     Ball[] balls;
     float tempSpeed;
+    bool isGray = false;
+    Material grayScaleMat;
 
     public static BallController Instance;
 
@@ -50,7 +52,13 @@ public class BallController : MonoBehaviour
             GameObject ballPref = Instantiate(ballPrefabs[i]);
             balls[i] = ballPref.GetComponent<Ball>();
             balls[i].gameObject.SetActive(false);
+
+            if(i == 0)
+            {
+                grayScaleMat = balls[i].gameObject.GetComponentInChildren<SpriteRenderer>().sharedMaterial;
+            }
         }
+        grayScaleMat.SetFloat("_EffectAmount", 0);
     }
 
     private void Start()
@@ -65,7 +73,7 @@ public class BallController : MonoBehaviour
 
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
 
-        selectedBallIndex = 4;
+        selectedBallIndex = 6;
     }
 
     public int Link2BallItem(string name)
@@ -170,6 +178,7 @@ public class BallController : MonoBehaviour
                     target.ResetTargets(); //sent to targetcontroller
                     balls[selectedBallIndex].gameObject.SetActive(false);
                     startSpeed = initialSpeed;
+                    grayScaleMat.SetFloat("_EffectAmount", 0);
                     fadeBack = true;
                 }
             }
@@ -203,6 +212,8 @@ public class BallController : MonoBehaviour
 
     void GameStarted()
     {
+        isGray = false;
+
         balls[selectedBallIndex].gameObject.SetActive(true);
         balls[selectedBallIndex].Spawn(startSpeed, boostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
         tempSpeed = startSpeed;
@@ -279,6 +290,19 @@ public class BallController : MonoBehaviour
         }
 
         mainCam.transform.position = originalCamPos;
+    }
+
+    public void TurnGray()
+    {
+        isGray = !isGray;
+        if (isGray)
+        {
+            grayScaleMat.SetFloat("_EffectAmount", 1f);
+        }
+        else
+        {
+            grayScaleMat.SetFloat("_EffectAmount", 0);
+        }
     }
 
 }
