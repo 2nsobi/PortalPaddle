@@ -38,6 +38,11 @@ public class PaddleController : MonoBehaviour
     {
         Instance = this;
 
+        DontDestroyOnLoad(this.gameObject);
+
+        if(activePaddle != null)
+            DontDestroyOnLoad(activePaddle.mainParticles);
+
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";

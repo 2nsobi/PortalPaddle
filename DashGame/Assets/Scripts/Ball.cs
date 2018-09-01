@@ -40,16 +40,19 @@ public class Ball : MonoBehaviour
     string targetHit; //Name of the target that was hit;
     bool wrappingEnabled = false;
     bool wrappingRightNow = false;
-    bool pauseAllCoroutines = false;
     float cameraRadius;
     float ballRadius = 0.147f; //got from measuring ball collider radius
-    Vector2 newPos;
     bool spawnedIn = false;
-    TrailRenderer tempTrail,tempTrail2;
+    TrailRenderer tempTrail, tempTrail2;
     bool wrappedAround = false;
     ParticleSystem.MainModule[] mainMods;
     bool noTrail = false;
     bool noFirstImpact = false;
+    SpriteRenderer specialSprite;
+    SpriteRenderer ghost1Sprite, ghost2Sprite;
+    SpriteRenderer ghost1SpecialSprite, ghost2SpecialSprite;
+    bool hasSpecialSprite = true;
+    bool callPlayerMissed = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -63,15 +66,30 @@ public class Ball : MonoBehaviour
         mainMods = new ParticleSystem.MainModule[3];
 
         ballSprite = transform.Find("BallSprite").GetComponent<SpriteRenderer>();
+        try
+        {
+            specialSprite = ballSprite.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        }
+        catch (UnityException)
+        {
+            hasSpecialSprite = false;
+        }
         collisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
         mainMods[0] = collisionEffect.main;
-        fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
+        try
+        {
+            fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
+        }
+        catch (System.NullReferenceException)
+        {
+
+        }
         try
         {
             firstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
             mainMods[1] = firstImpact.main;
         }
-        catch(System.NullReferenceException)
+        catch (System.NullReferenceException)
         {
             noFirstImpact = true;
         }
@@ -79,11 +97,10 @@ public class Ball : MonoBehaviour
         {
             hostTrail = transform.Find("Trail").GetComponent<TrailRenderer>();
         }
-        catch(System.NullReferenceException)
+        catch (System.NullReferenceException)
         {
             noTrail = true;
         }
-
         try
         {
             mainMods[2] = transform.Find("BoostEffect").GetComponent<ParticleSystem>().main;
@@ -91,6 +108,11 @@ public class Ball : MonoBehaviour
         catch (System.NullReferenceException) { }
 
         ghostBall1 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
+        ghost1Sprite = ghostBall1.transform.Find("BallSprite").GetComponent<SpriteRenderer>();
+        if (hasSpecialSprite)
+        {
+            ghost1SpecialSprite = ghost1Sprite.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        }
         ghostBall1.SetActive(false);
         ghost1AnimC = ghostBall1.GetComponent<Animator>();
         if (!noTrail)
@@ -99,6 +121,11 @@ public class Ball : MonoBehaviour
         }
 
         ghostBall2 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
+        ghost2Sprite = ghostBall2.transform.Find("BallSprite").GetComponent<SpriteRenderer>();
+        if (hasSpecialSprite)
+        {
+            ghost2SpecialSprite = ghost2Sprite.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        }
         ghostBall2.SetActive(false);
         ghost2AnimC = ghostBall2.GetComponent<Animator>();
         if (!noTrail)
@@ -108,17 +135,20 @@ public class Ball : MonoBehaviour
 
         rigidbody = GetComponent<Rigidbody2D>();
 
+        cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
+    }
+
+    private void Start()
+    {
         game = GameManager.Instance;
         target = TargetController.Instance;
         ballC = BallController.Instance;
-
-        cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
     }
 
     private void OnEnable()
     {
         rigidbody.simulated = true;
-        ballSprite.color = startColor;
+        SwitchSpriteColor(false);
         ShouldShrink = false;
         Physics2D.IgnoreLayerCollision(10, 11);
         Physics2D.IgnoreLayerCollision(11, 12, false);
@@ -131,8 +161,37 @@ public class Ball : MonoBehaviour
         cantCollide = false;
         wrappingEnabled = false;
 
-        SetAnimTrigs("Boost",true);
+        SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
+    }
+
+    void SwitchSpriteColor(bool toBoostColor)
+    {
+        if (!toBoostColor)
+        {
+            ballSprite.color = startColor;
+            ghost1Sprite.color = startColor;
+            ghost2Sprite.color = startColor;
+            if (hasSpecialSprite)
+            {
+                specialSprite.enabled = true;
+                ghost1SpecialSprite.enabled = true;
+                ghost2SpecialSprite.enabled = true;
+            }
+        }
+        else
+        {
+            ballSprite.color = boostColor;
+            ghost1Sprite.color = boostColor;
+            ghost2Sprite.color = boostColor;
+
+            if (hasSpecialSprite)
+            {
+                specialSprite.enabled = false;
+                ghost1SpecialSprite.enabled = false;
+                ghost2SpecialSprite.enabled = false;
+            }
+        }
     }
 
     public void Spawn(float initialVel, float boostVel, float absorbSpd, Vector2 position, Quaternion rotation, bool wrapping)
@@ -223,6 +282,8 @@ public class Ball : MonoBehaviour
 
     void SwapWithGhost()
     {
+        wrappedAround = true;
+
         if (OnScreen(ghostBall1.transform.position))
         {
             if (!noTrail)
@@ -333,12 +394,9 @@ public class Ball : MonoBehaviour
             return;
         }
 
-        newPos = transform.position;
 
         if (!wrappingRightNow)
         {
-            newPos = -newPos;
-
             wrappingRightNow = true;
         }
         SwapWithGhost();
@@ -347,49 +405,21 @@ public class Ball : MonoBehaviour
     IEnumerator DropDelay()
     {
         yield return new WaitForSeconds(1);
-        while (pauseAllCoroutines || game.Paused)
-        {
-            yield return null;
-        }
         spawnedIn = true;
         rigidbody.velocity = initialVelocity * Vector2.down;
-    }
-
-    private void OnApplicationFocus(bool focus)
-    {
-        if (!focus)
-        {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        if (pause)
-        {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
     }
 
     private void Update()
     {
         SetAnimBools("ShouldShrink", ShouldShrink);
 
-        if(transform.position.y < -4.95f)
+        if (transform.position.y < -4.95f)
         {
-            if (!invulnerable && canAbsorb)
-            {
-                SetAnimTrigs("ImmediateShrink");
-                canAbsorb = false;
-            }
+            cantCollide = true;
+        }
+        else
+        {
+            cantCollide = false;
         }
     }
 
@@ -415,6 +445,10 @@ public class Ball : MonoBehaviour
 
     public void KillParticles()
     {
+        hostTrail.Clear();
+        ghost1Trail.Clear();
+        ghost2Trail.Clear();
+
         for (int i = 0; i < mainMods.Length; i++)
         {
             if (i == 2)
@@ -467,19 +501,23 @@ public class Ball : MonoBehaviour
 
                 ballC.SetTargetHit(targetHit);
                 AbsorbDoneAndRichochet();
+                print("coming from ball script");
                 return;
             }
             else
             {
                 ballC.SetTargetHit(targetHit);
                 AbsorbDone();
+                print("coming from ball script");
                 return;
             }
         }
 
         rigidbody.velocity = Vector2.zero;
+
         ghostBall1.SetActive(false);
         ghostBall2.SetActive(false);
+
         gameObject.SetActive(false);
     }
 
@@ -490,8 +528,6 @@ public class Ball : MonoBehaviour
             if (target.IsMoving())
             {
                 transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
-                print(target.GetCurrentTargetPos);
-                print(transform.position);
             }
             else
             {
@@ -525,9 +561,17 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void PlayerMissedBackup()
+    {
+        if (callPlayerMissed)
+        {
+            PlayerMissed();
+        }
+    }
+
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        print(collision.gameObject.name);
+        //print(collision.gameObject.name);
         if (!cantCollide)
         {
             if (collision.gameObject.tag == "Paddle" || collision.gameObject.tag == "Floor")
@@ -574,7 +618,7 @@ public class Ball : MonoBehaviour
 
         ballC.CameraShake();
 
-        ballSprite.color = boostColor;
+        SwitchSpriteColor(true);
         shouldBoost = true;
         if (!noFirstImpact)
         {
@@ -584,7 +628,7 @@ public class Ball : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        print(collision.gameObject.name);
+        //print(collision.gameObject.name);
         if (canAbsorb)
         {
             targetHit = collision.gameObject.name;
@@ -611,6 +655,32 @@ public class Ball : MonoBehaviour
                 rigidbody.simulated = false;
                 SetAnimTrigs("ImmediateShrink");
                 PlayerMissed();
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        print(collision.gameObject.name);
+        if (canAbsorb)
+        {
+            if (!ShouldShrink)
+            {
+                targetHit = collision.gameObject.name;
+                if (firstTriggerCollision)
+                {
+                    if (collision.gameObject.layer == 8)
+                    {
+                        Physics2D.IgnoreLayerCollision(10, 11);
+                        invulnerable = true;
+                        rigidbody.velocity = Vector2.zero;
+                        rigidbody.angularVelocity = 0;
+                        shouldAbsorb = true;
+                        ShouldShrink = true;
+                        firstTriggerCollision = false;
+                        cantCollide = true;
+                    }
+                }
             }
         }
     }

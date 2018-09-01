@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                leftEnd = Instantiate(pref.transform.GetChild(0).gameObject,mainParticles.transform);
+                leftEnd = Instantiate(pref.transform.GetChild(0).gameObject, mainParticles.transform);
                 leftEnd.SetActive(false);
             }
         }
@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     PaddleController Paddle;
     LevelGenerator LG;
     BallController ball;
+    SceneChanger sceneChanger;
     public Button pauseButton;
     public Text countdownText;
     public Animator scoreReviewAnimC;
@@ -41,12 +42,12 @@ public class GameManager : MonoBehaviour
     public Animator shopPageAnimC; //for the shop page back button
     public Button skipScoreReviewButton;
     public Button replayButton;
-    public GameObject GameOverZoneN;
-    public GameObject GameOverZoneS;
-    bool extraBall;
+    public GameObject GameModeButton;
+    Animator GameModeButtonAnimC;
+    bool extraBall = false;
     int richochetCount;
     public GameObject extraBallSprite;
-    TargetController TargetController;
+    TargetController target;
     public Text scoreText;
     private int score = 0;
     bool gameRunning;
@@ -67,16 +68,14 @@ public class GameManager : MonoBehaviour
     bool canEndGame = true;
     public GameObject[] paddlePrefabs;
     public PaddlePrefab[] paddles;
-    Coroutine gameErrorTest;
     bool canContinue;
     AdManager ads;
-    public Vector2 targetAspectRatio;
-    float thisDeviceCameraRadius;
-    bool dontMoveWalls = false;
     PaddlePrefab selectedPaddle;
     bool paddleChanged = true;
-    bool ballChanged = true;
     bool updateGems = false;
+    int PlusOneHighScore;
+    int DeadeyeHighScore;
+    int ClairvoyanceHighScore;
 
     public static GameManager Instance;
 
@@ -84,6 +83,9 @@ public class GameManager : MonoBehaviour
     public static event GameDelegate GameOverConfirmed; //when the game is confirmed to be over the next page is the main menu;
     public static event GameDelegate GameStarted;
     public static event GameDelegate Revive;
+    public static event GameDelegate PlusOneStarted;
+    public static event GameDelegate DeadeyeStarted;
+    public static event GameDelegate ClairvoyanceStarted;
 
     public GameObject StartPage;
     public GameObject StartPageButtons;
@@ -101,19 +103,11 @@ public class GameManager : MonoBehaviour
     public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
     pageState currentPageState;
 
-    public pageState GetCurrentPageState
-    {
-        get
-        {
-            return currentPageState;
-        }
-    }
-
     public int Link2PaddleItem(string name)
     {
-        for(int i = 0; i < paddles.Length; i++)
+        for (int i = 0; i < paddles.Length; i++)
         {
-            if((name.Substring(0,name.Length-1) + "(Clone)").Equals(paddles[i].mainParticles.name))
+            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(paddles[i].mainParticles.name))
             {
                 return i;
             }
@@ -138,25 +132,30 @@ public class GameManager : MonoBehaviour
 
         ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
 
-        if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
-        {
-            GDPRConsentForm.SetActive(true);
-        }
-        else
-        {
-            GDPRConsentForm.SetActive(false);
-        }
+        //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
+        //{
+        //    GDPRConsentForm.SetActive(true);
+        //}
+        //else
+        //{
+        //    GDPRConsentForm.SetActive(false);
+        //}
 
         Instance = this;
+
+        GameModeButtonAnimC = GameModeButton.GetComponent<Animator>();
+        GameModeButton.SetActive(true);
 
         Time.timeScale = timeScale;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-        ConfigureCamera(); //called here before the tap area rect is configured
-   
         gems = ZPlayerPrefs.GetInt("gems");
         gems = 1000;
         highScore = ZPlayerPrefs.GetInt("HighScore");
+
+        PlusOneHighScore = ZPlayerPrefs.GetInt("PlusOneHighScore");
+        DeadeyeHighScore = ZPlayerPrefs.GetInt("DeadeyeHighScore");
+        ClairvoyanceHighScore = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
 
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
         scoreReviewGems.text = gems.ToString();
@@ -169,6 +168,8 @@ public class GameManager : MonoBehaviour
             paddles[i] = new PaddlePrefab(paddlePrefabs[i]);
             paddles[i].index = i;
         }
+
+        extraBallSprite.SetActive(false);
     }
 
     public void SetPaddle(int index)
@@ -177,42 +178,15 @@ public class GameManager : MonoBehaviour
         paddleChanged = true;
     }
 
-    /*********************************************
-    * In unity "The size value for orthographic camera basically decides the Height of the camera while the Aspect 
-    * Ratio of your game decides the width of the camera. When increasing the "height" size on the camera the width 
-    * is also increased to keep with the current aspect."
-    * 
-    * Also the [aspect ratio (width/height)] * [camera size] = camera width; 
-    ************************************************/
-    public void ConfigureCamera()
-    {
-        thisDeviceCameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
-        float desiredCameraWidth = (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize;
-
-        if (thisDeviceCameraRadius < desiredCameraWidth - 0.001f) //for some reason (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize does not equal what is should exactly
-        {
-            Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
-            dontMoveWalls = true;
-        }
-    }
-
-    public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
-    {
-        if (dontMoveWalls)
-        {
-            return 3.700936f; // x pos of wall at aspect ratio of 3.700936
-        }
-        return thisDeviceCameraRadius + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
-    }
-
     private void Start()
-    {       
+    {
         extraBall = false;
         Paddle = PaddleController.Instance;
-        TargetController = TargetController.Instance;
+        target = TargetController.Instance;
         LG = LevelGenerator.Instance;
         ball = BallController.Instance;
         ads = AdManager.Instance;
+        sceneChanger = SceneChanger.Instance;
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         DeactivatePaddle();
@@ -236,28 +210,10 @@ public class GameManager : MonoBehaviour
         TargetController.TargetHitAndRichochet -= TargetHitAndRichochet;
     }
 
-    IEnumerator Countdown()
-    {
-        for (int i = 3; i > 0; i--)
-        {
-            countdownText.text = i.ToString();
-            yield return new WaitForSecondsRealtime(1);
-            while (pauseAllCoroutines)
-            {
-                yield return null;
-            }
-        }
-        CountdownPage.SetActive(false);
-        paused = false;
-        Paddle.gameObject.SetActive(true);
-        Time.timeScale = timeScale;
-    }
-
     void PlayerMissed()
     {
         if (canEndGame)
         {
-            Debug.Log("you " + (extraBall ? "have an extra ball" : "dont have an extra ball"));
             if (!extraBall)
             {
                 if (canContinue)
@@ -274,11 +230,22 @@ public class GameManager : MonoBehaviour
                 extraBall = false;
                 extraBallSprite.SetActive(false);
                 StartCoroutine(ReviveDelay());
-
-                StopCoroutine(gameErrorTest);
-                gameErrorTest = StartCoroutine(GameErrorTest());
             }
             canEndGame = false;
+        }
+    }
+
+    void ShowGameModeButton(bool show)
+    {
+        if (show)
+        {
+            GameModeButtonAnimC.SetTrigger("fadeIn");
+            GameModeButtonAnimC.ResetTrigger("fadeOut");
+        }
+        else
+        {
+            GameModeButtonAnimC.SetTrigger("fadeOut");
+            GameModeButtonAnimC.ResetTrigger("fadeIn");
         }
     }
 
@@ -309,9 +276,6 @@ public class GameManager : MonoBehaviour
         score++;
         scoreText.text = score.ToString();
         richochetCount = 0;
-
-        StopCoroutine(gameErrorTest);
-        gameErrorTest = StartCoroutine(GameErrorTest());
     }
 
     void TargetHitAndRichochet()
@@ -325,9 +289,6 @@ public class GameManager : MonoBehaviour
             richochetCount = 0;
             extraBallSprite.SetActive(true);
         }
-
-        StopCoroutine(gameErrorTest);
-        gameErrorTest = StartCoroutine(GameErrorTest());
     }
 
     public void SetPageState(pageState page)
@@ -336,7 +297,7 @@ public class GameManager : MonoBehaviour
         {
             case pageState.Game:
                 currentPageState = pageState.Game;
-                GamePage.SetActive(true);             
+                GamePage.SetActive(true);
                 StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
@@ -361,6 +322,7 @@ public class GameManager : MonoBehaviour
                 ShopPage.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
+                ShowGameModeButton(true);
                 gemsOnScreen = false;
                 break;
 
@@ -479,37 +441,35 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        ShowGameModeButton(false);
         canEndGame = true;
-        extraBall = true;
+        extraBall = false;
         richochetCount = 0;
         scoreText.text = score.ToString();
         SetPageState(pageState.Game);
         extraBallSprite.SetActive(false);
         gameRunning = true;
-        gameErrorTest = StartCoroutine(GameErrorTest());
         replayButton.interactable = true;
 
-        Paddle.gameObject.SetActive(true);
-        if (paddleChanged)
-        {
-            Paddle.SetPaddle(selectedPaddle);
-            paddleChanged = false;
-        }
-
-        if (ballChanged)
-        {
-            ballChanged = false;
-        }
+        ActivatePaddle();
 
         canContinue = true;
 
         GameStarted();
     }
 
+    public void ActivatePaddle()
+    {
+        Paddle.gameObject.SetActive(true);
+        if (paddleChanged)
+        {
+            Paddle.SetPaddle(selectedPaddle);
+            paddleChanged = false;
+        }
+    }
 
     public void GameOver() //soft game over: can still continue after
     {
-        StopCoroutine(gameErrorTest);
         gameRunning = false;
         DeactivatePaddle();
         SetPageState(pageState.GameOver);
@@ -517,7 +477,6 @@ public class GameManager : MonoBehaviour
 
     public void EndGame() //this will actually end the game: so revive or continue
     {
-        StopCoroutine(gameErrorTest);
         gameRunning = false;
         DeactivatePaddle();
         GoToScoreReview();
@@ -531,7 +490,6 @@ public class GameManager : MonoBehaviour
         Paddle.gameObject.SetActive(true);
         gameRunning = true;
         SetPageState(pageState.Game);
-        gameErrorTest = StartCoroutine(GameErrorTest());
 
         canContinue = false;
     }
@@ -544,6 +502,7 @@ public class GameManager : MonoBehaviour
 
     public void GoToSettings()
     {
+        ShowGameModeButton(false);
         SetPageState(pageState.SettingsPage);
         LG.GoToSettingsPage();
     }
@@ -557,6 +516,7 @@ public class GameManager : MonoBehaviour
 
     public void GoToShop()
     {
+        ShowGameModeButton(false);
         SetPageState(pageState.ShopPage);
         LG.GoToShop();
     }
@@ -696,7 +656,7 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        if(!focus)
+        if (!focus)
         {
             pauseAllCoroutines = true;
         }
@@ -730,20 +690,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator GameErrorTest()
-    {
-        for (int i = 0; i < 40; i++)//set this coroutine to be the length of the swipeIn anim
-        {
-            yield return new WaitForSeconds(1);
-            while (pauseAllCoroutines || paused)
-            {
-                yield return null;
-            }
-        }
-        Debug.LogError("Game Glitch");
-
-    }
-
     public void skipScoreReviewAnim()
     {
         skipScoreReviewButton.interactable = false;
@@ -769,6 +715,28 @@ public class GameManager : MonoBehaviour
 
     public int Gems
     {
-        get { return (int) gems; }
+        get { return (int)gems; }
+    }
+
+    IEnumerator Countdown()
+    {
+        for (int i = 3; i > 0; i--)
+        {
+            countdownText.text = i.ToString();
+            yield return new WaitForSecondsRealtime(1);
+            while (pauseAllCoroutines)
+            {
+                yield return null;
+            }
+        }
+        CountdownPage.SetActive(false);
+        paused = false;
+        Paddle.gameObject.SetActive(true);
+        Time.timeScale = timeScale;
+    }
+
+    public void Go2GameModesMenu()
+    {
+        sceneChanger.Fade2Scene(1);
     }
 }

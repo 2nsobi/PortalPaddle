@@ -14,7 +14,7 @@ public class GDPRConsent : MonoBehaviour {
         mainPanel.gameObject.SetActive(false);
         yesPanel.gameObject.SetActive(true);
 
-        AdManager.Instance.InitializeAds();
+        //AdManager.Instance.InitializeAds();
     }
 
     public void onNoClick()
@@ -24,7 +24,7 @@ public class GDPRConsent : MonoBehaviour {
         mainPanel.gameObject.SetActive(false);
         noPanel.gameObject.SetActive(true);
 
-        AdManager.Instance.InitializeAds();
+        //AdManager.Instance.InitializeAds();
     }
 
     public void onPLClick()
