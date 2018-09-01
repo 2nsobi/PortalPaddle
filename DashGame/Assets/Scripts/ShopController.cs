@@ -32,7 +32,7 @@ public class ShopController : MonoBehaviour
         Instance = this;
 
         ballSelectionMenu = transform.Find("BallScollPanel").gameObject;
-        paddleSelectionMenu = transform.Find("PaddleScollPanel").gameObject;
+        paddleSelectionMenu = transform.Find("TempPaddleMenu").gameObject; //paddleSelectionMenu = transform.Find("PaddleScollPanel").gameObject;
         IAPmenu = transform.Find("IAP").gameObject;
 
         ballScrollRect = ballSelectionMenu.GetComponent<SnapScrollRectController>();
@@ -93,6 +93,22 @@ public class ShopController : MonoBehaviour
         ballScrollRect.Go2Selected();
     }
 
+    //public void GoToPaddleSelection()
+    //{
+    //    currentMenu = "paddle";
+
+    //    viewBallsButton.interactable = true;
+    //    viewPaddlesButton.interactable = false;
+    //    viewIAPButton.interactable = true;
+
+    //    ballSelectionMenu.SetActive(false);
+    //    paddleSelectionMenu.SetActive(true);
+    //    IAPmenu.SetActive(false);
+
+    //    paddleScrollRect.Go2Shop();
+    //    paddleScrollRect.Go2Selected();
+    //}
+
     public void GoToPaddleSelection()
     {
         currentMenu = "paddle";
@@ -101,12 +117,14 @@ public class ShopController : MonoBehaviour
         viewPaddlesButton.interactable = false;
         viewIAPButton.interactable = true;
 
+        selectedIcon.SetActive(false);
+        selectButton.gameObject.SetActive(false);
+        unlockButton.gameObject.SetActive(false);
+        purchaseButton.gameObject.SetActive(false);
+
         ballSelectionMenu.SetActive(false);
         paddleSelectionMenu.SetActive(true);
         IAPmenu.SetActive(false);
-
-        paddleScrollRect.Go2Shop();
-        paddleScrollRect.Go2Selected();
     }
 
     public void GoToIAP()

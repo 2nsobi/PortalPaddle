@@ -139,6 +139,7 @@ public class LevelGenerator : MonoBehaviour
         public Shape[] shapes;
     }
 
+    public Vector2 targetAspectRatio;
     public float transitionSpeed;
     public float finishTransitionSpeed;
     public float finishTransitionThreshold; //number used to determine when the next lvl becomes teh current lvl
@@ -211,6 +212,10 @@ public class LevelGenerator : MonoBehaviour
     Animator labMonitorsAnimC;
     BallController ballC;
     TargetController target;
+    float thisDeviceCameraRadius;
+    bool dontMoveWalls = false; 
+    int tempNum = 0;
+    int tempNum2 = 0;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -221,7 +226,40 @@ public class LevelGenerator : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
         settingsLevel = Instantiate(SettingsLvl, levelOffset * -1, Quaternion.identity); //should be instantiated here so that all the awake methods in the shop scripts are done
+
+        ConfigureCamera(); //called here before the tap area rect is configured
+
+        distanceDiff4Walls = GetDistanceDifferenceForWalls();
+    }
+
+    /*********************************************
+    * In unity "The size value for orthographic camera basically decides the Height of the camera while the Aspect 
+    * Ratio of your game decides the width of the camera. When increasing the "height" size on the camera the width 
+    * is also increased to keep with the current aspect."
+    * 
+    * Also the [aspect ratio (width/height)] * [camera size] = camera width; 
+    ************************************************/
+    public void ConfigureCamera()
+    {
+        thisDeviceCameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
+        float desiredCameraWidth = (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize;
+
+        if (thisDeviceCameraRadius < desiredCameraWidth - 0.001f) //for some reason (targetAspectRatio.x / targetAspectRatio.y) * Camera.main.orthographicSize does not equal what is should exactly
+        {
+            Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
+            dontMoveWalls = true;
+        }
+    }
+
+    public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
+    {
+        if (dontMoveWalls)
+        {
+            return 3.700936f; // x pos of wall at aspect ratio of 3.700936
+        }
+        return thisDeviceCameraRadius + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
     }
 
     private void OnEnable()
@@ -252,7 +290,7 @@ public class LevelGenerator : MonoBehaviour
 
     private void Start()
     {
-        GameObject dummyGO = Instantiate(new GameObject("dummyGO"));
+        GameObject dummyGO = new GameObject("dummyGO");
         dummyGO.SetActive(false);
         dummyLvlPref = new LvlPrefab(dummyGO);
         PreviousLvl = dummyLvlPref;
@@ -279,8 +317,6 @@ public class LevelGenerator : MonoBehaviour
         target = TargetController.Instance;
 
         currentlyTransitioning = false;
-
-        distanceDiff4Walls = game.GetDistanceDifferenceForWalls();
 
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
         labMonitorsAnimC = StartLevel.gameObject.transform.Find("labBackground1Monitors2_0").GetComponent<Animator>();
@@ -470,12 +506,14 @@ public class LevelGenerator : MonoBehaviour
 
             foreach (LvlPrefab transitionLvl in transitionLvls)
             {
+                transitionLvl.RemoveObstacle();
                 transitionLvl.gameObject.transform.localPosition = Vector3.zero;
                 transitionLvl.gameObject.SetActive(false);
             }
 
             foreach (LvlPrefab specialLvl in specialLvls)
             {
+                specialLvl.RemoveObstacle();
                 specialLvl.gameObject.transform.localPosition = Vector3.zero;
                 specialLvl.gameObject.SetActive(false);
             }
@@ -580,11 +618,27 @@ public class LevelGenerator : MonoBehaviour
     public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, LvlPrefab lvlPrefab, string texture, bool easy = false)
     {
         int number = rng.Next(minObstacle, maxObstacle + 1);
+
+        while (number == tempNum)
+        {
+            number = rng.Next(minObstacle, maxObstacle + 1);
+        }
+
+        tempNum = number;
+
         tag4Obstacles = "Obstacle" + number;
 
         if (easy)
         {
             int num = rng.Next(1, ezObstacleCount + 1);
+
+            while (num == tempNum2)
+            {
+                num = rng.Next(1, ezObstacleCount + 1);
+            }
+
+            tempNum2 = num;
+
             tag4Obstacles = "EasyObstacle" + num;
 
             Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
@@ -870,7 +924,6 @@ public class LevelGenerator : MonoBehaviour
             }
 
         }
-
     }
 
     void GameStarted()
@@ -881,6 +934,7 @@ public class LevelGenerator : MonoBehaviour
         playButtonGlow.Stop();
 
         ShufflePrefabsInLevels();
+
         NextLvlGenerated(); //need to call this here outside of GenerateNextLvl() since two levels are always loaded above before game starts
 
         playedOnce = true;
@@ -1049,7 +1103,7 @@ public class LevelGenerator : MonoBehaviour
         else if (NextLvl.gameObject.tag == "level2")
         {
             nextLvlNumber = 2;
-            ballC.IncreaseDropSpeed(4.75f);
+            ballC.IncreaseDropSpeed(4.75f, 18.25f);
             target.IncreaseTravelSpeed(3);
         }
         else if (NextLvl.gameObject.tag == "level3")
@@ -1057,21 +1111,21 @@ public class LevelGenerator : MonoBehaviour
             if (nextLvlNumber >= 4)
             {
                 nextLvlNumber = 5;
-                ballC.IncreaseDropSpeed(8.25f);
-                target.IncreaseTravelSpeed(5);
+                ballC.IncreaseDropSpeed(10, 25);
+                target.IncreaseTravelSpeed(6);
             }
             else
             {
                 nextLvlNumber = 3;
-                ballC.IncreaseDropSpeed(6.5f);
+                ballC.IncreaseDropSpeed(6.5f, 20.5f);
                 target.IncreaseTravelSpeed(4);
             }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
-            ballC.IncreaseDropSpeed(10);
-            target.IncreaseTravelSpeed(6);
+            ballC.IncreaseDropSpeed(8.25f, 22.75f);
+            target.IncreaseTravelSpeed(5);
         }
         NextLvl.gameObject.SetActive(true);
         NextLvl.gameObject.transform.position = transform.position + levelOffset;
@@ -1096,6 +1150,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (!startOfGame)
         {
+            print("nextlvlgenerated");
             NextLvlGenerated();
         }
         else
@@ -1181,5 +1236,4 @@ public class LevelGenerator : MonoBehaviour
             return playedOnce;
         }
     }
-
 }

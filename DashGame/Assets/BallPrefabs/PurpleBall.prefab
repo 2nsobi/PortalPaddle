@@ -185,7 +185,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114665944325768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.94, y: -2.12, z: 0}
+  m_LocalPosition: {x: -1.4786615, y: -2.0324018, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 1}
   m_Children:
   - {fileID: 4670076641519986}
@@ -315,17 +315,17 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.8721447, g: 0, b: 1, a: 1}
-      key1: {r: 0.9382992, g: 0, b: 1, a: 1}
-      key2: {r: 1, g: 1, b: 1, a: 0}
+      key0: {r: 0.50980395, g: 0, b: 0.65882355, a: 1}
+      key1: {r: 0.95590085, g: 0.2971698, b: 1, a: 1}
+      key2: {r: 0.7604054, g: 0.16693951, b: 0.85048443, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
-      ctime1: 65535
-      ctime2: 65535
+      ctime1: 37586
+      ctime2: 36815
       ctime3: 0
       ctime4: 0
       ctime5: 0
@@ -366,8 +366,8 @@ MonoBehaviour:
     rgba: 4293585642
   boostColor:
     serializedVersion: 2
-    rgba: 4294901957
-  ghost: {fileID: 1981438222022684, guid: fac360bb06a7d2f41b8dd6a06eec0075, type: 2}
+    rgba: 4293198001
+  ghost: {fileID: 1559112411141090, guid: e25abda126c1a26409af38383aa29bb7, type: 2}
 --- !u!198 &198060060602730852
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -554,7 +554,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.81328607, g: 0.1745283, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5078,7 +5078,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.97333336, g: 0, b: 1, a: 1}
+      maxColor: {r: 0.69411767, g: 0, b: 0.8980392, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -8545,7 +8545,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 5120
+      m_Bits: 37889
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
@@ -14124,7 +14124,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 4699030861d44ad4d863754e7c17cdf3, type: 2}
+  - {fileID: 2100000, guid: 7a707588f1dfe5d40ad14d8c3162e8b6, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -14181,7 +14181,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 4699030861d44ad4d863754e7c17cdf3, type: 2}
+  - {fileID: 2100000, guid: 7a707588f1dfe5d40ad14d8c3162e8b6, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -14315,7 +14315,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: dbe3059c9ab128b48b7a43ff5b5eaef7, type: 3}
-  m_Color: {r: 0.7702551, g: 0, b: 1, a: 1}
+  m_Color: {r: 0.51042277, g: 0, b: 0.6603774, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

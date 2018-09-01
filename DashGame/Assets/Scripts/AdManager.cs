@@ -20,6 +20,8 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     private void Awake()
     {
         Instance = this;
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
@@ -49,22 +51,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
         Appodeal.setAutoCache(Appodeal.BANNER, true);
 
-        if (ZPlayerPrefs.GetInt("result_gdpr") != 0)
-        {
-            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
-            Appodeal.setRewardedVideoCallbacks(this);
-            Appodeal.setBannerCallbacks(this);
-
-            Appodeal.show(Appodeal.BANNER_BOTTOM);
-
-            showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
-            showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-        }
-    }
-
-    public void InitializeAds()
-    {
-        Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
+        Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, false);
         Appodeal.setRewardedVideoCallbacks(this);
         Appodeal.setBannerCallbacks(this);
 
@@ -72,7 +59,31 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
         showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
         showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
+
+        //if (ZPlayerPrefs.GetInt("result_gdpr") != 0)
+        //{
+        //    Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
+        //    Appodeal.setRewardedVideoCallbacks(this);
+        //    Appodeal.setBannerCallbacks(this);
+
+        //    Appodeal.show(Appodeal.BANNER_BOTTOM);
+
+        //    showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+        //    showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
+        //}
     }
+
+    //public void InitializeAds()
+    //{
+    //    Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
+    //    Appodeal.setRewardedVideoCallbacks(this);
+    //    Appodeal.setBannerCallbacks(this);
+
+    //    Appodeal.show(Appodeal.BANNER_BOTTOM);
+
+    //    showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+    //    showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
+    //}
 
     IEnumerator CanShowRewardVidDelay()
     {

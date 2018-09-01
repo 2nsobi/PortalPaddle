@@ -130,7 +130,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1328346819769008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5054198, y: -3.7662776, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 1}
   m_Children:
   - {fileID: 4810116690169108}
@@ -391,7 +391,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.5
+      scalar: 1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -501,8 +501,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 0.96800303, b: 1, a: 1}
-        key1: {r: 0, g: 0.065425396, b: 1, a: 1}
+        key0: {r: 0.36320752, g: 0.91745406, b: 1, a: 1}
+        key1: {r: 0, g: 0.8861277, b: 1, a: 1}
         key2: {r: 1, g: 0, b: 0.07359362, a: 1}
         key3: {r: 1, g: 0, b: 0.07359362, a: 0}
         key4: {r: 1, g: 0, b: 0.07359362, a: 0}
@@ -1613,7 +1613,7 @@ ParticleSystem:
         atime5: 54610
         atime6: 65535
         atime7: 65535
-        m_Mode: 0
+        m_Mode: 1
         m_NumColorKeys: 2
         m_NumAlphaKeys: 7
       minGradient:
@@ -1642,7 +1642,7 @@ ParticleSystem:
         atime5: 54610
         atime6: 65535
         atime7: 0
-        m_Mode: 0
+        m_Mode: 1
         m_NumColorKeys: 2
         m_NumAlphaKeys: 7
   UVModule:
@@ -2795,7 +2795,7 @@ ParticleSystem:
     drag:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 30
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -8564,7 +8564,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 5120
+      m_Bits: 37889
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
