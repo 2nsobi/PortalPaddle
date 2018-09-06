@@ -33,15 +33,13 @@ public class PaddleController : MonoBehaviour
     float clampedX, clampedY;
     GameManager game;
     GameManager.PaddlePrefab activePaddle = null;
+    bool otherGameModeRunning = false;
 
     private void Awake()
     {
         Instance = this;
 
         DontDestroyOnLoad(this.gameObject);
-
-        if(activePaddle != null)
-            DontDestroyOnLoad(activePaddle.mainParticles);
 
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
@@ -131,7 +129,7 @@ public class PaddleController : MonoBehaviour
 
     private void Update()
     {
-        if (game.IsGameRunning)
+        if (game.IsGameRunning || otherGameModeRunning)
         {
             if (particles.activeInHierarchy)
             {
@@ -296,11 +294,40 @@ public class PaddleController : MonoBehaviour
 
     public void DeactivatePaddle()
     {
+        otherGameModeRunning = false;
         childPaddle1.SetActive(false);
         childPaddle2.SetActive(false);
         if (particles != null)
         {
             particles.SetActive(false);
         }
+    }
+
+    public void SetPauseButtonRect(RectTransform rect)
+    {
+        pauseButtonRect = rect;
+    }
+
+    public bool IsOtherGameModeRunning
+    {
+        get
+        {
+            return otherGameModeRunning;
+        }
+        set
+        {
+            otherGameModeRunning = value;
+        }
+    }
+
+    public void SetSamePaddle()
+    {
+        SetPaddle(activePaddle);
+    }
+
+    public void DontDestroyActivePaddle()
+    {
+        DontDestroyOnLoad(activePaddle.mainParticles);
+        DontDestroyOnLoad(paddleCollider);
     }
 }

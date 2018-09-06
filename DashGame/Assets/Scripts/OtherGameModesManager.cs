@@ -17,6 +17,7 @@ public class OtherGameModesManager : MonoBehaviour {
     public Button PlusOneButton;
     public Button DeadeyeButton;
     public Button ClairvoyanceButton;
+    public RectTransform pauseButtonRect;
 
     GameManager game;
     ObstacleSpawner obSpawner;
@@ -25,9 +26,10 @@ public class OtherGameModesManager : MonoBehaviour {
 
     bool gemsOnScreen = false;
     Coroutine pauseCoroutine;
-    bool GameModeRunning = false;
+    bool gameModeRunning = false;
     bool pauseAllCoroutines = false;
     bool paused = false;
+    bool firstStart = true;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
@@ -44,9 +46,12 @@ public class OtherGameModesManager : MonoBehaviour {
     private void Start()
     {
         obSpawner = ObstacleSpawner.Instance;
-        Paddle = PaddleController.Instance;
         game = GameManager.Instance;
         ballC = BallController.Instance;
+
+        Paddle = PaddleController.Instance;
+        Paddle.SetPauseButtonRect(pauseButtonRect);
+        DeactivatePaddle();
     }
 
     public enum pageState { Game, StartPage, Paused, CountdownPage, ScoreReview };
@@ -181,6 +186,24 @@ public class OtherGameModesManager : MonoBehaviour {
         pauseCoroutine = StartCoroutine(Countdown());
     }
 
+    public void PauseGame()
+    {
+        SetPageState(pageState.Paused);
+        Time.timeScale = 0;
+        if (pauseCoroutine != null)
+        {
+            StopCoroutine(pauseCoroutine);
+        }
+        DeactivatePaddle();
+        paused = true;
+    }
+
+    public void ResumeGame()
+    {
+        SetPageState(pageState.CountdownPage);
+        pauseCoroutine = StartCoroutine(Countdown());
+    }
+
     public void SetGameModeSelectButtons(bool enable)
     {
         if (enable)
@@ -210,8 +233,15 @@ public class OtherGameModesManager : MonoBehaviour {
         }
         CountdownPage.SetActive(false);
         paused = false;
-        Paddle.gameObject.SetActive(true);
+        ActivatePaddle();
         Time.timeScale = 1;
+        gameModeRunning = true;
+        if (firstStart)
+        {
+            firstStart = false;
+
+            ActivatePaddle();
+        }
     }
 
     private void OnApplicationFocus(bool focus)
@@ -240,8 +270,13 @@ public class OtherGameModesManager : MonoBehaviour {
 
     public void DeactivatePaddle()
     {
-        Paddle.DeactivatePaddle();
+        Paddle.DeactivatePaddle(); // deactivatePaddle also sets othergamerunning bool to false;
         Paddle.gameObject.SetActive(false);
     }
 
+    public void ActivatePaddle()
+    {
+        Paddle.gameObject.SetActive(true);
+        Paddle.IsOtherGameModeRunning = true;
+    }
 }

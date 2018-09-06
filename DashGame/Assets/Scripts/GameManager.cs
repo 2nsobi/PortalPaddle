@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
     bool canContinue;
     AdManager ads;
     PaddlePrefab selectedPaddle;
-    bool paddleChanged = true;
+    bool paddleChanged = false;
     bool updateGems = false;
     int PlusOneHighScore;
     int DeadeyeHighScore;
@@ -189,6 +189,7 @@ public class GameManager : MonoBehaviour
         sceneChanger = SceneChanger.Instance;
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
+        Paddle.SetPaddle(selectedPaddle);
         DeactivatePaddle();
 
         GoToStartPage();
