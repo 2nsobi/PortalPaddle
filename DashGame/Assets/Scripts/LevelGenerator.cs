@@ -153,6 +153,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject SettingsLvl;
     LvlPrefab StartLevel; //for code use
     GameManager game;
+    FilterController filterController;
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
     LvlPrefab NextLvl;
     LvlPrefab CurrentLvl;
@@ -188,9 +189,6 @@ public class LevelGenerator : MonoBehaviour
     bool finishTransitioning;
     static string activeLvlName;
     bool allPrefsInQAttached2Lvl = true; // for spawnfrom obstacles method
-    public GameObject filters;
-    Animator filtersAnimC;
-    bool caves2SkyFilter, cavesFilter, removeCaves2SkyFilter, disableFilters;
     bool go2Settings = false;
     bool comeBackFromSettings;
     GameObject settingsLevel;
@@ -213,9 +211,10 @@ public class LevelGenerator : MonoBehaviour
     BallController ballC;
     TargetController target;
     float thisDeviceCameraRadius;
-    bool dontMoveWalls = false; 
+    bool dontMoveWalls = false;
     int tempNum = 0;
     int tempNum2 = 0;
+    bool[] filterBools = new bool[3];
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -296,12 +295,6 @@ public class LevelGenerator : MonoBehaviour
         PreviousLvl = dummyLvlPref;
 
         shop = settingsLevel.transform.Find("ShopCanvas").gameObject;
-
-        disableFilters = true;
-        removeCaves2SkyFilter = true;
-        caves2SkyFilter = true;
-        cavesFilter = true;
-        filtersAnimC = filters.GetComponent<Animator>();
         obstacletextures = obstacleTextures;
 
         gradientSpawned = false;
@@ -315,6 +308,7 @@ public class LevelGenerator : MonoBehaviour
         shopC = ShopController.Instance; //singleton needs to be accessed here because the awake function atached to the shopcontroller script is not called until the object it is attached to is instantiated
         ballC = BallController.Instance;
         target = TargetController.Instance;
+        filterController = FilterController.Instance;
 
         currentlyTransitioning = false;
 
@@ -547,7 +541,7 @@ public class LevelGenerator : MonoBehaviour
                 level.comeBack2 = true;
             }
 
-            filtersAnimC.SetTrigger("gameOver");
+            filterController.gameObject.SetActive(false);
         }
 
         startOfGame = true;
@@ -744,36 +738,33 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
-        if (cavesFilter)
+        if (NextLvl.gameObject.tag == "level1")
         {
-            if (NextLvl.gameObject.tag == "level1")
+            if (filterBools[0])
             {
-                filtersAnimC.SetTrigger("fade2Caves");
-                cavesFilter = false;
+                filterController.Fade2Filter("CavesBlack2TransparentGradient");
+                filterBools[0] = false;
             }
         }
-        if (caves2SkyFilter)
+
+        else if (NextLvl.gameObject.tag == "caves2Sky")
         {
-            if (NextLvl.gameObject.tag == "caves2Sky")
+            if (filterBools[1])
             {
-                filtersAnimC.SetTrigger("fade2Caves2Sky");
-                caves2SkyFilter = false;
+                filterController.Fade2Filter("caves2SkyBackgroundGradient");
+                filterBools[1] = false;
             }
         }
+
         else
         {
-            if (removeCaves2SkyFilter)
+            if (filterBools[2])
             {
-                filtersAnimC.SetTrigger("remove");
-                removeCaves2SkyFilter = false;
-            }
-
-            if (disableFilters)
-            {
-                filtersAnimC.SetTrigger("disableFilters");
-                disableFilters = false;
+                filterController.ClearFilters();
+                filterBools[2] = false;
             }
         }
+
         currentlyTransitioning = true;
     }
 
@@ -928,6 +919,11 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
+        for(int i = 0; i<filterBools.Length; i++)
+        {
+            filterBools[i] = true;
+        }
+
         labMonitorsAnimC.SetBool("gameRunning", true);
 
         playButtonGlowMainMod.simulationSpeed = 6;
@@ -938,12 +934,8 @@ public class LevelGenerator : MonoBehaviour
         NextLvlGenerated(); //need to call this here outside of GenerateNextLvl() since two levels are always loaded above before game starts
 
         playedOnce = true;
-        disableFilters = true;
-        removeCaves2SkyFilter = true;
-        caves2SkyFilter = true;
-        cavesFilter = true;
 
-        filtersAnimC.ResetTrigger("gameOver");
+        filterController.gameObject.SetActive(true);
     }
 
     void GenerateNextLvl()

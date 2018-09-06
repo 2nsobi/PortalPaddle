@@ -5595,6 +5595,7 @@ MonoBehaviour:
   PlusOneButton: {fileID: 822860909}
   DeadeyeButton: {fileID: 195429320}
   ClairvoyanceButton: {fileID: 430344214}
+  pauseButtonRect: {fileID: 733273809}
 --- !u!1 &288987735
 GameObject:
   m_ObjectHideFlags: 0
@@ -11159,7 +11160,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 238818258}
         m_MethodName: PauseGame
         m_Mode: 1
         m_Arguments:
@@ -12709,7 +12710,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 238818258}
         m_MethodName: ResumeGame
         m_Mode: 1
         m_Arguments:
