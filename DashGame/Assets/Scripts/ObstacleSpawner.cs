@@ -159,10 +159,6 @@ public class ObstacleSpawner : MonoBehaviour {
         return thisDeviceCameraRadius + 0.888436f; // 0.888436 is the diff between the x pos of a wall at x pos 3.700936 and the camera width of a 9:16 aspect ratio
     }
 
-    void Start () {
-		
-	}
-
     public void SetGameMode(OtherGameModesManager.gameMode gameMode)
     {
         switch (gameMode)
@@ -220,5 +216,15 @@ public class ObstacleSpawner : MonoBehaviour {
             clairvoyanceLab.SetActive(true);
             clairvoyanceLab.transform.position = Vector2.zero;
         }
+    }
+
+    public void SpawnLvl()
+    {
+
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 }

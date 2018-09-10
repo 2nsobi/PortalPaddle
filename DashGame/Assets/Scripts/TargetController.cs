@@ -15,74 +15,23 @@ public class TargetController : MonoBehaviour
     float randomSize;
     Vector3 defaultTargetSize = new Vector3(0.23f, 0.23f, 1);
     Vector3 troubleshootingSize = new Vector3(0.7f, 0.7f, 1);
-    bool target1Travel;
-    bool target2Travel;
-    bool target1Hit, target2Hit;
     public float travelSpeed;
     float codeTravelSpeed;
     float tempSpeed;
-    int pointCounter1, pointCounter2;
-    Vector3[] travelPath1;
-    Vector3[] travelPath2;
-    Vector3 currentPoint1, currentPoint2;
-    Vector3 nextPoint1, nextPoint2;
-    Target currentTargetInUse;
-    Vector3[] tempPath1, tempPath2;
     bool gameRunning;
-    bool target1Moving, target2Moving;//are targets moving?
     Transform nextLvl;
-    bool growShrink1, growShrink2;
     public float growShrinkSpeed;
     float smallestTargestSize = 0.03f; //smallest a target will get when it grows and shrinks
     Vector3[] nextObstaclePath;
     float targetRadius = 2.53f; //based on 2d circle collider radius
-    float targetSpawnOffset;
+    float targetSpawnOffset = 0.667f;
     static CryptoRandom rng = new CryptoRandom();
+    List<Target> targets;
+    GameObject targetP;
+    Target targetComponent;
+    int nextLvlNum;
 
     public static TargetController Instance;
-
-    public delegate void TargetDelegate();
-    public static event TargetDelegate TargetHit;
-    public static event TargetDelegate TargetHitAndRichochet;
-    public static event TargetDelegate QuickHit;
-
-    float size; //size of the target
-
-    class Target
-    {
-        public bool inUse;
-        public Transform transform;
-        public Animator animator;
-
-        public Target(Transform t, Animator anim, Color col)
-        {
-            transform = t;
-            animator = anim;
-            this.inUse = true;
-            animator.SetBool("InUse", this.inUse);
-
-            Transform portal = transform.Find("PortalSprite");
-            for (int i = 0; i < portal.childCount; i++)
-            {
-                if (portal.GetChild(i).GetComponent<SpriteRenderer>() != null)
-                {
-                    portal.GetChild(i).GetComponent<SpriteRenderer>().color = col;
-                }
-            }
-        }
-
-        public void StopUsing()
-        {
-            inUse = false;
-        }
-
-        public void Use()
-        {
-            inUse = true;
-        }
-    }
-
-    Target[] targets;
 
     private void Awake()
     {
@@ -91,30 +40,10 @@ public class TargetController : MonoBehaviour
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
-        target1Travel = false;
-        target2Travel = false;
-        target1Hit = false;
-        target2Hit = false;
-        growShrink1 = false;
-        growShrink2 = false;
-        pointCounter1 = 0;
-        pointCounter2 = 0;
 
-        targets = new Target[2];
+        targets = new List<Target>();
 
-        for (int i = 0; i < targets.Length; i++)
-        {
-            GameObject go = Instantiate(TargetPrefab, Vector2.right * -1000, Quaternion.identity);
-            go.name = "Target" + i;
-            Animator anim = go.GetComponent<Animator>();
-            targets[i] = new Target(go.transform, anim, new Color32(255, 248, 57, 255)); //lighter yellow color
-        }
-        currentTargetInUse = null;
-        gameRunning = false;
-        targetSpawnOffset = targetRadius * defaultTargetSize.x;
-
-        targets[0].Use(); // target 0 always gets used first
-        targets[1].StopUsing();
+        SpawnTargets(3, Color.yellow);
     }
 
     private void Start()
@@ -124,243 +53,35 @@ public class TargetController : MonoBehaviour
         ballC = BallController.Instance;
     }
 
+    public void SpawnTargets(int size, Color color)
+    {
+        int i = targets.Count;
+        while (targets.Count < size)
+        {
+            targetP = Instantiate(TargetPrefab);
+            targetP.SetActive(false);
+            targetP.name = "target" + i;
+            i++;
+
+            targetComponent = targetP.GetComponent<Target>();
+            targetComponent.SetColor(color);
+
+            targets.Add(targetComponent);
+        }
+    }
+
     private void OnEnable()
     {
-        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         GameManager.GameStarted += GameStarted;
-        Ball.AbsorbDone += AbsorbDone;
         GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
-        LevelGenerator.TransitionDone += TransitionDone;
     }
 
     private void OnDisable()
     {
-        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         GameManager.GameStarted -= GameStarted;
-        Ball.AbsorbDone -= AbsorbDone;
         GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
-        LevelGenerator.TransitionDone -= TransitionDone;
-    }
-
-    private void Update()
-    {
-        if (gameRunning)
-        {
-            targets[0].animator.SetBool("InUse", targets[0].inUse);
-            targets[1].animator.SetBool("InUse", targets[1].inUse);
-
-
-            if (growShrink1)
-            {
-
-                targets[0].transform.localScale = new Vector3(((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed)
-                    * ((defaultTargetSize.x - smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize)
-                    + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)),
-                    0.575f + Mathf.Sin(Time.time * growShrinkSpeed) * ((1 - 0.15f) / 2)); //float values in z scale make particle system particle look normal when they shrink
-
-            }
-
-            if (growShrink2)
-            {
-
-                targets[1].transform.localScale = new Vector3(((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed)
-                    * ((defaultTargetSize.x - smallestTargestSize) / 2)), ((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize)
-                    + (Mathf.Sin(Time.time * growShrinkSpeed) * ((defaultTargetSize.x - smallestTargestSize) / 2)),
-                    0.575f + Mathf.Sin(Time.time * growShrinkSpeed) * ((1 - 0.15f) / 2)); //float values in z scale make particle system particle look normal when they shrink
-
-            }
-
-            if (target1Hit)
-            {
-                growShrink1 = false;
-                target1Travel = false;
-                if (targets[0].transform.position.y < nextLvl.position.y - 5) //5.2 is about half the height of a lvl
-                {
-                    targets[0].StopUsing();
-                }
-
-            }
-            if (target2Hit)
-            {
-                growShrink2 = false;
-                target2Travel = false;
-                if (targets[1].transform.position.y < nextLvl.position.y - 5) //5.2 is about half the height of a lvl
-                {
-                    targets[1].StopUsing();
-                }
-            }
-
-            if (target1Travel)
-            {
-                nextPoint1 = travelPath1[pointCounter1];
-                targets[0].transform.localPosition = Vector2.MoveTowards(targets[0].transform.localPosition, nextPoint1, Time.deltaTime * tempSpeed);
-                if (targets[0].transform.localPosition == nextPoint1)
-                {
-                    pointCounter1 += 1;
-                    if (pointCounter1 > travelPath1.Length - 1)
-                    {
-                        pointCounter1 = 0;
-                    }
-                }
-            }
-
-            if (target2Travel)
-            {
-                nextPoint2 = travelPath2[pointCounter2];
-                targets[1].transform.localPosition = Vector2.MoveTowards(targets[1].transform.localPosition, nextPoint2, Time.deltaTime * tempSpeed);
-                if (targets[1].transform.localPosition == nextPoint2)
-                {
-                    pointCounter2 += 1;
-                    if (pointCounter2 > travelPath2.Length - 1)
-                    {
-                        pointCounter2 = 0;
-                    }
-                }
-            }
-        }
-    }
-
-    void SelectTargetToTravel(Target target, Vector3[] path)
-    {
-        print(target.transform.gameObject.name);
-
-        int aRandomNum = Random.Range(0, 10); //if greater than 4 will travel in normal, order if smaller than 5 will travel in reverse order
-
-        if (target == targets[0])
-        {
-            target1Hit = false;
-            target1Travel = true;
-
-            if (aRandomNum > 4)
-            {
-                tempPath1 = path;
-                System.Array.Reverse(tempPath1);
-                travelPath1 = tempPath1;
-            }
-            else
-            {
-                travelPath1 = path;
-            }
-
-            int randPos = Random.Range(0, travelPath1.Length - 1);
-            pointCounter1 = randPos + 1;
-            targets[0].transform.localPosition = travelPath1[randPos];
-        }
-
-        if (target == targets[1])
-        {
-            target2Hit = false;
-            target2Travel = true;
-
-            if (aRandomNum > 4)
-            {
-                tempPath2 = path;
-                System.Array.Reverse(tempPath2);
-                travelPath2 = tempPath2;
-            }
-            else
-            {
-                travelPath2 = path;
-            }
-
-            int randPos = Random.Range(0, travelPath2.Length - 1);
-            pointCounter2 = randPos + 1;
-            targets[1].transform.localPosition = travelPath2[randPos];
-        }
-    }
-
-    void AbsorbDone()
-    {
-        TargetHit();
-
-        for (int i = 0; i < targets.Length; i++)
-        {
-            if (targets[i].inUse)
-            {
-                if (ballC.GetTargetHit == "Target0")
-                {
-                    target1Hit = true;
-                }
-                if (ballC.GetTargetHit == "Target1")
-                {
-                    target2Hit = true;
-                }
-            }
-        }
-
-    }
-
-    public void DespawnTarget()
-    {
-        targets[0].StopUsing();
-    }
-
-    void AbsorbDoneAndRichochet()
-    {
-        TargetHitAndRichochet();
-
-        for (int i = 0; i < targets.Length; i++)
-        {
-            if (targets[i].inUse)
-            {
-                if (ballC.GetTargetHit == "Target0")
-                {
-                    target1Hit = true;
-                }
-                if (ballC.GetTargetHit == "Target1")
-                {
-                    target2Hit = true;
-                }
-            }
-        }
-
-    }
-
-    void TransitionDone()
-    {
-        for (int i = 0; i < targets.Length; i++)
-        {
-            if (targets[i].inUse)
-            {
-                currentTargetInUse = targets[i];
-
-                if (targets[i] == targets[0] && target1Travel)
-                {
-                    target1Moving = true;
-                }
-                if (targets[i] == targets[1] && target2Travel)
-                {
-                    target2Moving = true;
-                }
-            }
-
-            if (!targets[0].inUse)
-            {
-                target1Moving = false;
-            }
-
-            if (!targets[1].inUse)
-            {
-                target2Moving = false;
-            }
-        }
-
-        target1Hit = false;
-        target2Hit = false;
-    }
-
-    void SelectTargetToGrowShrink(Target t)
-    {
-        if (t == targets[0])
-        {
-            growShrink1 = true;
-        }
-        if (t == targets[1])
-        {
-            growShrink2 = true;
-        }
     }
 
     public void IncreaseTravelSpeed(float speed) // initial travel speed started at 2
@@ -373,91 +94,71 @@ public class TargetController : MonoBehaviour
         nextLvl = LG.GetNextLvl;
         nextObstaclePath = LG.GetNextObstaclePath;
         tempSpeed = codeTravelSpeed;
+        nextLvlNum = LG.GetNextLvlNumber;
 
-        for (int i = 0; i < targets.Length; i++)
+        for (int i = 0; i < targets.Count; i++)
         {
-            if (!targets[i].inUse)
+            if (!targets[i].InUse)
             {
-                print("gamestarted");
-                targets[i].Use();
-
-                targets[i].transform.parent = nextLvl;
-
-                if (LG.GetNextLvlNumber == 1)
+                if (nextLvlNum == 1 || nextLvlNum == 2)
                 {
-                    targets[i].transform.localScale = defaultTargetSize;
-
                     if (nextObstaclePath != null)
                     {
-                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                        SelectTargetToTravel(targets[i], nextObstaclePath);
+                        targets[i].gameObject.SetActive(true);
+                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
                     }
                     else
                     {
-                        targets[i].transform.localPosition = RandomPos();
+                        targets[i].gameObject.SetActive(true);
+                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, false, false);
                     }
                 }
 
-                if (LG.GetNextLvlNumber == 2)
-                {
-                    targets[i].transform.localScale = defaultTargetSize;
-
-                    if (nextObstaclePath != null)
-                    {
-                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                        SelectTargetToTravel(targets[i], nextObstaclePath);
-                    }
-                    else
-                    {
-                        targets[i].transform.localPosition = RandomPos();
-                    }
-                }
-
-                if (LG.GetNextLvlNumber == 3)
+                if (nextLvlNum == 3)
                 {
                     int randomNumber = Random.Range(1, 11);
                     if (randomNumber % 2 == 0)
                     {
-                        SelectTargetToGrowShrink(targets[i]);
+                        if (nextObstaclePath != null)
+                        {
+                            targets[i].gameObject.SetActive(true);
+                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
+                        }
+                        else
+                        {
+                            targets[i].gameObject.SetActive(true);
+                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, false, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
+                        }
                     }
                     else
                     {
-                        targets[i].transform.localScale = defaultTargetSize;
-                    }
-
-                    if (nextObstaclePath != null)
-                    {
-                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                        SelectTargetToTravel(targets[i], nextObstaclePath);
-                    }
-                    else
-                    {
-                        targets[i].transform.localPosition = RandomPos();
+                        if (nextObstaclePath != null)
+                        {
+                            targets[i].gameObject.SetActive(true);
+                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
+                        }
+                        else
+                        {
+                            targets[i].gameObject.SetActive(true);
+                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, false, false, nextObstaclePath);
+                        }
                     }
                 }
 
-                if (LG.GetNextLvlNumber >= 4)
+                if (nextLvlNum >= 4)
                 {
-                    int randomNumber = Random.Range(1, 11);
-                    if (randomNumber % 2 == 0)
-                    {
-                        SelectTargetToGrowShrink(targets[i]);
-                    }
-                    else
-                    {
-                        targets[i].transform.localScale = defaultTargetSize;
-                    }
-
                     if (nextObstaclePath != null)
                     {
-                        targets[i].transform.localPosition = nextObstaclePath[Random.Range(0, nextObstaclePath.Length)];
-                        SelectTargetToTravel(targets[i], nextObstaclePath);
+                        targets[i].gameObject.SetActive(true);
+                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
                     }
                     else
                     {
-                        targets[i].transform.localPosition = RandomPos();
+                        targets[i].gameObject.SetActive(true);
+                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, false, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
                     }
                 }
+                break;
             }
         }
     }
@@ -472,42 +173,26 @@ public class TargetController : MonoBehaviour
     {
         codeTravelSpeed = travelSpeed;
 
-        targets[0].Use(); // target 0 always gets used first
-        targets[1].StopUsing();
-
-        targets[0].transform.position = Vector2.right * -1000;
-        targets[1].transform.position = Vector2.right * -1000;
-
-        target1Moving = false;
-        target2Moving = false;
-
-        target1Travel = false;
-        target2Travel = false;
-
-        print(target2Travel);
-
-        print("travel bools should be false");
-
-        gameRunning = false;
-
-        target1Hit = false;
-        target2Hit = false;
-        growShrink1 = false;
-        growShrink2 = false;
-
-        targets[1].animator.ResetTrigger("GameStarted");
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (targets[i].isActiveAndEnabled)
+            {
+                targets[i].StopUsing();
+            }
+        }
     }
 
     void GameStarted()
     {
-        print(target2Travel);
-        targets[0].transform.parent = LG.GetCurrentLvl;
-        targets[0].transform.localPosition = RandomPos();
-        targets[0].animator.SetTrigger("GameStarted");
-        currentTargetInUse = targets[0];
-
-        targets[0].transform.localScale = defaultTargetSize;
-        targets[1].transform.localScale = defaultTargetSize;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!targets[i].InUse)
+            {
+                targets[i].gameObject.SetActive(true);
+                targets[i].Spawn(LG.GetCurrentLvl, RandomPos(), defaultTargetSize, false, false);
+                break;
+            }
+        }
         gameRunning = true;
     }
 
@@ -529,28 +214,23 @@ public class TargetController : MonoBehaviour
         return (float)(min + rng.NextDouble() * (max - min));
     }
 
-    public Vector3 GetCurrentTargetPos
+    public Vector3 GetCurrentTargetPos(int targetIndex)
     {
-        get
-        {
-            return currentTargetInUse.transform.position;
-        }
+        return targets[targetIndex].transform.position;
     }
 
-    public float getTravelSpeed
+    public float getTravelSpeed(int targetIndex)
     {
-        get
-        {
-            return codeTravelSpeed;
-        }
+        return targets[targetIndex].TravelSpeed;
     }
 
-    public bool IsMoving()
+    public bool IsMoving(int targetIndex)
     {
-        if (target1Moving || target2Moving)
-        {
-            return true;
-        }
-        return false;
+        return targets[targetIndex].Moving;
+    }
+
+    public void ShrinkTarget(int targetIndex)
+    {
+        targets[targetIndex].Shrink();
     }
 }

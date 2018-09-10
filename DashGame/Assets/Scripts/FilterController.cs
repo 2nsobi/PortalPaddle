@@ -51,12 +51,10 @@ public class FilterController : MonoBehaviour
             {
                 alpha1 -= Time.deltaTime * 2;
                 previousFilter.color = new Color(1, 1, 1, alpha1);
-                print(previousFilter.color);
             }
 
             alpha2 += Time.deltaTime * 2;
             currentFilter.color = new Color(1, 1, 1, alpha2);
-            print(currentFilter.color);
 
             if (currentFilter.color.a >= 1)
             {

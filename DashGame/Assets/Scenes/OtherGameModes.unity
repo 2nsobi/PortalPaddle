@@ -5264,6 +5264,7 @@ GameObject:
   - component: {fileID: 209706813}
   - component: {fileID: 209706812}
   - component: {fileID: 209706810}
+  - component: {fileID: 209706815}
   m_Layer: 0
   m_Name: Enviroment
   m_TagString: Untagged
@@ -5433,6 +5434,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTravelSpeed: 0
+--- !u!114 &209706815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 209706808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678d95865d581e744b839790dc6ee09d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetPrefab: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
+    type: 2}
 --- !u!1 &225563528
 GameObject:
   m_ObjectHideFlags: 0

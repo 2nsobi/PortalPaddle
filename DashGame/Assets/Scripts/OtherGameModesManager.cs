@@ -30,17 +30,25 @@ public class OtherGameModesManager : MonoBehaviour {
     bool pauseAllCoroutines = false;
     bool paused = false;
     bool firstStart = true;
+    int PlusOneHighScore;
+    int DeadeyeHighScore;
+    int ClairvoyanceHighScore;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
     public static event OtherGameModesManagerDelegate StartDeadeye;
     public static event OtherGameModesManagerDelegate StartClairvoyance;
+    public static event OtherGameModesManagerDelegate GameModeStarted;
 
     private void Awake()
     {
         Instance = this;
 
         SetPageState(pageState.StartPage);
+
+        PlusOneHighScore = ZPlayerPrefs.GetInt("PlusOneHighScore");
+        DeadeyeHighScore = ZPlayerPrefs.GetInt("DeadeyeHighScore");
+        ClairvoyanceHighScore = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
     }
 
     private void Start()
@@ -241,6 +249,7 @@ public class OtherGameModesManager : MonoBehaviour {
             firstStart = false;
 
             ActivatePaddle();
+            GameModeStarted();
         }
     }
 

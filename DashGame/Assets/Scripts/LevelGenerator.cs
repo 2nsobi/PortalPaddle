@@ -729,14 +729,7 @@ public class LevelGenerator : MonoBehaviour
 
     IEnumerator transitionDelay()
     {
-        for (float i = 0.0f; i < 0.5f; i += 0.1f)
-        {
-            yield return new WaitForSeconds(0.1f);
-            while (pauseAllCoroutines || game.Paused)
-            {
-                yield return null;
-            }
-        }
+        yield return new WaitForSeconds(0.5f);
 
         if (NextLvl.gameObject.tag == "level1")
         {
@@ -919,7 +912,7 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
-        for(int i = 0; i<filterBools.Length; i++)
+        for (int i = 0; i < filterBools.Length; i++)
         {
             filterBools[i] = true;
         }
@@ -991,7 +984,6 @@ public class LevelGenerator : MonoBehaviour
                         gradientDespawner = SpawnFromPool(1); //gradientdespawner is considered to be the transitionlvl in this case
                         SpawnFromObstacles(1, obstacles.Count, Vector2.zero, gradientDespawner.gameObject.transform.rotation, gradientDespawner, levels[1].obstacleTexture, true);
                         lvlSpawnQ.Enqueue(gradientDespawner);
-                        Debug.Log("gradientDespawner has been enqueed with obstacle");
 
                         defaultLvl = SpawnFromPool("level3");
                         SpawnFromObstacles(1, obstacles.Count, Vector2.zero, defaultLvl.gameObject.transform.rotation, defaultLvl, levels[2].obstacleTexture);
@@ -1142,7 +1134,6 @@ public class LevelGenerator : MonoBehaviour
 
         if (!startOfGame)
         {
-            print("nextlvlgenerated");
             NextLvlGenerated();
         }
         else
