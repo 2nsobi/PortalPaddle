@@ -23,7 +23,6 @@ public class BallController : MonoBehaviour
     float startSpeed;
     Animator spawnerAnimator;
     Vector2 RandomXPos;
-    string targetHit; //Name of the target that was hit;
     Camera mainCam;
     readonly Vector3 originalCamPos = new Vector3(0, 0, -50);
     public CanvasGroup whiteFlashCG;
@@ -277,19 +276,6 @@ public class BallController : MonoBehaviour
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
-    }
-
-    public void SetTargetHit(string target)
-    {
-        targetHit = target;
-    }
-
-    public string GetTargetHit
-    {
-        get
-        {
-            return targetHit;
-        }
     }
 
     public void CameraShake()

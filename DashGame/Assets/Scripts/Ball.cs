@@ -19,7 +19,6 @@ public class Ball : MonoBehaviour
     GameManager game;
     Ray2D ray;
     Vector3 rayOffsetVector = new Vector3(0, 0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
-    bool atCenter = false;
     Rigidbody2D rigidbody;
     TargetController target;
     bool shouldBoost = false;
@@ -37,7 +36,7 @@ public class Ball : MonoBehaviour
     GameObject ghostBall2;
     TrailRenderer ghost1Trail, ghost2Trail;
     Animator ghost1AnimC, ghost2AnimC;
-    string targetHit; //Name of the target that was hit;
+    int targetHitIndex;
     bool wrappingEnabled = false;
     bool wrappingRightNow = false;
     float cameraRadius;
@@ -53,6 +52,9 @@ public class Ball : MonoBehaviour
     SpriteRenderer ghost1SpecialSprite, ghost2SpecialSprite;
     bool hasSpecialSprite = true;
     bool callPlayerMissed = false;
+    bool isTargetHitMoving = false;
+    float targetTravelSpeed;
+    bool insideCollider = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -152,7 +154,6 @@ public class Ball : MonoBehaviour
         ShouldShrink = false;
         Physics2D.IgnoreLayerCollision(10, 11);
         Physics2D.IgnoreLayerCollision(11, 12, false);
-        atCenter = false;
         invulnerable = false;
         shouldBoost = false;
         canAbsorb = false;
@@ -160,6 +161,7 @@ public class Ball : MonoBehaviour
         firstTriggerCollision = true;
         cantCollide = false;
         wrappingEnabled = false;
+        insideCollider = false;
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
@@ -427,11 +429,6 @@ public class Ball : MonoBehaviour
     {
         ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
 
-        if (atCenter)
-        {
-            transform.position = target.GetCurrentTargetPos;
-        }
-
         if (shouldAbsorb)
         {
             Absorb();
@@ -492,26 +489,24 @@ public class Ball : MonoBehaviour
             }
         }
 
-        if ((!atCenter || shouldAbsorb) && invulnerable)
-        {
-            if (wallHit || wrappedAround)
-            {
-                wallHit = false;
-                wrappedAround = false;
+        //if ((shouldAbsorb) && invulnerable)
+        //{
+        //    if (wallHit || wrappedAround)
+        //    {
+        //        wallHit = false;
+        //        wrappedAround = false;
 
-                ballC.SetTargetHit(targetHit);
-                AbsorbDoneAndRichochet();
-                print("coming from ball script");
-                return;
-            }
-            else
-            {
-                ballC.SetTargetHit(targetHit);
-                AbsorbDone();
-                print("coming from ball script");
-                return;
-            }
-        }
+        //        AbsorbDoneAndRichochet();
+        //        print("coming from ball script");
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        AbsorbDone();
+        //        print("coming from ball script");
+        //        return;
+        //    }
+        //}
 
         rigidbody.velocity = Vector2.zero;
 
@@ -525,18 +520,17 @@ public class Ball : MonoBehaviour
     {
         if (canAbsorb)
         {
-            if (target.IsMoving())
+            if (isTargetHitMoving)
             {
-                transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * (target.getTravelSpeed + 1));
+                transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos(targetHitIndex), Time.deltaTime * (targetTravelSpeed + 1));
             }
             else
             {
-                transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos, Time.deltaTime * absorbSpeed);
+                transform.position = Vector2.MoveTowards(transform.position, target.GetCurrentTargetPos(targetHitIndex), Time.deltaTime * absorbSpeed);
             }
 
-            if (transform.position == target.GetCurrentTargetPos)
+            if (ballSprite.transform.localScale.x <= 0.05f)//(transform.position == target.GetCurrentTargetPos(targetHitIndex))
             {
-                atCenter = true;
                 shouldAbsorb = false;
             }
 
@@ -547,14 +541,14 @@ public class Ball : MonoBehaviour
                     wallHit = false;
                     wrappedAround = false;
 
-                    ballC.SetTargetHit(targetHit);
                     AbsorbDoneAndRichochet();
+                    target.ShrinkTarget(targetHitIndex);
                     return;
                 }
                 else
                 {
-                    ballC.SetTargetHit(targetHit);
                     AbsorbDone();
+                    target.ShrinkTarget(targetHitIndex);
                     return;
                 }
             }
@@ -571,7 +565,6 @@ public class Ball : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        //print(collision.gameObject.name);
         if (!cantCollide)
         {
             if (collision.gameObject.tag == "Paddle" || collision.gameObject.tag == "Floor")
@@ -596,7 +589,7 @@ public class Ball : MonoBehaviour
                 wallHit = true;
             }
 
-            if (!atCenter && !shouldAbsorb)
+            if (!shouldAbsorb)
             {
                 collisionEffect.Play();
             }
@@ -628,20 +621,23 @@ public class Ball : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        //print(collision.gameObject.name);
         if (canAbsorb)
         {
-            targetHit = collision.gameObject.name;
             if (firstTriggerCollision)
             {
                 if (collision.gameObject.layer == 8)
-                {
+                {               
                     Physics2D.IgnoreLayerCollision(10, 11);
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
                     rigidbody.angularVelocity = 0;
                     shouldAbsorb = true;
                     ShouldShrink = true;
+
+                    targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
+                    isTargetHitMoving = target.IsMoving(targetHitIndex);
+                    targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
+
                     firstTriggerCollision = false;
                     cantCollide = true;
                 }
@@ -659,18 +655,20 @@ public class Ball : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        print(collision.gameObject.name);
         if (canAbsorb)
         {
             if (!ShouldShrink)
             {
-                targetHit = collision.gameObject.name;
                 if (firstTriggerCollision)
                 {
                     if (collision.gameObject.layer == 8)
                     {
+                        targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
+                        isTargetHitMoving = target.IsMoving(targetHitIndex);
+                        targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
+
                         Physics2D.IgnoreLayerCollision(10, 11);
                         invulnerable = true;
                         rigidbody.velocity = Vector2.zero;
@@ -679,6 +677,38 @@ public class Ball : MonoBehaviour
                         ShouldShrink = true;
                         firstTriggerCollision = false;
                         cantCollide = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!insideCollider)
+        {
+            insideCollider = true;
+            if (canAbsorb)
+            {
+                if (!ShouldShrink)
+                {
+                    if (firstTriggerCollision)
+                    {
+                        if (collision.gameObject.layer == 8)
+                        {
+                            targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
+                            isTargetHitMoving = target.IsMoving(targetHitIndex);
+                            targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
+
+                            Physics2D.IgnoreLayerCollision(10, 11);
+                            invulnerable = true;
+                            rigidbody.velocity = Vector2.zero;
+                            rigidbody.angularVelocity = 0;
+                            shouldAbsorb = true;
+                            ShouldShrink = true;
+                            firstTriggerCollision = false;
+                            cantCollide = true;
+                        }
                     }
                 }
             }

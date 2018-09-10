@@ -73,9 +73,6 @@ public class GameManager : MonoBehaviour
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
     bool updateGems = false;
-    int PlusOneHighScore;
-    int DeadeyeHighScore;
-    int ClairvoyanceHighScore;
 
     public static GameManager Instance;
 
@@ -153,10 +150,6 @@ public class GameManager : MonoBehaviour
         gems = 1000;
         highScore = ZPlayerPrefs.GetInt("HighScore");
 
-        PlusOneHighScore = ZPlayerPrefs.GetInt("PlusOneHighScore");
-        DeadeyeHighScore = ZPlayerPrefs.GetInt("DeadeyeHighScore");
-        ClairvoyanceHighScore = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
-
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
         scoreReviewGems.text = gems.ToString();
 
@@ -200,15 +193,15 @@ public class GameManager : MonoBehaviour
     private void OnEnable() //this is called after start()
     {
         Ball.PlayerMissed += PlayerMissed;
-        TargetController.TargetHit += TargetHit;
-        TargetController.TargetHitAndRichochet += TargetHitAndRichochet;
+        Ball.AbsorbDone += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
     }
 
     private void OnDisable()
     {
         Ball.PlayerMissed -= PlayerMissed;
-        TargetController.TargetHit -= TargetHit;
-        TargetController.TargetHitAndRichochet -= TargetHitAndRichochet;
+        Ball.AbsorbDone -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
     }
 
     void PlayerMissed()
@@ -272,14 +265,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void TargetHit()
+    void AbsorbDone()
     {
         score++;
         scoreText.text = score.ToString();
         richochetCount = 0;
     }
 
-    void TargetHitAndRichochet()
+    void AbsorbDoneAndRichochet()
     {
         score += 2;
         scoreText.text = score.ToString();
@@ -485,6 +478,8 @@ public class GameManager : MonoBehaviour
 
     public void Continue()
     {
+        richochetCount = 0;
+
         ads.ShowRewardVideo(false);
 
         StartCoroutine(ReviveDelay());
@@ -637,7 +632,7 @@ public class GameManager : MonoBehaviour
             pauseAllCoroutines = true;
 
             ZPlayerPrefs.SetInt("gems", (int)gems);
-            ZPlayerPrefs.SetInt("HighScore", score);
+            ZPlayerPrefs.SetInt("HighScore", highScore);
 
             ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
         }
@@ -650,7 +645,7 @@ public class GameManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         ZPlayerPrefs.SetInt("gems", (int)gems);
-        ZPlayerPrefs.SetInt("HighScore", score);
+        ZPlayerPrefs.SetInt("HighScore", highScore);
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
     }

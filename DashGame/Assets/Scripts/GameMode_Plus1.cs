@@ -36,12 +36,12 @@ public class GameMode_Plus1 : MonoBehaviour
 
     private void OnEnable()
     {
-
+        OtherGameModesManager.GameModeStarted += PlusOneStarted;
     }
 
     private void OnDisable()
     {
-
+        OtherGameModesManager.GameModeStarted -= PlusOneStarted;
     }
 
     void PlusOneStarted()
