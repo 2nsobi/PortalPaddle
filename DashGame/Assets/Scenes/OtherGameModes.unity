@@ -5265,6 +5265,7 @@ GameObject:
   - component: {fileID: 209706812}
   - component: {fileID: 209706810}
   - component: {fileID: 209706815}
+  - component: {fileID: 209706816}
   m_Layer: 0
   m_Name: Enviroment
   m_TagString: Untagged
@@ -5289,18 +5290,42 @@ MonoBehaviour:
     type: 2}
   targetAspectRatio: {x: 9, y: 16}
   obstacleTextures:
-  - tag: lab
+  - tag: lab_gold
     shapes:
     - tag: circle
-      shape: {fileID: 21300000, guid: 1cf2fe8ed399a994fb8ac327fd4dd21c, type: 3}
+      shape: {fileID: 21300000, guid: d4d8f83467a7a2240970d9a940ec29cf, type: 3}
     - tag: square
-      shape: {fileID: 21300000, guid: 0ac0a74e9a17d674aa274132d80c6ade, type: 3}
+      shape: {fileID: 21300000, guid: e135cf1159a35344fbf50466a20b55b4, type: 3}
     - tag: triangle
-      shape: {fileID: 21300000, guid: ab0dea8d60e1a7f47855be865eb3a8f5, type: 3}
+      shape: {fileID: 21300000, guid: 7962f69da594b31428b34d4c0a13f752, type: 3}
     - tag: triangle2
-      shape: {fileID: 21300000, guid: 0a1f8bed7e2f7544e803c1d89cbda4a2, type: 3}
+      shape: {fileID: 21300000, guid: 7962f69da594b31428b34d4c0a13f752, type: 3}
     - tag: wallObstacle
-      shape: {fileID: 21300000, guid: 4cc60a4a9df03564ba645c3948d47a40, type: 3}
+      shape: {fileID: 21300000, guid: 8d79bf7f643bf134fa3d2768067873de, type: 3}
+  - tag: lab_poptart
+    shapes:
+    - tag: circle
+      shape: {fileID: 21300000, guid: 6cf0f34cf19dad7408fa3b820054cdda, type: 3}
+    - tag: square
+      shape: {fileID: 21300000, guid: 5bf21ce9146a26a4a897978a59d9b897, type: 3}
+    - tag: triangle
+      shape: {fileID: 21300000, guid: 52c071d110d00da498ea4966c940f76d, type: 3}
+    - tag: triangle2
+      shape: {fileID: 21300000, guid: 52c071d110d00da498ea4966c940f76d, type: 3}
+    - tag: wallObstacle
+      shape: {fileID: 21300000, guid: 209c58cae718d7049a45dd58ce09d06d, type: 3}
+  - tag: lab_darkRed
+    shapes:
+    - tag: circle
+      shape: {fileID: 21300000, guid: 3ceed158b2b58e54590d9e52dba7e22e, type: 3}
+    - tag: square
+      shape: {fileID: 21300000, guid: d013adef6d80a894b81f8e6e82c830d1, type: 3}
+    - tag: triangle
+      shape: {fileID: 21300000, guid: d3396853cc835554dbe007a30681d7f3, type: 3}
+    - tag: triangle2
+      shape: {fileID: 21300000, guid: d3396853cc835554dbe007a30681d7f3, type: 3}
+    - tag: wallObstacle
+      shape: {fileID: 21300000, guid: 28345fc620ae4d94aa26b5d846516c10, type: 3}
   obstacles:
   - prefab: {fileID: 1133324666389770, guid: 9a989ab5f5fd8704295ace245db9dad2, type: 2}
     size: 2
@@ -5447,6 +5472,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetPrefab: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
     type: 2}
+--- !u!114 &209706816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 209706808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 735ee2253d15c0d4c9c6abafc79ba396, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnArea: {fileID: 0}
+  TargetPrefab: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
+    type: 2}
+  travelSpeed: 2
+  growShrinkSpeed: 4
 --- !u!1 &225563528
 GameObject:
   m_ObjectHideFlags: 0
@@ -5505,7 +5546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &238818254
 MonoBehaviour:
   m_ObjectHideFlags: 0
