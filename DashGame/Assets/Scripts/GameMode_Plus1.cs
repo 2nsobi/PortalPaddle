@@ -8,11 +8,11 @@ public class GameMode_Plus1 : MonoBehaviour
 
     Transform wallW;
     Transform wallE;
-    TargetController target;
     BallController ballC;
     PaddleController paddle;
     AdManager ads;
     LevelGenerator LG;
+    ObstacleSpawner obSpawner;
 
     Coroutine spawnBalls;
     int balls2Spawn;
@@ -22,11 +22,11 @@ public class GameMode_Plus1 : MonoBehaviour
 
     void Start()
     {
-        target = TargetController.Instance;
         ballC = BallController.Instance;
         paddle = PaddleController.Instance;
         ads = AdManager.Instance;
         LG = LevelGenerator.Instance;
+        obSpawner = ObstacleSpawner.Instance;
 
         wallW = transform.Find("wallW");
         wallE = transform.Find("wallE");
@@ -37,16 +37,18 @@ public class GameMode_Plus1 : MonoBehaviour
     private void OnEnable()
     {
         OtherGameModesManager.GameModeStarted += PlusOneStarted;
+        ObstacleSpawner.ObstacleSet += ObstacleSet;
     }
 
     private void OnDisable()
     {
         OtherGameModesManager.GameModeStarted -= PlusOneStarted;
+        ObstacleSpawner.ObstacleSet -= ObstacleSet;
     }
 
     void PlusOneStarted()
     {
-
+        obSpawner.SpawnObstacle();
     }
 
     public int NumberOfBalls2Spawn
@@ -55,5 +57,10 @@ public class GameMode_Plus1 : MonoBehaviour
         {
             return balls2Spawn;
         }
+    }
+
+    void ObstacleSet()
+    {
+        print("obstalce set");
     }
 }

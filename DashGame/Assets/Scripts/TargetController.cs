@@ -18,7 +18,6 @@ public class TargetController : MonoBehaviour
     public float travelSpeed;
     float codeTravelSpeed;
     float tempSpeed;
-    bool gameRunning;
     Transform nextLvl;
     public float growShrinkSpeed;
     float smallestTargestSize = 0.03f; //smallest a target will get when it grows and shrinks
@@ -36,8 +35,11 @@ public class TargetController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
         codeTravelSpeed = travelSpeed;
+
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
+
         spawnAreaRect = spawnArea.transform as RectTransform;
         spawnAreaRect.GetWorldCorners(spawnAreaCorners);
 
@@ -163,6 +165,21 @@ public class TargetController : MonoBehaviour
         }
     }
 
+    public void SpawnTarget(Transform obTransform, bool travel, Vector3[] obPath = null) // used for other game modes mainly
+    {
+        tempSpeed = codeTravelSpeed;
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            if (!targets[i].InUse)
+            {
+                targets[i].gameObject.SetActive(true);
+                targets[i].Spawn(obTransform, RandomPos(), defaultTargetSize, travel, false, obPath, tempSpeed);
+                break;
+            }
+        }
+    }
+
     void GameOverConfirmed()
     {
         targets[0].transform.parent = null;
@@ -193,7 +210,6 @@ public class TargetController : MonoBehaviour
                 break;
             }
         }
-        gameRunning = true;
     }
 
     public Vector2 RandomPos()

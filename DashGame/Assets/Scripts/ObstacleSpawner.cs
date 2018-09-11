@@ -11,11 +11,11 @@ public class ObstacleSpawner : MonoBehaviour {
         public Vector3[] path;
         public string obstacleTexture;
         SpriteRenderer[] obstacleSprites;
-        public bool attached2Lvl;
+        public bool inUse;
 
         public Obstacle(GameObject go)
         {
-            attached2Lvl = false;
+            inUse = false;
             this.transform = go.transform;
             this.gameObject = go;
             Transform t = go.transform.Find("TargetTravelPath");
@@ -83,8 +83,12 @@ public class ObstacleSpawner : MonoBehaviour {
     public List<ObstacleTexture> obstacleTextures;
     public static List<ObstacleTexture> obstacletextures;
     public List<SinglePool> obstacles;
+    static Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
 
     public static ObstacleSpawner Instance;
+
+    public delegate void ObSpawnerDelegate();
+    public static event ObSpawnerDelegate ObstacleSet;
 
     GameObject plusOneLab;
     GameObject deadeyeLab;
@@ -93,10 +97,23 @@ public class ObstacleSpawner : MonoBehaviour {
     GameMode_Plus1 PlusOneGameModeC;
     GameMode_Deadeye DeadeyeGameModeC;
     GameMode_Clairvoyance ClairvoyanceGameModeC;
+    static CryptoRandom rng = new CryptoRandom();
+    Obstacle currentObstacle;
+    Obstacle nextObstacle;
+    Vector2 levelOffset;
+    TargetController targetC;
 
+    int ezObstacleCount = 0;
     bool dontMoveWalls = false;
     float distanceDiff4Walls;
     float thisDeviceCameraRadius;
+    bool moveInObstacle = false;
+    bool moveOutObstacle = false;
+    int tempNum = 0;
+    int tempNum2 = 0;
+    string tag4Obstacles;
+    bool allPrefsInQInUse = true; // for spawnfrom obstacles method
+    string currentObTexture;
 
     private void Awake()
     {
@@ -105,6 +122,7 @@ public class ObstacleSpawner : MonoBehaviour {
             Instance = this;
         }
 
+        levelOffset = new Vector2(0, Camera.main.orthographicSize+5.8f); //5.8 will always make sure the obstacle is fully off screen no matter the camera height / aspect ratio
 
         PlusOneGameModeC = GetComponent<GameMode_Plus1>();
         DeadeyeGameModeC = GetComponent<GameMode_Deadeye>();
@@ -138,6 +156,46 @@ public class ObstacleSpawner : MonoBehaviour {
         wallE5.localPosition = new Vector3(distanceDiff4Walls, wallE5.localPosition.y, 0);
     }
 
+    private void Start()
+    {
+        targetC = TargetController.Instance;
+
+        ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
+
+        foreach (SinglePool obstacleType in obstacles)
+        {
+            Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
+
+            if (obstacleType.easy)
+            {
+                Queue<Obstacle> easyObstaclePool = new Queue<Obstacle>();
+
+                for (int i = 0; i < obstacleType.size; i++)
+                {
+                    GameObject go = Instantiate(obstacleType.prefab);
+                    go.name = obstacleType.prefab.name + "_easy";
+
+                    Obstacle ob1 = new Obstacle(go);
+
+                    ob1.gameObject.SetActive(false);
+                    easyObstaclePool.Enqueue(ob1);
+                }
+                ezObstacleCount++;
+                ObstacleDict.Add("EasyObstacle" + ezObstacleCount, easyObstaclePool);
+            }
+
+            for (int i = 0; i < obstacleType.size; i++)
+            {
+                Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
+
+                ob.gameObject.SetActive(false);
+                obstaclePool.Enqueue(ob);
+            }
+
+            ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
+        }
+    }
+
     public void ConfigureCamera()
     {
         thisDeviceCameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
@@ -169,6 +227,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 PlusOneGameModeC.enabled = true;
                 DeadeyeGameModeC.enabled = false;
                 ClairvoyanceGameModeC.enabled = false;
+
+                currentObTexture = "lab_gold";
                 break;
 
             case OtherGameModesManager.gameMode.Deadeye:
@@ -177,6 +237,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 PlusOneGameModeC.enabled = false;
                 DeadeyeGameModeC.enabled = true;
                 ClairvoyanceGameModeC.enabled = false;
+
+                currentObTexture = "lab_darkRed";
                 break;
 
             case OtherGameModesManager.gameMode.Clairvoyance:
@@ -185,6 +247,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 PlusOneGameModeC.enabled = false;
                 DeadeyeGameModeC.enabled = false;
                 ClairvoyanceGameModeC.enabled = true;
+
+                currentObTexture = "lab_poptart";
                 break;
 
             case OtherGameModesManager.gameMode.None:
@@ -218,13 +282,198 @@ public class ObstacleSpawner : MonoBehaviour {
         }
     }
 
-    public void SpawnLvl()
+    public void SpawnObstacle()
     {
+        nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
 
+        nextObstacle.gameObject.SetActive(true);
+
+        moveInObstacle = true;
+    }
+
+    public void DespawnObstacle()
+    {
+        moveOutObstacle = true;
     }
 
     private void FixedUpdate()
     {
-        
+        if (moveInObstacle)
+        {
+            if (nextObstacle.transform.position.y < -0.8f)
+            {
+
+                nextObstacle.transform.position = Vector2.Lerp(nextObstacle.transform.position, Vector2.zero, Time.deltaTime * 4);
+            }
+            else
+            {
+                nextObstacle.transform.position = Vector2.MoveTowards(nextObstacle.transform.position, Vector2.zero, Time.deltaTime * 2);
+
+                if (nextObstacle.transform.position.y == 0)
+                {
+                    moveInObstacle = false;
+
+                    currentObstacle = nextObstacle;
+
+                    ObstacleSet();
+                }
+            }
+        }
+
+        if (moveOutObstacle)
+        {
+            currentObstacle.transform.position = Vector2.MoveTowards(currentObstacle.transform.position, -levelOffset, Time.deltaTime * 9);
+
+            if (currentObstacle.transform.position.y == -(levelOffset.y))
+            {
+                moveOutObstacle = false;
+
+                currentObstacle.gameObject.SetActive(false);
+
+                SpawnObstacle();
+            }
+        }
+    }
+
+    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, string texture, bool easy = false)
+    {
+        int number = rng.Next(minObstacle, maxObstacle + 1);
+
+        while (number == tempNum)
+        {
+            number = rng.Next(minObstacle, maxObstacle + 1);
+        }
+
+        tempNum = number;
+
+        tag4Obstacles = "Obstacle" + number;
+
+        if (easy)
+        {
+            int num = rng.Next(1, ezObstacleCount + 1);
+
+            while (num == tempNum2)
+            {
+                num = rng.Next(1, ezObstacleCount + 1);
+            }
+
+            tempNum2 = num;
+
+            tag4Obstacles = "EasyObstacle" + num;
+
+            Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+
+            if (obstacleToSpawn.inUse)
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                while (allPrefsInQInUse)
+                {
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
+                    {
+                        obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                        if (!obstacleToSpawn.inUse)
+                        {
+                            obstacleToSpawn.inUse = true;
+
+                            targetC.SpawnTarget(obstacleToSpawn.transform,true,obstacleToSpawn.path);
+
+                            obstacleToSpawn.SetObstacleTextures(texture);
+
+                            obstacleToSpawn.transform.position = position;
+                            obstacleToSpawn.transform.rotation = rotation;
+
+                            ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                            return obstacleToSpawn;
+                        }
+                        ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                    }
+
+                    int num2 = rng.Next(1, ezObstacleCount + 1);
+                    while (num2 == num)
+                    {
+                        num2 = rng.Next(1, ezObstacleCount + 1);
+                    }
+                    num = num2;
+                    tag4Obstacles = "EasyObstacle" + num2;
+                }
+
+            }
+            else
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+            }
+
+            obstacleToSpawn.inUse = true;
+
+            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+
+            obstacleToSpawn.SetObstacleTextures(texture);
+
+            obstacleToSpawn.transform.position = position;
+            obstacleToSpawn.transform.rotation = rotation;
+
+            return obstacleToSpawn;
+
+        }
+        else
+        {
+            Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+
+            if (obstacleToSpawn.inUse)
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                while (allPrefsInQInUse)
+                {
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
+                    {
+                        obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                        if (!obstacleToSpawn.inUse)
+                        {
+                            obstacleToSpawn.inUse = true;
+
+                            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+
+                            obstacleToSpawn.SetObstacleTextures(texture);
+
+                            obstacleToSpawn.transform.position = position;
+                            obstacleToSpawn.transform.rotation = rotation;
+
+                            ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                            return obstacleToSpawn;
+                        }
+                        ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                    }
+
+                    int number2 = rng.Next(minObstacle, maxObstacle + 1);
+                    while (number2 == number)
+                    {
+                        number2 = rng.Next(minObstacle, maxObstacle + 1);
+                    }
+                    number = number2;
+                    tag4Obstacles = "Obstacle" + number2;
+                }
+
+            }
+            else
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+            }
+
+            obstacleToSpawn.inUse = true;
+
+            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+
+            obstacleToSpawn.SetObstacleTextures(texture);
+
+            obstacleToSpawn.transform.position = position;
+            obstacleToSpawn.transform.rotation = rotation;
+
+            return obstacleToSpawn;
+        }
+
     }
 }

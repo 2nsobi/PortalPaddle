@@ -89,7 +89,10 @@ public class Target : MonoBehaviour
     private void Update()
     {
         animator.SetBool("Shrink", shrink);
+    }
 
+    private void FixedUpdate()
+    {     
         if (growShrink)
         {
             transform.localScale = new Vector3(((defaultTargetSize.x - smallestTargestSize) / 2 + smallestTargestSize) + (Mathf.Sin(Time.time * growShrinkSpeed)

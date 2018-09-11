@@ -137,7 +137,14 @@ public class Ball : MonoBehaviour
 
         rigidbody = GetComponent<Rigidbody2D>();
 
-        cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
+        if (Camera.main.aspect < 0.5625)
+        {
+            cameraRadius = 5.0f * (9.0f / 16.0f); //portrait aspect ratios smaller than 9:16 will have same game radius as 9:16 aspect ratios
+        }
+        else
+        {
+            cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
+        }
     }
 
     private void Start()
