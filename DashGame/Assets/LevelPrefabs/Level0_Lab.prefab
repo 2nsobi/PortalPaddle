@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 61720303956093732}
   m_Layer: 15
   m_Name: floorCollider
-  m_TagString: Paddle
+  m_TagString: floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4147526485240216}
   - component: {fileID: 212619662434580208}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fillerwalls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 4446772130923084}
   - component: {fileID: 212228411630049612}
   - component: {fileID: 61493057664815712}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wallE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 4757313688397002}
   - component: {fileID: 212784725675032646}
   - component: {fileID: 61184831363274138}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wallW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -201,7 +201,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4643915296409020}
   - component: {fileID: 212936386013526642}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fillerwalls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -398,7 +398,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 10.8}
+  m_Size: {x: 2, y: 12}
   m_EdgeRadius: 0
 --- !u!61 &61493057664815712
 BoxCollider2D:
@@ -412,7 +412,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -423,7 +423,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 10.8}
+  m_Size: {x: 2, y: 12}
   m_EdgeRadius: 0
 --- !u!61 &61720303956093732
 BoxCollider2D:

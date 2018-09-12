@@ -25,7 +25,6 @@ public class Ball : MonoBehaviour
     bool ShouldShrink = false;
     bool invulnerable = false;
     bool wallHit = false;
-    bool cantCollide = false;
     bool shouldAbsorb = false;
     bool canAbsorb; //ball will only be absorbed after it is deflectd off of the paddle;
     BallController ballC;
@@ -55,6 +54,12 @@ public class Ball : MonoBehaviour
     bool isTargetHitMoving = false;
     float targetTravelSpeed;
     bool insideCollider = false;
+    bool dontCollideWithPaddle = false;
+    string collisionTag;
+    int ballLayer = 11;
+    int ignoreObstaclesLayer = 16;
+    int ignoreEverythingLayer = 17;
+    Vector2 failSafeVelocity;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -159,14 +164,13 @@ public class Ball : MonoBehaviour
         rigidbody.simulated = true;
         SwitchSpriteColor(false);
         ShouldShrink = false;
-        Physics2D.IgnoreLayerCollision(10, 11);
-        Physics2D.IgnoreLayerCollision(11, 12, false);
+        dontCollideWithPaddle = false;
         invulnerable = false;
         shouldBoost = false;
         canAbsorb = false;
         firstCollision = true;
         firstTriggerCollision = true;
-        cantCollide = false;
+        gameObject.layer = ignoreObstaclesLayer;
         wrappingEnabled = false;
         insideCollider = false;
 
@@ -424,11 +428,7 @@ public class Ball : MonoBehaviour
 
         if (transform.position.y < -4.95f)
         {
-            cantCollide = true;
-        }
-        else
-        {
-            cantCollide = false;
+            gameObject.layer = ignoreObstaclesLayer;
         }
     }
 
@@ -572,41 +572,74 @@ public class Ball : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!cantCollide)
+        collisionTag = collision.gameObject.tag;
+
+        if (collisionTag == "Paddle")
         {
-            if (collision.gameObject.tag == "Paddle" || collision.gameObject.tag == "Floor")
+            if (dontCollideWithPaddle)
             {
-                canAbsorb = true;
-                Physics2D.IgnoreLayerCollision(10, 11, false);
-                Physics2D.IgnoreLayerCollision(11, 12);        // this makes it so that the paddle cant hit the ball again before it hits another collider
-            }
-            else
-            {
-                Physics2D.IgnoreLayerCollision(11, 12, false);
+                return;
             }
 
-            if (firstCollision)
+            canAbsorb = true;
+            gameObject.layer = ballLayer;
+            dontCollideWithPaddle = true;        // this makes it so that the paddle cant hit the ball again before it hits another collider
+        }
+        else
+        {
+            dontCollideWithPaddle = false;
+        }
+
+        if (collisionTag == "floor")
+        {
+            canAbsorb = true;
+            gameObject.layer = ballLayer;
+        }
+
+        if (firstCollision)
+        {
+            FirstCollision();
+            firstCollision = false;
+        }
+
+        if (collisionTag == "Wall")
+        {
+            wallHit = true;
+        }
+
+        if (!shouldAbsorb)
+        {
+            collisionEffect.Play();
+        }
+
+        ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
+        Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
+
+        float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, rotation);
+        failSafeVelocity = -transform.up.normalized * boostVelocity;
+        rigidbody.velocity = failSafeVelocity;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (!shouldAbsorb)
+        {
+            if (dontCollideWithPaddle)
             {
-                FirstCollision();
-                firstCollision = false;
+                rigidbody.velocity = failSafeVelocity;
             }
+        }
+    }
 
-            if (collision.gameObject.tag == "Wall")
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!shouldAbsorb)
+        {
+            if (dontCollideWithPaddle)
             {
-                wallHit = true;
+                rigidbody.velocity = failSafeVelocity;
             }
-
-            if (!shouldAbsorb)
-            {
-                collisionEffect.Play();
-            }
-
-            ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
-            Vector2 reflectDir = Vector2.Reflect(ray.direction, cp.normal);
-
-            float rotation = 90 + Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
-            rigidbody.velocity = -transform.up.normalized * boostVelocity;
         }
     }
 
@@ -633,8 +666,7 @@ public class Ball : MonoBehaviour
             if (firstTriggerCollision)
             {
                 if (collision.gameObject.layer == 8)
-                {               
-                    Physics2D.IgnoreLayerCollision(10, 11);
+                {
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
                     rigidbody.angularVelocity = 0;
@@ -646,7 +678,7 @@ public class Ball : MonoBehaviour
                     targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
 
                     firstTriggerCollision = false;
-                    cantCollide = true;
+                    gameObject.layer = ignoreEverythingLayer;
                 }
             }
         }
@@ -676,14 +708,13 @@ public class Ball : MonoBehaviour
                         isTargetHitMoving = target.IsMoving(targetHitIndex);
                         targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
 
-                        Physics2D.IgnoreLayerCollision(10, 11);
                         invulnerable = true;
                         rigidbody.velocity = Vector2.zero;
                         rigidbody.angularVelocity = 0;
                         shouldAbsorb = true;
                         ShouldShrink = true;
                         firstTriggerCollision = false;
-                        cantCollide = true;
+                        gameObject.layer = ignoreEverythingLayer;
                     }
                 }
             }
@@ -707,14 +738,13 @@ public class Ball : MonoBehaviour
                             isTargetHitMoving = target.IsMoving(targetHitIndex);
                             targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
 
-                            Physics2D.IgnoreLayerCollision(10, 11);
                             invulnerable = true;
                             rigidbody.velocity = Vector2.zero;
                             rigidbody.angularVelocity = 0;
                             shouldAbsorb = true;
                             ShouldShrink = true;
                             firstTriggerCollision = false;
-                            cantCollide = true;
+                            gameObject.layer = ignoreEverythingLayer;
                         }
                     }
                 }

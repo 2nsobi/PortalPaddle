@@ -137,24 +137,28 @@ public class OtherGameModesManager : MonoBehaviour {
                 currentGameMode = gameMode.PlusOne;
 
                 obSpawner.SetGameMode(gameMode.PlusOne);
+                ballC.SetGameMode(gameMode.PlusOne);                
                 break;
 
             case gameMode.Deadeye:
                 currentGameMode = gameMode.Deadeye;
 
                 obSpawner.SetGameMode(gameMode.Deadeye);
+                ballC.SetGameMode(gameMode.Deadeye);
                 break;
 
             case gameMode.Clairvoyance:
                 currentGameMode = gameMode.Clairvoyance;
 
                 obSpawner.SetGameMode(gameMode.Clairvoyance);
+                ballC.SetGameMode(gameMode.Clairvoyance);
                 break;
 
             case gameMode.None:
                 currentGameMode = gameMode.None;
 
                 obSpawner.SetGameMode(gameMode.None);
+                ballC.SetGameMode(gameMode.None);
                 break;
         }
     }

@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4457071124599716}
   - component: {fileID: 212507458492111250}
   - component: {fileID: 61748491391749592}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wallE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 4009877700090040}
   - component: {fileID: 212287011398287068}
   - component: {fileID: 61214524801682096}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: wallW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -125,7 +125,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 10.8}
+  m_Size: {x: 2, y: 12}
   m_EdgeRadius: 0
 --- !u!61 &61748491391749592
 BoxCollider2D:
@@ -139,7 +139,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -150,7 +150,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2, y: 10.8}
+  m_Size: {x: 2, y: 12}
   m_EdgeRadius: 0
 --- !u!212 &212287011398287068
 SpriteRenderer:
