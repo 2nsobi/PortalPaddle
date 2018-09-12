@@ -223,6 +223,8 @@ public class GameManager : MonoBehaviour
             {
                 extraBall = false;
                 extraBallSprite.SetActive(false);
+                richochetCount = 0;
+
                 StartCoroutine(ReviveDelay());
             }
             canEndGame = false;

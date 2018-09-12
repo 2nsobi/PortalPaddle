@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class GameMode_Plus1 : MonoBehaviour
 {
-    public float targetTravelSpeed;
-
     Transform wallW;
     Transform wallE;
     BallController ballC;
@@ -16,9 +14,6 @@ public class GameMode_Plus1 : MonoBehaviour
 
     Coroutine spawnBalls;
     int balls2Spawn;
-    int tempBalls2Spawn;
-    float spawnHeight;
-    Vector2 randomPos;
 
     void Start()
     {
@@ -28,27 +23,53 @@ public class GameMode_Plus1 : MonoBehaviour
         LG = LevelGenerator.Instance;
         obSpawner = ObstacleSpawner.Instance;
 
+        ballC.CreateQOfBalls();
+
         wallW = transform.Find("wallW");
         wallE = transform.Find("wallE");
-
-        spawnHeight = Camera.main.orthographicSize + 0.25f;
     }
 
     private void OnEnable()
     {
         OtherGameModesManager.GameModeStarted += PlusOneStarted;
         ObstacleSpawner.ObstacleSet += ObstacleSet;
+        Ball.AbsorbDone += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDone;
     }
 
     private void OnDisable()
     {
         OtherGameModesManager.GameModeStarted -= PlusOneStarted;
         ObstacleSpawner.ObstacleSet -= ObstacleSet;
+        Ball.AbsorbDone -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+    }
+
+    IEnumerator SpawnBalls()
+    {
+        for(int i = 0; i < balls2Spawn; i++)
+        {
+            print("basd");
+            ballC.SpawnQuickBall();
+            yield return new WaitForSeconds(0.6f);
+        }
     }
 
     void PlusOneStarted()
     {
+        balls2Spawn = 6;
+
         obSpawner.SpawnObstacle();
+    }
+
+    void ObstacleSet()
+    {
+        StartCoroutine(SpawnBalls());
+    }
+    
+    void AbsorbDone()
+    {
+
     }
 
     public int NumberOfBalls2Spawn
@@ -57,10 +78,5 @@ public class GameMode_Plus1 : MonoBehaviour
         {
             return balls2Spawn;
         }
-    }
-
-    void ObstacleSet()
-    {
-        print("obstalce set");
     }
 }

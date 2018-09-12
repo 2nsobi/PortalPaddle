@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
     public float CameraShakeDuration;
     public GameObject[] ballPrefabs;
 
-    TargetController target;
+    TargetController targetC;
     GameObject ballSpawner;
     LevelGenerator LG;
     GameManager game;
@@ -39,6 +39,9 @@ public class BallController : MonoBehaviour
     Material grayScaleMat;
     OtherGameModesManager.gameMode currentGameMode;
     bool fade2GameMode = false;
+    float offScreenSpawnHeight;
+    float spawnHeight;
+    Queue<Ball> ballsQ = new Queue<Ball>();
 
     public static BallController Instance;
 
@@ -46,8 +49,11 @@ public class BallController : MonoBehaviour
     {
         Instance = this;
         mainCam = Camera.main;
+
         ballSpawner = GameObject.Find("BallSpawner");
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
+        DontDestroyOnLoad(ballSpawner);
+
         startSpeed = initialSpeed;
 
         balls = new Ball[ballPrefabs.Length];
@@ -70,7 +76,7 @@ public class BallController : MonoBehaviour
     {
         //whenever you are retrieving a singleton of another class make sure it is after the singleton is creaeted in that class
         //So pretty much always create a singleton in awake and then retrieve it in start
-        target = TargetController.Instance;
+        targetC = TargetController.Instance;
         game = GameManager.Instance;
         LG = LevelGenerator.Instance;
         obSpawner = ObstacleSpawner.Instance;
@@ -79,6 +85,8 @@ public class BallController : MonoBehaviour
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
 
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
+
+        offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
     }
 
     public int Link2BallItem(string name)
@@ -181,7 +189,7 @@ public class BallController : MonoBehaviour
                 {
                     whiteFlashCG.alpha = 1;
                     LG.GoBack2StartLvl(); //sent to levelgenerator
-                    target.ResetTargets(); //sent to targetcontroller
+                    targetC.ResetTargets(); //sent to targetcontroller
                     startSpeed = initialSpeed;
                     grayScaleMat.SetFloat("_EffectAmount", 0);
                     fadeBack = true;
@@ -256,7 +264,7 @@ public class BallController : MonoBehaviour
 
     void TransitionDone()
     {
-        RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
+        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, startPos.y);
 
         tempSpeed = startSpeed;
         tempBoostSpeed = boostSpeed;
@@ -269,7 +277,7 @@ public class BallController : MonoBehaviour
 
     void Revive()
     {
-        RandomXPos = new Vector2(target.RandomSpawnAreaXRange, startPos.y);
+        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
         balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
@@ -320,10 +328,72 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public void SpawnQuickBall(float initialVel, float boostVel, Vector2 position, bool wrapping)
+    public bool SpawnQuickBall()
     {
-        balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(initialVel, boostVel, absorbSpeed, position, Quaternion.Euler(0, 0, 0), true);
+        tempSpeed = startSpeed;
+        tempBoostSpeed = boostSpeed;
+
+        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, spawnHeight);
+
+        Ball ball2Spawn = ballsQ.Dequeue();
+
+        while (ball2Spawn.isActiveAndEnabled)
+        {
+            ballsQ.Enqueue(ball2Spawn);
+
+            for (int i = 0; i < ballsQ.Count; i++)
+            {
+                ball2Spawn = ballsQ.Dequeue();
+
+                if (!ball2Spawn.isActiveAndEnabled)
+                {
+                    ball2Spawn.gameObject.SetActive(true);
+                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+                    ballsQ.Enqueue(ball2Spawn);
+
+                    return true;
+                }
+            }
+            ballsQ.Enqueue(ball2Spawn);
+            return false;
+        }
+        ball2Spawn.gameObject.SetActive(true);
+        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+        ballsQ.Enqueue(ball2Spawn);
+
+        return true;
+    }
+
+    public void SetGameMode(OtherGameModesManager.gameMode gameMode)
+    {
+        switch (gameMode)
+        {
+            case OtherGameModesManager.gameMode.PlusOne:
+                currentGameMode = OtherGameModesManager.gameMode.PlusOne;
+
+                spawnHeight = offScreenSpawnHeight;
+                break;
+
+            case OtherGameModesManager.gameMode.Deadeye:
+                currentGameMode = OtherGameModesManager.gameMode.Deadeye;
+
+                spawnHeight = offScreenSpawnHeight;
+                break;
+
+            case OtherGameModesManager.gameMode.Clairvoyance:
+                currentGameMode = OtherGameModesManager.gameMode.Clairvoyance;
+
+                spawnHeight = startPos.y;
+                break;
+
+            case OtherGameModesManager.gameMode.None:
+                currentGameMode = OtherGameModesManager.gameMode.None;
+
+                spawnHeight = startPos.y;
+                break;
+        }
     }
 
     public void Fade2GameMode()
@@ -333,8 +403,15 @@ public class BallController : MonoBehaviour
         fade2GameMode = true;
     }
 
-    public void CreateLotsOfBalls()
+    public void CreateQOfBalls()
     {
+        for (int i = 0; i < 30; i++)
+        {
+            GameObject go = Instantiate(ballPrefabs[selectedBallIndex]);
 
+            go.SetActive(false);
+
+            ballsQ.Enqueue(go.GetComponent<Ball>());
+        }
     }
 }
