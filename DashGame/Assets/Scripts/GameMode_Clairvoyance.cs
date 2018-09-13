@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GameMode_Clairvoyance : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		
 	}
 	

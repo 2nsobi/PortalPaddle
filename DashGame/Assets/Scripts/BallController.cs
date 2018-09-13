@@ -32,18 +32,22 @@ public class BallController : MonoBehaviour
     bool fadeBack = false;
     bool pauseAllCoroutines = false;
     int selectedBallIndex;
-    Queue<Ball> qOfBalls;
     Ball[] balls;
     float tempSpeed, tempBoostSpeed;
     bool isGray = false;
     Material grayScaleMat;
-    OtherGameModesManager.gameMode currentGameMode;
+    int currentGameMode = 0;
     bool fade2GameMode = false;
     float offScreenSpawnHeight;
     float spawnHeight;
     Queue<Ball> ballsQ = new Queue<Ball>();
+    int balls2Absorb = 0;
+    bool playedOnce = false;
 
     public static BallController Instance;
+
+    public delegate void BallCDelegate();
+    public static event BallCDelegate KillYourself;
 
     private void Awake()
     {
@@ -216,8 +220,21 @@ public class BallController : MonoBehaviour
                 {
                     whiteFlashCG.alpha = 1;
                     obSpawner.SetGameModeBackground();
-                    gameModeManager.SetPageState(OtherGameModesManager.pageState.Game);
+                    gameModeManager.SetPageState(OtherGameModesManager.pageState.Game);                 
                     startSpeed = initialSpeed;
+
+                    obSpawner.EndGame();
+                    targetC.ResetTargets();
+
+                    if (currentGameMode == 1)
+                    {
+                        if (playedOnce)
+                        {
+                            DisableBallsInQ();
+                        }
+                        playedOnce = true;
+                    }
+
                     fadeBack = true;
                 }
             }
@@ -227,7 +244,7 @@ public class BallController : MonoBehaviour
                 if (whiteFlashCG.alpha <= 0)
                 {
                     whiteFlashCG.alpha = 0;
-                    gameModeManager.StartOtherGameMode();
+                    gameModeManager.StartGameMode();
                     fade2GameMode = false;
                     fadeBack = false;
                 }
@@ -371,26 +388,30 @@ public class BallController : MonoBehaviour
         switch (gameMode)
         {
             case OtherGameModesManager.gameMode.PlusOne:
-                currentGameMode = OtherGameModesManager.gameMode.PlusOne;
+                currentGameMode = 1;
 
+                playedOnce = false;
                 spawnHeight = offScreenSpawnHeight;
                 break;
 
             case OtherGameModesManager.gameMode.Deadeye:
-                currentGameMode = OtherGameModesManager.gameMode.Deadeye;
+                currentGameMode = 2;
 
+                playedOnce = false;
                 spawnHeight = offScreenSpawnHeight;
                 break;
 
             case OtherGameModesManager.gameMode.Clairvoyance:
-                currentGameMode = OtherGameModesManager.gameMode.Clairvoyance;
+                currentGameMode = 3;
 
+                playedOnce = false;
                 spawnHeight = startPos.y;
                 break;
 
             case OtherGameModesManager.gameMode.None:
-                currentGameMode = OtherGameModesManager.gameMode.None;
+                currentGameMode = 0;
 
+                playedOnce = false;
                 spawnHeight = startPos.y;
                 break;
         }
@@ -413,5 +434,39 @@ public class BallController : MonoBehaviour
 
             ballsQ.Enqueue(go.GetComponent<Ball>());
         }
+    }
+
+    public void DisableBallsInQ()
+    {
+        try
+        {
+            KillYourself();
+        }
+        catch (System.NullReferenceException) { }
+    }
+
+    public void ShrinkTarget(int targetIndex)
+    {
+        if (currentGameMode == 1)
+        {
+            print(balls2Absorb);
+            if (balls2Absorb>1)
+            {
+                balls2Absorb--;
+            }
+            else
+            {
+                targetC.ShrinkTarget2(targetIndex); // ShrinkTarget2 used for other game modes to make transitions less weird
+            }
+        }
+        else
+        {
+            targetC.ShrinkTarget(targetIndex);
+        }
+    }
+
+    public void SetBalls2Absorb(int balls)
+    {
+        balls2Absorb = balls;
     }
 }
