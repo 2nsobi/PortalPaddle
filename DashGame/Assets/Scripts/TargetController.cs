@@ -182,8 +182,10 @@ public class TargetController : MonoBehaviour
 
     void GameOverConfirmed()
     {
-        targets[0].transform.parent = null;
-        targets[1].transform.parent = null;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            targets[i].transform.parent = null;
+        }
     }
 
     public void ResetTargets()
@@ -248,5 +250,10 @@ public class TargetController : MonoBehaviour
     public void ShrinkTarget(int targetIndex)
     {
         targets[targetIndex].Shrink();
+    }
+
+    public void ShrinkTarget2(int targetIndex) //used for other game modes to make transitions less weird
+    {
+        targets[targetIndex].Shrink2();
     }
 }

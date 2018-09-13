@@ -161,6 +161,8 @@ public class Ball : MonoBehaviour
 
     private void OnEnable()
     {
+        BallController.KillYourself += DieImmediately;
+
         rigidbody.simulated = true;
         SwitchSpriteColor(false);
         ShouldShrink = false;
@@ -176,6 +178,11 @@ public class Ball : MonoBehaviour
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
+    }
+
+    private void OnDisable()
+    {
+        BallController.KillYourself -= DieImmediately;
     }
 
     void SwitchSpriteColor(bool toBoostColor)
@@ -474,6 +481,12 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public void DieImmediately()
+    {
+        gameObject.layer = ignoreEverythingLayer;
+        GoAway();
+    }
+
     public void GoAway()
     {
         for (int i = 0; i < mainMods.Length; i++)
@@ -548,14 +561,14 @@ public class Ball : MonoBehaviour
                     wallHit = false;
                     wrappedAround = false;
 
+                    ballC.ShrinkTarget(targetHitIndex); // make sure you call this before absorbdone
                     AbsorbDoneAndRichochet();
-                    target.ShrinkTarget(targetHitIndex);
                     return;
                 }
                 else
                 {
+                    ballC.ShrinkTarget(targetHitIndex); // make sure you call this before absorbdone
                     AbsorbDone();
-                    target.ShrinkTarget(targetHitIndex);
                     return;
                 }
             }

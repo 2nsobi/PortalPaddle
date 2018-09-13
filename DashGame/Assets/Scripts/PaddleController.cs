@@ -301,6 +301,7 @@ public class PaddleController : MonoBehaviour
         {
             particles.SetActive(false);
         }
+        paddleCollider.gameObject.SetActive(false);
     }
 
     public void SetPauseButtonRect(RectTransform rect)

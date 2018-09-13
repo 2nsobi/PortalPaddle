@@ -122,8 +122,6 @@ public class ObstacleSpawner : MonoBehaviour {
             Instance = this;
         }
 
-        levelOffset = new Vector2(0, Camera.main.orthographicSize+5.8f); //5.8 will always make sure the obstacle is fully off screen no matter the camera height / aspect ratio
-
         PlusOneGameModeC = GetComponent<GameMode_Plus1>();
         DeadeyeGameModeC = GetComponent<GameMode_Deadeye>();
         ClairvoyanceGameModeC = GetComponent<GameMode_Clairvoyance>();
@@ -206,6 +204,8 @@ public class ObstacleSpawner : MonoBehaviour {
             Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
             dontMoveWalls = true;
         }
+
+        levelOffset = new Vector2(0, Camera.main.orthographicSize + 5.8f + 0.5f); //5.8 will always make sure the obstacle is fully off screen no matter the camera height / aspect ratio
     }
 
     public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
@@ -284,9 +284,11 @@ public class ObstacleSpawner : MonoBehaviour {
 
     public void SpawnObstacle()
     {
-        nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
-
-        nextObstacle.gameObject.SetActive(true);
+        if (nextObstacle == null)
+        {
+            nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
+            nextObstacle.gameObject.SetActive(true);
+        }
 
         moveInObstacle = true;
     }
@@ -294,6 +296,21 @@ public class ObstacleSpawner : MonoBehaviour {
     public void DespawnObstacle()
     {
         moveOutObstacle = true;
+    }
+
+    public void EndGame()
+    {
+        if (nextObstacle != null)
+        {
+            nextObstacle.gameObject.SetActive(false);
+            nextObstacle = null;
+        }
+
+        if (currentObstacle != null)
+        {
+            currentObstacle.gameObject.SetActive(false);
+            currentObstacle = null;
+        }
     }
 
     private void FixedUpdate()
@@ -314,6 +331,9 @@ public class ObstacleSpawner : MonoBehaviour {
                     moveInObstacle = false;
 
                     currentObstacle = nextObstacle;
+
+                    nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
+                    nextObstacle.gameObject.SetActive(true);
 
                     ObstacleSet();
                 }

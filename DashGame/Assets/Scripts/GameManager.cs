@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour
     AdManager ads;
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
-    bool updateGems = false;
 
     public static GameManager Instance;
 
@@ -202,6 +201,11 @@ public class GameManager : MonoBehaviour
         Ball.PlayerMissed -= PlayerMissed;
         Ball.AbsorbDone -= AbsorbDone;
         Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
+
+        ZPlayerPrefs.SetInt("gems", (int)gems);
+        ZPlayerPrefs.SetInt("HighScore", highScore);
+
+        ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
     }
 
     void PlayerMissed()
@@ -430,11 +434,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartUpdatingGems()
-    {
-        updateGems = true;
-    }
-
     public void StartGame()
     {
         ShowGameModeButton(false);
@@ -575,14 +574,13 @@ public class GameManager : MonoBehaviour
     IEnumerator DisableReplayButon()
     {
         replayButton.interactable = false;
-        for (float i = 0.0f; i < 0.8f; i += 0.1f)//set this coroutine to be the length of the swipeIn anim
+
+        yield return new WaitForSeconds(0.8f);//set this coroutine to be the length of the swipeIn anim
+        while (pauseAllCoroutines)
         {
-            yield return new WaitForSeconds(0.1f);
-            while (pauseAllCoroutines)
-            {
-                yield return null;
-            }
+            yield return null;
         }
+
         gemsOnScreen = true;
         skipScoreReviewButton.interactable = false;
         replayButton.interactable = true;

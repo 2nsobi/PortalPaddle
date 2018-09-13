@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OtherGameModesManager : MonoBehaviour {
+public class OtherGameModesManager : MonoBehaviour
+{
 
     public static OtherGameModesManager Instance;
 
@@ -18,14 +19,25 @@ public class OtherGameModesManager : MonoBehaviour {
     public Button DeadeyeButton;
     public Button ClairvoyanceButton;
     public RectTransform pauseButtonRect;
+    public Text scoreText;
+    public Text highScoreText;
+    public Text gameOverScore; //score when you loose for that run
+    public GameObject newHighScoreImage;
+    public Button skipScoreReviewButton;
+    public Button replayButton;
+    public Button GoBack2ModeSelectButton;
+    public Animator scoreReviewAnimC;
 
     GameManager game;
     ObstacleSpawner obSpawner;
     PaddleController Paddle;
     BallController ballC;
 
-    bool gemsOnScreen = false;
+    Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
+    Text scoreReviewGems;
+
+    bool gemsOnScreen = false;
     bool gameModeRunning = false;
     bool pauseAllCoroutines = false;
     bool paused = false;
@@ -33,6 +45,12 @@ public class OtherGameModesManager : MonoBehaviour {
     int PlusOneHighScore;
     int DeadeyeHighScore;
     int ClairvoyanceHighScore;
+    int score = 0;
+    float t = 0;
+    float tempGems = 0;
+    float gems = 0;
+    int newGems;
+    int activeHighScore;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
@@ -49,6 +67,11 @@ public class OtherGameModesManager : MonoBehaviour {
         PlusOneHighScore = ZPlayerPrefs.GetInt("PlusOneHighScore");
         DeadeyeHighScore = ZPlayerPrefs.GetInt("DeadeyeHighScore");
         ClairvoyanceHighScore = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
+
+        gems = ZPlayerPrefs.GetInt("gems");
+
+        scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();
+        scoreReviewGems.text = gems.ToString();
     }
 
     private void Start()
@@ -60,6 +83,115 @@ public class OtherGameModesManager : MonoBehaviour {
         Paddle = PaddleController.Instance;
         Paddle.SetPauseButtonRect(pauseButtonRect);
         DeactivatePaddle();
+    }
+
+    public void Scored()
+    {
+        score++;
+        scoreText.text = score.ToString();
+    }
+
+    public void Missed()
+    {
+        DeactivatePaddle();
+        GoToScoreReview();
+    }
+
+    private void Update()
+    {
+        if (gemsOnScreen)
+        {
+            t += 0.1f * Time.deltaTime;
+            tempGems = Mathf.Lerp(tempGems, newGems, t);
+            if (tempGems == newGems)
+            {
+                gemsOnScreen = false;
+            }
+            scoreReviewGems.text = Mathf.RoundToInt(tempGems).ToString();
+        }
+    }
+
+    public void GoToScoreReview()
+    {
+        t = 0.0f;
+        tempGems = gems;
+        newGems = (int)gems + score;
+        scoreReviewGems.text = gems.ToString();
+        gems += score;
+        if (score > ActiveHighScore())
+        {
+            ActiveHighScore(score);
+            newHighScoreImage.SetActive(true);
+        }
+        else
+        {
+            newHighScoreImage.SetActive(false);
+        }
+        gameOverScore.text = score.ToString();
+        highScoreText.text = ActiveHighScore().ToString();
+
+        skipScoreReviewButton.interactable = true;
+        disableReplayButtonC = StartCoroutine(DisableReplayButon());
+        SetPageState(pageState.ScoreReview);
+    }
+
+    IEnumerator DisableReplayButon()
+    {
+        replayButton.interactable = false;
+        GoBack2ModeSelectButton.interactable = false;
+
+        yield return new WaitForSeconds(0.8f);//set this coroutine to be the length of the swipeIn anim
+        while (pauseAllCoroutines)
+        {
+            yield return null;
+        }
+
+        gemsOnScreen = true;
+        skipScoreReviewButton.interactable = false;
+        replayButton.interactable = true;
+        GoBack2ModeSelectButton.interactable = true;
+    }
+
+    public void skipScoreReviewAnim()
+    {
+        skipScoreReviewButton.interactable = false;
+        StopCoroutine(disableReplayButtonC);
+        replayButton.interactable = true;
+        GoBack2ModeSelectButton.interactable = true;
+        scoreReviewAnimC.SetTrigger("skipAnim");
+        gemsOnScreen = true;
+    }
+
+    public int ActiveHighScore(int newHS = 0)
+    {
+        switch (activeHighScore)
+        {
+            case 1:
+                if (newHS > 0)
+                {
+                    PlusOneHighScore = newHS;
+                }
+
+                return PlusOneHighScore;
+
+            case 2:
+                if (newHS > 0)
+                {
+                    DeadeyeHighScore = newHS;
+                }
+
+                return DeadeyeHighScore;
+
+            case 3:
+                if (newHS > 0)
+                {
+                    ClairvoyanceHighScore = newHS;
+                }
+
+                return ClairvoyanceHighScore;
+        }
+
+        return 0;
     }
 
     public enum pageState { Game, StartPage, Paused, CountdownPage, ScoreReview };
@@ -90,6 +222,7 @@ public class OtherGameModesManager : MonoBehaviour {
                 ScoreReview.SetActive(false);
 
                 gemsOnScreen = false;
+
                 break;
 
 
@@ -137,7 +270,9 @@ public class OtherGameModesManager : MonoBehaviour {
                 currentGameMode = gameMode.PlusOne;
 
                 obSpawner.SetGameMode(gameMode.PlusOne);
-                ballC.SetGameMode(gameMode.PlusOne);                
+                ballC.SetGameMode(gameMode.PlusOne);
+
+                activeHighScore = 1;
                 break;
 
             case gameMode.Deadeye:
@@ -145,6 +280,8 @@ public class OtherGameModesManager : MonoBehaviour {
 
                 obSpawner.SetGameMode(gameMode.Deadeye);
                 ballC.SetGameMode(gameMode.Deadeye);
+
+                activeHighScore = 2;
                 break;
 
             case gameMode.Clairvoyance:
@@ -152,6 +289,8 @@ public class OtherGameModesManager : MonoBehaviour {
 
                 obSpawner.SetGameMode(gameMode.Clairvoyance);
                 ballC.SetGameMode(gameMode.Clairvoyance);
+
+                activeHighScore = 3;
                 break;
 
             case gameMode.None:
@@ -191,8 +330,19 @@ public class OtherGameModesManager : MonoBehaviour {
         SetGameModeSelectButtons(true);
     }
 
-    public void StartOtherGameMode()
+    public void Replay()
     {
+        firstStart = true;
+        scoreReviewAnimC.SetTrigger("swipeOut");
+        ballC.Fade2GameMode();
+
+        score = 0;
+        scoreText.text = score.ToString();
+    }
+
+    public void StartGameMode()
+    {
+        firstStart = true;
         Time.timeScale = 0;
         SetPageState(pageState.CountdownPage);
         pauseCoroutine = StartCoroutine(Countdown());

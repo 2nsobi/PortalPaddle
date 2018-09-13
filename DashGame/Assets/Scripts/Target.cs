@@ -33,6 +33,14 @@ public class Target : MonoBehaviour
         shrink = true;
     }
 
+    public void Shrink2() //used for other game modes to make transitions less weird
+    {
+        transform.parent = null;
+        travelOnPath = false;
+        growShrink = false;
+        shrink = true;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         hit = true;

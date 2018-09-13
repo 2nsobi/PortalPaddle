@@ -11,9 +11,12 @@ public class GameMode_Plus1 : MonoBehaviour
     AdManager ads;
     LevelGenerator LG;
     ObstacleSpawner obSpawner;
+    OtherGameModesManager gameModeManager;
 
     Coroutine spawnBalls;
     int balls2Spawn;
+    int tempBalls2Spawn;
+    bool gameOver = false;
 
     void Start()
     {
@@ -22,6 +25,7 @@ public class GameMode_Plus1 : MonoBehaviour
         ads = AdManager.Instance;
         LG = LevelGenerator.Instance;
         obSpawner = ObstacleSpawner.Instance;
+        gameModeManager = OtherGameModesManager.Instance;
 
         ballC.CreateQOfBalls();
 
@@ -35,6 +39,7 @@ public class GameMode_Plus1 : MonoBehaviour
         ObstacleSpawner.ObstacleSet += ObstacleSet;
         Ball.AbsorbDone += AbsorbDone;
         Ball.AbsorbDoneAndRichochet += AbsorbDone;
+        Ball.PlayerMissed += PlayerMissed;
     }
 
     private void OnDisable()
@@ -43,33 +48,63 @@ public class GameMode_Plus1 : MonoBehaviour
         ObstacleSpawner.ObstacleSet -= ObstacleSet;
         Ball.AbsorbDone -= AbsorbDone;
         Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+        Ball.PlayerMissed -= PlayerMissed;
     }
 
     IEnumerator SpawnBalls()
     {
         for(int i = 0; i < balls2Spawn; i++)
         {
-            print("basd");
             ballC.SpawnQuickBall();
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(0.8f);
         }
     }
 
     void PlusOneStarted()
     {
-        balls2Spawn = 6;
+        gameOver = false;
+
+        balls2Spawn = 1;
+        tempBalls2Spawn = balls2Spawn;
+
+        ballC.SetBalls2Absorb(balls2Spawn);
 
         obSpawner.SpawnObstacle();
     }
 
     void ObstacleSet()
     {
-        StartCoroutine(SpawnBalls());
+        spawnBalls = StartCoroutine(SpawnBalls());
     }
     
     void AbsorbDone()
     {
+        if (!gameOver)
+        {
+            tempBalls2Spawn--;
 
+            if (tempBalls2Spawn == 0)
+            {
+                gameModeManager.Scored();
+
+                balls2Spawn++;
+                tempBalls2Spawn = balls2Spawn;
+
+                ballC.SetBalls2Absorb(balls2Spawn);
+
+                obSpawner.DespawnObstacle();
+            }
+        }
+    }
+
+    void PlayerMissed()
+    {
+        if (!gameOver)
+        {
+            gameOver = true;
+            StopCoroutine(spawnBalls);
+            gameModeManager.Missed();
+        }
     }
 
     public int NumberOfBalls2Spawn
