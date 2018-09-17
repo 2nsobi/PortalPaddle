@@ -5433,10 +5433,10 @@ MonoBehaviour:
     size: 2
     easy: 0
   - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
-    size: 0
+    size: 2
     easy: 0
   - prefab: {fileID: 1503209895976950, guid: 3b15005f23b2f294dbf8139b0ae6eb75, type: 2}
-    size: 0
+    size: 2
     easy: 1
 --- !u!114 &209706810
 MonoBehaviour:
@@ -11075,8 +11075,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: GoToStartPage
+      - m_Target: {fileID: 238818258}
+        m_MethodName: GoBack2ModeSelect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -126,6 +126,8 @@ public class Target : MonoBehaviour
 
     public void StopUsing()
     {
+        transform.parent = null;
+
         growShrink = false;
         travelOnPath = false;
         hit = false;

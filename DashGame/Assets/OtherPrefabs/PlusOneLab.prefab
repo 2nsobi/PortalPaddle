@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4054413609743276}
   - component: {fileID: 212731081767650916}
   - component: {fileID: 61177932825182520}
-  m_Layer: 10
+  m_Layer: 18
   m_Name: wallE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 4068609857745714}
   - component: {fileID: 212093090736000562}
   - component: {fileID: 61734674314797742}
-  m_Layer: 10
+  m_Layer: 18
   m_Name: wallW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1826697400047956}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.46694756, y: -0.011897564, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4068609857745714}
@@ -276,8 +276,8 @@ SpriteRenderer:
   m_SortingLayerID: 1329292869
   m_SortingLayer: 1
   m_SortingOrder: -2
-  m_Sprite: {fileID: 21300000, guid: 32af25db1e2508b49aa1048f74e6624f, type: 3}
-  m_Color: {r: 1, g: 0.46519184, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 86e26a61c3b50114c9efab423a4ada20, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -302,7 +302,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e095efc9ff5939f418f5b2650d757fe7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -348,7 +348,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e095efc9ff5939f418f5b2650d757fe7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -414,8 +414,8 @@ SpriteRenderer:
   m_SortingLayerID: 1329292869
   m_SortingLayer: 1
   m_SortingOrder: -2
-  m_Sprite: {fileID: 21300000, guid: 32af25db1e2508b49aa1048f74e6624f, type: 3}
-  m_Color: {r: 1, g: 0.46519184, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 86e26a61c3b50114c9efab423a4ada20, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -440,7 +440,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e095efc9ff5939f418f5b2650d757fe7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
