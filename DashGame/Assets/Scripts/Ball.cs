@@ -699,6 +699,11 @@ public class Ball : MonoBehaviour
         {
             if (!invulnerable)
             {
+                if (!shouldBoost)
+                {
+                    GoAway();
+                }
+
                 rigidbody.velocity = Vector2.zero;
                 rigidbody.simulated = false;
                 SetAnimTrigs("ImmediateShrink");

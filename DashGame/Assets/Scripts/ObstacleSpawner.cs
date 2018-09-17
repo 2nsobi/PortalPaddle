@@ -264,7 +264,6 @@ public class ObstacleSpawner : MonoBehaviour {
 
     public void SetGameModeBackground()
     {
-        print(currentGameMode);
         if(currentGameMode == OtherGameModesManager.gameMode.PlusOne)
         {
             plusOneLab.SetActive(true);
@@ -320,7 +319,7 @@ public class ObstacleSpawner : MonoBehaviour {
             if (nextObstacle.transform.position.y < -0.8f)
             {
 
-                nextObstacle.transform.position = Vector2.Lerp(nextObstacle.transform.position, Vector2.zero, Time.deltaTime * 4);
+                nextObstacle.transform.position = Vector2.Lerp(nextObstacle.transform.position, Vector2.zero, Time.deltaTime * 2);
             }
             else
             {

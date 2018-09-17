@@ -75,14 +75,12 @@ public class TargetController : MonoBehaviour
     private void OnEnable()
     {
         GameManager.GameStarted += GameStarted;
-        GameManager.GameOverConfirmed += GameOverConfirmed;
         LevelGenerator.NextLvlGenerated += NextLvlGenerated;
     }
 
     private void OnDisable()
     {
         GameManager.GameStarted -= GameStarted;
-        GameManager.GameOverConfirmed -= GameOverConfirmed;
         LevelGenerator.NextLvlGenerated -= NextLvlGenerated;
     }
 
@@ -177,14 +175,6 @@ public class TargetController : MonoBehaviour
                 targets[i].Spawn(obTransform, RandomPos(), defaultTargetSize, travel, false, obPath, tempSpeed);
                 break;
             }
-        }
-    }
-
-    void GameOverConfirmed()
-    {
-        for (int i = 0; i < targets.Count; i++)
-        {
-            targets[i].transform.parent = null;
         }
     }
 

@@ -76,7 +76,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public delegate void GameDelegate();
-    public static event GameDelegate GameOverConfirmed; //when the game is confirmed to be over the next page is the main menu;
     public static event GameDelegate GameStarted;
     public static event GameDelegate Revive;
     public static event GameDelegate PlusOneStarted;
@@ -549,7 +548,6 @@ public class GameManager : MonoBehaviour
             SetPageState(pageState.StartPage);
         }
         score = 0;
-        GameOverConfirmed();
 
         if (LG.PlayedOnce)
         {

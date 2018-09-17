@@ -43,6 +43,7 @@ public class BallController : MonoBehaviour
     Queue<Ball> ballsQ = new Queue<Ball>();
     int balls2Absorb = 0;
     bool playedOnce = false;
+    OtherGameModesManager.pageState currentPage2Fade2;
 
     public static BallController Instance;
 
@@ -89,6 +90,7 @@ public class BallController : MonoBehaviour
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
 
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
+        print(selectedBallIndex);
 
         offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
     }
@@ -157,6 +159,9 @@ public class BallController : MonoBehaviour
 
     private void OnDisable()
     {
+        ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+        print(ZPlayerPrefs.GetInt("ballInUse"));
+
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
         GameManager.Revive -= Revive;
@@ -192,8 +197,10 @@ public class BallController : MonoBehaviour
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
+
+                    targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
                     LG.GoBack2StartLvl(); //sent to levelgenerator
-                    targetC.ResetTargets(); //sent to targetcontroller
+
                     startSpeed = initialSpeed;
                     grayScaleMat.SetFloat("_EffectAmount", 0);
                     fadeBack = true;
@@ -220,11 +227,11 @@ public class BallController : MonoBehaviour
                 {
                     whiteFlashCG.alpha = 1;
                     obSpawner.SetGameModeBackground();
-                    gameModeManager.SetPageState(OtherGameModesManager.pageState.Game);                 
+                    gameModeManager.SetPageState(currentPage2Fade2);                 
                     startSpeed = initialSpeed;
 
+                    targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
                     obSpawner.EndGame();
-                    targetC.ResetTargets();
 
                     if (currentGameMode == 1)
                     {
@@ -417,8 +424,10 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public void Fade2GameMode()
+    public void Fade2GameMode(OtherGameModesManager.pageState page2Fade2)
     {
+        currentPage2Fade2 = page2Fade2;
+
         whiteFlashCGPanel.color = Color.black;
         whiteFlashCG.alpha = 0;
         fade2GameMode = true;
@@ -449,7 +458,6 @@ public class BallController : MonoBehaviour
     {
         if (currentGameMode == 1)
         {
-            print(balls2Absorb);
             if (balls2Absorb>1)
             {
                 balls2Absorb--;

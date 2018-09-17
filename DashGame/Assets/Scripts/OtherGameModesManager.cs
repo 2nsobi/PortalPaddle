@@ -305,36 +305,43 @@ public class OtherGameModesManager : MonoBehaviour
     public void Go2PlusOne()
     {
         SetGameMode(gameMode.PlusOne);
-        ballC.Fade2GameMode();
+        ballC.Fade2GameMode(pageState.Game);
         SetGameModeSelectButtons(false);
     }
 
     public void Go2Deadeye()
     {
         SetGameMode(gameMode.Deadeye);
-        ballC.Fade2GameMode();
+        ballC.Fade2GameMode(pageState.Game);
         SetGameModeSelectButtons(false);
     }
 
     public void Go2Clairavoyance()
     {
         SetGameMode(gameMode.Clairvoyance);
-        ballC.Fade2GameMode();
+        ballC.Fade2GameMode(pageState.Game);
         SetGameModeSelectButtons(false);
     }
 
     public void GoBack2ModeSelect()
     {
+        GoBack2ModeSelectButton.interactable = false;
+
+        score = 0;
+        scoreText.text = score.ToString();
+
         SetGameMode(gameMode.None);
-        ballC.Fade2GameMode();
+        ballC.Fade2GameMode(pageState.StartPage);
         SetGameModeSelectButtons(true);
     }
 
     public void Replay()
     {
+        replayButton.interactable = false;
+
         firstStart = true;
         scoreReviewAnimC.SetTrigger("swipeOut");
-        ballC.Fade2GameMode();
+        ballC.Fade2GameMode(pageState.Game);
 
         score = 0;
         scoreText.text = score.ToString();
@@ -342,10 +349,17 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void StartGameMode()
     {
+        if (currentGameMode != gameMode.None)
+        {
+            Time.timeScale = 0;
+            SetPageState(pageState.CountdownPage);
+            pauseCoroutine = StartCoroutine(Countdown());
+        }
+
         firstStart = true;
-        Time.timeScale = 0;
-        SetPageState(pageState.CountdownPage);
-        pauseCoroutine = StartCoroutine(Countdown());
+
+        replayButton.interactable = true;
+        GoBack2ModeSelectButton.interactable = true;
     }
 
     public void PauseGame()
@@ -411,6 +425,10 @@ public class OtherGameModesManager : MonoBehaviour
     {
         if (!focus)
         {
+            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
+            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
+            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
+
             pauseAllCoroutines = true;
         }
         else
@@ -423,6 +441,10 @@ public class OtherGameModesManager : MonoBehaviour
     {
         if (pause)
         {
+            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
+            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
+            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
+
             pauseAllCoroutines = true;
         }
         else
@@ -441,5 +463,12 @@ public class OtherGameModesManager : MonoBehaviour
     {
         Paddle.gameObject.SetActive(true);
         Paddle.IsOtherGameModeRunning = true;
+    }
+
+    private void OnDisable()
+    {
+        ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
+        ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
+        ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
     }
 }
