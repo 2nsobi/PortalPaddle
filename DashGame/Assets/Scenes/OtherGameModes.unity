@@ -5299,6 +5299,8 @@ MonoBehaviour:
   DeadeyeLab: {fileID: 1015539081518542, guid: d00e42876a5a5b340b580a5f7408ce63, type: 2}
   ClairvoyanceLab: {fileID: 1526772477538044, guid: bea15795c7862204e99ff2bd53b205c0,
     type: 2}
+  GameOverZoneN: {fileID: 1828455334}
+  GameOverZoneS: {fileID: 249544750}
   targetAspectRatio: {x: 9, y: 16}
   obstacleTextures:
   - tag: lab_gold

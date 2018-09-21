@@ -12,9 +12,11 @@ public class GameMode_Plus1 : MonoBehaviour
     OtherGameModesManager gameModeManager;
 
     Coroutine spawnBalls;
+    Coroutine moveWallsC;
+
     int balls2Spawn;
     int tempBalls2Spawn;
-    bool gameOver = false;
+    bool gameRunning = false;
 
     public static GameMode_Plus1 Instance;
 
@@ -64,7 +66,7 @@ public class GameMode_Plus1 : MonoBehaviour
 
     void PlusOneStarted()
     {
-        gameOver = false;
+        gameRunning = true;
 
         balls2Spawn = 1;
         tempBalls2Spawn = balls2Spawn;
@@ -72,6 +74,8 @@ public class GameMode_Plus1 : MonoBehaviour
         ballC.SetBalls2Absorb(balls2Spawn);
 
         obSpawner.SpawnObstacle();
+
+        moveWallsC = StartCoroutine(MoveWalls());
     }
 
     void ObstacleSet()
@@ -81,7 +85,7 @@ public class GameMode_Plus1 : MonoBehaviour
     
     void AbsorbDone()
     {
-        if (!gameOver)
+        if (gameRunning)
         {
             tempBalls2Spawn--;
 
@@ -101,11 +105,44 @@ public class GameMode_Plus1 : MonoBehaviour
 
     void PlayerMissed()
     {
-        if (!gameOver)
+        if (gameRunning)
         {
-            gameOver = true;
+            gameRunning = false;
             StopCoroutine(spawnBalls);
+            StopCoroutine(moveWallsC);
             gameModeManager.Missed();
+        }
+    }
+
+    IEnumerator MoveWalls()
+    {
+        int num = Random.Range(2, 9);
+
+        bool trigger = true;
+        bool moveWallsNow = false;
+
+        if(num % 2 == 0)
+        {
+            moveWallsNow = true;
+        }
+
+        if (moveWallsNow)
+        {
+            while (gameRunning)
+            {
+                obSpawner.MoveWalls(trigger);
+                yield return new WaitForSeconds(15);
+                trigger = !trigger;
+            }
+        }
+        else
+        {
+            while (gameRunning)
+            {
+                yield return new WaitForSeconds(15);
+                obSpawner.MoveWalls(trigger);
+                trigger = !trigger;
+            }
         }
     }
 }

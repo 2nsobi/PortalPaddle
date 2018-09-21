@@ -13,6 +13,7 @@ public class GameMode_Clairvoyance : MonoBehaviour
     Color targetColor = new Color(0.9710112f,0,1,1);
     Coroutine randomizeBallSpeeds;
     Coroutine randomizeTargetSpeeds;
+    Coroutine moveWallsC;
 
     bool firstPlay = true;
     bool gameRunning = false;
@@ -65,6 +66,8 @@ public class GameMode_Clairvoyance : MonoBehaviour
 
         obSpawner.AllowTargets2GrowShrink(true);
         obSpawner.SpawnObstacle();
+
+        moveWallsC = StartCoroutine(MoveWalls());
     }
 
     IEnumerator RandomizeBallSpeeds()
@@ -105,7 +108,40 @@ public class GameMode_Clairvoyance : MonoBehaviour
 
         StopCoroutine(randomizeBallSpeeds);
         StopCoroutine(randomizeTargetSpeeds);
+        StopCoroutine(moveWallsC);
 
         gameRunning = false;
+    }
+
+    IEnumerator MoveWalls()
+    {
+        int num = Random.Range(2, 9);
+
+        bool trigger = true;
+        bool moveWallsNow = false;
+
+        if (num % 2 == 0)
+        {
+            moveWallsNow = true;
+        }
+
+        if (moveWallsNow)
+        {
+            while (gameRunning)
+            {
+                obSpawner.MoveWalls(trigger);
+                yield return new WaitForSeconds(15);
+                trigger = !trigger;
+            }
+        }
+        else
+        {
+            while (gameRunning)
+            {
+                yield return new WaitForSeconds(15);
+                obSpawner.MoveWalls(trigger);
+                trigger = !trigger;
+            }
+        }
     }
 }

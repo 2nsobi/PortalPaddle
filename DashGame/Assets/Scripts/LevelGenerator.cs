@@ -151,6 +151,8 @@ public class LevelGenerator : MonoBehaviour
     public List<SinglePool> obstacles;
     public GameObject StartLvl;
     public GameObject SettingsLvl;
+    public Transform GameOverZoneN;
+    public Transform GameOverZoneS;
     LvlPrefab StartLevel; //for code use
     GameManager game;
     FilterController filterController;
@@ -250,6 +252,9 @@ public class LevelGenerator : MonoBehaviour
             Camera.main.orthographicSize = desiredCameraWidth / Camera.main.aspect;
             dontMoveWalls = true;
         }
+
+        GameOverZoneN.position = new Vector2(0, Camera.main.orthographicSize + 1.725946f);
+        GameOverZoneS.position = new Vector2(0, -(Camera.main.orthographicSize + 1.725946f));
     }
 
     public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
