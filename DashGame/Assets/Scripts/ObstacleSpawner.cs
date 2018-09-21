@@ -80,14 +80,14 @@ public class ObstacleSpawner : MonoBehaviour
     public GameObject PlusOneLab;
     public GameObject DeadeyeLab;
     public GameObject ClairvoyanceLab;
+    public Transform GameOverZoneN;
+    public Transform GameOverZoneS;
 
     public Vector2 targetAspectRatio;
     public List<ObstacleTexture> obstacleTextures;
     public static List<ObstacleTexture> obstacletextures;
     public List<SinglePool> obstacles;
     static Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
-
-    public static ObstacleSpawner Instance;
 
     public delegate void ObSpawnerDelegate();
     public static event ObSpawnerDelegate ObstacleSet;
@@ -106,6 +106,19 @@ public class ObstacleSpawner : MonoBehaviour
     Vector2 levelOffset;
     TargetController targetC;
     GameObject currentLab;
+    Vector2 wallOffScreenPosW;
+    Vector2 wallOffScreenPosE;
+    Vector2 wallOnScreenPosW;
+    Vector2 wallOnScreenPosE;
+    Transform currentWallW;
+    Transform currentWallE;
+
+    Transform wallW1;
+    Transform wallE1;
+    Transform wallW2;
+    Transform wallE2;
+    Transform wallW3;
+    Transform wallE3;
 
     int ezObstacleCount = 0;
     int onlyMotionObCount = 0;
@@ -124,6 +137,10 @@ public class ObstacleSpawner : MonoBehaviour
     bool targetsGrowShrink = false;
     bool targetsAlwaysGrowShrink = false;
     bool continuous = false; //should obstacles be continuously spawned
+    bool moveWalls = false;
+    bool moveWallsOut = false;
+
+    public static ObstacleSpawner Instance;
 
     private void Awake()
     {
@@ -144,24 +161,30 @@ public class ObstacleSpawner : MonoBehaviour
 
         plusOneLab = Instantiate(PlusOneLab);
         plusOneLab.SetActive(false);
-        Transform wallW3 = plusOneLab.transform.Find("wallW");
-        Transform wallE3 = plusOneLab.transform.Find("wallE");
-        wallW3.localPosition = new Vector3(-distanceDiff4Walls, wallW3.localPosition.y, 0);
-        wallE3.localPosition = new Vector3(distanceDiff4Walls, wallE3.localPosition.y, 0);
+        wallW1 = plusOneLab.transform.Find("wallW");
+        wallE1 = plusOneLab.transform.Find("wallE");
+        wallW1.localPosition = new Vector3(-distanceDiff4Walls, 0, 0);
+        wallE1.localPosition = new Vector3(distanceDiff4Walls, 0, 0);
 
         deadeyeLab = Instantiate(DeadeyeLab);
         deadeyeLab.SetActive(false);
-        Transform wallW4 = deadeyeLab.transform.Find("wallW");
-        Transform wallE4 = deadeyeLab.transform.Find("wallE");
-        wallW4.localPosition = new Vector3(-distanceDiff4Walls, wallW4.localPosition.y, 0);
-        wallE4.localPosition = new Vector3(distanceDiff4Walls, wallE4.localPosition.y, 0);
+        wallW2 = deadeyeLab.transform.Find("wallW");
+        wallE2 = deadeyeLab.transform.Find("wallE");
+        wallW2.localPosition = new Vector3(-distanceDiff4Walls, 0, 0);
+        wallE2.localPosition = new Vector3(distanceDiff4Walls, 0, 0);
 
         clairvoyanceLab = Instantiate(ClairvoyanceLab);
         clairvoyanceLab.SetActive(false);
-        Transform wallW5 = clairvoyanceLab.transform.Find("wallW");
-        Transform wallE5 = clairvoyanceLab.transform.Find("wallE");
-        wallW5.localPosition = new Vector3(-distanceDiff4Walls, wallW5.localPosition.y, 0);
-        wallE5.localPosition = new Vector3(distanceDiff4Walls, wallE5.localPosition.y, 0);
+        wallW3 = clairvoyanceLab.transform.Find("wallW");
+        wallE3 = clairvoyanceLab.transform.Find("wallE");
+        wallW3.localPosition = new Vector3(-distanceDiff4Walls, 0, 0);
+        wallE3.localPosition = new Vector3(distanceDiff4Walls, 0, 0);
+
+        wallOnScreenPosW = wallW3.localPosition;
+        wallOnScreenPosE = wallE3.localPosition;
+
+        wallOffScreenPosW = new Vector2(-distanceDiff4Walls, GameOverZoneS.position.y - 11.757f);
+        wallOffScreenPosE = new Vector2(distanceDiff4Walls, GameOverZoneS.position.y - 11.757f);
     }
 
     private void Start()
@@ -234,9 +257,12 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         levelOffset = new Vector2(0, Camera.main.orthographicSize + 5.8f + 0.5f); //5.8 will always make sure the obstacle is fully off screen no matter the camera height / aspect ratio
+
+        GameOverZoneN.position = new Vector2(0, Camera.main.orthographicSize + 1.725946f);
+        GameOverZoneS.position = new Vector2(0, -(Camera.main.orthographicSize + 1.725946f));
     }
 
-    public float GetDistanceDifferenceForWalls() //width of a wall is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
+    public float GetDistanceDifferenceForWalls() //width of a wall on screen is a bout 0.116524, and this gives the east wall an X pos of 3.700936 when the target aspect ratio is 9:16
     {
         if (dontMoveWalls)
         {
@@ -256,6 +282,8 @@ public class ObstacleSpawner : MonoBehaviour
                 DeadeyeGameModeC.enabled = false;
                 ClairvoyanceGameModeC.enabled = false;
 
+                currentWallW = wallW1;
+                currentWallE = wallE1;
                 currentObTexture = "lab_gold";
                 currentLab = plusOneLab;
                 excludeObstacles = true;
@@ -268,6 +296,8 @@ public class ObstacleSpawner : MonoBehaviour
                 DeadeyeGameModeC.enabled = true;
                 ClairvoyanceGameModeC.enabled = false;
 
+                currentWallW = wallW2;
+                currentWallE = wallE2;
                 currentObTexture = "lab_darkRed";
                 currentLab = deadeyeLab;
                 excludeObstacles = false;
@@ -280,6 +310,8 @@ public class ObstacleSpawner : MonoBehaviour
                 DeadeyeGameModeC.enabled = false;
                 ClairvoyanceGameModeC.enabled = true;
 
+                currentWallW = wallW3;
+                currentWallE = wallE3;
                 currentObTexture = "lab_poptart";
                 currentLab = clairvoyanceLab;
                 excludeObstacles = false;
@@ -341,6 +373,9 @@ public class ObstacleSpawner : MonoBehaviour
             currentObstacle.gameObject.SetActive(false);
             currentObstacle = null;
         }
+
+        currentWallW.localPosition = wallOnScreenPosW;
+        currentWallE.localPosition = wallOnScreenPosE;
     }
 
     private void FixedUpdate()
@@ -413,6 +448,30 @@ public class ObstacleSpawner : MonoBehaviour
                 else
                 {
                     ObstacleGone();
+                }
+            }
+        }
+
+        if (moveWalls)
+        {
+            if (moveWallsOut)
+            {
+                currentWallW.localPosition = Vector2.MoveTowards(currentWallW.localPosition, wallOffScreenPosW, 5 * Time.deltaTime);
+                currentWallE.localPosition = Vector2.MoveTowards(currentWallE.localPosition, wallOffScreenPosE, 5 * Time.deltaTime);
+
+                if(currentWallW.localPosition.y == wallOffScreenPosW.y)
+                {
+                    moveWalls = false;
+                }
+            }
+            else
+            {
+                currentWallW.localPosition = Vector2.MoveTowards(currentWallW.localPosition, wallOnScreenPosW, 5 * Time.deltaTime);
+                currentWallE.localPosition = Vector2.MoveTowards(currentWallE.localPosition, wallOnScreenPosE, 5 * Time.deltaTime);
+
+                if (currentWallW.localPosition.y == wallOnScreenPosW.y)
+                {
+                    moveWalls = false;
                 }
             }
         }
@@ -656,6 +715,20 @@ public class ObstacleSpawner : MonoBehaviour
         {
             targetsGrowShrink = false;
             targetsAlwaysGrowShrink = false;
+        }
+    }
+
+    public void MoveWalls(bool moveOut)
+    {
+        moveWalls = true;
+
+        if (moveOut)
+        {
+            moveWallsOut = true;
+        }
+        else
+        {
+            moveWallsOut = false;
         }
     }
 }

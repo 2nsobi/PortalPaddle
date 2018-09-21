@@ -13,8 +13,10 @@ public class GameMode_Deadeye : MonoBehaviour
 
     Coroutine startNextRound;
     Coroutine ballDropDelay;
+    Coroutine moveWallsC;
 
     bool firstPlay = true;
+    bool gameRunning = false;
 
     public static GameMode_Deadeye Instance;
 
@@ -51,15 +53,19 @@ public class GameMode_Deadeye : MonoBehaviour
 
     void DeadeyeStarted()
     {
+        gameRunning = true;
+
         if (firstPlay)
         {
             targetC.SetTargetColor(Color.red);
             firstPlay = false;
         }
 
-        ballC.IncreaseDropSpeed(18,20);//(20, 22);
+        ballC.IncreaseDropSpeed(18,22);//(20, 22);
 
         ballDropDelay = StartCoroutine(BallDropDelay());
+
+        moveWallsC = StartCoroutine(MoveWalls());
     }
 
     IEnumerator BallDropDelay()
@@ -91,5 +97,41 @@ public class GameMode_Deadeye : MonoBehaviour
     void PlayerMissed()
     {
         gameModeManager.Missed();
+
+        gameRunning = false;
+
+        StopCoroutine(moveWallsC);
+    }
+
+    IEnumerator MoveWalls()
+    {
+        int num = Random.Range(2, 9);
+
+        bool trigger = true;
+        bool moveWallsNow = false;
+
+        if (num % 2 == 0)
+        {
+            moveWallsNow = true;
+        }
+
+        if (moveWallsNow)
+        {
+            while (gameRunning)
+            {
+                obSpawner.MoveWalls(trigger);
+                yield return new WaitForSeconds(15);
+                trigger = !trigger;
+            }
+        }
+        else
+        {
+            while (gameRunning)
+            {
+                yield return new WaitForSeconds(15);
+                obSpawner.MoveWalls(trigger);
+                trigger = !trigger;
+            }
+        }
     }
 }

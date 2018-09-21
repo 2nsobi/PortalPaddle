@@ -485,7 +485,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &336122197 stripped
 GameObject:
@@ -6629,6 +6629,8 @@ MonoBehaviour:
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   SettingsLvl: {fileID: 1164789961757968, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
     type: 2}
+  GameOverZoneN: {fileID: 2040569544}
+  GameOverZoneS: {fileID: 340225697}
   shop: {fileID: 0}
 --- !u!114 &1506298689
 MonoBehaviour:
@@ -7373,7 +7375,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4869666812646910, guid: f33ae021fe56b1a45b0ffa38fea0850e, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 212507390337714428, guid: f33ae021fe56b1a45b0ffa38fea0850e,
         type: 2}
