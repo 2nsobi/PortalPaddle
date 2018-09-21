@@ -39,8 +39,6 @@ public class PaddleController : MonoBehaviour
     {
         Instance = this;
 
-        DontDestroyOnLoad(this.gameObject);
-
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
         paddleCollider.gameObject.tag = "Paddle";
@@ -57,6 +55,8 @@ public class PaddleController : MonoBehaviour
         childPaddle2 = transform.Find("Paddle2").gameObject;
         endCollider2 = childPaddle2.GetComponent<CircleCollider2D>();
         childPaddle2.SetActive(false);
+
+        DontDestroyActivePaddle();
     }
 
     private void Start()
@@ -328,7 +328,7 @@ public class PaddleController : MonoBehaviour
 
     public void DontDestroyActivePaddle()
     {
-        DontDestroyOnLoad(activePaddle.mainParticles);
+        DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(paddleCollider);
     }
 }

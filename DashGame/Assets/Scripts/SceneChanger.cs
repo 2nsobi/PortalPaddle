@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 public class SceneChanger : MonoBehaviour
 {
     public Animator SceneFaderAnimC;
-    public PaddleController paddle;
 
     int scene2Load;
 
@@ -15,11 +14,6 @@ public class SceneChanger : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        paddle = PaddleController.Instance;
-    }
-
     public void Fade2Scene(int levelIndex)
     {
         scene2Load = levelIndex;
@@ -28,7 +22,6 @@ public class SceneChanger : MonoBehaviour
 
     public void SceneFadeDone()
     {
-        paddle.DontDestroyActivePaddle();
         SceneManager.LoadScene(scene2Load);
     }
 }
