@@ -26,6 +26,16 @@ public class Target : MonoBehaviour
         portal = transform.Find("PortalSprite");
     }
 
+    private void OnEnable()
+    {
+        TargetController.ChangeSpeedImmediately += ChangeSpeedImmediately;
+    }
+
+    private void OnDisable()
+    {
+        TargetController.ChangeSpeedImmediately -= ChangeSpeedImmediately;
+    }
+
     public void Shrink()
     {
         travelOnPath = false;
@@ -176,5 +186,10 @@ public class Target : MonoBehaviour
         {
             return travelSpeed;
         }
+    }
+
+    void ChangeSpeedImmediately(float speed)
+    {
+        travelSpeed = speed;
     }
 }

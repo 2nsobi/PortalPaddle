@@ -203,7 +203,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1160649021111430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3922005, y: -1.023537, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 1}
   m_Children:
   - {fileID: 4388373772172986}
@@ -293,10 +293,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startColor:
     serializedVersion: 2
-    rgba: 12040119
+    rgba: 4276545
   boostColor:
     serializedVersion: 2
-    rgba: 4290230199
+    rgba: 4282466625
   ghost: {fileID: 1303271645890828, guid: 79dd0743a0c816449bf2d629ca96d3fc, type: 2}
 --- !u!198 &198029097162865642
 ParticleSystem:
@@ -377,7 +377,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.7
+      scalar: 0.85
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -430,7 +430,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1
+      scalar: 1.2
       minScalar: 0.4
       maxCurve:
         serializedVersion: 2
@@ -18826,7 +18826,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: dbe3059c9ab128b48b7a43ff5b5eaef7, type: 3}
-  m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
+  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

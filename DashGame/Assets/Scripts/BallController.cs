@@ -44,11 +44,16 @@ public class BallController : MonoBehaviour
     int balls2Absorb = 0;
     bool playedOnce = false;
     OtherGameModesManager.pageState currentPage2Fade2;
+    OtherGameModesManager.gameMode currentGameMode2Start;
+    bool dontStartGameMode = false;
 
     public static BallController Instance;
 
     public delegate void BallCDelegate();
     public static event BallCDelegate KillYourself;
+
+    public delegate void BallCDelegate2(float tSpeed, float bSpeed);
+    public static event BallCDelegate2 ChangeSpeedImmediately;
 
     private void Awake()
     {
@@ -90,7 +95,6 @@ public class BallController : MonoBehaviour
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
 
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
-        print(selectedBallIndex);
 
         offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
     }
@@ -111,6 +115,15 @@ public class BallController : MonoBehaviour
     {
         startSpeed = speed;
         boostSpeed = deflectSpeed;
+    }
+
+    public void IncreaseDropSpeedImmediately(float speed, float deflectSpeed) //original speed is 3, and original deflect speed is 16
+    {
+        try
+        {
+            ChangeSpeedImmediately(speed, deflectSpeed);
+        }
+        catch (System.NullReferenceException) { }
     }
 
     public void SetBall(int index)
@@ -160,7 +173,6 @@ public class BallController : MonoBehaviour
     private void OnDisable()
     {
         ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
-        print(ZPlayerPrefs.GetInt("ballInUse"));
 
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
@@ -226,10 +238,15 @@ public class BallController : MonoBehaviour
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
-                    obSpawner.SetGameModeBackground();
-                    gameModeManager.SetPageState(currentPage2Fade2);                 
-                    startSpeed = initialSpeed;
 
+                    if (!dontStartGameMode)
+                    {
+                        gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
+                    }
+                    obSpawner.SetGameModeBackground();
+                    gameModeManager.SetPageState(currentPage2Fade2);
+
+                    startSpeed = initialSpeed;
                     targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
                     obSpawner.EndGame();
 
@@ -390,6 +407,50 @@ public class BallController : MonoBehaviour
         return true;
     }
 
+    public bool SpawnQuickBallWithBallSpawner()
+    {
+        tempSpeed = startSpeed;
+        tempBoostSpeed = boostSpeed;
+
+        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, spawnHeight);
+
+        Ball ball2Spawn = ballsQ.Dequeue();
+
+        while (ball2Spawn.isActiveAndEnabled)
+        {
+            ballsQ.Enqueue(ball2Spawn);
+
+            for (int i = 0; i < ballsQ.Count; i++)
+            {
+                ball2Spawn = ballsQ.Dequeue();
+
+                if (!ball2Spawn.isActiveAndEnabled)
+                {
+                    ball2Spawn.gameObject.SetActive(true);
+                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+                    spawnerAnimator.SetTrigger("GameStarted");
+                    ballSpawner.transform.position = startPos;
+
+                    ballsQ.Enqueue(ball2Spawn);
+
+                    return true;
+                }
+            }
+            ballsQ.Enqueue(ball2Spawn);
+            return false;
+        }
+        ball2Spawn.gameObject.SetActive(true);
+        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+
+        spawnerAnimator.SetTrigger("GameStarted");
+        ballSpawner.transform.position = RandomXPos;
+
+        ballsQ.Enqueue(ball2Spawn);
+
+        return true;
+    }
+
     public void SetGameMode(OtherGameModesManager.gameMode gameMode)
     {
         switch (gameMode)
@@ -424,9 +485,12 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public void Fade2GameMode(OtherGameModesManager.pageState page2Fade2)
+    public void Fade2GameMode(OtherGameModesManager.pageState page2Fade2, OtherGameModesManager.gameMode gameMode2Start, bool dontStartGM = false)
     {
         currentPage2Fade2 = page2Fade2;
+        currentGameMode2Start = gameMode2Start;
+
+        dontStartGameMode = dontStartGM;
 
         whiteFlashCGPanel.color = Color.black;
         whiteFlashCG.alpha = 0;

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class GameMode_Plus1 : MonoBehaviour
 {
-    Transform wallW;
-    Transform wallE;
     BallController ballC;
     PaddleController paddle;
     AdManager ads;
@@ -18,6 +16,13 @@ public class GameMode_Plus1 : MonoBehaviour
     int tempBalls2Spawn;
     bool gameOver = false;
 
+    public static GameMode_Plus1 Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         ballC = BallController.Instance;
@@ -28,9 +33,6 @@ public class GameMode_Plus1 : MonoBehaviour
         gameModeManager = OtherGameModesManager.Instance;
 
         ballC.CreateQOfBalls();
-
-        wallW = transform.Find("wallW");
-        wallE = transform.Find("wallE");
     }
 
     private void OnEnable()
@@ -92,7 +94,7 @@ public class GameMode_Plus1 : MonoBehaviour
 
                 ballC.SetBalls2Absorb(balls2Spawn);
 
-                obSpawner.DespawnObstacle();
+                obSpawner.DespawnObstacle(true);
             }
         }
     }
@@ -104,14 +106,6 @@ public class GameMode_Plus1 : MonoBehaviour
             gameOver = true;
             StopCoroutine(spawnBalls);
             gameModeManager.Missed();
-        }
-    }
-
-    public int NumberOfBalls2Spawn
-    {
-        get
-        {
-            return balls2Spawn;
         }
     }
 }

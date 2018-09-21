@@ -54,11 +54,11 @@ public class Ball : MonoBehaviour
     bool isTargetHitMoving = false;
     float targetTravelSpeed;
     bool insideCollider = false;
-    bool dontCollideWithPaddle = false;
     string collisionTag;
     int ballLayer = 11;
     int ignoreObstaclesLayer = 16;
     int ignoreEverythingLayer = 17;
+    int ballButNoPaddleLayer = 19; //same as balllayer except wont collide with paddle
     Vector2 failSafeVelocity;
 
     public delegate void BallDelegate();
@@ -162,11 +162,11 @@ public class Ball : MonoBehaviour
     private void OnEnable()
     {
         BallController.KillYourself += DieImmediately;
+        BallController.ChangeSpeedImmediately += ChangeSpeedImmediately;
 
         rigidbody.simulated = true;
         SwitchSpriteColor(false);
         ShouldShrink = false;
-        dontCollideWithPaddle = false;
         invulnerable = false;
         shouldBoost = false;
         canAbsorb = false;
@@ -183,6 +183,7 @@ public class Ball : MonoBehaviour
     private void OnDisable()
     {
         BallController.KillYourself -= DieImmediately;
+        BallController.ChangeSpeedImmediately -= ChangeSpeedImmediately;
     }
 
     void SwitchSpriteColor(bool toBoostColor)
@@ -456,9 +457,12 @@ public class Ball : MonoBehaviour
 
     public void KillParticles()
     {
-        hostTrail.Clear();
-        ghost1Trail.Clear();
-        ghost2Trail.Clear();
+        if (hostTrail != null)
+        {
+            hostTrail.Clear();
+            ghost1Trail.Clear();
+            ghost2Trail.Clear();
+        }
 
         for (int i = 0; i < mainMods.Length; i++)
         {
@@ -589,18 +593,12 @@ public class Ball : MonoBehaviour
 
         if (collisionTag == "Paddle")
         {
-            if (dontCollideWithPaddle)
-            {
-                return;
-            }
-
             canAbsorb = true;
-            gameObject.layer = ballLayer;
-            dontCollideWithPaddle = true;        // this makes it so that the paddle cant hit the ball again before it hits another collider
+            gameObject.layer = ballButNoPaddleLayer; // this makes it so that the paddle cant hit the ball again before it hits another collider
         }
         else
         {
-            dontCollideWithPaddle = false;
+            gameObject.layer = ballLayer;
         }
 
         if (collisionTag == "floor")
@@ -638,7 +636,7 @@ public class Ball : MonoBehaviour
     {
         if (!shouldAbsorb)
         {
-            if (dontCollideWithPaddle)
+            if (gameObject.layer == ballButNoPaddleLayer)
             {
                 rigidbody.velocity = failSafeVelocity;
             }
@@ -649,7 +647,7 @@ public class Ball : MonoBehaviour
     {
         if (!shouldAbsorb)
         {
-            if (dontCollideWithPaddle)
+            if (gameObject.layer == ballButNoPaddleLayer)
             {
                 rigidbody.velocity = failSafeVelocity;
             }
@@ -767,6 +765,18 @@ public class Ball : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    void ChangeSpeedImmediately(float tSpeed, float bSpeed)
+    {
+        if (!canAbsorb)
+        {
+            rigidbody.velocity = rigidbody.velocity.normalized * tSpeed;
+        }
+        else
+        {
+            rigidbody.velocity = rigidbody.velocity.normalized * bSpeed;
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,11 +26,17 @@ public class OtherGameModesManager : MonoBehaviour
     public Button replayButton;
     public Button GoBack2ModeSelectButton;
     public Animator scoreReviewAnimC;
+    public Text PlusOneHighScore;
+    public Text DeadeyeHighScore;
+    public Text ClairvoyanceHighScore;
+    public Text UltraHighScore; // just the sum of all the other high scores
 
     GameManager game;
     ObstacleSpawner obSpawner;
     PaddleController Paddle;
     BallController ballC;
+    SceneChanger sceneChanger;
+    TargetController targetC;
 
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
@@ -42,9 +47,10 @@ public class OtherGameModesManager : MonoBehaviour
     bool pauseAllCoroutines = false;
     bool paused = false;
     bool firstStart = true;
-    int PlusOneHighScore;
-    int DeadeyeHighScore;
-    int ClairvoyanceHighScore;
+    int PlusOneHS;
+    int DeadeyeHS;
+    int ClairvoyanceHS;
+    int UltraScore;
     int score = 0;
     float t = 0;
     float tempGems = 0;
@@ -64,9 +70,15 @@ public class OtherGameModesManager : MonoBehaviour
 
         SetPageState(pageState.StartPage);
 
-        PlusOneHighScore = ZPlayerPrefs.GetInt("PlusOneHighScore");
-        DeadeyeHighScore = ZPlayerPrefs.GetInt("DeadeyeHighScore");
-        ClairvoyanceHighScore = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
+        PlusOneHS = ZPlayerPrefs.GetInt("PlusOneHighScore");
+        PlusOneHighScore.text = PlusOneHS.ToString();
+        DeadeyeHS = ZPlayerPrefs.GetInt("DeadeyeHighScore");
+        DeadeyeHighScore.text = DeadeyeHS.ToString();
+        ClairvoyanceHS = ZPlayerPrefs.GetInt("ClairvoyanceHighScore");
+        ClairvoyanceHighScore.text = ClairvoyanceHS.ToString();
+
+        UltraScore = PlusOneHS + DeadeyeHS + ClairvoyanceHS;
+        UltraHighScore.text = UltraScore.ToString();
 
         gems = ZPlayerPrefs.GetInt("gems");
 
@@ -79,10 +91,14 @@ public class OtherGameModesManager : MonoBehaviour
         obSpawner = ObstacleSpawner.Instance;
         game = GameManager.Instance;
         ballC = BallController.Instance;
-
         Paddle = PaddleController.Instance;
+        sceneChanger = SceneChanger.Instance;
+        targetC = TargetController.Instance;
+
         Paddle.SetPauseButtonRect(pauseButtonRect);
         DeactivatePaddle();
+
+        SetGameMode(gameMode.None);
     }
 
     public void Scored()
@@ -169,26 +185,32 @@ public class OtherGameModesManager : MonoBehaviour
             case 1:
                 if (newHS > 0)
                 {
-                    PlusOneHighScore = newHS;
+                    PlusOneHS = newHS;
+                    PlusOneHighScore.text = PlusOneHS.ToString();
+                    UpdateUltraScore();
                 }
 
-                return PlusOneHighScore;
+                return PlusOneHS;
 
             case 2:
                 if (newHS > 0)
                 {
-                    DeadeyeHighScore = newHS;
+                    DeadeyeHS = newHS;
+                    DeadeyeHighScore.text = DeadeyeHS.ToString();
+                    UpdateUltraScore();
                 }
 
-                return DeadeyeHighScore;
+                return DeadeyeHS;
 
             case 3:
                 if (newHS > 0)
                 {
-                    ClairvoyanceHighScore = newHS;
+                    ClairvoyanceHS = newHS;
+                    ClairvoyanceHighScore.text = ClairvoyanceHS.ToString();
+                    UpdateUltraScore();
                 }
 
-                return ClairvoyanceHighScore;
+                return ClairvoyanceHS;
         }
 
         return 0;
@@ -298,28 +320,27 @@ public class OtherGameModesManager : MonoBehaviour
 
                 obSpawner.SetGameMode(gameMode.None);
                 ballC.SetGameMode(gameMode.None);
+
+                targetC.SetTargetColor(Color.yellow);
                 break;
         }
     }
 
     public void Go2PlusOne()
     {
-        SetGameMode(gameMode.PlusOne);
-        ballC.Fade2GameMode(pageState.Game);
+        ballC.Fade2GameMode(pageState.Game, gameMode.PlusOne);
         SetGameModeSelectButtons(false);
     }
 
     public void Go2Deadeye()
     {
-        SetGameMode(gameMode.Deadeye);
-        ballC.Fade2GameMode(pageState.Game);
+        ballC.Fade2GameMode(pageState.Game, gameMode.Deadeye);
         SetGameModeSelectButtons(false);
     }
 
     public void Go2Clairavoyance()
     {
-        SetGameMode(gameMode.Clairvoyance);
-        ballC.Fade2GameMode(pageState.Game);
+        ballC.Fade2GameMode(pageState.Game, gameMode.Clairvoyance);
         SetGameModeSelectButtons(false);
     }
 
@@ -330,8 +351,7 @@ public class OtherGameModesManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
-        SetGameMode(gameMode.None);
-        ballC.Fade2GameMode(pageState.StartPage);
+        ballC.Fade2GameMode(pageState.StartPage, gameMode.None);
         SetGameModeSelectButtons(true);
     }
 
@@ -341,7 +361,7 @@ public class OtherGameModesManager : MonoBehaviour
 
         firstStart = true;
         scoreReviewAnimC.SetTrigger("swipeOut");
-        ballC.Fade2GameMode(pageState.Game);
+        ballC.Fade2GameMode(pageState.Game, currentGameMode, true);
 
         score = 0;
         scoreText.text = score.ToString();
@@ -421,13 +441,18 @@ public class OtherGameModesManager : MonoBehaviour
         }
     }
 
+    public void GoBackHome()
+    {
+        sceneChanger.Fade2Scene(0);
+    }
+
     private void OnApplicationFocus(bool focus)
     {
         if (!focus)
         {
-            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
-            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
-            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
+            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
+            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
+            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
 
             pauseAllCoroutines = true;
         }
@@ -441,9 +466,9 @@ public class OtherGameModesManager : MonoBehaviour
     {
         if (pause)
         {
-            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
-            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
-            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
+            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
+            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
+            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
 
             pauseAllCoroutines = true;
         }
@@ -467,8 +492,14 @@ public class OtherGameModesManager : MonoBehaviour
 
     private void OnDisable()
     {
-        ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHighScore);
-        ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHighScore);
-        ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHighScore);
+        ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
+        ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
+        ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+    }
+
+    void UpdateUltraScore()
+    {
+        UltraScore = PlusOneHS + DeadeyeHS + ClairvoyanceHS;
+        UltraHighScore.text = UltraScore.ToString();
     }
 }

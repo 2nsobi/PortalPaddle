@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -145,7 +144,6 @@ public class GameManager : MonoBehaviour
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
         gems = ZPlayerPrefs.GetInt("gems");
-        gems = 1000;
         highScore = ZPlayerPrefs.GetInt("HighScore");
 
         scoreReviewGems = ScoreReview.transform.Find("gems").GetComponent<Text>();

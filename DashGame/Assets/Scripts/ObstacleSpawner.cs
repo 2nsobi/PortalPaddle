@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstacleSpawner : MonoBehaviour {
+public class ObstacleSpawner : MonoBehaviour
+{
 
     public class Obstacle
     {
@@ -73,6 +74,7 @@ public class ObstacleSpawner : MonoBehaviour {
         public GameObject prefab;
         public int size;
         public bool easy; //is the obstacle easy or not
+        public bool onlyMotion; //obstacles with no actual colliders only moves target
     }
 
     public GameObject PlusOneLab;
@@ -89,6 +91,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
     public delegate void ObSpawnerDelegate();
     public static event ObSpawnerDelegate ObstacleSet;
+    public static event ObSpawnerDelegate ObstacleGone;
 
     GameObject plusOneLab;
     GameObject deadeyeLab;
@@ -102,8 +105,10 @@ public class ObstacleSpawner : MonoBehaviour {
     Obstacle nextObstacle;
     Vector2 levelOffset;
     TargetController targetC;
+    GameObject currentLab;
 
     int ezObstacleCount = 0;
+    int onlyMotionObCount = 0;
     bool dontMoveWalls = false;
     float distanceDiff4Walls;
     float thisDeviceCameraRadius;
@@ -111,13 +116,18 @@ public class ObstacleSpawner : MonoBehaviour {
     bool moveOutObstacle = false;
     int tempNum = 0;
     int tempNum2 = 0;
+    int tempNum3 = 0;
     string tag4Obstacles;
     bool allPrefsInQInUse = true; // for spawnfrom obstacles method
     string currentObTexture;
+    bool excludeObstacles;
+    bool targetsGrowShrink = false;
+    bool targetsAlwaysGrowShrink = false;
+    bool continuous = false; //should obstacles be continuously spawned
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -182,6 +192,24 @@ public class ObstacleSpawner : MonoBehaviour {
                 ObstacleDict.Add("EasyObstacle" + ezObstacleCount, easyObstaclePool);
             }
 
+            if (obstacleType.onlyMotion)
+            {
+                Queue<Obstacle> onlyMotionObstaclePool = new Queue<Obstacle>();
+
+                for (int i = 0; i < obstacleType.size; i++)
+                {
+                    GameObject go = Instantiate(obstacleType.prefab);
+                    go.name = obstacleType.prefab.name + "_easy";
+
+                    Obstacle ob1 = new Obstacle(go);
+
+                    ob1.gameObject.SetActive(false);
+                    onlyMotionObstaclePool.Enqueue(ob1);
+                }
+                onlyMotionObCount++;
+                ObstacleDict.Add("OnlyMotionObstacle" + ezObstacleCount, onlyMotionObstaclePool);
+            }
+
             for (int i = 0; i < obstacleType.size; i++)
             {
                 Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
@@ -229,6 +257,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 ClairvoyanceGameModeC.enabled = false;
 
                 currentObTexture = "lab_gold";
+                currentLab = plusOneLab;
+                excludeObstacles = true;
                 break;
 
             case OtherGameModesManager.gameMode.Deadeye:
@@ -239,6 +269,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 ClairvoyanceGameModeC.enabled = false;
 
                 currentObTexture = "lab_darkRed";
+                currentLab = deadeyeLab;
+                excludeObstacles = false;
                 break;
 
             case OtherGameModesManager.gameMode.Clairvoyance:
@@ -249,6 +281,8 @@ public class ObstacleSpawner : MonoBehaviour {
                 ClairvoyanceGameModeC.enabled = true;
 
                 currentObTexture = "lab_poptart";
+                currentLab = clairvoyanceLab;
+                excludeObstacles = false;
                 break;
 
             case OtherGameModesManager.gameMode.None:
@@ -257,6 +291,9 @@ public class ObstacleSpawner : MonoBehaviour {
                 PlusOneGameModeC.enabled = false;
                 DeadeyeGameModeC.enabled = false;
                 ClairvoyanceGameModeC.enabled = false;
+
+                targetsGrowShrink = false;
+                targetsAlwaysGrowShrink = false;
                 break;
         }
     }
@@ -264,20 +301,12 @@ public class ObstacleSpawner : MonoBehaviour {
 
     public void SetGameModeBackground()
     {
-        if(currentGameMode == OtherGameModesManager.gameMode.PlusOne)
+        currentLab.SetActive(true);
+        currentLab.transform.position = Vector2.zero;
+
+        if (currentGameMode == OtherGameModesManager.gameMode.None)
         {
-            plusOneLab.SetActive(true);
-            plusOneLab.transform.position = Vector2.zero;
-        }
-        if (currentGameMode == OtherGameModesManager.gameMode.Deadeye)
-        {
-            deadeyeLab.SetActive(true);
-            deadeyeLab.transform.position = Vector2.zero;
-        }
-        if (currentGameMode == OtherGameModesManager.gameMode.Clairvoyance)
-        {
-            clairvoyanceLab.SetActive(true);
-            clairvoyanceLab.transform.position = Vector2.zero;
+            currentLab.SetActive(false);
         }
     }
 
@@ -285,15 +314,17 @@ public class ObstacleSpawner : MonoBehaviour {
     {
         if (nextObstacle == null)
         {
-            nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
+            nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, targetsGrowShrink);
             nextObstacle.gameObject.SetActive(true);
         }
 
         moveInObstacle = true;
     }
 
-    public void DespawnObstacle()
+    public void DespawnObstacle(bool continuous)
     {
+        this.continuous = continuous;
+
         moveOutObstacle = true;
     }
 
@@ -331,8 +362,34 @@ public class ObstacleSpawner : MonoBehaviour {
 
                     currentObstacle = nextObstacle;
 
-                    nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture);
-                    nextObstacle.gameObject.SetActive(true);
+                    if (targetsGrowShrink)
+                    {
+                        if (targetsAlwaysGrowShrink)
+                        {
+                            nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, true);
+                            nextObstacle.gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            int randomNumber = Random.Range(1, 11);
+                            if (randomNumber % 2 == 0)
+                            {
+                                nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, true);
+                                nextObstacle.gameObject.SetActive(true);
+
+                            }
+                            else
+                            {
+                                nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, false);
+                                nextObstacle.gameObject.SetActive(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, false);
+                        nextObstacle.gameObject.SetActive(true);                       
+                    }
 
                     ObstacleSet();
                 }
@@ -349,21 +406,40 @@ public class ObstacleSpawner : MonoBehaviour {
 
                 currentObstacle.gameObject.SetActive(false);
 
-                SpawnObstacle();
+                if (continuous)
+                {
+                    SpawnObstacle();
+                }
+                else
+                {
+                    ObstacleGone();
+                }
             }
         }
     }
 
-    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, string texture, bool easy = false)
+    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, string texture, bool targetGrowShrink, bool easy = false, bool onlyMotion = false)
     {
         int number = rng.Next(minObstacle, maxObstacle + 1);
 
-        while (number == tempNum)
+        if (excludeObstacles)
         {
-            number = rng.Next(minObstacle, maxObstacle + 1);
-        }
+            while (number == tempNum || number == 9 || (number == tempNum && number == 9))
+            {
+                number = rng.Next(minObstacle, maxObstacle + 1);
+            }
 
-        tempNum = number;
+            tempNum = number;
+        }
+        else
+        {
+            while (number == tempNum)
+            {
+                number = rng.Next(minObstacle, maxObstacle + 1);
+            }
+
+            tempNum = number;
+        }
 
         tag4Obstacles = "Obstacle" + number;
 
@@ -395,7 +471,7 @@ public class ObstacleSpawner : MonoBehaviour {
                         {
                             obstacleToSpawn.inUse = true;
 
-                            targetC.SpawnTarget(obstacleToSpawn.transform,true,obstacleToSpawn.path);
+                            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
 
                             obstacleToSpawn.SetObstacleTextures(texture);
 
@@ -426,7 +502,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
             obstacleToSpawn.inUse = true;
 
-            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
 
             obstacleToSpawn.SetObstacleTextures(texture);
 
@@ -435,6 +511,74 @@ public class ObstacleSpawner : MonoBehaviour {
 
             return obstacleToSpawn;
 
+        }
+        else if (onlyMotion)
+        {
+            int num = rng.Next(1, onlyMotionObCount + 1);
+
+            while (num == tempNum3)
+            {
+                num = rng.Next(1, onlyMotionObCount + 1);
+            }
+
+            tempNum3 = num;
+
+            tag4Obstacles = "OnlyMotionObstacle" + num;
+
+            Obstacle obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+
+            if (obstacleToSpawn.inUse)
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                while (allPrefsInQInUse)
+                {
+                    for (int i = 0; i < ObstacleDict[tag4Obstacles].Count; i++)
+                    {
+                        obstacleToSpawn = ObstacleDict[tag4Obstacles].Dequeue();
+                        if (!obstacleToSpawn.inUse)
+                        {
+                            obstacleToSpawn.inUse = true;
+
+                            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
+
+                            obstacleToSpawn.SetObstacleTextures(texture);
+
+                            obstacleToSpawn.transform.position = position;
+                            obstacleToSpawn.transform.rotation = rotation;
+
+                            ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+
+                            return obstacleToSpawn;
+                        }
+                        ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+                    }
+
+                    int num2 = rng.Next(1, onlyMotionObCount + 1);
+                    while (num2 == num)
+                    {
+                        num2 = rng.Next(1, onlyMotionObCount + 1);
+                    }
+                    num = num2;
+                    tag4Obstacles = "OnlyMotionObstacle" + num2;
+                }
+
+            }
+            else
+            {
+                ObstacleDict[tag4Obstacles].Enqueue(obstacleToSpawn);
+            }
+
+            obstacleToSpawn.inUse = true;
+
+            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
+
+            obstacleToSpawn.SetObstacleTextures(texture);
+
+            obstacleToSpawn.transform.position = position;
+            obstacleToSpawn.transform.rotation = rotation;
+
+            return obstacleToSpawn;
         }
         else
         {
@@ -453,7 +597,8 @@ public class ObstacleSpawner : MonoBehaviour {
                         {
                             obstacleToSpawn.inUse = true;
 
-                            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+                            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
+                            print(targetGrowShrink);
 
                             obstacleToSpawn.SetObstacleTextures(texture);
 
@@ -484,7 +629,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
             obstacleToSpawn.inUse = true;
 
-            targetC.SpawnTarget(obstacleToSpawn.transform, true, obstacleToSpawn.path);
+            targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
 
             obstacleToSpawn.SetObstacleTextures(texture);
 
@@ -494,5 +639,23 @@ public class ObstacleSpawner : MonoBehaviour {
             return obstacleToSpawn;
         }
 
+    }
+
+    public void AllowTargets2GrowShrink(bool allow, bool always = false)
+    {
+        if (allow)
+        {
+            targetsGrowShrink = true;
+
+            if (always)
+            {
+                targetsAlwaysGrowShrink = true;
+            }
+        }
+        else
+        {
+            targetsGrowShrink = false;
+            targetsAlwaysGrowShrink = false;
+        }
     }
 }

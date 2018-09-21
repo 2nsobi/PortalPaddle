@@ -36,7 +36,7 @@ TagManager:
   - IgnoreObstacles
   - Ignore
   - Wall
-  - 
+  - BallButNoPaddle
   - 
   - 
   - 

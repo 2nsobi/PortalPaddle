@@ -32,6 +32,9 @@ public class TargetController : MonoBehaviour
 
     public static TargetController Instance;
 
+    public delegate void TargetCDelegate(float spd);
+    public static event TargetCDelegate ChangeSpeedImmediately;
+
     private void Awake()
     {
         Instance = this;
@@ -87,6 +90,15 @@ public class TargetController : MonoBehaviour
     public void IncreaseTravelSpeed(float speed) // initial travel speed started at 2
     {
         codeTravelSpeed = speed;
+    }
+
+    public void IncreaseTravelSpeedImmediately(float speed) // initial travel speed started at 2
+    {
+        try
+        {
+            ChangeSpeedImmediately(speed);
+        }
+        catch (System.NullReferenceException) { }
     }
 
     void NextLvlGenerated()
@@ -163,7 +175,7 @@ public class TargetController : MonoBehaviour
         }
     }
 
-    public void SpawnTarget(Transform obTransform, bool travel, Vector3[] obPath = null) // used for other game modes mainly
+    public void SpawnTarget(Transform obTransform, bool travel, bool growShrink, Vector3[] obPath = null) // used for other game modes mainly, if not using obstacles just set obTransform to enviroment transform
     {
         tempSpeed = codeTravelSpeed;
 
@@ -172,7 +184,7 @@ public class TargetController : MonoBehaviour
             if (!targets[i].InUse)
             {
                 targets[i].gameObject.SetActive(true);
-                targets[i].Spawn(obTransform, RandomPos(), defaultTargetSize, travel, false, obPath, tempSpeed);
+                targets[i].Spawn(obTransform, RandomPos(), defaultTargetSize, travel, growShrink, obPath, tempSpeed, growShrinkSpeed);
                 break;
             }
         }
@@ -245,5 +257,13 @@ public class TargetController : MonoBehaviour
     public void ShrinkTarget2(int targetIndex) //used for other game modes to make transitions less weird
     {
         targets[targetIndex].Shrink2();
+    }
+
+    public void SetTargetColor(Color col)
+    {
+        for(int i = 0; i < targets.Count; i++)
+        {
+            targets[i].SetColor(col);
+        }
     }
 }
