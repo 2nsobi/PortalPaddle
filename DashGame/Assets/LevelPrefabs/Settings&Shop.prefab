@@ -2016,7 +2016,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content2Scroll: {fileID: 224623168565442264}
   position2Snap2: {fileID: 224422396264908754}
-  selectedItemIndex: 0
+  itemValues: 00000000010100010101
 --- !u!114 &114959302500969670
 MonoBehaviour:
   m_ObjectHideFlags: 1

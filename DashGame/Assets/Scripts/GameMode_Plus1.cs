@@ -60,7 +60,7 @@ public class GameMode_Plus1 : MonoBehaviour
         for(int i = 0; i < balls2Spawn; i++)
         {
             ballC.SpawnQuickBall();
-            yield return new WaitForSeconds(0.8f);
+            yield return new WaitForSeconds(0.85f);
         }
     }
 

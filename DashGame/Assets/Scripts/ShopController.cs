@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopController : MonoBehaviour
@@ -39,7 +37,7 @@ public class ShopController : MonoBehaviour
         paddleScrollRect = paddleSelectionMenu.GetComponent<SnapScrollRectController>();
         unlockButtonGemCost = unlockButton.GetComponentInChildren<Text>();
         purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
-        purchaseButtonPrice.text = "$1.29";
+        purchaseButtonPrice.text = "$0.99";
     }
 
     private void Start()
@@ -73,6 +71,14 @@ public class ShopController : MonoBehaviour
                 purchaseButton.gameObject.SetActive(true);
 
                 unlockButtonGemCost.text = gemCost.ToString();
+                if (gemCost == 500)
+                {
+                    purchaseButtonPrice.text = "$0.99";
+                }
+                else
+                {
+                    purchaseButtonPrice.text = "$1.99";
+                }
                 break;
         }
     }
@@ -173,15 +179,27 @@ public class ShopController : MonoBehaviour
         }
     }
 
+    public void Request2BuyItem()
+    {
+        if (currentMenu == "ball")
+        {
+            ballScrollRect.RequestPurchase();
+        }
+        else if (currentMenu == "paddle")
+        {
+            paddleScrollRect.RequestPurchase();
+        }
+    }
+
     public void BuyItem()
     {
         if (currentMenu == "ball")
         {
-            ballScrollRect.SelectItem();
+            ballScrollRect.BuyItem();
         }
         else if (currentMenu == "paddle")
         {
-            paddleScrollRect.SelectItem();
+            paddleScrollRect.BuyItem();
         }
     }
 

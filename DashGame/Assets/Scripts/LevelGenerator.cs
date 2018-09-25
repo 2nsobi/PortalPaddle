@@ -217,6 +217,8 @@ public class LevelGenerator : MonoBehaviour
     int tempNum = 0;
     int tempNum2 = 0;
     bool[] filterBools = new bool[3];
+    bool moonLvlPassed = false;
+    bool earthLvlPassed = false;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -233,6 +235,9 @@ public class LevelGenerator : MonoBehaviour
         ConfigureCamera(); //called here before the tap area rect is configured
 
         distanceDiff4Walls = GetDistanceDifferenceForWalls();
+
+        earthLvlPassed = PlayerPrefsX.GetBool("earthLvlPassed");
+        moonLvlPassed = PlayerPrefsX.GetBool("moonLvlPassed");
     }
 
     /*********************************************
@@ -278,6 +283,9 @@ public class LevelGenerator : MonoBehaviour
         GameManager.GameStarted -= GameStarted;
         Ball.AbsorbDone -= AbsorbDone;
         Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+
+        PlayerPrefsX.SetBool("earthLvlPassed", earthLvlPassed);
+        PlayerPrefsX.SetBool("moonLvlPassed", moonLvlPassed);
     }
 
     private void OnApplicationFocus(bool focus)
@@ -319,8 +327,18 @@ public class LevelGenerator : MonoBehaviour
 
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
         labMonitorsAnimC = StartLevel.gameObject.transform.Find("labBackground1Monitors2_0").GetComponent<Animator>();
+
         playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
         playButtonGlowMainMod = playButtonGlow.main;
+        if (earthLvlPassed)
+        {
+            playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
+        }
+        if (moonLvlPassed)
+        {
+            playButtonGlowMainMod.startColor = Color.yellow;
+        }
+
         material = StartLevel.gameObject.GetComponentInChildren<Renderer>().sharedMaterial;
         material.SetFloat("_InvertColors", 0);
         Transform wallW = StartLevel.gameObject.transform.GetChild(0);
@@ -879,7 +897,25 @@ public class LevelGenerator : MonoBehaviour
 
                     PreviousLvl = CurrentLvl;
 
-                    CurrentLvl = NextLvl; //technically the next lvl at this point
+                    CurrentLvl = NextLvl; //which is the level currently on screen
+
+                    if (!earthLvlPassed)
+                    {
+                        if (CurrentLvl == transitionLvls[1])
+                        {
+                            playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
+                            earthLvlPassed = true;
+                        }
+                    }
+                    if (!moonLvlPassed)
+                    {
+                        if (CurrentLvl == transitionLvls[3])
+                        {
+                            playButtonGlowMainMod.startColor = Color.yellow;
+                            moonLvlPassed = true;
+                        }
+                    }
+
                     NextLvl = LvlOnDeck;
 
                     TransitionDone();

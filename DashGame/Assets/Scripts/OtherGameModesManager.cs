@@ -37,6 +37,7 @@ public class OtherGameModesManager : MonoBehaviour
     BallController ballC;
     SceneChanger sceneChanger;
     TargetController targetC;
+    AdManager ads;
 
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
@@ -94,6 +95,7 @@ public class OtherGameModesManager : MonoBehaviour
         Paddle = PaddleController.Instance;
         sceneChanger = SceneChanger.Instance;
         targetC = TargetController.Instance;
+        ads = AdManager.Instance;
 
         Paddle.SetPauseButtonRect(pauseButtonRect);
         DeactivatePaddle();
@@ -351,6 +353,8 @@ public class OtherGameModesManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
+        ads.ShowInterstitialOrNonSkipAd();
+
         ballC.Fade2GameMode(pageState.StartPage, gameMode.None);
         SetGameModeSelectButtons(true);
     }
@@ -358,6 +362,8 @@ public class OtherGameModesManager : MonoBehaviour
     public void Replay()
     {
         replayButton.interactable = false;
+
+        ads.ShowInterstitialOrNonSkipAd();
 
         firstStart = true;
         scoreReviewAnimC.SetTrigger("swipeOut");
@@ -453,6 +459,7 @@ public class OtherGameModesManager : MonoBehaviour
             ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
             ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
             ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+            ZPlayerPrefs.SetInt("gems", (int)gems);
 
             pauseAllCoroutines = true;
         }
@@ -469,6 +476,7 @@ public class OtherGameModesManager : MonoBehaviour
             ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
             ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
             ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+            ZPlayerPrefs.SetInt("gems", (int)gems);
 
             pauseAllCoroutines = true;
         }
@@ -495,6 +503,7 @@ public class OtherGameModesManager : MonoBehaviour
         ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
         ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
         ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+        ZPlayerPrefs.SetInt("gems", (int)gems);
     }
 
     void UpdateUltraScore()

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -185,6 +184,7 @@ public class SnapScrollRectController : MonoBehaviour
 
     public RectTransform content2Scroll;
     public RectTransform position2Snap2;
+    public bool[] itemValues; //true if premium item false if regular
 
     RectTransform[] items;
     ShopItem[] shopItems;
@@ -199,23 +199,23 @@ public class SnapScrollRectController : MonoBehaviour
     bool snap2End = false;
     Coroutine stopMovement;
     ShopController shopC;
-    public int selectedItemIndex = 0;
+    Purchaser purchaser;
+    int selectedItemIndex = 0;
     int activeItemIndexLink;
     GameManager game;
+    int ball2Purchase;
 
     private void Awake()
     {
         scrollRect = GetComponent<ScrollRect>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         shopC = ShopController.Instance;
         game = GameManager.Instance;
-    }
+        purchaser = Purchaser.Instance;
 
-    private void Start()
-    {
         items = new RectTransform[content2Scroll.childCount];
         shopItems = new ShopItem[content2Scroll.childCount];
         for (int i = 0; i < content2Scroll.childCount; i++)
@@ -228,8 +228,31 @@ public class SnapScrollRectController : MonoBehaviour
             }
             else
             {
-                shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
+                if (itemValues[i])
+                {
+                    shopItems[i] = new ShopItem(800, content2Scroll.GetChild(i).gameObject);
+                }
+                else
+                {
+                    shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
+                }
             }
+
+            //if (this.gameObject.name == "BallScollPanel")
+            //{
+            //    if (i == 0)
+            //    {
+            //        shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject, true);
+            //    }
+            //    else if (i == 4 || i == 5 || i == 7 || i == 8 || i == 9)
+            //    {
+            //        shopItems[i] = new ShopItem(800, content2Scroll.GetChild(i).gameObject);
+            //    }
+            //    else
+            //    {
+            //        shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
+            //    }
+            //}
 
             if (this.gameObject.name == "BallScollPanel")
             {
@@ -315,6 +338,28 @@ public class SnapScrollRectController : MonoBehaviour
                 game.UpdateGems(shopItems[focalItemNum].gemCost, true);
             }
         }
+    }
+
+    public void RequestPurchase()
+    {
+        ball2Purchase = focalItemNum;
+
+        if(shopItems[focalItemNum].gemCost == 500)
+        {
+            purchaser.BuyBall();
+        }
+        else
+        {
+            purchaser.BuyPremiumBall();
+        }
+    }
+
+    public void BuyItem()
+    {
+        UnselectAllItems();
+        shopItems[ball2Purchase].Select();
+        selectedItemIndex = focalItemNum;
+        activeItemIndexLink = shopItems[focalItemNum].index;
     }
 
     public void Go2Shop()
