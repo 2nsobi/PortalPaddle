@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -513,25 +512,6 @@ public class Ball : MonoBehaviour
             }
         }
 
-        //if ((shouldAbsorb) && invulnerable)
-        //{
-        //    if (wallHit || wrappedAround)
-        //    {
-        //        wallHit = false;
-        //        wrappedAround = false;
-
-        //        AbsorbDoneAndRichochet();
-        //        print("coming from ball script");
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        AbsorbDone();
-        //        print("coming from ball script");
-        //        return;
-        //    }
-        //}
-
         rigidbody.velocity = Vector2.zero;
 
         ghostBall1.SetActive(false);
@@ -716,7 +696,32 @@ public class Ball : MonoBehaviour
         {
             if (!ShouldShrink)
             {
-                if (firstTriggerCollision)
+                if (collision.gameObject.layer == 8)
+                {
+                    targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
+                    isTargetHitMoving = target.IsMoving(targetHitIndex);
+                    targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
+
+                    invulnerable = true;
+                    rigidbody.velocity = Vector2.zero;
+                    rigidbody.angularVelocity = 0;
+                    shouldAbsorb = true;
+                    ShouldShrink = true;
+                    firstTriggerCollision = false;
+                    gameObject.layer = ignoreEverythingLayer;
+                }
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!insideCollider)
+        {
+            insideCollider = true;
+            if (canAbsorb)
+            {
+                if (!ShouldShrink)
                 {
                     if (collision.gameObject.layer == 8)
                     {
@@ -732,37 +737,7 @@ public class Ball : MonoBehaviour
                         firstTriggerCollision = false;
                         gameObject.layer = ignoreEverythingLayer;
                     }
-                }
-            }
-        }
-    }
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (!insideCollider)
-        {
-            insideCollider = true;
-            if (canAbsorb)
-            {
-                if (!ShouldShrink)
-                {
-                    if (firstTriggerCollision)
-                    {
-                        if (collision.gameObject.layer == 8)
-                        {
-                            targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
-                            isTargetHitMoving = target.IsMoving(targetHitIndex);
-                            targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
-
-                            invulnerable = true;
-                            rigidbody.velocity = Vector2.zero;
-                            rigidbody.angularVelocity = 0;
-                            shouldAbsorb = true;
-                            ShouldShrink = true;
-                            firstTriggerCollision = false;
-                            gameObject.layer = ignoreEverythingLayer;
-                        }
-                    }
                 }
             }
         }

@@ -111,6 +111,21 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
+
+        //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
+        //{
+        //    GDPRConsentForm.SetActive(true);
+        //}
+        //else
+        //{
+        //    GDPRConsentForm.SetActive(false);
+        //}
+
+
+
+
+
         /********************************************
          DELETE THING BELOW
          **********************************************/
@@ -124,16 +139,7 @@ public class GameManager : MonoBehaviour
 
 
 
-        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
 
-        //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
-        //{
-        //    GDPRConsentForm.SetActive(true);
-        //}
-        //else
-        //{
-        //    GDPRConsentForm.SetActive(false);
-        //}
 
         Instance = this;
 
