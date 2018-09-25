@@ -12,6 +12,9 @@ public class ShopController : MonoBehaviour
     public GameObject selectedIcon;
     public Button unlockButton;
     public Button purchaseButton;
+    public Button buyGemsButton;
+    public Button buyNoAdsButton;
+    public GameObject disabledNoAdsButtonFilter;
 
     string currentMenu = null;
     Text purchaseButtonPrice;
@@ -20,8 +23,10 @@ public class ShopController : MonoBehaviour
     GameObject paddleSelectionMenu;
     GameObject IAPmenu;
     SnapScrollRectController ballScrollRect, paddleScrollRect;
+    Purchaser purchaser;
     GameManager game;
     AdManager ads;
+    bool noAds = false;
 
     public enum buttonLayout { selected, unlocked, locked }
 
@@ -31,19 +36,29 @@ public class ShopController : MonoBehaviour
 
         ballSelectionMenu = transform.Find("BallScollPanel").gameObject;
         paddleSelectionMenu = transform.Find("TempPaddleMenu").gameObject; //paddleSelectionMenu = transform.Find("PaddleScollPanel").gameObject;
-        IAPmenu = transform.Find("IAP").gameObject;
+        IAPmenu = transform.Find("IAPMenu").gameObject;
 
         ballScrollRect = ballSelectionMenu.GetComponent<SnapScrollRectController>();
         paddleScrollRect = paddleSelectionMenu.GetComponent<SnapScrollRectController>();
         unlockButtonGemCost = unlockButton.GetComponentInChildren<Text>();
         purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
         purchaseButtonPrice.text = "$0.99";
+
+        noAds = PlayerPrefsX.GetBool("noAds");
+
+        disabledNoAdsButtonFilter.SetActive(false);
+        if (noAds)
+        {
+            buyNoAdsButton.interactable = false;
+            disabledNoAdsButtonFilter.SetActive(true);
+        }
     }
 
     private void Start()
     {
         game = GameManager.Instance;
         ads = AdManager.Instance;
+        purchaser = Purchaser.Instance;
     }
 
     public void SetButtonLayout(SnapScrollRectController.ShopItem item,int gemCost)
@@ -169,11 +184,11 @@ public class ShopController : MonoBehaviour
 
     public void SelectItem()
     {
-        if(currentMenu == "ball")
+        if (currentMenu == "ball")
         {
             ballScrollRect.SelectItem();
         }
-        else if(currentMenu == "paddle")
+        else if (currentMenu == "paddle")
         {
             paddleScrollRect.SelectItem();
         }
@@ -203,20 +218,24 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    public void UnlockItem()
-    {
-        if (currentMenu == "ball")
-        {
-            ballScrollRect.SelectItem();
-        }
-        else if (currentMenu == "paddle")
-        {
-            paddleScrollRect.SelectItem();
-        }
-    }
-
     public void GetFreeGems()
     {
         ads.ShowRewardVideo();
+    }
+
+    public void Buy1800Gems()
+    {
+        purchaser.Buy1800GemChest();
+    }
+
+    public void BuyNoAds()
+    {
+        purchaser.BuyNoAds();
+    }
+
+    public void DisableBuyNoAdsButton()
+    {
+        buyNoAdsButton.interactable = false;
+        disabledNoAdsButtonFilter.SetActive(true);
     }
 }

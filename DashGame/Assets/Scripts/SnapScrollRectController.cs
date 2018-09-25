@@ -210,12 +210,15 @@ public class SnapScrollRectController : MonoBehaviour
         scrollRect = GetComponent<ScrollRect>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         shopC = ShopController.Instance;
         game = GameManager.Instance;
         purchaser = Purchaser.Instance;
+    }
 
+    private void Start()
+    {
         items = new RectTransform[content2Scroll.childCount];
         shopItems = new ShopItem[content2Scroll.childCount];
         for (int i = 0; i < content2Scroll.childCount; i++)

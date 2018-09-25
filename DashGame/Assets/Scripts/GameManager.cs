@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour
          DELETE THING BELOW
          **********************************************/
 
-        //ZPlayerPrefs.DeleteAll();
+        ZPlayerPrefs.DeleteAll();
 
         /********************************************
         DELETE THING ABOVE

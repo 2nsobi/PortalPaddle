@@ -47,8 +47,8 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             }
         }
 
-        //Appodeal.setTesting(true);
-        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+        Appodeal.setTesting(true);
+        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         if (!noAds)
         {
