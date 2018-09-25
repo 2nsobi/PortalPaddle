@@ -226,7 +226,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased a gem chest!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
-
+            game.UpdateGems(1800);
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_REMOVE_ADS, StringComparison.Ordinal))
         {
@@ -234,6 +234,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             ads.RemoveAds();
+            shopC.DisableBuyNoAdsButton();
         }
         // Or ... an unknown product has been purchased by this user. Fill in additional products here....
         else
