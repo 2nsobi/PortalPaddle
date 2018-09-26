@@ -11,7 +11,15 @@ public class SceneChanger : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     public void Fade2Scene(int levelIndex)

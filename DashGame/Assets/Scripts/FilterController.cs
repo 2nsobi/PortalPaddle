@@ -14,7 +14,15 @@ public class FilterController : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         filters = new SpriteRenderer[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)

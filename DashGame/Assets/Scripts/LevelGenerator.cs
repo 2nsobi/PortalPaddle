@@ -228,7 +228,15 @@ public class LevelGenerator : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         settingsLevel = Instantiate(SettingsLvl, levelOffset * -1, Quaternion.identity); //should be instantiated here so that all the awake methods in the shop scripts are done
 

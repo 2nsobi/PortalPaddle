@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour
          DELETE THING BELOW
          **********************************************/
 
-        ZPlayerPrefs.DeleteAll();
+        //ZPlayerPrefs.DeleteAll();
 
         /********************************************
         DELETE THING ABOVE
@@ -140,8 +140,15 @@ public class GameManager : MonoBehaviour
 
 
 
-
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         GameModeButtonAnimC = GameModeButton.GetComponent<Animator>();
         GameModeButton.SetActive(true);
@@ -733,7 +740,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
-    public void Go2GameModesMenu()
+    void Go2GameModesMenu()
     {
         sceneChanger.Fade2Scene(1);
     }
