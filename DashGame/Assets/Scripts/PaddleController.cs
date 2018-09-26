@@ -32,12 +32,20 @@ public class PaddleController : MonoBehaviour
     float clampedTouch1Speed, clampedTouch2Speed;
     float clampedX, clampedY;
     GameManager game;
-    GameManager.PaddlePrefab activePaddle = null;
+    GameManager.PaddlePrefab activePaddle;
     bool otherGameModeRunning = false;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         pauseButtonRect.GetWorldCorners(pauseButtonCorners);
         paddleCollider = new GameObject("paddleCollider").AddComponent<BoxCollider2D>();
@@ -59,7 +67,7 @@ public class PaddleController : MonoBehaviour
         DontDestroyActivePaddle();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         ball = BallController.Instance;
         game = GameManager.Instance;
@@ -89,7 +97,6 @@ public class PaddleController : MonoBehaviour
             activePaddle.leftEnd.transform.localPosition = Vector2.zero;
 
 
-
             particles = activePaddle.mainParticles;
             particles.transform.parent = transform;
             particles.transform.localPosition = Vector2.zero;
@@ -98,6 +105,8 @@ public class PaddleController : MonoBehaviour
         }
         else
         {
+            Destroy(particles); // to prevent duplication when scenes change
+
             activePaddle.rightEnd.transform.parent = null;
             activePaddle.rightEnd.SetActive(false);
 
@@ -115,7 +124,6 @@ public class PaddleController : MonoBehaviour
             activePaddle.leftEnd.SetActive(true);
             activePaddle.leftEnd.transform.localScale = Vector3.one;
             activePaddle.leftEnd.transform.localPosition = Vector2.zero;
-
 
 
             particles = activePaddle.mainParticles;
@@ -319,11 +327,6 @@ public class PaddleController : MonoBehaviour
         {
             otherGameModeRunning = value;
         }
-    }
-
-    public void SetSamePaddle()
-    {
-        SetPaddle(activePaddle);
     }
 
     public void DontDestroyActivePaddle()

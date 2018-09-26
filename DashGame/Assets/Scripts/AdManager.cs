@@ -20,7 +20,15 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         DontDestroyOnLoad(this.gameObject);
 

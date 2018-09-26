@@ -37,7 +37,15 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void Start()

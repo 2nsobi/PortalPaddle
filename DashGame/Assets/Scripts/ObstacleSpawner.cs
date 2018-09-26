@@ -146,7 +146,15 @@ public class ObstacleSpawner : MonoBehaviour
     {
         if (Instance == null)
         {
-            Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         PlusOneGameModeC = GetComponent<GameMode_Plus1>();
