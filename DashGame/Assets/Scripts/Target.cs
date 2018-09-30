@@ -8,6 +8,11 @@ public class Target : MonoBehaviour
     Vector3 currentPoint;
     Vector3 nextPoint;
     Vector3[] travelPath, tempPath;
+    AudioSource idleSound;
+    Transform portalSpriteTransform;
+    Vector2 vectorNearFloor;
+
+    AudioManager audioManager;
 
     int aRandomNum;
     float travelSpeed;
@@ -19,16 +24,37 @@ public class Target : MonoBehaviour
     bool growShrink = false;
     bool travelOnPath = false;
     bool shrink = false;
+    float cameraHeight;
+    float idleVolumeMax;
+    float maxDistanceFromFloor; // the farthest possible distance a transform can be from the floor
+    float currentIdleVolume;
+    float currentMaxIdleVolume;
+    float spawnTime = 1; //time it take for the targetspawn anim to finish
+    float t = 0;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         portal = transform.Find("PortalSprite");
+        idleSound = GetComponent<AudioSource>();
+        idleVolumeMax = idleSound.volume;
+        portalSpriteTransform = transform.GetChild(0);
+    }
+
+    private void Start()
+    {
+        audioManager = AudioManager.Instance;
+
+        cameraHeight = Camera.main.orthographicSize;
+        vectorNearFloor = new Vector2(0, 1 - cameraHeight);
+        maxDistanceFromFloor = Vector2.Distance(new Vector2(Camera.main.aspect * cameraHeight,cameraHeight), vectorNearFloor) + 0.7f; //added 0.7f so that target can still be heard if a lil of screen
     }
 
     private void OnEnable()
     {
         TargetController.ChangeSpeedImmediately += ChangeSpeedImmediately;
+
+        idleSound.volume = 0;
     }
 
     private void OnDisable()
@@ -41,6 +67,7 @@ public class Target : MonoBehaviour
         travelOnPath = false;
         growShrink = false;
         shrink = true;
+        currentIdleVolume = idleSound.volume;
     }
 
     public void Shrink2() //used for other game modes to make transitions less weird
@@ -49,6 +76,7 @@ public class Target : MonoBehaviour
         travelOnPath = false;
         growShrink = false;
         shrink = true;
+        currentIdleVolume = idleSound.volume;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -73,6 +101,11 @@ public class Target : MonoBehaviour
         transform.localScale = scale;
         transform.localPosition = pos;
         transform.parent = parent;
+
+        t = 0;
+        currentMaxIdleVolume = idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor), 0, 1);
+
+        idleSound.Play();
 
         if (travel)
         {
@@ -107,6 +140,25 @@ public class Target : MonoBehaviour
     private void Update()
     {
         animator.SetBool("Shrink", shrink);
+
+        if(t <= spawnTime)
+        {
+            t += Time.deltaTime/spawnTime;
+            idleSound.volume = Mathf.Lerp(0, idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor), 0, 1), t);
+        }
+        else if(!shrink)
+        {
+            // Eq. for normalizing data between 0 and 1 is: (x-min(x)) / (max(x)-min(x))
+            idleSound.volume = idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor),0,1);
+        }
+        else
+        {
+            idleSound.volume = Mathf.Clamp(portalSpriteTransform.localScale.x - 0.2f, 0, currentIdleVolume);
+            if(idleSound.volume == 0)
+            {
+                idleSound.Stop();
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -191,5 +243,21 @@ public class Target : MonoBehaviour
     void ChangeSpeedImmediately(float speed)
     {
         travelSpeed = speed;
+    }
+
+    public void PlaySpawnSound()
+    {
+        if (transform.position.y < cameraHeight && transform.position.y > -cameraHeight)
+        {
+            audioManager.Play("portalSpawn");
+        }
+    }
+
+    public void PlayShrinkSound()
+    {
+        if (transform.position.y < cameraHeight && transform.position.y > -cameraHeight)
+        {
+            audioManager.Play("portalShrink");
+        }
     }
 }

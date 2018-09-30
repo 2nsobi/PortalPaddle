@@ -188,7 +188,7 @@ public class PaddleController : MonoBehaviour
                             }
                         }
 
-                        if (t.fingerId >= 1)
+                        if (t.fingerId == 1)
                         {
                             if ((touchPos.x < pauseButtonCorners[0].x || touchPos.x > pauseButtonCorners[3].x) && (touchPos.y < pauseButtonCorners[0].y || touchPos.y > pauseButtonCorners[1].y))
                             {
