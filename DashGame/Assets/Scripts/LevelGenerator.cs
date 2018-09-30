@@ -155,6 +155,7 @@ public class LevelGenerator : MonoBehaviour
     public Transform GameOverZoneS;
     LvlPrefab StartLevel; //for code use
     GameManager game;
+    AudioManager audioManager;
     FilterController filterController;
     Vector3 levelOffset = new Vector3(0, 10.8f, 0); // used to offset a level when it is spawned so that is spawns above the active level
     LvlPrefab NextLvl;
@@ -219,6 +220,8 @@ public class LevelGenerator : MonoBehaviour
     bool[] filterBools = new bool[3];
     bool moonLvlPassed = false;
     bool earthLvlPassed = false;
+    bool soundOnDeck;
+    string lvlSound2Play;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -330,6 +333,7 @@ public class LevelGenerator : MonoBehaviour
         ballC = BallController.Instance;
         target = TargetController.Instance;
         filterController = FilterController.Instance;
+        audioManager = AudioManager.Instance;
 
         currentlyTransitioning = false;
 
@@ -493,6 +497,7 @@ public class LevelGenerator : MonoBehaviour
 
         labMonitorsAnimC.SetBool("gameRunning", false);
 
+        audioManager.StopLvlSounds();
         game.SetPageState(GameManager.pageState.StartPage);
         obstacleSpawnCounter = 0;
         levelSpawnCounter = 0;
@@ -789,6 +794,20 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
+        if (soundOnDeck)
+        {
+            if (lvlSound2Play == null)
+            {
+                audioManager.ClearLvlSounds();
+            }
+            else
+            {
+                print("should be fading");
+                audioManager.Fade2LvlSound(lvlSound2Play);
+            }
+            soundOnDeck = false;
+        }
+
         currentlyTransitioning = true;
     }
 
@@ -966,11 +985,6 @@ public class LevelGenerator : MonoBehaviour
             filterBools[i] = true;
         }
 
-        labMonitorsAnimC.SetBool("gameRunning", true);
-
-        playButtonGlowMainMod.simulationSpeed = 6;
-        playButtonGlow.Stop();
-
         ShufflePrefabsInLevels();
 
         NextLvlGenerated(); //need to call this here outside of GenerateNextLvl() since two levels are always loaded above before game starts
@@ -978,6 +992,14 @@ public class LevelGenerator : MonoBehaviour
         playedOnce = true;
 
         filterController.gameObject.SetActive(true);
+    }
+
+    public void TurnOffLab()
+    {
+        labMonitorsAnimC.SetBool("gameRunning", true);
+
+        playButtonGlowMainMod.simulationSpeed = 6;
+        playButtonGlow.Stop();
     }
 
     void GenerateNextLvl()
@@ -1179,6 +1201,27 @@ public class LevelGenerator : MonoBehaviour
         if (NextLvl.hasObstacle)
         {
             obstacleSpawnCounter++;
+        }
+
+        if(nextLvlNumber == 1 && lvlSound2Play != "ambientCaves")
+        {
+            lvlSound2Play = "ambientCaves";
+            soundOnDeck = true;
+        }
+        if(NextLvl == transitionLvls[0])
+        {
+            lvlSound2Play = "caves2Sky";
+            soundOnDeck = true;
+        }
+        if(nextLvlNumber == 2 && lvlSound2Play != "ambientSky")
+        {
+            lvlSound2Play = "ambientSky";
+            soundOnDeck = true;
+        }
+        if(NextLvl == transitionLvls[1])
+        {
+            lvlSound2Play = null;
+            soundOnDeck = true;
         }
 
         if (!startOfGame)

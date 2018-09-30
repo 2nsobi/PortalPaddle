@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     LevelGenerator LG;
     BallController ball;
     SceneChanger sceneChanger;
+    AudioManager audioManager;
     public Button pauseButton;
     public Text countdownText;
     public Animator scoreReviewAnimC;
@@ -189,6 +190,7 @@ public class GameManager : MonoBehaviour
         ball = BallController.Instance;
         ads = AdManager.Instance;
         sceneChanger = SceneChanger.Instance;
+        audioManager = AudioManager.Instance;
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         Paddle.SetPaddle(selectedPaddle);
@@ -197,6 +199,19 @@ public class GameManager : MonoBehaviour
         GoToStartPage();
         gameRunning = false;
         paused = false;
+
+        StartCoroutine(FadeInVolume());
+        audioManager.PlayLvlSound("ambientLab");
+    }
+
+    IEnumerator FadeInVolume() //fade in the games master volume
+    {
+        AudioListener.volume = 0;
+        for (float t = 0; t < 1.0f; t += Time.deltaTime / 0.7f)
+        {
+            AudioListener.volume = Mathf.Lerp(0, 1, t);
+            yield return null;
+        }
     }
 
     private void OnEnable() //this is called after start()
@@ -334,6 +349,7 @@ public class GameManager : MonoBehaviour
 
                 ShowGameModeButton(true);
                 gemsOnScreen = false;
+                audioManager.PlayLvlSound("ambientLab");
                 break;
 
             case pageState.GameOver:
@@ -446,6 +462,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        audioManager.Play("play");
+
         ShowGameModeButton(false);
         canEndGame = true;
         extraBall = false;
@@ -460,6 +478,14 @@ public class GameManager : MonoBehaviour
 
         canContinue = true;
 
+        LG.TurnOffLab();
+
+        StartCoroutine(StartGameDelay());
+    }
+
+    IEnumerator StartGameDelay() //used so that the play button sound is more distinct
+    {
+        yield return new WaitForSeconds(0.55f);
         GameStarted();
     }
 

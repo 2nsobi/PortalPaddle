@@ -569,6 +569,7 @@ public class Ball : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        print(collision.gameObject.name + ", current ball layer = " + gameObject.layer);
         collisionTag = collision.gameObject.tag;
 
         if (collisionTag == "Paddle")
@@ -584,7 +585,6 @@ public class Ball : MonoBehaviour
         if (collisionTag == "floor")
         {
             canAbsorb = true;
-            gameObject.layer = ballLayer;
         }
 
         if (firstCollision)

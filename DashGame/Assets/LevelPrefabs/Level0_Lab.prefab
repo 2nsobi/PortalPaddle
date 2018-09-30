@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4096227675994940}
   - component: {fileID: 61720303956093732}
-  m_Layer: 15
+  m_Layer: 18
   m_Name: floorCollider
   m_TagString: floor
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1032876380486912}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.31, y: -5.13, z: 0}
+  m_LocalPosition: {x: -0.31, y: -6.08, z: 0}
   m_LocalScale: {x: 14.912, y: 1.8000001, z: 1}
   m_Children: []
   m_Father: {fileID: 4592657329325698}
@@ -448,7 +448,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 2}
   m_EdgeRadius: 0
 --- !u!95 &95053887822230702
 Animator:

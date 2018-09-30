@@ -81,7 +81,7 @@ public class FilterController : MonoBehaviour
                 if (previousFilter.color.a <= 0)
                 {
                     clearFilters = false;
-                    this.gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                 }
             }
         }

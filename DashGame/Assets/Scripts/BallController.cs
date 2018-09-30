@@ -19,6 +19,7 @@ public class BallController : MonoBehaviour
     GameManager game;
     ObstacleSpawner obSpawner;
     OtherGameModesManager gameModeManager;
+    AudioManager audioManager;
 
     float startSpeed;
     Animator spawnerAnimator;
@@ -99,6 +100,7 @@ public class BallController : MonoBehaviour
         LG = LevelGenerator.Instance;
         obSpawner = ObstacleSpawner.Instance;
         gameModeManager = OtherGameModesManager.Instance;
+        audioManager = AudioManager.Instance;
 
         whiteFlashCGPanel = whiteFlashCG.GetComponentInChildren<Image>();
 
@@ -214,6 +216,7 @@ public class BallController : MonoBehaviour
             if (!fadeBack)
             {
                 whiteFlashCG.alpha += Time.deltaTime * 4;
+                AudioListener.volume -= Time.deltaTime * 4;
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
@@ -223,13 +226,15 @@ public class BallController : MonoBehaviour
 
                     startSpeed = initialSpeed;
                     grayScaleMat.SetFloat("_EffectAmount", 0);
+
                     fadeBack = true;
                 }
             }
             else
             {
                 whiteFlashCG.alpha -= Time.deltaTime * 4;
-                if (whiteFlashCG.alpha <= 0)
+                AudioListener.volume += Time.deltaTime * 4;
+                if (whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1)
                 {
                     whiteFlashCG.alpha = 0;
                     fade2Black = false;
@@ -298,6 +303,13 @@ public class BallController : MonoBehaviour
         whiteFlashCG.alpha = 0;
     }
 
+    IEnumerator BallSpawnerSounds()
+    {
+        audioManager.Play("portalSpawn");
+        yield return new WaitForSeconds(1.45f); //it takes about 1.4 seconds for the ballspawner portal to start shrinking
+        audioManager.Play("portalShrink");
+    }
+
     void GameStarted()
     {
         isGray = false;
@@ -309,6 +321,7 @@ public class BallController : MonoBehaviour
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = startPos;
+        StartCoroutine(BallSpawnerSounds());
     }
 
     void TransitionDone()
@@ -322,6 +335,7 @@ public class BallController : MonoBehaviour
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
+        StartCoroutine(BallSpawnerSounds());
     }
 
     void Revive()
@@ -333,6 +347,7 @@ public class BallController : MonoBehaviour
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
+        StartCoroutine(BallSpawnerSounds());
     }
 
     public void CameraShake()
@@ -439,6 +454,7 @@ public class BallController : MonoBehaviour
 
                     spawnerAnimator.SetTrigger("GameStarted");
                     ballSpawner.transform.position = startPos;
+                    StartCoroutine(BallSpawnerSounds());
 
                     ballsQ.Enqueue(ball2Spawn);
 
@@ -453,6 +469,7 @@ public class BallController : MonoBehaviour
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
+        StartCoroutine(BallSpawnerSounds());
 
         ballsQ.Enqueue(ball2Spawn);
 
