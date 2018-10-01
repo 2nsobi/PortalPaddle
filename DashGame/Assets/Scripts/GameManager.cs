@@ -349,7 +349,6 @@ public class GameManager : MonoBehaviour
 
                 ShowGameModeButton(true);
                 gemsOnScreen = false;
-                audioManager.PlayLvlSound("ambientLab");
                 break;
 
             case pageState.GameOver:
