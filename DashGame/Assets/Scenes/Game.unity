@@ -1408,36 +1408,11 @@ Prefab:
       objectReference: {fileID: 519420031}
     - target: {fileID: 1164789961757968, guid: f62a9245ab6a2d542ac7ace5fc4326a7, type: 2}
       propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114040602750146678, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
-        type: 2}
-      propertyPath: earPoint.x
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114040602750146678, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
-        type: 2}
-      propertyPath: earPoint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114040602750146678, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
-        type: 2}
-      propertyPath: movingSound
-      value: 
-      objectReference: {fileID: 1374127750}
-    - target: {fileID: 82958885303453290, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
-        type: 2}
-      propertyPath: m_Volume
-      value: 0.14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f62a9245ab6a2d542ac7ace5fc4326a7, type: 2}
   m_IsPrefabAsset: 0
---- !u!4 &1374127750 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4170627110825292, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
-    type: 2}
-  m_PrefabInternal: {fileID: 1374127749}
 --- !u!114 &1380655305 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114344443326763148, guid: dac14fe2ef8141e4a9709742e1bb0902,
