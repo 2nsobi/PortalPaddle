@@ -10,13 +10,18 @@ public class AudioManager : MonoBehaviour
 
     Sound currentLvlSound;
     Sound nextLvlSound;
+    Sound currentMusic;
+    Sound nextMusic;
 
-    float t;
-    float currentLvlVolumeMax;
-    float nextLvlvolumeMax;
-    bool fade2LvlSound;
-    bool clearLvlSounds;
-    float time4Fade = 1.5f;
+    float t1,t2,t3;
+    bool fade2LvlSound = false;
+    bool clearLvlSounds = false;
+    float time4SoundFade = 1.5f;
+    float time4MusicFade = 2.5f;
+    bool fade2Music = false;
+    bool clearMusic = false;
+    bool go2Basement = false;
+    bool comeBackFromBasement = false;
 
     private void Awake()
     {
@@ -51,9 +56,8 @@ public class AudioManager : MonoBehaviour
             s.source.volume = 0;
             s.source.Play();
 
-            t = 0;
+            t1 = 0;
 
-            nextLvlvolumeMax = s.volume;
             nextLvlSound = s;
 
             fade2LvlSound = true;
@@ -65,20 +69,40 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void Fade2Music(string musicName)
+    {
+        try
+        {
+            Sound s = Array.Find(sounds, sound => sound.name == musicName);
+            s.source.volume = 0;
+            s.source.Play();
+
+            t2 = 0;
+
+            nextMusic = s;
+
+            fade2Music = true;
+        }
+        catch (NullReferenceException)
+        {
+            Debug.LogError("Sound " + musicName + " not found!");
+            return;
+        }
+    }
+
     private void Update()
     {
         if (fade2LvlSound)
         {
-            t += Time.deltaTime / time4Fade;
+            t1 += Time.deltaTime / time4SoundFade;
 
-            currentLvlSound.source.volume = Mathf.Lerp(currentLvlVolumeMax, 0, t);
-            nextLvlSound.source.volume = Mathf.Lerp(0, nextLvlvolumeMax, t);
+            currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume, 0, t1);
+            nextLvlSound.source.volume = Mathf.Lerp(0, nextLvlSound.volume, t1);
 
-            if(currentLvlSound.source.volume == 0 && nextLvlSound.source.volume == nextLvlvolumeMax)
+            if(currentLvlSound.source.volume == 0 && nextLvlSound.source.volume == nextLvlSound.volume)
             {
                 currentLvlSound.source.Stop();
                 currentLvlSound = nextLvlSound;
-                currentLvlVolumeMax = nextLvlvolumeMax;
                 nextLvlSound = null;
 
                 fade2LvlSound = false;
@@ -87,9 +111,9 @@ public class AudioManager : MonoBehaviour
 
         if (clearLvlSounds)
         {
-            t += Time.deltaTime / time4Fade;
+            t1 += Time.deltaTime / time4SoundFade;
 
-            currentLvlSound.source.volume = Mathf.Lerp(currentLvlVolumeMax, 0, t);
+            currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume, 0, t1);
 
             if(currentLvlSound.source.volume == 0)
             {
@@ -99,19 +123,71 @@ public class AudioManager : MonoBehaviour
                 clearLvlSounds = false;
             }
         }
+
+        if (fade2Music)
+        {
+            t2 += Time.deltaTime / time4MusicFade;
+
+            currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
+            nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
+
+            if (currentMusic.source.volume == 0 && nextMusic.source.volume == nextMusic.volume)
+            {
+                currentMusic.source.Stop();
+                currentMusic = nextMusic;
+                nextMusic = null;
+
+                fade2Music = false;
+            }
+        }
+
+        if (clearMusic)
+        {
+            t2 += Time.deltaTime / time4MusicFade;
+
+            currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
+            if(currentMusic.source.volume == 0)
+            {
+                currentMusic.source.Stop();
+                currentMusic = null;
+
+                clearMusic = false;
+            }
+        }
+
+        if (go2Basement)
+        {
+            t3 += Time.deltaTime;
+
+            currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume, currentLvlSound.volume - .15f, t3);
+
+            if (currentLvlSound.source.volume == currentLvlSound.volume - .15f)
+            {
+                go2Basement = false;
+            }
+        }
+
+        if (comeBackFromBasement)
+        {
+            t3 += Time.deltaTime;
+
+            currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume - .15f, currentLvlSound.volume, t3);
+
+            if (currentLvlSound.source.volume == currentLvlSound.volume)
+            {
+                comeBackFromBasement = false;
+            }
+        }
     }
 
     public void PlayLvlSound(string lvlSoundName)
     {
         try
         {
-            Sound s = Array.Find(sounds, sound => sound.name == lvlSoundName);
+            currentLvlSound = Array.Find(sounds, sound => sound.name == lvlSoundName);
 
-            currentLvlSound = s;
-            currentLvlVolumeMax = s.volume;
-
-            s.source.volume = s.volume;
-            s.source.Play();
+            currentLvlSound.source.volume = currentLvlSound.volume;
+            currentLvlSound.source.Play();
         }
         catch (System.NullReferenceException)
         {
@@ -122,7 +198,7 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLvlSounds()
     {
-        t = 0;
+        t1 = 0;
         clearLvlSounds = true;
     }
 
@@ -131,6 +207,36 @@ public class AudioManager : MonoBehaviour
         if (currentLvlSound != null)
         {
             currentLvlSound.source.Stop();
+        }
+    }
+
+    public void PlayMusic(string musicName)
+    {
+        try
+        {
+            currentMusic = Array.Find(sounds, sound => sound.name == musicName);
+
+            currentMusic.source.volume = currentMusic.volume;
+            currentMusic.source.Play();
+        }
+        catch (NullReferenceException)
+        {
+            Debug.LogError("Sound " + musicName + " not found!");
+            return;
+        }
+    }
+
+    public void ClearMusic()
+    {
+        t2 = 0;
+        clearMusic = true;
+    }
+
+    public void StopMusic()
+    {
+        if (currentMusic != null)
+        {
+            currentMusic.source.Stop();
         }
     }
 
@@ -145,5 +251,21 @@ public class AudioManager : MonoBehaviour
             Debug.LogError("Sound " + name + " not found!");
             return;
         }
+    }
+
+    public void Go2LabBasement()
+    {
+        comeBackFromBasement = false;
+
+        t3 = 0;
+        go2Basement = true;
+    }
+
+    public void ComeBackFromBasement()
+    {
+        go2Basement = false;
+
+        t3 = 0;
+        comeBackFromBasement = true;
     }
 }

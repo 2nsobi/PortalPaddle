@@ -221,7 +221,9 @@ public class LevelGenerator : MonoBehaviour
     bool moonLvlPassed = false;
     bool earthLvlPassed = false;
     bool soundOnDeck;
-    string lvlSound2Play;
+    string nextLvlSound2Play;
+    bool musicOnDeck;
+    string nextMusic2Play;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -498,6 +500,9 @@ public class LevelGenerator : MonoBehaviour
         labMonitorsAnimC.SetBool("gameRunning", false);
 
         audioManager.StopLvlSounds();
+        audioManager.StopMusic();
+        audioManager.PlayLvlSound("ambientLab");
+
         game.SetPageState(GameManager.pageState.StartPage);
         obstacleSpawnCounter = 0;
         levelSpawnCounter = 0;
@@ -774,38 +779,67 @@ public class LevelGenerator : MonoBehaviour
                 filterController.Fade2Filter("CavesBlack2TransparentGradient");
                 filterBools[0] = false;
             }
-        }
 
-        else if (NextLvl.gameObject.tag == "caves2Sky")
+            if (nextLvlSound2Play != "ambientCaves")
+            {
+                nextLvlSound2Play = "ambientCaves";
+                soundOnDeck = true;
+            }
+        }
+        if (NextLvl.gameObject.tag == "caves2Sky")
         {
             if (filterBools[1])
             {
                 filterController.Fade2Filter("caves2SkyBackgroundGradient");
                 filterBools[1] = false;
             }
-        }
 
-        else
+            nextLvlSound2Play = "caves2Sky";
+            soundOnDeck = true;
+        }
+        if(nextLvlNumber == 2)
         {
             if (filterBools[2])
             {
                 filterController.ClearFilters();
                 filterBools[2] = false;
             }
+
+            if(nextLvlSound2Play != "ambientSky")
+            {
+                nextLvlSound2Play = "ambientSky";
+                soundOnDeck = true;
+            }
+        }
+        if(NextLvl == transitionLvls[1])
+        {
+            nextLvlSound2Play = null;
+            soundOnDeck = true;
+
+            nextMusic2Play = "spaceMusic";
+            musicOnDeck = true;
         }
 
         if (soundOnDeck)
         {
-            if (lvlSound2Play == null)
+            if (nextLvlSound2Play == null)
             {
                 audioManager.ClearLvlSounds();
             }
             else
             {
-                print("should be fading");
-                audioManager.Fade2LvlSound(lvlSound2Play);
+                audioManager.Fade2LvlSound(nextLvlSound2Play);
             }
             soundOnDeck = false;
+        }
+
+        if (musicOnDeck)
+        {
+            if(nextMusic2Play != null)
+            {
+                audioManager.PlayMusic(nextMusic2Play);
+            }
+            musicOnDeck = false;
         }
 
         currentlyTransitioning = true;
@@ -1203,27 +1237,6 @@ public class LevelGenerator : MonoBehaviour
             obstacleSpawnCounter++;
         }
 
-        if(nextLvlNumber == 1 && lvlSound2Play != "ambientCaves")
-        {
-            lvlSound2Play = "ambientCaves";
-            soundOnDeck = true;
-        }
-        if(NextLvl == transitionLvls[0])
-        {
-            lvlSound2Play = "caves2Sky";
-            soundOnDeck = true;
-        }
-        if(nextLvlNumber == 2 && lvlSound2Play != "ambientSky")
-        {
-            lvlSound2Play = "ambientSky";
-            soundOnDeck = true;
-        }
-        if(NextLvl == transitionLvls[1])
-        {
-            lvlSound2Play = null;
-            soundOnDeck = true;
-        }
-
         if (!startOfGame)
         {
             NextLvlGenerated();
@@ -1280,6 +1293,8 @@ public class LevelGenerator : MonoBehaviour
 
     public void GoToSettingsPage()
     {
+        audioManager.Go2LabBasement();
+
         settingsLevel.transform.position = new Vector2(0, -10.8f);
         go2Settings = true;
         shop.SetActive(false);
@@ -1287,6 +1302,8 @@ public class LevelGenerator : MonoBehaviour
 
     public void GoToShop()
     {
+        audioManager.Go2LabBasement();
+
         settingsLevel.transform.position = new Vector2(0, -10.8f);
         go2Settings = true;
         shopC.Go2Shop();
@@ -1294,12 +1311,16 @@ public class LevelGenerator : MonoBehaviour
 
     public void ComeBackFromSettingsPage()
     {
+        audioManager.ComeBackFromBasement();
+
         go2Settings = false;
         comeBackFromSettings = true;
     }
 
     public void ComeBackFromShop()
     {
+        audioManager.ComeBackFromBasement();
+
         go2Settings = false;
         comeBackFromShop = true;
     }

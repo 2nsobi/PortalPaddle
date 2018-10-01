@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
     public Color32 startColor; // start color should usually be this slightly grayish white : EAEAEA
     public Color32 boostColor;
     public GameObject ghost;
+    public string firstImpactSound;
 
     SpriteRenderer ballSprite;
     ParticleSystem collisionEffect;
@@ -16,12 +17,12 @@ public class Ball : MonoBehaviour
     TrailRenderer hostTrail;
     Animator animator;
     GameManager game;
+    AudioManager audioManager;
     Ray2D ray;
     Vector3 rayOffsetVector = new Vector3(0, 0.147f); // used to offset ray a bit so that it does not start from the enemy's transfrom.position which is also the contactpoint
     Rigidbody2D rigidbody;
     TargetController target;
     bool shouldBoost = false;
-    bool ShouldShrink = false;
     bool invulnerable = false;
     bool wallHit = false;
     bool shouldAbsorb = false;
@@ -59,6 +60,7 @@ public class Ball : MonoBehaviour
     int ignoreEverythingLayer = 17;
     int ballButNoPaddleLayer = 19; //same as balllayer except wont collide with paddle
     Vector2 failSafeVelocity;
+    string ballName;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -149,6 +151,12 @@ public class Ball : MonoBehaviour
         {
             cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
         }
+
+        ballName = gameObject.name.Substring(0, gameObject.name.Length - 7);
+        if(firstImpactSound.Length == 0)
+        {
+            firstImpactSound = ballName;
+        }
     }
 
     private void Start()
@@ -156,6 +164,7 @@ public class Ball : MonoBehaviour
         game = GameManager.Instance;
         target = TargetController.Instance;
         ballC = BallController.Instance;
+        audioManager = AudioManager.Instance;
     }
 
     private void OnEnable()
@@ -165,7 +174,7 @@ public class Ball : MonoBehaviour
 
         rigidbody.simulated = true;
         SwitchSpriteColor(false);
-        ShouldShrink = false;
+        shouldAbsorb = false;
         invulnerable = false;
         shouldBoost = false;
         canAbsorb = false;
@@ -431,7 +440,7 @@ public class Ball : MonoBehaviour
 
     private void Update()
     {
-        SetAnimBools("ShouldShrink", ShouldShrink);
+        SetAnimBools("ShouldShrink", shouldAbsorb);
 
         if (transform.position.y < -4.95f)
         {
@@ -536,6 +545,7 @@ public class Ball : MonoBehaviour
             if (ballSprite.transform.localScale.x <= 0.05f)//(transform.position == target.GetCurrentTargetPos(targetHitIndex))
             {
                 shouldAbsorb = false;
+                canAbsorb = false;
             }
 
             if (!shouldAbsorb)
@@ -592,6 +602,10 @@ public class Ball : MonoBehaviour
             FirstCollision();
             firstCollision = false;
         }
+        else
+        {
+            audioManager.Play(ballName);
+        }
 
         if (collisionTag == "Wall")
         {
@@ -636,6 +650,8 @@ public class Ball : MonoBehaviour
 
     void FirstCollision()
     {
+        audioManager.Play(firstImpactSound);
+
         SetAnimTrigs("Boost");
 
         ballC.FlashWhite();
@@ -658,11 +674,12 @@ public class Ball : MonoBehaviour
             {
                 if (collision.gameObject.layer == 8)
                 {
+                    audioManager.Play("suckIn");
+
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
                     rigidbody.angularVelocity = 0;
                     shouldAbsorb = true;
-                    ShouldShrink = true;
 
                     targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
                     isTargetHitMoving = target.IsMoving(targetHitIndex);
@@ -694,10 +711,12 @@ public class Ball : MonoBehaviour
     {
         if (canAbsorb)
         {
-            if (!ShouldShrink)
+            if (!shouldAbsorb)
             {
                 if (collision.gameObject.layer == 8)
                 {
+                    audioManager.Play("suckIn");
+
                     targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
                     isTargetHitMoving = target.IsMoving(targetHitIndex);
                     targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
@@ -706,7 +725,6 @@ public class Ball : MonoBehaviour
                     rigidbody.velocity = Vector2.zero;
                     rigidbody.angularVelocity = 0;
                     shouldAbsorb = true;
-                    ShouldShrink = true;
                     firstTriggerCollision = false;
                     gameObject.layer = ignoreEverythingLayer;
                 }
@@ -721,10 +739,12 @@ public class Ball : MonoBehaviour
             insideCollider = true;
             if (canAbsorb)
             {
-                if (!ShouldShrink)
+                if (!shouldAbsorb)
                 {
                     if (collision.gameObject.layer == 8)
                     {
+                        audioManager.Play("suckIn");
+
                         targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
                         isTargetHitMoving = target.IsMoving(targetHitIndex);
                         targetTravelSpeed = target.getTravelSpeed(targetHitIndex);
@@ -733,7 +753,6 @@ public class Ball : MonoBehaviour
                         rigidbody.velocity = Vector2.zero;
                         rigidbody.angularVelocity = 0;
                         shouldAbsorb = true;
-                        ShouldShrink = true;
                         firstTriggerCollision = false;
                         gameObject.layer = ignoreEverythingLayer;
                     }
