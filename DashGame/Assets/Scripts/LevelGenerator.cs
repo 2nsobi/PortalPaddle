@@ -153,6 +153,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject SettingsLvl;
     public Transform GameOverZoneN;
     public Transform GameOverZoneS;
+    public GameObject settingsPage;
     LvlPrefab StartLevel; //for code use
     GameManager game;
     AudioManager audioManager;
@@ -321,6 +322,8 @@ public class LevelGenerator : MonoBehaviour
         PreviousLvl = dummyLvlPref;
 
         shop = settingsLevel.transform.Find("ShopCanvas").gameObject;
+        settingsPage = settingsLevel.transform.Find("SettingsCanvas").gameObject;
+
         obstacletextures = obstacleTextures;
 
         gradientSpawned = false;
@@ -896,6 +899,7 @@ public class LevelGenerator : MonoBehaviour
                 if (CurrentLvl.gameObject.transform.position.y == 0)
                 {
                     comeBackFromSettings = false;
+                    settingsPage.SetActive(false);
                     game.SetPageState(GameManager.pageState.StartPage);
                 }
             }
@@ -1304,6 +1308,7 @@ public class LevelGenerator : MonoBehaviour
     {
         audioManager.Go2LabBasement();
 
+        settingsPage.SetActive(false);
         settingsLevel.transform.position = new Vector2(0, -10.8f);
         go2Settings = true;
         shopC.Go2Shop();

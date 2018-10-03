@@ -72,6 +72,8 @@ public class GameManager : MonoBehaviour
     AdManager ads;
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
+    bool noSound = false;
+    static bool firstStartup = true;
 
     public static GameManager Instance;
 
@@ -200,16 +202,45 @@ public class GameManager : MonoBehaviour
         gameRunning = false;
         paused = false;
 
-        StartCoroutine(FadeInVolume());
-        audioManager.PlayLvlSound("ambientLab");
+        noSound = PlayerPrefsX.GetBool("noSound");
+        if (!noSound)
+        {
+            StartCoroutine(FadeInVolume());
+        }
+
+        if (firstStartup)
+        {
+            audioManager.PlayLvlSound("ambientLab");
+        }
+        firstStartup = false;
     }
 
     IEnumerator FadeInVolume() //fade in the games master volume
     {
         AudioListener.volume = 0;
-        for (float t = 0; t < 1.0f; t += Time.deltaTime / 0.7f)
+
+        float targetTime = 1;
+        float elaspedTime = 0;
+
+        while (elaspedTime < targetTime)
         {
-            AudioListener.volume = Mathf.Lerp(0, 1, t);
+            elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime/targetTime);
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeOutVolume() //fade out games master volume
+    {
+        float targetTime = 0.28f;
+        float elaspedTime = 0;
+
+        while (elaspedTime < targetTime)
+        {
+            elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(1, 0, elaspedTime / targetTime);
             yield return null;
         }
     }
@@ -411,6 +442,8 @@ public class GameManager : MonoBehaviour
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
+
+                LG.settingsPage.SetActive(true);
                 break;
 
             case pageState.ScoreReview:
@@ -461,7 +494,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        audioManager.Play("play");
+        audioManager.PlayUISound("play");
 
         ShowGameModeButton(false);
         canEndGame = true;
@@ -534,6 +567,8 @@ public class GameManager : MonoBehaviour
 
     public void GoToSettings()
     {
+        audioManager.PlayUISound("computerSelect1");
+
         ShowGameModeButton(false);
         SetPageState(pageState.SettingsPage);
         LG.GoToSettingsPage();
@@ -548,6 +583,8 @@ public class GameManager : MonoBehaviour
 
     public void GoToShop()
     {
+        audioManager.PlayUISound("computerSelect1");
+
         ShowGameModeButton(false);
         SetPageState(pageState.ShopPage);
         LG.GoToShop();
@@ -767,6 +804,12 @@ public class GameManager : MonoBehaviour
 
     void Go2GameModesMenu()
     {
-        sceneChanger.Fade2Scene(1);
+        if (!noSound)
+        {
+            audioManager.PlayUISound("computerSelect2");
+
+            StartCoroutine(FadeOutVolume());
+            sceneChanger.Fade2Scene(1);
+        }
     }
 }

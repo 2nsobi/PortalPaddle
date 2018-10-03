@@ -61,6 +61,7 @@ public class Ball : MonoBehaviour
     int ballButNoPaddleLayer = 19; //same as balllayer except wont collide with paddle
     Vector2 failSafeVelocity;
     string ballName;
+    bool noFISound = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -155,7 +156,7 @@ public class Ball : MonoBehaviour
         ballName = gameObject.name.Substring(0, gameObject.name.Length - 7);
         if(firstImpactSound.Length == 0)
         {
-            firstImpactSound = ballName;
+            noFISound = true;
         }
     }
 
@@ -604,7 +605,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            audioManager.Play(ballName);
+            audioManager.PlayBallSound(ballName);
         }
 
         if (collisionTag == "Wall")
@@ -650,7 +651,14 @@ public class Ball : MonoBehaviour
 
     void FirstCollision()
     {
-        audioManager.Play(firstImpactSound);
+        if (noFirstImpact)
+        {
+            audioManager.PlayBallSound(ballName);
+        }
+        else
+        {
+            audioManager.PlayBallFISound(firstImpactSound);
+        }
 
         SetAnimTrigs("Boost");
 
@@ -674,7 +682,7 @@ public class Ball : MonoBehaviour
             {
                 if (collision.gameObject.layer == 8)
                 {
-                    audioManager.Play("suckIn");
+                    audioManager.PlayMiscSound("suckIn");
 
                     invulnerable = true;
                     rigidbody.velocity = Vector2.zero;
@@ -715,7 +723,7 @@ public class Ball : MonoBehaviour
             {
                 if (collision.gameObject.layer == 8)
                 {
-                    audioManager.Play("suckIn");
+                    audioManager.PlayMiscSound("suckIn");
 
                     targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
                     isTargetHitMoving = target.IsMoving(targetHitIndex);
@@ -743,7 +751,7 @@ public class Ball : MonoBehaviour
                 {
                     if (collision.gameObject.layer == 8)
                     {
-                        audioManager.Play("suckIn");
+                        audioManager.PlayMiscSound("suckIn");
 
                         targetHitIndex = int.Parse(collision.gameObject.name[collision.gameObject.name.Length - 1].ToString());
                         isTargetHitMoving = target.IsMoving(targetHitIndex);

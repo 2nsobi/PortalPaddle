@@ -10,6 +10,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
     ShopController shopC;
     AdManager ads;
     GameManager game;
+    SettingsController settings;
 
     private static IStoreController m_StoreController;          // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
@@ -60,6 +61,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
         shopC = ShopController.Instance;
         ads = AdManager.Instance;
         game = GameManager.Instance;
+        settings = SettingsController.Instance;
     }
 
     public void InitializePurchasing()
@@ -84,6 +86,26 @@ public class Purchaser : MonoBehaviour, IStoreListener
         // Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
         // and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
         UnityPurchasing.Initialize(this, builder);
+    }
+
+    public string BallPrice()
+    {
+        return m_StoreController.products.WithID(PRODUCT_BALL).metadata.localizedPriceString;
+    }
+
+    public string PremiumBallPrice()
+    {
+        return m_StoreController.products.WithID(PRODUCT_PREMIUM_BALL).metadata.localizedPriceString;
+    }
+
+    public string GemChestPrice()
+    {
+        return m_StoreController.products.WithID(PRODUCT_1800_GEM_CHEST).metadata.localizedPriceString;
+    }
+
+    public string NoAdsPrice()
+    {
+        return m_StoreController.products.WithID(PRODUCT_REMOVE_ADS).metadata.localizedPriceString;
     }
 
     private bool IsInitialized()
@@ -243,6 +265,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
             ads.RemoveAds();
             shopC.DisableBuyNoAdsButton();
+            settings.DisableBuyNoAdsButton();
         }
         // Or ... an unknown product has been purchased by this user. Fill in additional products here....
         else

@@ -249,7 +249,7 @@ public class Target : MonoBehaviour
     {
         if (transform.position.y < cameraHeight && transform.position.y > -cameraHeight)
         {
-            audioManager.Play("portalSpawn");
+            audioManager.PlayMiscSound("portalSpawn");
         }
     }
 
@@ -257,7 +257,7 @@ public class Target : MonoBehaviour
     {
         if (transform.position.y < cameraHeight && transform.position.y > -cameraHeight)
         {
-            audioManager.Play("portalShrink");
+            audioManager.PlayMiscSound("portalShrink");
         }
     }
 }
