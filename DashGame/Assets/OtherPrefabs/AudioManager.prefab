@@ -51,30 +51,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c6a36dc67e63d41a98dbe4f3c37f2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds:
-  - clip: {fileID: 8300000, guid: d1b26957bf4c0b5488dd155521fd3dea, type: 3}
-    name: ambientLab
-    volume: 0.2
-    pitch: 1
-    loop: 1
-    source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: d72b92def2d1e3447a5897be6930b9f1, type: 3}
-    name: portalSpawn
-    volume: 1
+  ballSounds:
+  - clip: {fileID: 8300000, guid: c74ef46863dc0e74ea2e1d38a6a2935a, type: 3}
+    name: YellowBall
+    volume: 0.6
     pitch: 1
     loop: 0
     source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: bddbe9467f8694746acda8de705f86c9, type: 3}
-    name: portalShrink
-    volume: 1
+  ballFISounds:
+  - clip: {fileID: 8300000, guid: dea63efbe77e9b141b946e423ae4ce29, type: 3}
+    name: YellowBallFI
+    volume: 0.8
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  UISounds:
   - clip: {fileID: 8300000, guid: 3d5ac4ff0524e714d8aa5b31e534138d, type: 3}
     name: play
     volume: 1
     pitch: 1
     loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: d145c3c8e3a3e9443bff3a75eec986da, type: 3}
+    name: computerSelect1
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 3ee46539ac443bb4fa36fef28d8c640e, type: 3}
+    name: computerSelect2
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 960313aa184b58045860f71ba9352aeb, type: 3}
+    name: switchPage
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 64a46c6890512c740a5dfe40faaae7a8, type: 3}
+    name: selectItem
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  music:
+  - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
+    name: spaceMusic
+    volume: 0.45
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  ambientSounds:
+  - clip: {fileID: 8300000, guid: d1b26957bf4c0b5488dd155521fd3dea, type: 3}
+    name: ambientLab
+    volume: 0.2
+    pitch: 1
+    loop: 1
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 9e99965ece59cc6409849207065aca5e, type: 3}
     name: ambientCaves
@@ -90,19 +124,26 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: a544e764de440444d82daf256284daff, type: 3}
     name: caves2Sky
-    volume: 0.35
+    volume: 0.17
     pitch: 1
     loop: 1
     source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
-    name: spaceMusic
-    volume: 0.45
+  - clip: {fileID: 8300000, guid: 6de3f7e36c3a1db40936c74270dbc07f, type: 3}
+    name: flickeringLight
+    volume: 0.25
     pitch: 1
     loop: 1
     source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: c74ef46863dc0e74ea2e1d38a6a2935a, type: 3}
-    name: YellowBall
-    volume: 0.6
+  miscSounds:
+  - clip: {fileID: 8300000, guid: d72b92def2d1e3447a5897be6930b9f1, type: 3}
+    name: portalSpawn
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: bddbe9467f8694746acda8de705f86c9, type: 3}
+    name: portalShrink
+    volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
@@ -111,10 +152,4 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
-    source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 6de3f7e36c3a1db40936c74270dbc07f, type: 3}
-    name: flickeringLight
-    volume: 0.35
-    pitch: 1
-    loop: 1
     source: {fileID: 0}

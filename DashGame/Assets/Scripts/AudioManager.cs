@@ -6,7 +6,12 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    public Sound[] sounds;
+    public Sound[] ballSounds;
+    public Sound[] ballFISounds;
+    public Sound[] UISounds;
+    public Sound[] music;
+    public Sound[] ambientSounds;
+    public Sound[] miscSounds;
 
     Sound currentLvlSound;
     Sound nextLvlSound;
@@ -37,14 +42,59 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        for (int i = 0; i < sounds.Length; i++)
+        for (int i = 0; i < ballSounds.Length; i++)
         {
-            sounds[i].source = gameObject.AddComponent<AudioSource>();
-            sounds[i].source.clip = sounds[i].clip;
+            ballSounds[i].source = gameObject.AddComponent<AudioSource>();
+            ballSounds[i].source.clip = ballSounds[i].clip;
 
-            sounds[i].source.volume = sounds[i].volume;
-            sounds[i].source.pitch = sounds[i].pitch;
-            sounds[i].source.loop = sounds[i].loop;
+            ballSounds[i].source.volume = ballSounds[i].volume;
+            ballSounds[i].source.pitch = ballSounds[i].pitch;
+            ballSounds[i].source.loop = ballSounds[i].loop;
+        }
+        for (int i = 0; i < ballFISounds.Length; i++)
+        {
+            ballFISounds[i].source = gameObject.AddComponent<AudioSource>();
+            ballFISounds[i].source.clip = ballFISounds[i].clip;
+
+            ballFISounds[i].source.volume = ballFISounds[i].volume;
+            ballFISounds[i].source.pitch = ballFISounds[i].pitch;
+            ballFISounds[i].source.loop = ballFISounds[i].loop;
+        }
+        for (int i = 0; i < UISounds.Length; i++)
+        {
+            UISounds[i].source = gameObject.AddComponent<AudioSource>();
+            UISounds[i].source.clip = UISounds[i].clip;
+
+            UISounds[i].source.volume = UISounds[i].volume;
+            UISounds[i].source.pitch = UISounds[i].pitch;
+            UISounds[i].source.loop = UISounds[i].loop;
+        }
+        for (int i = 0; i < music.Length; i++)
+        {
+            music[i].source = gameObject.AddComponent<AudioSource>();
+            music[i].source.clip = music[i].clip;
+
+            music[i].source.volume = music[i].volume;
+            music[i].source.pitch = music[i].pitch;
+            music[i].source.loop = music[i].loop;
+        }
+        for (int i = 0; i < ambientSounds.Length; i++)
+        {
+            ambientSounds[i].source = gameObject.AddComponent<AudioSource>();
+            ambientSounds[i].source.clip = ambientSounds[i].clip;
+
+            ambientSounds[i].source.volume = ambientSounds[i].volume;
+            ambientSounds[i].source.pitch = ambientSounds[i].pitch;
+            ambientSounds[i].source.loop = ambientSounds[i].loop;
+        }
+        for (int i = 0; i < miscSounds.Length; i++)
+        {
+            miscSounds[i].source = gameObject.AddComponent<AudioSource>();
+            miscSounds[i].source.clip = miscSounds[i].clip;
+
+            miscSounds[i].source.volume = miscSounds[i].volume;
+            miscSounds[i].source.pitch = miscSounds[i].pitch;
+            miscSounds[i].source.loop = miscSounds[i].loop;
         }
     }
 
@@ -52,7 +102,7 @@ public class AudioManager : MonoBehaviour
     {
         try
         {
-            Sound s = Array.Find(sounds, sound => sound.name == lvlSoundName);
+            Sound s = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
             s.source.volume = 0;
             s.source.Play();
 
@@ -73,7 +123,7 @@ public class AudioManager : MonoBehaviour
     {
         try
         {
-            Sound s = Array.Find(sounds, sound => sound.name == musicName);
+            Sound s = Array.Find(music, sound => sound.name == musicName);
             s.source.volume = 0;
             s.source.Play();
 
@@ -184,7 +234,7 @@ public class AudioManager : MonoBehaviour
     {
         try
         {
-            currentLvlSound = Array.Find(sounds, sound => sound.name == lvlSoundName);
+            currentLvlSound = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
 
             currentLvlSound.source.volume = currentLvlSound.volume;
             currentLvlSound.source.Play();
@@ -214,7 +264,7 @@ public class AudioManager : MonoBehaviour
     {
         try
         {
-            currentMusic = Array.Find(sounds, sound => sound.name == musicName);
+            currentMusic = Array.Find(music, sound => sound.name == musicName);
 
             currentMusic.source.volume = currentMusic.volume;
             currentMusic.source.Play();
@@ -240,11 +290,63 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void Play(string name)
+    public void PlayBallSound(string name)
     {
         try
         {
-            Array.Find(sounds, sound => sound.name == name).source.Play();
+            Array.Find(ballSounds, sound => sound.name == name).source.Play();
+        }
+        catch (System.NullReferenceException)
+        {
+            Debug.LogError("Sound " + name + " not found!");
+            return;
+        }
+    }
+
+    public void PlayBallFISound(string name)
+    {
+        try
+        {
+            Array.Find(ballFISounds, sound => sound.name == name).source.Play();
+        }
+        catch (System.NullReferenceException)
+        {
+            Debug.LogError("Sound " + name + " not found!");
+            return;
+        }
+    }
+
+    public void PlayUISound(string name)
+    {
+        try
+        {
+            Array.Find(UISounds, sound => sound.name == name).source.Play();
+        }
+        catch (System.NullReferenceException)
+        {
+            Debug.LogError("Sound " + name + " not found!");
+            return;
+        }
+    }
+
+    public void PlayAmbientSound(string name)
+    {
+        try
+        {
+            Array.Find(ambientSounds, sound => sound.name == name).source.Play();
+        }
+        catch (System.NullReferenceException)
+        {
+            Debug.LogError("Sound " + name + " not found!");
+            return;
+        }
+    }
+
+    public void PlayMiscSound(string name)
+    {
+        try
+        {
+            Array.Find(miscSounds, sound => sound.name == name).source.Play();
         }
         catch (System.NullReferenceException)
         {

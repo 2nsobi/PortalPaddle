@@ -47,6 +47,7 @@ public class BallController : MonoBehaviour
     OtherGameModesManager.pageState currentPage2Fade2;
     OtherGameModesManager.gameMode currentGameMode2Start;
     bool dontStartGameMode = false;
+    bool noSound = false;
 
     public static BallController Instance;
 
@@ -216,7 +217,10 @@ public class BallController : MonoBehaviour
             if (!fadeBack)
             {
                 whiteFlashCG.alpha += Time.deltaTime * 4;
-                AudioListener.volume -= Time.deltaTime * 4;
+                if (!noSound)
+                {
+                    AudioListener.volume -= Time.deltaTime * 4;
+                }
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
@@ -233,8 +237,11 @@ public class BallController : MonoBehaviour
             else
             {
                 whiteFlashCG.alpha -= Time.deltaTime * 4;
-                AudioListener.volume += Time.deltaTime * 4;
-                if (whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1)
+                if (!noSound)
+                {
+                    AudioListener.volume += Time.deltaTime * 4;
+                }
+                if ((whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1) || (whiteFlashCG.alpha <= 0 && noSound))
                 {
                     whiteFlashCG.alpha = 0;
                     fade2Black = false;
@@ -305,9 +312,9 @@ public class BallController : MonoBehaviour
 
     IEnumerator BallSpawnerSounds()
     {
-        audioManager.Play("portalSpawn");
+        audioManager.PlayMiscSound("portalSpawn");
         yield return new WaitForSeconds(1.45f); //it takes about 1.4 seconds for the ballspawner portal to start shrinking
-        audioManager.Play("portalShrink");
+        audioManager.PlayMiscSound("portalShrink");
     }
 
     void GameStarted()
@@ -565,5 +572,10 @@ public class BallController : MonoBehaviour
     public void SetBalls2Absorb(int balls)
     {
         balls2Absorb = balls;
+    }
+
+    public void SetNoSound(bool noSound)
+    {
+        this.noSound = noSound;
     }
 }

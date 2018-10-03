@@ -15,6 +15,8 @@ public class ShopController : MonoBehaviour
     public Button buyGemsButton;
     public Button buyNoAdsButton;
     public GameObject disabledNoAdsButtonFilter;
+    public Text NoAdsPrice;
+    public Text GemChestPrice;
 
     string currentMenu = null;
     Text purchaseButtonPrice;
@@ -26,7 +28,9 @@ public class ShopController : MonoBehaviour
     Purchaser purchaser;
     GameManager game;
     AdManager ads;
+    AudioManager audioManager;
     bool noAds = false;
+    string ballPrice, premiumBallPrice;
 
     public enum buttonLayout { selected, unlocked, locked }
 
@@ -55,6 +59,10 @@ public class ShopController : MonoBehaviour
         noAds = PlayerPrefsX.GetBool("noAds");
 
         disabledNoAdsButtonFilter.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
         if (noAds)
         {
             buyNoAdsButton.interactable = false;
@@ -67,6 +75,12 @@ public class ShopController : MonoBehaviour
         game = GameManager.Instance;
         ads = AdManager.Instance;
         purchaser = Purchaser.Instance;
+        audioManager = AudioManager.Instance;
+
+        NoAdsPrice.text = purchaser.NoAdsPrice();
+        GemChestPrice.text = purchaser.GemChestPrice();
+        ballPrice = purchaser.BallPrice();
+        premiumBallPrice = purchaser.PremiumBallPrice();
     }
 
     public void SetButtonLayout(SnapScrollRectController.ShopItem item,int gemCost)
@@ -96,11 +110,11 @@ public class ShopController : MonoBehaviour
                 unlockButtonGemCost.text = gemCost.ToString();
                 if (gemCost == 500)
                 {
-                    purchaseButtonPrice.text = "$0.99";
+                    purchaseButtonPrice.text = ballPrice;
                 }
                 else
                 {
-                    purchaseButtonPrice.text = "$1.99";
+                    purchaseButtonPrice.text = premiumBallPrice;
                 }
                 break;
         }
@@ -108,6 +122,8 @@ public class ShopController : MonoBehaviour
 
     public void GoToBallSelection()
     {
+        audioManager.PlayUISound("switchPage");
+
         currentMenu = "ball";
 
         viewBallsButton.interactable = false;
@@ -140,6 +156,8 @@ public class ShopController : MonoBehaviour
 
     public void GoToPaddleSelection()
     {
+        audioManager.PlayUISound("switchPage");
+
         currentMenu = "paddle";
 
         viewBallsButton.interactable = true;
@@ -158,6 +176,8 @@ public class ShopController : MonoBehaviour
 
     public void GoToIAP()
     {
+        audioManager.PlayUISound("switchPage");
+
         currentMenu = "IAP";
 
         viewBallsButton.interactable = true;
