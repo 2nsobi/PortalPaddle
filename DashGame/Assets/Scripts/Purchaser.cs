@@ -11,6 +11,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
     AdManager ads;
     GameManager game;
     SettingsController settings;
+    AudioManager audioManager;
 
     private static IStoreController m_StoreController;          // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
@@ -62,6 +63,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
         ads = AdManager.Instance;
         game = GameManager.Instance;
         settings = SettingsController.Instance;
+        audioManager = AudioManager.Instance;
     }
 
     public void InitializePurchasing()
@@ -242,6 +244,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased a ball!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
+            audioManager.PlayUISound("unlockItem");
             shopC.BuyItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_PREMIUM_BALL, StringComparison.Ordinal))
@@ -249,6 +252,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased an ultra ball!!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
+            audioManager.PlayUISound("unlockItem");
             shopC.BuyItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1800_GEM_CHEST, StringComparison.Ordinal))
@@ -256,6 +260,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased a gem chest!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
+            audioManager.PlayUISound("unlockItem");
             game.UpdateGems(1800);
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_REMOVE_ADS, StringComparison.Ordinal))
@@ -263,6 +268,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just removed ads forever!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
+            audioManager.PlayUISound("unlockItem");
             ads.RemoveAds();
             shopC.DisableBuyNoAdsButton();
             settings.DisableBuyNoAdsButton();

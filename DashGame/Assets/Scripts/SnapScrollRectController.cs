@@ -203,6 +203,7 @@ public class SnapScrollRectController : MonoBehaviour
     int selectedItemIndex = 0;
     int activeItemIndexLink;
     GameManager game;
+    AudioManager audioManager;
     int ball2Purchase;
 
     private void Awake()
@@ -215,6 +216,7 @@ public class SnapScrollRectController : MonoBehaviour
         shopC = ShopController.Instance;
         game = GameManager.Instance;
         purchaser = Purchaser.Instance;
+        audioManager = AudioManager.Instance;
     }
 
     private void Start()
@@ -324,6 +326,8 @@ public class SnapScrollRectController : MonoBehaviour
     {
         if (shopItems[focalItemNum].unlocked)
         {
+            audioManager.PlayUISound("selectItem");
+
             UnselectAllItems();
             shopItems[focalItemNum].Select();
             selectedItemIndex = focalItemNum;
@@ -333,6 +337,8 @@ public class SnapScrollRectController : MonoBehaviour
         {
             if (shopItems[focalItemNum].gemCost <= game.Gems)
             {
+                audioManager.PlayUISound("unlockItem");
+
                 UnselectAllItems();
                 shopItems[focalItemNum].Select();
                 selectedItemIndex = focalItemNum;
