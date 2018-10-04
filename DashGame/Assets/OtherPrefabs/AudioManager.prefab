@@ -114,6 +114,12 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: c367da11ca3b8d14d8b22b809f240350, type: 3}
+    name: unlockItem
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   music:
   - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
     name: spaceMusic
@@ -173,6 +179,12 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 309fe8842b59e7247a0d56a26cde1231, type: 3}
     name: suckIn
+    volume: 0.6
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: f44e16a0ba39d3a4683566987624e778, type: 3}
+    name: revive
     volume: 0.6
     pitch: 1
     loop: 0

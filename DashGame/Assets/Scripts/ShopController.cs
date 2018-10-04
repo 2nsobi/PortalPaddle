@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopController : MonoBehaviour
@@ -31,6 +32,10 @@ public class ShopController : MonoBehaviour
     AudioManager audioManager;
     bool noAds = false;
     string ballPrice, premiumBallPrice;
+    GameObject comingSoonNorm;
+    GameObject comingSoonMad;
+    Button comingSoonButton;
+    Coroutine comingSoonCoroutine;
 
     public enum buttonLayout { selected, unlocked, locked }
 
@@ -46,8 +51,13 @@ public class ShopController : MonoBehaviour
             return;
         }
 
-        ballSelectionMenu = transform.Find("BallScollPanel").gameObject;
+        ballSelectionMenu = transform.Find("BallScrollPanel").gameObject;
+
         paddleSelectionMenu = transform.Find("TempPaddleMenu").gameObject; //paddleSelectionMenu = transform.Find("PaddleScollPanel").gameObject;
+        comingSoonButton = paddleSelectionMenu.transform.GetChild(0).GetComponent<Button>();
+        comingSoonNorm = comingSoonButton.transform.Find("ImageNorm").gameObject;
+        comingSoonMad = comingSoonButton.transform.Find("ImageMad").gameObject;
+
         IAPmenu = transform.Find("IAPMenu").gameObject;
 
         ballScrollRect = ballSelectionMenu.GetComponent<SnapScrollRectController>();
@@ -122,6 +132,8 @@ public class ShopController : MonoBehaviour
 
     public void GoToBallSelection()
     {
+        StopComingSoonShake();
+
         audioManager.PlayUISound("switchPage");
 
         currentMenu = "ball";
@@ -156,6 +168,12 @@ public class ShopController : MonoBehaviour
 
     public void GoToPaddleSelection()
     {
+        comingSoonNorm.SetActive(true);
+        comingSoonMad.SetActive(false);
+
+
+
+
         audioManager.PlayUISound("switchPage");
 
         currentMenu = "paddle";
@@ -176,6 +194,8 @@ public class ShopController : MonoBehaviour
 
     public void GoToIAP()
     {
+        StopComingSoonShake();
+
         audioManager.PlayUISound("switchPage");
 
         currentMenu = "IAP";
@@ -196,6 +216,8 @@ public class ShopController : MonoBehaviour
 
     public void Go2Shop()
     {
+        StopComingSoonShake();
+
         currentMenu = "ball";
 
         viewBallsButton.interactable = false;
@@ -265,5 +287,57 @@ public class ShopController : MonoBehaviour
     {
         buyNoAdsButton.interactable = false;
         disabledNoAdsButtonFilter.SetActive(true);
+    }
+
+    public void ShakeButton(RectTransform rectTransform)
+    {
+        audioManager.PlayUISound("comingSoon");
+
+        comingSoonCoroutine = StartCoroutine(ShakeUIElement(rectTransform));
+    }
+
+    public IEnumerator ShakeUIElement(RectTransform rectTransform)
+    {
+        comingSoonButton.interactable = false;
+        comingSoonNorm.SetActive(false);
+        comingSoonMad.SetActive(true);
+
+        Vector3 originalPos = rectTransform.localPosition;
+        print(originalPos);
+        float elapsedTime = 0;
+        float CameraShakeIntensity = 1.5f;
+
+        while (elapsedTime < 1.5f)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float percentComplete = elapsedTime / 1.5f;
+            float damper = 1.0f - Mathf.Clamp(4.0f * percentComplete - 3.0f, 0.0f, 1.0f);
+
+            float x = Random.value * 2.0f - 1.0f;
+            float y = Random.value * 2.0f - 1.0f;
+            x *= Mathf.PerlinNoise(x, y) * CameraShakeIntensity * damper;
+            y *= Mathf.PerlinNoise(x, y) * CameraShakeIntensity * damper;
+
+            rectTransform.localPosition = new Vector3(originalPos.x + x, originalPos.y + y, originalPos.z);
+
+            yield return null;
+        }
+
+        rectTransform.localPosition = originalPos;
+
+        comingSoonNorm.SetActive(true);
+        comingSoonMad.SetActive(false);
+        comingSoonButton.interactable = true;
+    }
+
+    void StopComingSoonShake()
+    {
+        if (comingSoonCoroutine != null)
+        {
+            StopCoroutine(comingSoonCoroutine);
+        }
+        comingSoonButton.interactable = true;
+        audioManager.PlayUISound("comingSoon",true);
     }
 }

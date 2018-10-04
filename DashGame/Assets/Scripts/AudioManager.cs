@@ -264,7 +264,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(string musicName)
+    public void PlayMusic(string musicName,bool stop = false)
     {
         try
         {
@@ -294,11 +294,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayBallSound(string name)
+    public void PlayBallSound(string name, bool stop = false)
     {
         try
         {
-            Array.Find(ballSounds, sound => sound.name == name).source.Play();
+            if (!stop)
+            {
+                Array.Find(ballSounds, sound => sound.name == name).source.Play();
+            }
+            else
+            {
+                Array.Find(ballSounds, sound => sound.name == name).source.Stop();
+            }
         }
         catch (System.NullReferenceException)
         {
@@ -307,11 +314,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayBallFISound(string name)
+    public void PlayBallFISound(string name, bool stop = false)
     {
         try
         {
-            Array.Find(ballFISounds, sound => sound.name == name).source.Play();
+            if (!stop)
+            {
+                Array.Find(ballFISounds, sound => sound.name == name).source.Play();
+            }
+            else
+            {
+                Array.Find(ballFISounds, sound => sound.name == name).source.Stop();
+            }
         }
         catch (System.NullReferenceException)
         {
@@ -320,11 +334,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayUISound(string name)
+    public void PlayUISound(string name, bool stop = false)
     {
         try
         {
-            Array.Find(UISounds, sound => sound.name == name).source.Play();
+            if (!stop)
+            {
+                Array.Find(UISounds, sound => sound.name == name).source.Play();
+            }
+            else
+            {
+                Array.Find(UISounds, sound => sound.name == name).source.Stop();
+            }
         }
         catch (System.NullReferenceException)
         {
@@ -333,11 +354,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayAmbientSound(string name)
+    public void PlayAmbientSound(string name, bool stop = false)
     {
         try
         {
-            Array.Find(ambientSounds, sound => sound.name == name).source.Play();
+            if (!stop)
+            {
+                Array.Find(ambientSounds, sound => sound.name == name).source.Play();
+            }
+            else
+            {
+                Array.Find(ambientSounds, sound => sound.name == name).source.Stop();
+            }
         }
         catch (System.NullReferenceException)
         {
@@ -346,11 +374,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMiscSound(string name)
+    public void PlayMiscSound(string name, bool stop = false)
     {
         try
         {
-            Array.Find(miscSounds, sound => sound.name == name).source.Play();
+            if (!stop)
+            {
+                Array.Find(miscSounds, sound => sound.name == name).source.Play();
+            }
+            else
+            {
+                Array.Find(miscSounds, sound => sound.name == name).source.Stop();
+            }
         }
         catch (System.NullReferenceException)
         {
