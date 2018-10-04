@@ -112,6 +112,8 @@ public class ObstacleSpawner : MonoBehaviour
     Vector2 wallOnScreenPosE;
     Transform currentWallW;
     Transform currentWallE;
+    GameObject deadeyeBRBackground;
+    GameObject deadeyeBWBackground;
 
     Transform wallW1;
     Transform wallE1;
@@ -175,6 +177,8 @@ public class ObstacleSpawner : MonoBehaviour
         wallE1.localPosition = new Vector3(distanceDiff4Walls, 0, 0);
 
         deadeyeLab = Instantiate(DeadeyeLab);
+        deadeyeBRBackground = deadeyeLab.transform.Find("LabWallBR").gameObject;
+        deadeyeBWBackground = deadeyeLab.transform.Find("LabWallBW").gameObject;
         deadeyeLab.SetActive(false);
         wallW2 = deadeyeLab.transform.Find("wallW");
         wallE2 = deadeyeLab.transform.Find("wallE");
@@ -737,6 +741,20 @@ public class ObstacleSpawner : MonoBehaviour
         else
         {
             moveWallsOut = false;
+        }
+    }
+
+    public void InvertDeadeyeBackground(bool normal = false) //makes thebackground look more black and white when using black and white ball
+    {
+        if (normal)
+        {
+            deadeyeBRBackground.SetActive(true);
+            deadeyeBWBackground.SetActive(false);
+        }
+        else
+        {
+            deadeyeBRBackground.SetActive(false);
+            deadeyeBWBackground.SetActive(true);
         }
     }
 }

@@ -502,7 +502,6 @@ public class LevelGenerator : MonoBehaviour
 
         labMonitorsAnimC.SetBool("gameRunning", false);
 
-        audioManager.StopLvlSounds();
         audioManager.StopMusic();
         audioManager.PlayLvlSound("ambientLab");
 

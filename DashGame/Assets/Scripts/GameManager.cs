@@ -73,7 +73,6 @@ public class GameManager : MonoBehaviour
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
     bool noSound = false;
-    static bool firstStartup = true;
 
     public static GameManager Instance;
 
@@ -206,13 +205,8 @@ public class GameManager : MonoBehaviour
         if (!noSound)
         {
             StartCoroutine(FadeInVolume());
-        }
-
-        if (firstStartup)
-        {
             audioManager.PlayLvlSound("ambientLab");
         }
-        firstStartup = false;
     }
 
     IEnumerator FadeInVolume() //fade in the games master volume
@@ -226,7 +220,7 @@ public class GameManager : MonoBehaviour
         {
             elaspedTime += Time.deltaTime;
 
-            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime/targetTime);
+            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
             yield return null;
         }
     }
@@ -307,6 +301,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReviveDelay()
     {
+        audioManager.PlayMiscSound("revive");
         for (float i = 0.0f; i < 1.8f; i += 0.1f)  //make sure this delay is longer than the length of the ball shrink anim which is 1.3 seconds
         {
             yield return new WaitForSeconds(0.1f);
@@ -809,7 +804,7 @@ public class GameManager : MonoBehaviour
             audioManager.PlayUISound("computerSelect2");
 
             StartCoroutine(FadeOutVolume());
-            sceneChanger.Fade2Scene(1);
         }
+        sceneChanger.Fade2Scene(1);
     }
 }

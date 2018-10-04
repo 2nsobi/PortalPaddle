@@ -38,6 +38,7 @@ public class OtherGameModesManager : MonoBehaviour
     SceneChanger sceneChanger;
     TargetController targetC;
     AdManager ads;
+    AudioManager audioManager;
 
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
@@ -58,6 +59,7 @@ public class OtherGameModesManager : MonoBehaviour
     float gems = 0;
     int newGems;
     int activeHighScore;
+    bool noSound;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
@@ -76,8 +78,6 @@ public class OtherGameModesManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        SetPageState(pageState.StartPage);
 
         PlusOneHS = ZPlayerPrefs.GetInt("PlusOneHighScore");
         PlusOneHighScore.text = PlusOneHS.ToString();
@@ -104,11 +104,50 @@ public class OtherGameModesManager : MonoBehaviour
         sceneChanger = SceneChanger.Instance;
         targetC = TargetController.Instance;
         ads = AdManager.Instance;
+        audioManager = AudioManager.Instance;
+
+        noSound = PlayerPrefsX.GetBool("noSound");
+        if (!noSound)
+        {
+            StartCoroutine(FadeInVolume());
+            audioManager.PlayLvlSound("elevator");
+        }
 
         Paddle.SetPauseButtonRect(pauseButtonRect);
         DeactivatePaddle();
 
+        SetPageState(pageState.StartPage);
         SetGameMode(gameMode.None);
+    }
+
+    IEnumerator FadeInVolume() //fade in the games master volume
+    {
+        AudioListener.volume = 0;
+
+        float targetTime = 1;
+        float elaspedTime = 0;
+
+        while (elaspedTime < targetTime)
+        {
+            elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeOutVolume() //fade out games master volume
+    {
+        float targetTime = 0.28f;
+        float elaspedTime = 0;
+
+        while (elaspedTime < targetTime)
+        {
+            elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(1, 0, elaspedTime / targetTime);
+            yield return null;
+        }
     }
 
     public void Scored()
@@ -255,6 +294,10 @@ public class OtherGameModesManager : MonoBehaviour
 
                 gemsOnScreen = false;
 
+                if (!noSound)
+                {
+                    audioManager.PlayLvlSound("elevator");
+                }
                 break;
 
 
@@ -338,18 +381,24 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void Go2PlusOne()
     {
+        audioManager.StopLvlSounds();
+        audioManager.PlayUISound("plus1");
         ballC.Fade2GameMode(pageState.Game, gameMode.PlusOne);
         SetGameModeSelectButtons(false);
     }
 
     public void Go2Deadeye()
     {
+        audioManager.StopLvlSounds();
+        audioManager.PlayUISound("deadeye");
         ballC.Fade2GameMode(pageState.Game, gameMode.Deadeye);
         SetGameModeSelectButtons(false);
     }
 
-    public void Go2Clairavoyance()
+    public void Go2Clairvoyance()
     {
+        audioManager.StopLvlSounds();
+        audioManager.PlayUISound("clairvoyance");
         ballC.Fade2GameMode(pageState.Game, gameMode.Clairvoyance);
         SetGameModeSelectButtons(false);
     }
@@ -457,6 +506,10 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void GoBackHome()
     {
+        if (!noSound)
+        {
+            StartCoroutine(FadeOutVolume());
+        }
         sceneChanger.Fade2Scene(0);
     }
 
