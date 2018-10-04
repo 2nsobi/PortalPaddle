@@ -230,6 +230,7 @@ public class BallController : MonoBehaviour
 
                     startSpeed = initialSpeed;
                     grayScaleMat.SetFloat("_EffectAmount", 0);
+                    isGray = false;
 
                     fadeBack = true;
                 }
@@ -255,6 +256,10 @@ public class BallController : MonoBehaviour
             if (!fadeBack)
             {
                 whiteFlashCG.alpha += Time.deltaTime * 4;
+                if (!noSound)
+                {
+                    AudioListener.volume -= Time.deltaTime * 4;
+                }
                 if (whiteFlashCG.alpha >= 1)
                 {
                     whiteFlashCG.alpha = 1;
@@ -269,6 +274,10 @@ public class BallController : MonoBehaviour
                     startSpeed = initialSpeed;
                     targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
                     obSpawner.EndGame();
+
+                    grayScaleMat.SetFloat("_EffectAmount", 0);
+                    obSpawner.InvertDeadeyeBackground(true);
+                    isGray = false;
 
                     if (currentGameMode == 1)
                     {
@@ -285,6 +294,10 @@ public class BallController : MonoBehaviour
             else
             {
                 whiteFlashCG.alpha -= Time.deltaTime * 4;
+                if (!noSound)
+                {
+                    AudioListener.volume += Time.deltaTime * 4;
+                }
                 if (whiteFlashCG.alpha <= 0)
                 {
                     whiteFlashCG.alpha = 0;
@@ -392,10 +405,12 @@ public class BallController : MonoBehaviour
         if (isGray)
         {
             grayScaleMat.SetFloat("_EffectAmount", 1);
+            obSpawner.InvertDeadeyeBackground();
         }
         else
         {
             grayScaleMat.SetFloat("_EffectAmount", 0);
+            obSpawner.InvertDeadeyeBackground(true);
         }
     }
 

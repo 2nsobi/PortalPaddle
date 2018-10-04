@@ -234,6 +234,10 @@ public class AudioManager : MonoBehaviour
     {
         try
         {
+            if (currentLvlSound != null)
+            {
+                currentLvlSound.source.Stop();
+            }
             currentLvlSound = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
 
             currentLvlSound.source.volume = currentLvlSound.volume;

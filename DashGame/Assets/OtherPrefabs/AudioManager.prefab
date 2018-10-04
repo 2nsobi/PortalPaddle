@@ -96,6 +96,24 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: b4965b018a6b5cf41a064e5a42c4bead, type: 3}
+    name: deadeye
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 9e0ca6493e0e72c45afabe8278e43611, type: 3}
+    name: plus1
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: cb13518df72140849a507ba4e4f7c2f1, type: 3}
+    name: clairvoyance
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   music:
   - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
     name: spaceMusic
@@ -130,6 +148,12 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 6de3f7e36c3a1db40936c74270dbc07f, type: 3}
     name: flickeringLight
+    volume: 0.25
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 8640074ce3f17a14fbde640674483fc2, type: 3}
+    name: elevator
     volume: 0.25
     pitch: 1
     loop: 1
