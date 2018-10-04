@@ -306,12 +306,13 @@ public class ShopController : MonoBehaviour
         print(originalPos);
         float elapsedTime = 0;
         float CameraShakeIntensity = 1.5f;
+        float shakeDuration = 1.436f;
 
         while (elapsedTime < 1.5f)
         {
             elapsedTime += Time.deltaTime;
 
-            float percentComplete = elapsedTime / 1.5f;
+            float percentComplete = elapsedTime / shakeDuration;
             float damper = 1.0f - Mathf.Clamp(4.0f * percentComplete - 3.0f, 0.0f, 1.0f);
 
             float x = Random.value * 2.0f - 1.0f;

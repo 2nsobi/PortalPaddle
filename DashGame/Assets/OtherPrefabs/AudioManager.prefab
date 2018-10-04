@@ -120,6 +120,12 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 9a48fe8634103c94ea4b453d96e5ede2, type: 3}
+    name: comingSoon
+    volume: 0.9
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   music:
   - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
     name: spaceMusic
