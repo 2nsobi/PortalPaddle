@@ -100,6 +100,7 @@ public class ObstacleSpawner : MonoBehaviour
     GameMode_Plus1 PlusOneGameModeC;
     GameMode_Deadeye DeadeyeGameModeC;
     GameMode_Clairvoyance ClairvoyanceGameModeC;
+    AudioManager audioManager;
     static CryptoRandom rng = new CryptoRandom();
     Obstacle currentObstacle;
     Obstacle nextObstacle;
@@ -202,6 +203,7 @@ public class ObstacleSpawner : MonoBehaviour
     private void Start()
     {
         targetC = TargetController.Instance;
+        audioManager = AudioManager.Instance;
 
         ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
 
@@ -356,6 +358,8 @@ public class ObstacleSpawner : MonoBehaviour
 
     public void SpawnObstacle()
     {
+        audioManager.PlayMiscSound("comeIn");
+
         if (nextObstacle == null)
         {
             nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, targetsGrowShrink);
@@ -489,7 +493,8 @@ public class ObstacleSpawner : MonoBehaviour
         }
     }
 
-    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, string texture, bool targetGrowShrink, bool easy = false, bool onlyMotion = false)
+    public Obstacle SpawnFromObstacles(int minObstacle, int maxObstacle, Vector2 position, Quaternion rotation, string texture, 
+        bool targetGrowShrink, bool easy = false, bool onlyMotion = false)
     {
         int number = rng.Next(minObstacle, maxObstacle + 1);
 

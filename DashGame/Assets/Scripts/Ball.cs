@@ -62,6 +62,7 @@ public class Ball : MonoBehaviour
     Vector2 failSafeVelocity;
     string ballName;
     bool noFISound = false;
+    bool playingDeadeye = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -224,7 +225,7 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public void Spawn(float initialVel, float boostVel, float absorbSpd, Vector2 position, Quaternion rotation, bool wrapping)
+    public void Spawn(float initialVel, float boostVel, float absorbSpd, Vector2 position, Quaternion rotation, bool wrapping, bool deadeye = false)
     {
         transform.position = position;
         transform.rotation = rotation;
@@ -246,6 +247,8 @@ public class Ball : MonoBehaviour
             ghostBall2.SetActive(false);
 
         }
+
+        playingDeadeye = deadeye;
 
         StartCoroutine(DropDelay());
     }
@@ -785,5 +788,13 @@ public class Ball : MonoBehaviour
     public void TurnGray()
     {
         ballC.TurnGray();
+    }
+
+    public void PlayLaserSound()
+    {
+        if (playingDeadeye)
+        {
+            audioManager.PlayMiscSound("ballFired");
+        }
     }
 }
