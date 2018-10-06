@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     public Button skipScoreReviewButton;
     public Button replayButton;
     public GameObject GameModeButton;
+    public GameObject tutorial;
     Animator GameModeButtonAnimC;
     bool extraBall = false;
     int richochetCount;
@@ -132,7 +133,7 @@ public class GameManager : MonoBehaviour
          DELETE THING BELOW
          **********************************************/
 
-        //ZPlayerPrefs.DeleteAll();
+        ZPlayerPrefs.DeleteAll();
 
         /********************************************
         DELETE THING ABOVE
@@ -174,6 +175,8 @@ public class GameManager : MonoBehaviour
         }
 
         extraBallSprite.SetActive(false);
+
+        tutorial.SetActive(false);
     }
 
     public void SetPaddle(int index)
@@ -806,5 +809,10 @@ public class GameManager : MonoBehaviour
             StartCoroutine(FadeOutVolume());
         }
         sceneChanger.Fade2Scene(1);
+    }
+
+    public void EnableTutorial()
+    {
+        tutorial.SetActive(true);
     }
 }

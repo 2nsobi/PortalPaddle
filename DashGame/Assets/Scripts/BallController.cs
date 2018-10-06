@@ -48,6 +48,7 @@ public class BallController : MonoBehaviour
     OtherGameModesManager.gameMode currentGameMode2Start;
     bool dontStartGameMode = false;
     bool noSound = false;
+    bool tutorialDisabled;
 
     public static BallController Instance;
 
@@ -90,6 +91,8 @@ public class BallController : MonoBehaviour
             }
         }
         grayScaleMat.SetFloat("_EffectAmount", 0);
+
+        tutorialDisabled = PlayerPrefsX.GetBool("tutorialDisabled");
     }
 
     private void Start()
@@ -179,6 +182,7 @@ public class BallController : MonoBehaviour
         GameManager.GameStarted += GameStarted;
         LevelGenerator.TransitionDone += TransitionDone;
         GameManager.Revive += Revive;
+        Tutorial.NowStartGame += NowStartGame;
     }
 
     private void OnDisable()
@@ -188,6 +192,7 @@ public class BallController : MonoBehaviour
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
         GameManager.Revive -= Revive;
+        Tutorial.NowStartGame -= NowStartGame;
     }
 
     IEnumerator SpawnDelay()
@@ -336,6 +341,25 @@ public class BallController : MonoBehaviour
 
         tempSpeed = startSpeed;
         tempBoostSpeed = boostSpeed;
+
+        if (tutorialDisabled)
+        {
+            balls[selectedBallIndex].gameObject.SetActive(true);
+            balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+
+            spawnerAnimator.SetTrigger("GameStarted");
+            ballSpawner.transform.position = startPos;
+            StartCoroutine(BallSpawnerSounds());
+        }
+        else
+        {
+            print("tutorial should e on");
+            game.EnableTutorial();
+        }
+    }
+    
+    void NowStartGame()
+    {
         balls[selectedBallIndex].gameObject.SetActive(true);
         balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
 
@@ -434,7 +458,7 @@ public class BallController : MonoBehaviour
                 if (!ball2Spawn.isActiveAndEnabled)
                 {
                     ball2Spawn.gameObject.SetActive(true);
-                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
 
                     ballsQ.Enqueue(ball2Spawn);
 
@@ -445,7 +469,7 @@ public class BallController : MonoBehaviour
             return false;
         }
         ball2Spawn.gameObject.SetActive(true);
-        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
 
         ballsQ.Enqueue(ball2Spawn);
 
@@ -592,5 +616,17 @@ public class BallController : MonoBehaviour
     public void SetNoSound(bool noSound)
     {
         this.noSound = noSound;
+    }
+
+    public void SetTutorial(bool turnOff)
+    {
+        if (turnOff)
+        {
+            tutorialDisabled = true;
+        }
+        else
+        {
+            tutorialDisabled = false;
+        }      
     }
 }
