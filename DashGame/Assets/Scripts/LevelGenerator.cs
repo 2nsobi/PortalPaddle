@@ -225,6 +225,9 @@ public class LevelGenerator : MonoBehaviour
     string nextLvlSound2Play;
     bool musicOnDeck;
     string nextMusic2Play;
+    AchievementsAndLeaderboards rankings;
+    bool interstellar = false;
+    bool lunarKing = false;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -300,6 +303,16 @@ public class LevelGenerator : MonoBehaviour
 
         PlayerPrefsX.SetBool("earthLvlPassed", earthLvlPassed);
         PlayerPrefsX.SetBool("moonLvlPassed", moonLvlPassed);
+
+        if (interstellar)
+        {
+            rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
+        }
+
+        if (lunarKing)
+        {
+            rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
+        }
     }
 
     private void OnApplicationFocus(bool focus)
@@ -339,6 +352,7 @@ public class LevelGenerator : MonoBehaviour
         target = TargetController.Instance;
         filterController = FilterController.Instance;
         audioManager = AudioManager.Instance;
+        rankings = AchievementsAndLeaderboards.Instance;
 
         currentlyTransitioning = false;
 
@@ -820,6 +834,13 @@ public class LevelGenerator : MonoBehaviour
 
             nextMusic2Play = "spaceMusic";
             musicOnDeck = true;
+
+            interstellar = true;
+        }
+
+        if(NextLvl == transitionLvls[3])
+        {
+            lunarKing = true;
         }
 
         if (soundOnDeck)

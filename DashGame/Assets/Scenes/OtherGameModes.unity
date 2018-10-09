@@ -5711,6 +5711,8 @@ MonoBehaviour:
   - {fileID: 1595505214457274, guid: fc06436228aa8bc4fafdc6f9ee347cab, type: 2}
   - {fileID: 1429147514476428, guid: f5872f4e30264f941aef9e655c20c2cd, type: 2}
   - {fileID: 1069590783691876, guid: 0f2bd16ee090f794e81d81a563b31425, type: 2}
+  tutorialToggleAnimC: {fileID: 0}
+  tutorialToggle: {fileID: 0}
   whiteFlashCG: {fileID: 1055629036}
 --- !u!4 &209706811
 Transform:
@@ -6086,6 +6088,7 @@ MonoBehaviour:
   CountdownPage: {fileID: 1641073137}
   GamePage: {fileID: 959796247}
   ScoreReview: {fileID: 85930846}
+  RateMePage: {fileID: 0}
   pauseButton: {fileID: 733273807}
   countdownText: {fileID: 1822374317}
   PlusOneButton: {fileID: 822860909}

@@ -25,5 +25,10 @@
             </intent-filter>
         </receiver>
 <!-- End Yandex-metrica -->
+<!-- Yandex-mobileads -->
+<!--suppress AndroidDomInspection -->
+<activity android:name="com.yandex.mobile.ads.AdActivity"
+    android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+<!-- End Yandex-mobileads -->
 </application>
 </manifest>

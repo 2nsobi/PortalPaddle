@@ -10,6 +10,7 @@ public class Tutorial : MonoBehaviour
     public static event tutorialDelegate NowStartGame;
 
     BallController ballC;
+    GameManager game;
 
     Image filter;
     GameObject tip1;
@@ -21,6 +22,7 @@ public class Tutorial : MonoBehaviour
     bool fadeIn = false;
     bool fadeOut = false;
     float t;
+    bool firstPlayEver;
 
     private void Awake()
     {
@@ -43,6 +45,7 @@ public class Tutorial : MonoBehaviour
     private void Start()
     {
         ballC = BallController.Instance;
+        game = GameManager.Instance;
     }
 
     private void OnEnable()
@@ -118,11 +121,14 @@ public class Tutorial : MonoBehaviour
 
             if (filter.color.a == 0)
             {
-                PlayerPrefsX.SetBool("tutorialDisabled", true);
-
                 NowStartGame();
 
-                ballC.SetTutorial(true);
+                if (game.FirstPlayEver)
+                {
+                    ballC.SetTutorial(true);
+                }
+
+                fadeOut = false;
 
                 gameObject.SetActive(false);
             }

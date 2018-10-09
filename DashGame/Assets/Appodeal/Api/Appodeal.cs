@@ -23,7 +23,7 @@ namespace AppodealAds.Unity.Api {
 		public const int BANNER_HORIZONTAL_RIGHT = -3;
 		public const int BANNER_HORIZONTAL_LEFT = -4;
 
-		public const string APPODEAL_PLUGIN_VERSION = "2.8.45";
+		public const string APPODEAL_PLUGIN_VERSION = "2.8.46-beta";
 
 		public enum LogLevel { None, Debug, Verbose };
 
@@ -234,7 +234,12 @@ namespace AppodealAds.Unity.Api {
 		public static double getPredictedEcpm(int adType) {
 			return getInstance ().getPredictedEcpm (adType);
 		}
-	}
+
+        public static void destroy(int adTypes){
+            getInstance().destroy(adTypes);
+        }
+
+    }
 
     public class ExtraData {
         public static string APPSFLYER_ID = "appsflyer_id";

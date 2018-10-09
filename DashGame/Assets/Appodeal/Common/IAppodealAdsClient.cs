@@ -65,6 +65,6 @@ namespace AppodealAds.Unity.Common {
 		void setBannerCallbacks (IBannerAdListener listener);
         void setMrecCallbacks(IMrecAdListener listener);
 		void requestAndroidMPermissions(IPermissionGrantedListener listener);
-
+        void destroy(int adTypes);
 	}
 }

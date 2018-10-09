@@ -1,5 +1,3 @@
-using System;
-
 namespace AppodealAds.Unity.Common {
 	public interface INonSkippableVideoAdListener {
 		void onNonSkippableVideoLoaded(bool isPrecache);

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using AppodealAds.Unity.Common;
 
 namespace AppodealAds.Unity.Android 

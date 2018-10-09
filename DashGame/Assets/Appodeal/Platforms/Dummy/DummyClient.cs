@@ -2,8 +2,6 @@
 using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 
-using System;
-
 namespace AppodealAds.Unity.Dummy
 {
 	
@@ -292,6 +290,10 @@ namespace AppodealAds.Unity.Dummy
 		{
 			Debug.Log("Call to Appodeal.requestAndroidMPermissions on not supported platform");
 		}
+
+        public void destroy(int adTypes){
+            Debug.Log("Call to Appodeal.destroy on not supported platform");
+        }
 		
 	}
 }

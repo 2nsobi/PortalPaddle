@@ -12,6 +12,7 @@ public class OtherGameModesManager : MonoBehaviour
     public GameObject CountdownPage;
     public GameObject GamePage;
     public GameObject ScoreReview;
+    public GameObject RateMePage;
     public Button pauseButton;
     public Text countdownText;
     public Button PlusOneButton;
@@ -39,6 +40,8 @@ public class OtherGameModesManager : MonoBehaviour
     TargetController targetC;
     AdManager ads;
     AudioManager audioManager;
+    AchievementsAndLeaderboards rankings;
+    Ratings rate;
 
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
@@ -60,6 +63,10 @@ public class OtherGameModesManager : MonoBehaviour
     int newGems;
     int activeHighScore;
     bool noSound;
+    float timeSinceStartup;
+    int incrementor4Asks;
+    int rateAsks;
+    bool updateHS = false;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
@@ -105,6 +112,8 @@ public class OtherGameModesManager : MonoBehaviour
         targetC = TargetController.Instance;
         ads = AdManager.Instance;
         audioManager = AudioManager.Instance;
+        rankings = AchievementsAndLeaderboards.Instance;
+        rate = Ratings.Instance;
 
         noSound = PlayerPrefsX.GetBool("noSound");
         if (!noSound)
@@ -178,6 +187,8 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void GoToScoreReview()
     {
+        rate.Ask4Rate();
+
         t = 0.0f;
         tempGems = gems;
         newGems = (int)gems + score;
@@ -187,6 +198,7 @@ public class OtherGameModesManager : MonoBehaviour
         {
             ActiveHighScore(score);
             newHighScoreImage.SetActive(true);
+            updateHS = true;
         }
         else
         {
@@ -565,6 +577,11 @@ public class OtherGameModesManager : MonoBehaviour
         ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
         ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
         ZPlayerPrefs.SetInt("gems", (int)gems);
+
+        if (updateHS)
+        {
+            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+        }
     }
 
     void UpdateUltraScore()

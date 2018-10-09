@@ -12,6 +12,8 @@ public class BallController : MonoBehaviour
     public float CameraShakeIntensity;
     public float CameraShakeDuration;
     public GameObject[] ballPrefabs;
+    public Animator tutorialToggleAnimC;
+    public Toggle tutorialToggle;
 
     TargetController targetC;
     GameObject ballSpawner;
@@ -188,6 +190,7 @@ public class BallController : MonoBehaviour
     private void OnDisable()
     {
         ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+        PlayerPrefsX.SetBool("tutorialDisabled", tutorialDisabled);
 
         GameManager.GameStarted -= GameStarted;
         LevelGenerator.TransitionDone -= TransitionDone;
@@ -353,7 +356,6 @@ public class BallController : MonoBehaviour
         }
         else
         {
-            print("tutorial should e on");
             game.EnableTutorial();
         }
     }
@@ -620,6 +622,7 @@ public class BallController : MonoBehaviour
 
     public void SetTutorial(bool turnOff)
     {
+        tutorialToggle.isOn = !turnOff;
         if (turnOff)
         {
             tutorialDisabled = true;
@@ -628,5 +631,27 @@ public class BallController : MonoBehaviour
         {
             tutorialDisabled = false;
         }      
+    }
+
+    public void ToggleTutorial()
+    {
+        tutorialDisabled = !tutorialDisabled;
+        if (tutorialDisabled)
+        {
+            tutorialToggleAnimC.SetTrigger("turnOff");
+        }
+        else
+        {
+            tutorialToggleAnimC.SetTrigger("turnOn");
+        }
+    }
+
+    public void SetTutorialToggle()
+    {
+        
+        if (tutorialDisabled)
+        {
+            tutorialToggleAnimC.SetTrigger("off");
+        }
     }
 }

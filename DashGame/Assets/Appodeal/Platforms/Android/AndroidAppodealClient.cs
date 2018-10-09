@@ -107,8 +107,8 @@ namespace AppodealAds.Unity.Android {
 		}
 
 		public void initialize(string appKey, int adTypes, bool hasConsent)  {
-            getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion);
             disableNetwork("mobvista");
+            getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion);
 			#if UNITY_5_6_0 || UNITY_5_6_1
 				getAppodealClass().CallStatic("setFramework", "unity", Appodeal.getPluginVersion(), Application.unityVersion, true, false);
 				getAppodealClass().CallStatic("disableNetwork", getActivity(), "amazon_ads", Appodeal.BANNER);
@@ -122,11 +122,11 @@ namespace AppodealAds.Unity.Android {
 		}
 
 		public bool show(int adTypes) {
-			return getAppodealUnityClass().CallStatic<bool>("show", getActivity(), adTypes);
+            return getAppodealUnityClass().CallStatic<bool>("show", getActivity(), nativeAdTypesForType(adTypes));
 		}
 
 		public bool show(int adTypes, string placement) {
-			return getAppodealUnityClass().CallStatic<bool>("show", getActivity(), adTypes, placement);
+            return getAppodealUnityClass().CallStatic<bool>("show", getActivity(), nativeAdTypesForType(adTypes), placement);
 		}
 
 		public bool showBannerView(int YAxis, int XAxis, string Placement) {
@@ -138,15 +138,15 @@ namespace AppodealAds.Unity.Android {
         }
 
 		public bool isLoaded(int adTypes) {
-			return getAppodealClass().CallStatic<bool>("isLoaded", adTypes);
+            return getAppodealClass().CallStatic<bool>("isLoaded", nativeAdTypesForType(adTypes));
 		}
 
 		public void cache(int adTypes) {
-			getAppodealClass().CallStatic("cache", getActivity(), adTypes);
+            getAppodealClass().CallStatic("cache", getActivity(), nativeAdTypesForType(adTypes));
 		}
 		
 		public void hide(int adTypes) {
-			getAppodealClass().CallStatic("hide", getActivity(), adTypes);
+            getAppodealClass().CallStatic("hide", getActivity(), nativeAdTypesForType(adTypes));
 		}
 
 		public void hideBannerView() {
@@ -158,11 +158,11 @@ namespace AppodealAds.Unity.Android {
         }
 
 		public bool isPrecache(int adTypes) {
-			return getAppodealClass().CallStatic<bool>("isPrecache", adTypes);
+            return getAppodealClass().CallStatic<bool>("isPrecache", nativeAdTypesForType(adTypes));
 		}
 
 		public void setAutoCache(int adTypes, bool autoCache)  {
-			getAppodealClass().CallStatic("setAutoCache", adTypes, autoCache);	
+            getAppodealClass().CallStatic("setAutoCache", nativeAdTypesForType(adTypes), autoCache);	
 		}
 
 		public void onResume() {
@@ -216,7 +216,7 @@ namespace AppodealAds.Unity.Android {
 		}
 
 		public void disableNetwork(string network, int adTypes) {
-			getAppodealClass().CallStatic("disableNetwork", getActivity(), network, adTypes);
+            getAppodealClass().CallStatic("disableNetwork", getActivity(), network, nativeAdTypesForType(adTypes));
 		}
 
 		public void disableLocationPermissionCheck()  {
@@ -228,7 +228,7 @@ namespace AppodealAds.Unity.Android {
 		}
 
 		public void setTriggerOnLoadedOnPrecache(int adTypes, bool onLoadedTriggerBoth)  {
-			getAppodealClass().CallStatic("setTriggerOnLoadedOnPrecache", adTypes, onLoadedTriggerBoth);
+            getAppodealClass().CallStatic("setTriggerOnLoadedOnPrecache", nativeAdTypesForType(adTypes), onLoadedTriggerBoth);
 		}
 
 		public void muteVideosIfCallsMuted(bool value) {
@@ -244,11 +244,11 @@ namespace AppodealAds.Unity.Android {
 		}
 
 		public bool canShow(int adTypes) {
-			return getAppodealClass().CallStatic<bool>("canShow", adTypes);
+            return getAppodealClass().CallStatic<bool>("canShow", nativeAdTypesForType(adTypes));
 		}
 
 		public bool canShow(int adTypes, string placement) {
-			return getAppodealClass().CallStatic<bool>("canShow", adTypes, placement);
+            return getAppodealClass().CallStatic<bool>("canShow", nativeAdTypesForType(adTypes), placement);
 		}
 		
         public void setSegmentFilter(string name, bool value) {
@@ -316,6 +316,10 @@ namespace AppodealAds.Unity.Android {
 		public double getPredictedEcpm(int adType) {
 			return getAppodealClass().CallStatic<double>("getPredictedEcpm", adType);
 		}
+
+        public void destroy(int adTypes){
+            getAppodealClass().CallStatic("destroy", nativeAdTypesForType(adTypes));
+        }
 
 		//User Settings
 
