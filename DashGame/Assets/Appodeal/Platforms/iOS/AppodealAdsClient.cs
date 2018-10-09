@@ -1,5 +1,4 @@
-﻿using System;
-using AppodealAds.Unity.Api;
+﻿using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 using AOT;
 using UnityEngine;
@@ -480,11 +479,11 @@ namespace AppodealAds.Unity.iOS {
 			AppodealObjCBridge.AppodealSetChildDirectedTreatment(value);
 		}
 
-		public void disableNetwork(String network) {
+		public void disableNetwork(string network) {
 			AppodealObjCBridge.AppodealDisableNetwork(network);
 		}
 
-		public void disableNetwork(String network, int adTypes) {
+		public void disableNetwork(string network, int adTypes) {
 			AppodealObjCBridge.AppodealDisableNetworkForAdTypes(network, adTypes);
 		}
 
@@ -571,6 +570,10 @@ namespace AppodealAds.Unity.iOS {
 		public void setTriggerOnLoadedOnPrecache(int adTypes, bool onLoadedTriggerBoth) {
             AppodealObjCBridge.AppodealSetTriggerPrecacheCallbacks(onLoadedTriggerBoth);
 		}
+
+        public void destroy(int adType){
+            Debug.Log("Not Supported by iOS SDK");
+        }
 		
 		//User Settings
 

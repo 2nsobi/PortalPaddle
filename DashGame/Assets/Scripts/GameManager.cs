@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
     BallController ball;
     SceneChanger sceneChanger;
     AudioManager audioManager;
+    AchievementsAndLeaderboards rankings;
+    Ratings rate;
     public Button pauseButton;
     public Text countdownText;
     public Animator scoreReviewAnimC;
@@ -74,6 +76,10 @@ public class GameManager : MonoBehaviour
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
     bool noSound = false;
+    ScrollRect infoScrollRect;
+    int firstPlayEver; // indicated first time playing since download, a value of 0 means its the first time playing
+    static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
+    bool updateHS = false;
 
     public static GameManager Instance;
 
@@ -84,7 +90,6 @@ public class GameManager : MonoBehaviour
     public static event GameDelegate DeadeyeStarted;
     public static event GameDelegate ClairvoyanceStarted;
 
-    public GameObject StartPage;
     public GameObject StartPageButtons;
     public GameObject GameOverPage;
     public GameObject PauseMenu;
@@ -93,11 +98,14 @@ public class GameManager : MonoBehaviour
     public GameObject GamePage;
     public GameObject ScoreReview;
     public GameObject ShopPage;
+    public GameObject InfoPage;
+    public GameObject ScoresPage;
+    public GameObject RateMePage;
     public Text GemsText;
 
     public GameObject GDPRConsentForm;
 
-    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
+    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage};
     pageState currentPageState;
 
     public int Link2PaddleItem(string name)
@@ -133,7 +141,7 @@ public class GameManager : MonoBehaviour
          DELETE THING BELOW
          **********************************************/
 
-        ZPlayerPrefs.DeleteAll();
+        //ZPlayerPrefs.DeleteAll();
 
         /********************************************
         DELETE THING ABOVE
@@ -177,6 +185,11 @@ public class GameManager : MonoBehaviour
         extraBallSprite.SetActive(false);
 
         tutorial.SetActive(false);
+
+        infoScrollRect = InfoPage.GetComponentInChildren<ScrollRect>();
+
+        firstPlayEver = ZPlayerPrefs.GetInt("firstPlayEver");
+        print(firstPlayEver);
     }
 
     public void SetPaddle(int index)
@@ -195,6 +208,8 @@ public class GameManager : MonoBehaviour
         ads = AdManager.Instance;
         sceneChanger = SceneChanger.Instance;
         audioManager = AudioManager.Instance;
+        rankings = AchievementsAndLeaderboards.Instance;
+        rate = Ratings.Instance;
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         Paddle.SetPaddle(selectedPaddle);
@@ -259,6 +274,12 @@ public class GameManager : MonoBehaviour
         ZPlayerPrefs.SetInt("HighScore", highScore);
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+        ZPlayerPrefs.SetInt("firstPlayEver", firstPlayEver);
+
+        if (updateHS)
+        {
+            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
+        }
     }
 
     void PlayerMissed()
@@ -352,7 +373,6 @@ public class GameManager : MonoBehaviour
             case pageState.Game:
                 currentPageState = pageState.Game;
                 GamePage.SetActive(true);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -360,13 +380,14 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.StartPage:
                 currentPageState = pageState.StartPage;
                 GamePage.SetActive(false);
-                StartPage.SetActive(true);
                 StartPageButtons.SetActive(true);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -374,6 +395,8 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
                 ShowGameModeButton(true);
@@ -383,7 +406,6 @@ public class GameManager : MonoBehaviour
             case pageState.GameOver:
                 currentPageState = pageState.GameOver;
                 GamePage.SetActive(false);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(true);
                 PauseMenu.SetActive(false);
@@ -391,13 +413,14 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.Paused:
                 currentPageState = pageState.Paused;
                 GamePage.SetActive(true);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(true);
@@ -405,6 +428,8 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(false);
@@ -414,7 +439,6 @@ public class GameManager : MonoBehaviour
             case pageState.CountdownPage:
                 currentPageState = pageState.CountdownPage;
                 GamePage.SetActive(true);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -422,6 +446,8 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(true);
@@ -431,7 +457,6 @@ public class GameManager : MonoBehaviour
             case pageState.SettingsPage:
                 currentPageState = pageState.SettingsPage;
                 GamePage.SetActive(false);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -439,6 +464,8 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 LG.settingsPage.SetActive(true);
@@ -447,7 +474,6 @@ public class GameManager : MonoBehaviour
             case pageState.ScoreReview:
                 currentPageState = pageState.ScoreReview;
                 GamePage.SetActive(false);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -455,13 +481,14 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(true);
                 ShopPage.SetActive(false);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
             case pageState.ShopPage:
                 currentPageState = pageState.ShopPage;
                 GamePage.SetActive(false);
-                StartPage.SetActive(false);
                 StartPageButtons.SetActive(false);
                 GameOverPage.SetActive(false);
                 PauseMenu.SetActive(false);
@@ -469,6 +496,8 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(true);
+                InfoPage.SetActive(false);
+                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
                 LG.shop.SetActive(true);
@@ -536,7 +565,7 @@ public class GameManager : MonoBehaviour
         SetPageState(pageState.GameOver);
     }
 
-    public void EndGame() //this will actually end the game: so revive or continue
+    public void EndGame() //this will actually end the game: no revive or continue
     {
         gameRunning = false;
         DeactivatePaddle();
@@ -657,6 +686,8 @@ public class GameManager : MonoBehaviour
 
     public void GoToScoreReview()
     {
+        rate.Ask4Rate();
+
         t = 0.0f;
         tempGems = gems;
         newGems = (int)gems + score;
@@ -666,6 +697,7 @@ public class GameManager : MonoBehaviour
         {
             highScore = score;
             newHighScoreImage.SetActive(true);
+            updateHS = true;
         }
         else
         {
@@ -677,6 +709,9 @@ public class GameManager : MonoBehaviour
         skipScoreReviewButton.interactable = true;
         disableReplayButtonC = StartCoroutine(DisableReplayButon());
         SetPageState(pageState.ScoreReview);
+
+        firstPlayEver = 1;
+        print(FirstPlayEver);
     }
 
     public void UpdateGems(int gems2Add, bool subtract = false) //updates the gem text on each page that has it
@@ -814,5 +849,49 @@ public class GameManager : MonoBehaviour
     public void EnableTutorial()
     {
         tutorial.SetActive(true);
+    }
+
+    public void Go2Info()
+    {
+        audioManager.PlayUISound("computerSelect1");
+
+        InfoPage.SetActive(true);
+
+        infoScrollRect.verticalNormalizedPosition = 1;
+        ball.SetTutorialToggle();
+    }
+
+    public void ExitInfo()
+    {
+        InfoPage.SetActive(false);
+    }
+
+    public void Go2ScoresPage()
+    {
+        audioManager.PlayUISound("computerSelect1");
+
+        ScoresPage.SetActive(true);
+    }
+
+    public void ExitScoresPage()
+    {
+        ScoresPage.SetActive(false);
+    }
+
+    public void Go2Rate()
+    {
+        if (currentPlatform == "android")
+        {
+            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.Portal.Paddle");
+        }
+    }
+
+    public bool FirstPlayEver
+    {
+        get
+        {
+            print(firstPlayEver);
+            return (firstPlayEver == 0) ? true : false;
+        }
     }
 }

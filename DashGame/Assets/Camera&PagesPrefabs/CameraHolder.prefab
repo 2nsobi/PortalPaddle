@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 81670900034264830}
   - component: {fileID: 114200618017194826}
   - component: {fileID: 114255521714248996}
+  - component: {fileID: 114273393754888484}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -134,7 +135,6 @@ MonoBehaviour:
   paddlePrefabs:
   - {fileID: 1347340503467726, guid: 404eb55ad5a1ae14598a367088e31512, type: 2}
   - {fileID: 1720297510168792, guid: e94fc5a299f8b0d4e9bf73d13e86a0e0, type: 2}
-  StartPage: {fileID: 0}
   StartPageButtons: {fileID: 0}
   GameOverPage: {fileID: 0}
   PauseMenu: {fileID: 0}
@@ -143,6 +143,9 @@ MonoBehaviour:
   GamePage: {fileID: 0}
   ScoreReview: {fileID: 0}
   ShopPage: {fileID: 0}
+  InfoPage: {fileID: 0}
+  ScoresPage: {fileID: 0}
+  RateMePage: {fileID: 0}
   GemsText: {fileID: 0}
   GDPRConsentForm: {fileID: 0}
 --- !u!114 &114255521714248996
@@ -159,6 +162,17 @@ MonoBehaviour:
   mainPanel: {fileID: 0}
   yesPanel: {fileID: 0}
   noPanel: {fileID: 0}
+--- !u!114 &114273393754888484
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1961242485683314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c2d701c9a3b6942a6af9c86c212571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &224815526948030990
 RectTransform:
   m_ObjectHideFlags: 1
