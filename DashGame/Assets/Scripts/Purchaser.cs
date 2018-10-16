@@ -2,15 +2,11 @@
 using UnityEngine;
 using UnityEngine.Purchasing;
 
-// Deriving the Purchaser class from IStoreListener enables it to receive messages from Unity Purchasing.
+// in this class singltons are retrieved with the actual class name because of scene changes and destroyed objects
 public class Purchaser : MonoBehaviour, IStoreListener
 {
     public static Purchaser Instance;
 
-    ShopController shopC;
-    AdManager ads;
-    GameManager game;
-    SettingsController settings;
     AudioManager audioManager;
 
     private static IStoreController m_StoreController;          // The Unity Purchasing system.
@@ -39,18 +35,10 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         // If we haven't set up the Unity Purchasing reference
         if (m_StoreController == null)
@@ -59,12 +47,10 @@ public class Purchaser : MonoBehaviour, IStoreListener
             InitializePurchasing();
         }
 
-        shopC = ShopController.Instance;
-        ads = AdManager.Instance;
-        game = GameManager.Instance;
-        settings = SettingsController.Instance;
         audioManager = AudioManager.Instance;
     }
+
+    
 
     public void InitializePurchasing()
     {
@@ -228,6 +214,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
         m_StoreController = controller;
         // Store specific subsystem, for accessing device-specific store features.
         m_StoreExtensionProvider = extensions;
+
+        ShopController.Instance.SetLocalizedPrices();
+        SettingsController.Instance.SetLocalizedPrices();
     }
 
     public void OnInitializeFailed(InitializationFailureReason error)
@@ -245,7 +234,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            shopC.BuyItem();
+            ShopController.Instance.BuyItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_PREMIUM_BALL, StringComparison.Ordinal))
         {
@@ -253,7 +242,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            shopC.BuyItem();
+            ShopController.Instance.BuyItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1800_GEM_CHEST, StringComparison.Ordinal))
         {
@@ -261,7 +250,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            game.UpdateGems(1800);
+            GameManager.Instance.UpdateGems(1800);
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_REMOVE_ADS, StringComparison.Ordinal))
         {
@@ -269,9 +258,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            ads.RemoveAds();
-            shopC.DisableBuyNoAdsButton();
-            settings.DisableBuyNoAdsButton();
+            AdManager.Instance.RemoveAds();
+            ShopController.Instance.DisableBuyNoAdsButton();
+            SettingsController.Instance.DisableBuyNoAdsButton();
         }
         // Or ... an unknown product has been purchased by this user. Fill in additional products here....
         else

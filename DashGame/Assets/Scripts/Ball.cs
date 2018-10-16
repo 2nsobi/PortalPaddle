@@ -8,6 +8,7 @@ public class Ball : MonoBehaviour
     public Color32 boostColor;
     public GameObject ghost;
     public string firstImpactSound;
+    public bool defaultSounds;
 
     SpriteRenderer ballSprite;
     ParticleSystem collisionEffect;
@@ -60,7 +61,7 @@ public class Ball : MonoBehaviour
     int ignoreEverythingLayer = 17;
     int ballButNoPaddleLayer = 19; //same as balllayer except wont collide with paddle
     Vector2 failSafeVelocity;
-    string ballName;
+    string impactSound;
     bool noFISound = false;
     bool playingDeadeye = false;
 
@@ -154,10 +155,16 @@ public class Ball : MonoBehaviour
             cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
         }
 
-        ballName = gameObject.name.Substring(0, gameObject.name.Length - 7);
+        impactSound = gameObject.name.Substring(0, gameObject.name.Length - 7);
         if(firstImpactSound.Length == 0)
         {
             noFISound = true;
+        }
+
+        if (defaultSounds)
+        {
+            impactSound = "YellowBall";
+            firstImpactSound = "YellowBallFI";
         }
     }
 
@@ -608,7 +615,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            audioManager.PlayBallSound(ballName);
+            audioManager.PlayBallSound(impactSound);
         }
 
         if (collisionTag == "Wall")
@@ -654,9 +661,9 @@ public class Ball : MonoBehaviour
 
     void FirstCollision()
     {
-        if (noFirstImpact)
+        if (noFISound)
         {
-            audioManager.PlayBallSound(ballName);
+            audioManager.PlayBallSound(impactSound);
         }
         else
         {

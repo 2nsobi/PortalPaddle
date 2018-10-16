@@ -5698,8 +5698,8 @@ MonoBehaviour:
   startPos: {x: 0, y: 3.5}
   initialSpeed: 3
   boostSpeed: 16
-  CameraShakeIntensity: 0.11
-  CameraShakeDuration: 0.35
+  CameraShakeIntensity: 0.175
+  CameraShakeDuration: 0.375
   ballPrefabs:
   - {fileID: 1454624447210184, guid: d388221a148741c48aa81d7d5580220d, type: 2}
   - {fileID: 1612840011943172, guid: 56dda025fa3b8624b95d74700a5c382d, type: 2}

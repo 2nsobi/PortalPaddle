@@ -398,6 +398,8 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   ghost: {fileID: 1354610565385452, guid: 15fae2b753f6cba4ea17456a075a1466, type: 2}
+  firstImpactSound: 
+  defaultSounds: 1
 --- !u!198 &198050821249619750
 ParticleSystem:
   m_ObjectHideFlags: 1

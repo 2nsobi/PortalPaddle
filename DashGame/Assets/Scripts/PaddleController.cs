@@ -105,8 +105,6 @@ public class PaddleController : MonoBehaviour
         }
         else
         {
-            Destroy(particles); // to prevent duplication when scenes change
-
             activePaddle.rightEnd.transform.parent = null;
             activePaddle.rightEnd.SetActive(false);
 
@@ -333,5 +331,10 @@ public class PaddleController : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(paddleCollider);
+    }
+
+    public void DestroyOldPaddleParticles() //prevents duplication when changing scenes 
+    {
+        Destroy(particles);
     }
 }

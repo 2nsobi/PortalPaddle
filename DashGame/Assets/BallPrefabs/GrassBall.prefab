@@ -398,6 +398,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4278207341
   ghost: {fileID: 1833387116422006, guid: 7b9d196784e229b4ab7d098ba5260925, type: 2}
+  firstImpactSound: GrassBallFI
 --- !u!198 &198103532682505314
 ParticleSystem:
   m_ObjectHideFlags: 1
