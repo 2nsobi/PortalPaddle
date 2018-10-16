@@ -69,7 +69,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             Appodeal.setBannerCallbacks(this);
 
             Appodeal.show(Appodeal.BANNER_BOTTOM);
-            print("adsdsfsdf");
             showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
             showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
         }

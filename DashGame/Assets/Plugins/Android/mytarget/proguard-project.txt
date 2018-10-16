@@ -1,0 +1,3 @@
+# MyTarget
+-keep class com.my.target.** { *; }
+-dontwarn com.my.target.**

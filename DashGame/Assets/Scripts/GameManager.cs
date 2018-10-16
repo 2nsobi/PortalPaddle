@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject GDPRConsentForm;
 
-    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage};
+    public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
     pageState currentPageState;
 
     public int Link2PaddleItem(string name)
@@ -122,6 +122,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
 
         //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
@@ -147,19 +149,6 @@ public class GameManager : MonoBehaviour
         DELETE THING ABOVE
         **********************************************/
 
-
-
-
-
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
 
         GameModeButtonAnimC = GameModeButton.GetComponent<Animator>();
         GameModeButton.SetActive(true);
@@ -189,7 +178,6 @@ public class GameManager : MonoBehaviour
         infoScrollRect = InfoPage.GetComponentInChildren<ScrollRect>();
 
         firstPlayEver = ZPlayerPrefs.GetInt("firstPlayEver");
-        print(firstPlayEver);
     }
 
     public void SetPaddle(int index)
@@ -212,6 +200,8 @@ public class GameManager : MonoBehaviour
         rate = Ratings.Instance;
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
+        paddleChanged = true;
+        Paddle.DestroyOldPaddleParticles(); //prevents duplication when changing scenes
         Paddle.SetPaddle(selectedPaddle);
         DeactivatePaddle();
 
@@ -711,7 +701,6 @@ public class GameManager : MonoBehaviour
         SetPageState(pageState.ScoreReview);
 
         firstPlayEver = 1;
-        print(FirstPlayEver);
     }
 
     public void UpdateGems(int gems2Add, bool subtract = false) //updates the gem text on each page that has it
@@ -720,6 +709,7 @@ public class GameManager : MonoBehaviour
         {
             gems += gems2Add;
             GemsText.text = gems.ToString();
+            print("updatedGems");
         }
         else
         {
@@ -890,8 +880,13 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            print(firstPlayEver);
             return (firstPlayEver == 0) ? true : false;
         }
+    }
+
+    public void signal()
+    {
+        this.gameObject.name = "asdasdffffeewrf";
+        transform.parent.gameObject.name = "name has been changed";
     }
 }

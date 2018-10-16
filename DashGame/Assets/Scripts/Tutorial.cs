@@ -74,12 +74,12 @@ public class Tutorial : MonoBehaviour
         tip1.SetActive(false);
         tip2.SetActive(true);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2.8f);
 
         tip2.SetActive(false);
         tip3.SetActive(true);
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(4.2f);
 
         tip3.SetActive(false);
 

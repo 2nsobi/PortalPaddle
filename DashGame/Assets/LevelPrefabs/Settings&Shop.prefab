@@ -2564,7 +2564,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: pADDLE
+  m_Text: PADDLE
 --- !u!114 &114388780175253436
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3742,7 +3742,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHOp
+  m_Text: SHOP
 --- !u!114 &114891952368465714
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -146,6 +146,7 @@ public class SnapScrollRectController : MonoBehaviour
 
         public void Select()
         {
+            print(index);
             valueChanged = true;
             if (!unlocked)
             {
@@ -200,7 +201,7 @@ public class SnapScrollRectController : MonoBehaviour
     Coroutine stopMovement;
     ShopController shopC;
     Purchaser purchaser;
-    int selectedItemIndex = 0;
+    int selectedItemIndex;
     int activeItemIndexLink;
     GameManager game;
     AudioManager audioManager;
@@ -243,28 +244,12 @@ public class SnapScrollRectController : MonoBehaviour
                 }
             }
 
-            //if (this.gameObject.name == "BallScollPanel")
-            //{
-            //    if (i == 0)
-            //    {
-            //        shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject, true);
-            //    }
-            //    else if (i == 4 || i == 5 || i == 7 || i == 8 || i == 9)
-            //    {
-            //        shopItems[i] = new ShopItem(800, content2Scroll.GetChild(i).gameObject);
-            //    }
-            //    else
-            //    {
-            //        shopItems[i] = new ShopItem(500, content2Scroll.GetChild(i).gameObject);
-            //    }
-            //}
-
-            if (this.gameObject.name == "BallScollPanel")
+            if (this.gameObject.name == "BallScrollPanel")
             {
                 shopItems[i].index = BallController.Instance.Link2BallItem(shopItems[i].gameObject.name);
                 shopItems[i].ball = true;
             }
-            if (this.gameObject.name == "PaddleScollPanel")
+            if (this.gameObject.name == "PaddleScrollPanel")
             {
                 shopItems[i].index = game.Link2PaddleItem(shopItems[i].gameObject.name);
                 shopItems[i].ball = false;
@@ -457,14 +442,6 @@ public class SnapScrollRectController : MonoBehaviour
             StopCoroutine(stopMovement);
             scrollRect.StopMovement();
             snap2Start = true;
-        }
-    }
-
-    public ShopItem FocalShopItem
-    {
-        get
-        {
-            return shopItems[focalItemNum];
         }
     }
 

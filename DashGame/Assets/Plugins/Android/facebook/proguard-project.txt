@@ -1,0 +1,4 @@
+# Facebook
+-keep class com.facebook.ads.** { *; }
+-keeppackagenames com.facebook.*
+-dontwarn com.facebook.ads.**

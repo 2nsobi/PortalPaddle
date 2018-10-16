@@ -39,15 +39,16 @@ public class SettingsController : MonoBehaviour
         noAds = PlayerPrefsX.GetBool("noAds");
 
         disabledNoAdsButtonFilter.SetActive(false);
-
-        print("settingsController made");
     }
 
     private void Start()
     {
         purchaser = Purchaser.Instance;
-        ballC = BallController.Instance;
+        ballC = BallController.Instance; 
+    }
 
+    public void SetLocalizedPrices()
+    {
         NoAdsPrice.text = purchaser.NoAdsPrice();
     }
 

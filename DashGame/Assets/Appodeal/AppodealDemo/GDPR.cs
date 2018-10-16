@@ -12,7 +12,7 @@ public class GDPR : MonoBehaviour {
 
     void Start()
     {
-        mainText.text = "Portal Paddle" + mainString;
+        mainText.text = "Appodeal Demo" + mainString;
     }
 
     public void onYesClick() {

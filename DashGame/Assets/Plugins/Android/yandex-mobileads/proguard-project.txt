@@ -1,0 +1,4 @@
+# Yandex
+-keep class com.yandex.mobile.ads.** { *; }
+-dontwarn com.yandex.mobile.ads.**
+-keepattributes *Annotation*

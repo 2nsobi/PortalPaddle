@@ -53,7 +53,7 @@ public class ShopController : MonoBehaviour
 
         ballSelectionMenu = transform.Find("BallScrollPanel").gameObject;
 
-        paddleSelectionMenu = transform.Find("TempPaddleMenu").gameObject; //paddleSelectionMenu = transform.Find("PaddleScollPanel").gameObject;
+        paddleSelectionMenu = transform.Find("TempPaddleMenu").gameObject; //paddleSelectionMenu = transform.Find("PaddleScrollPanel").gameObject;
         comingSoonButton = paddleSelectionMenu.transform.GetChild(0).GetComponent<Button>();
         comingSoonNorm = comingSoonButton.transform.Find("ImageNorm").gameObject;
         comingSoonMad = comingSoonButton.transform.Find("ImageMad").gameObject;
@@ -69,6 +69,8 @@ public class ShopController : MonoBehaviour
         noAds = PlayerPrefsX.GetBool("noAds");
 
         disabledNoAdsButtonFilter.SetActive(false);
+
+        Start();
     }
 
     private void OnEnable()
@@ -86,7 +88,10 @@ public class ShopController : MonoBehaviour
         ads = AdManager.Instance;
         purchaser = Purchaser.Instance;
         audioManager = AudioManager.Instance;
+    }
 
+    public void SetLocalizedPrices()
+    {
         NoAdsPrice.text = purchaser.NoAdsPrice();
         GemChestPrice.text = purchaser.GemChestPrice();
         ballPrice = purchaser.BallPrice();
@@ -340,5 +345,10 @@ public class ShopController : MonoBehaviour
         }
         comingSoonButton.interactable = true;
         audioManager.PlayUISound("comingSoon",true);
+    }
+
+    public void printAmsg()
+    {
+        print("asdadasdasfafasfasff");
     }
 }
