@@ -1,4 +1,4 @@
-﻿using UnityEngine.Audio;
+﻿using System.Collections;
 using UnityEngine;
 using System;
 
@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
     Sound currentMusic;
     Sound nextMusic;
 
-    float t1,t2,t3;
+    float t1, t2, t3;
     bool fade2LvlSound = false;
     bool clearLvlSounds = false;
     float time4SoundFade = 1.5f;
@@ -50,6 +50,18 @@ public class AudioManager : MonoBehaviour
             ballSounds[i].source.volume = ballSounds[i].volume;
             ballSounds[i].source.pitch = ballSounds[i].pitch;
             ballSounds[i].source.loop = ballSounds[i].loop;
+
+            for (int n = 0; n < 4; n++)
+            {
+                AudioSource s = gameObject.AddComponent<AudioSource>();
+                s.clip = ballSounds[i].clip;
+
+                s.volume = ballSounds[i].volume;
+                s.pitch = ballSounds[i].pitch;
+                s.loop = ballSounds[i].loop;
+
+                ballSounds[i].backUpSources.Enqueue(s);
+            }
         }
         for (int i = 0; i < ballFISounds.Length; i++)
         {
@@ -149,7 +161,7 @@ public class AudioManager : MonoBehaviour
             currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume, 0, t1);
             nextLvlSound.source.volume = Mathf.Lerp(0, nextLvlSound.volume, t1);
 
-            if(currentLvlSound.source.volume == 0 && nextLvlSound.source.volume == nextLvlSound.volume)
+            if (currentLvlSound.source.volume == 0 && nextLvlSound.source.volume == nextLvlSound.volume)
             {
                 currentLvlSound.source.Stop();
                 currentLvlSound = nextLvlSound;
@@ -165,7 +177,7 @@ public class AudioManager : MonoBehaviour
 
             currentLvlSound.source.volume = Mathf.Lerp(currentLvlSound.volume, 0, t1);
 
-            if(currentLvlSound.source.volume == 0)
+            if (currentLvlSound.source.volume == 0)
             {
                 currentLvlSound.source.Stop();
                 currentLvlSound = null;
@@ -196,7 +208,7 @@ public class AudioManager : MonoBehaviour
             t2 += Time.deltaTime / time4MusicFade;
 
             currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
-            if(currentMusic.source.volume == 0)
+            if (currentMusic.source.volume == 0)
             {
                 currentMusic.source.Stop();
                 currentMusic = null;
@@ -264,7 +276,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayMusic(string musicName,bool stop = false)
+    public void PlayMusic(string musicName, bool stop = false)
     {
         try
         {
@@ -300,7 +312,18 @@ public class AudioManager : MonoBehaviour
         {
             if (!stop)
             {
-                Array.Find(ballSounds, sound => sound.name == name).source.Play();
+                Sound s = Array.Find(ballSounds, sound => sound.name == name);
+                if (s.source.isPlaying)
+                {
+                    AudioSource a = s.backUpSources.Dequeue();
+                    s.source = a;
+                    s.source.Play();
+                    s.backUpSources.Enqueue(a);
+                }
+                else
+                {
+                    s.source.Play();
+                }
             }
             else
             {

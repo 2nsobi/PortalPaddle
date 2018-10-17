@@ -64,6 +64,7 @@ public class Ball : MonoBehaviour
     string impactSound;
     bool noFISound = false;
     bool playingDeadeye = false;
+    string origImpactSound;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -166,6 +167,8 @@ public class Ball : MonoBehaviour
             impactSound = "YellowBall";
             firstImpactSound = "YellowBallFI";
         }
+
+        origImpactSound = impactSound;
     }
 
     private void Start()
@@ -461,7 +464,7 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ray = new Ray2D(transform.position + rayOffsetVector, -transform.up);
+        ray = new Ray2D(transform.position - rayOffsetVector, -transform.up);
 
         if (shouldAbsorb)
         {
@@ -794,7 +797,11 @@ public class Ball : MonoBehaviour
 
     public void TurnGray()
     {
-        ballC.TurnGray();
+        if (!ballC.TurnGray()) //returns isGray as a bool
+        {
+            impactSound = "YellowBall";
+        }
+        else impactSound = origImpactSound;
     }
 
     public void PlayLaserSound()

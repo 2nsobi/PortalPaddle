@@ -1,5 +1,5 @@
-﻿using UnityEngine.Audio;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Sound
@@ -15,4 +15,6 @@ public class Sound
 
     [HideInInspector] //hides this variable since source is set in the awake method of the AudioManager
     public AudioSource source;
+    [HideInInspector]
+    public Queue<AudioSource> backUpSources = new Queue<AudioSource>();
 }

@@ -884,9 +884,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void signal()
+    public void LowEarthOrbitLink()
     {
-        this.gameObject.name = "asdasdffffeewrf";
-        transform.parent.gameObject.name = "name has been changed";
+        Application.OpenURL("https://www.youtube.com/watch?v=dgCnYsDTiXU");
     }
 }
