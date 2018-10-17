@@ -425,19 +425,27 @@ public class BallController : MonoBehaviour
         mainCam.transform.position = originalCamPos;
     }
 
-    public void TurnGray()
+    public bool TurnGray()
     {
         isGray = !isGray;
         if (isGray)
         {
             grayScaleMat.SetFloat("_EffectAmount", 1);
-            obSpawner.InvertDeadeyeBackground();
+            if (obSpawner)
+            {
+                obSpawner.InvertDeadeyeBackground();
+            }
         }
         else
         {
             grayScaleMat.SetFloat("_EffectAmount", 0);
-            obSpawner.InvertDeadeyeBackground(true);
+            if (obSpawner)
+            {
+                obSpawner.InvertDeadeyeBackground(true);
+            }
         }
+
+        return isGray;
     }
 
     public bool SpawnQuickBall()
