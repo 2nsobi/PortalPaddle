@@ -166,6 +166,8 @@ public class Ball : MonoBehaviour
         {
             impactSound = "YellowBall";
             firstImpactSound = "YellowBallFI";
+
+            noFISound = false;
         }
 
         origImpactSound = impactSound;

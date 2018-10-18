@@ -34,7 +34,7 @@ public class Ratings : MonoBehaviour
 
         timeSinceLastAsk = timeSinceStartup - timeOfLastAsk;
 
-        if (timeSinceLastAsk / 30 >= 1)
+        if (timeSinceLastAsk / 360 >= 1)
         {
             timeOfLastAsk = timeSinceStartup;
 
