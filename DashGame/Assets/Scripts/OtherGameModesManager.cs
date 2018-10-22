@@ -165,6 +165,12 @@ public class OtherGameModesManager : MonoBehaviour
         scoreText.text = score.ToString();
     }
 
+    public void DoubleScored()
+    {
+        score+=2;
+        scoreText.text = score.ToString();
+    }
+
     public void Missed()
     {
         DeactivatePaddle();
@@ -333,6 +339,7 @@ public class OtherGameModesManager : MonoBehaviour
                 CountdownPage.SetActive(true);
                 ScoreReview.SetActive(false);
 
+                countdownText.enabled = false;
                 pauseButton.gameObject.SetActive(true);
 
                 break;
@@ -397,6 +404,8 @@ public class OtherGameModesManager : MonoBehaviour
         audioManager.PlayUISound("plus1");
         ballC.Fade2GameMode(pageState.Game, gameMode.PlusOne);
         SetGameModeSelectButtons(false);
+
+        firstStart = true;
     }
 
     public void Go2Deadeye()
@@ -405,6 +414,8 @@ public class OtherGameModesManager : MonoBehaviour
         audioManager.PlayUISound("deadeye");
         ballC.Fade2GameMode(pageState.Game, gameMode.Deadeye);
         SetGameModeSelectButtons(false);
+
+        firstStart = true;
     }
 
     public void Go2Clairvoyance()
@@ -413,6 +424,8 @@ public class OtherGameModesManager : MonoBehaviour
         audioManager.PlayUISound("clairvoyance");
         ballC.Fade2GameMode(pageState.Game, gameMode.Clairvoyance);
         SetGameModeSelectButtons(false);
+
+        firstStart = true;
     }
 
     public void GoBack2ModeSelect()
@@ -434,7 +447,6 @@ public class OtherGameModesManager : MonoBehaviour
 
         ads.ShowInterstitialOrNonSkipAd();
 
-        firstStart = true;
         scoreReviewAnimC.SetTrigger("swipeOut");
         ballC.Fade2GameMode(pageState.Game, currentGameMode, true);
 
@@ -450,8 +462,6 @@ public class OtherGameModesManager : MonoBehaviour
             SetPageState(pageState.CountdownPage);
             pauseCoroutine = StartCoroutine(Countdown());
         }
-
-        firstStart = true;
 
         replayButton.interactable = true;
         GoBack2ModeSelectButton.interactable = true;
@@ -493,9 +503,14 @@ public class OtherGameModesManager : MonoBehaviour
 
     IEnumerator Countdown()
     {
+        yield return new WaitForSecondsRealtime(0.55f);
+        countdownText.enabled = true;
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
+
+            audioManager.PlayMiscSound("countdownPing");
+
             yield return new WaitForSecondsRealtime(1);
             while (pauseAllCoroutines)
             {
@@ -512,8 +527,10 @@ public class OtherGameModesManager : MonoBehaviour
             firstStart = false;
 
             ActivatePaddle();
-            GameModeStarted();
+
+            audioManager.PlayMusic("otherGameModeMusic");
         }
+        GameModeStarted();
     }
 
     public void GoBackHome()

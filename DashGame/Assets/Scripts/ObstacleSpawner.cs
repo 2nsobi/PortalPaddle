@@ -358,8 +358,6 @@ public class ObstacleSpawner : MonoBehaviour
 
     public void SpawnObstacle()
     {
-        audioManager.PlayMiscSound("comeIn");
-
         if (nextObstacle == null)
         {
             nextObstacle = SpawnFromObstacles(1, obstacles.Count, -levelOffset, Quaternion.identity, currentObTexture, targetsGrowShrink);

@@ -46,7 +46,7 @@ public class GameMode_Clairvoyance : MonoBehaviour
         OtherGameModesManager.GameModeStarted += ClairvoyanceStarted;
         ObstacleSpawner.ObstacleSet += ObstacleSet;
         Ball.AbsorbDone += AbsorbDone;
-        Ball.AbsorbDoneAndRichochet += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         Ball.PlayerMissed += PlayerMissed;
     }
 
@@ -55,7 +55,7 @@ public class GameMode_Clairvoyance : MonoBehaviour
         OtherGameModesManager.GameModeStarted -= ClairvoyanceStarted;
         ObstacleSpawner.ObstacleSet -= ObstacleSet;
         Ball.AbsorbDone -= AbsorbDone;
-        Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         Ball.PlayerMissed -= PlayerMissed;
     }
 
@@ -106,6 +106,13 @@ public class GameMode_Clairvoyance : MonoBehaviour
     void AbsorbDone()
     {
         gameModeManager.Scored();
+
+        obSpawner.DespawnObstacle(true);
+    }
+
+    void AbsorbDoneAndRichochet()
+    {
+        gameModeManager.DoubleScored();
 
         obSpawner.DespawnObstacle(true);
     }

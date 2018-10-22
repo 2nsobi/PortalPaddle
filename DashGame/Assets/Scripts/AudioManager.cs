@@ -51,6 +51,8 @@ public class AudioManager : MonoBehaviour
             ballSounds[i].source.pitch = ballSounds[i].pitch;
             ballSounds[i].source.loop = ballSounds[i].loop;
 
+            ballSounds[i].index = i;
+
             for (int n = 0; n < 4; n++)
             {
                 AudioSource s = gameObject.AddComponent<AudioSource>();
@@ -71,6 +73,8 @@ public class AudioManager : MonoBehaviour
             ballFISounds[i].source.volume = ballFISounds[i].volume;
             ballFISounds[i].source.pitch = ballFISounds[i].pitch;
             ballFISounds[i].source.loop = ballFISounds[i].loop;
+
+            ballFISounds[i].index = i;
         }
         for (int i = 0; i < UISounds.Length; i++)
         {
@@ -303,56 +307,54 @@ public class AudioManager : MonoBehaviour
         if (currentMusic != null)
         {
             currentMusic.source.Stop();
+            currentMusic = null;
         }
     }
 
-    public void PlayBallSound(string name, bool stop = false)
+    public int BallImpactSound(string regImpactSoundName)
+    {
+        return Array.Find(ballSounds, sound => sound.name == regImpactSoundName).index;
+    }
+
+    public int BallFISound(string FISoundName)
+    {
+        return Array.Find(ballFISounds, sound => sound.name == FISoundName).index;
+    }
+
+    public void PlayBallSound(int index)
     {
         try
         {
-            if (!stop)
+            Sound s = ballSounds[index];
+            if (s.source.isPlaying)
             {
-                Sound s = Array.Find(ballSounds, sound => sound.name == name);
-                if (s.source.isPlaying)
-                {
-                    AudioSource a = s.backUpSources.Dequeue();
-                    s.source = a;
-                    s.source.Play();
-                    s.backUpSources.Enqueue(a);
-                }
-                else
-                {
-                    s.source.Play();
-                }
+                AudioSource a = s.backUpSources.Dequeue();
+                s.source = a;
+                s.source.Play();
+                s.backUpSources.Enqueue(a);
             }
             else
             {
-                Array.Find(ballSounds, sound => sound.name == name).source.Stop();
+                s.source.Play();
             }
+
         }
-        catch (System.NullReferenceException)
+        catch (NullReferenceException)
         {
-            Debug.LogError("Sound " + name + " not found!");
+            Debug.LogError("Sound " + index + " not found!");
             return;
         }
     }
 
-    public void PlayBallFISound(string name, bool stop = false)
+    public void PlayBallFISound(int index)
     {
         try
         {
-            if (!stop)
-            {
-                Array.Find(ballFISounds, sound => sound.name == name).source.Play();
-            }
-            else
-            {
-                Array.Find(ballFISounds, sound => sound.name == name).source.Stop();
-            }
+            ballFISounds[index].source.Play();
         }
         catch (System.NullReferenceException)
         {
-            Debug.LogError("Sound " + name + " not found!");
+            Debug.LogError("Sound " + index + " not found!");
             return;
         }
     }
@@ -431,5 +433,16 @@ public class AudioManager : MonoBehaviour
 
         t3 = 0;
         comeBackFromBasement = true;
+    }
+
+    public void LetCurrentMusicIgnoreFadeOut(bool yes)
+    {
+        if (currentMusic != null)
+        {
+            if (yes)
+                currentMusic.source.ignoreListenerVolume = true;
+            else
+                currentMusic.source.ignoreListenerVolume = false;
+        }
     }
 }

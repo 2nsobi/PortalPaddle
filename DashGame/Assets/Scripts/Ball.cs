@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
     public Color32 startColor; // start color should usually be this slightly grayish white : EAEAEA
     public Color32 boostColor;
     public GameObject ghost;
@@ -65,6 +64,8 @@ public class Ball : MonoBehaviour
     bool noFISound = false;
     bool playingDeadeye = false;
     string origImpactSound;
+    int index;
+    int impactSoundNum, FISoundNum;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -179,6 +180,12 @@ public class Ball : MonoBehaviour
         target = TargetController.Instance;
         ballC = BallController.Instance;
         audioManager = AudioManager.Instance;
+
+        impactSoundNum = audioManager.BallImpactSound(impactSound);
+        if (!noFISound)
+        {
+            FISoundNum = audioManager.BallFISound(firstImpactSound);
+        }
     }
 
     private void OnEnable()
@@ -620,7 +627,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            audioManager.PlayBallSound(impactSound);
+            audioManager.PlayBallSound(impactSoundNum);
         }
 
         if (collisionTag == "Wall")
@@ -668,11 +675,11 @@ public class Ball : MonoBehaviour
     {
         if (noFISound)
         {
-            audioManager.PlayBallSound(impactSound);
+            audioManager.PlayBallSound(impactSoundNum);
         }
         else
         {
-            audioManager.PlayBallFISound(firstImpactSound);
+            audioManager.PlayBallFISound(FISoundNum);
         }
 
         SetAnimTrigs("Boost");

@@ -50,7 +50,7 @@ public class GameMode_Plus1 : MonoBehaviour
         OtherGameModesManager.GameModeStarted += PlusOneStarted;
         ObstacleSpawner.ObstacleSet += ObstacleSet;
         Ball.AbsorbDone += AbsorbDone;
-        Ball.AbsorbDoneAndRichochet += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         Ball.PlayerMissed += PlayerMissed;
     }
 
@@ -59,7 +59,7 @@ public class GameMode_Plus1 : MonoBehaviour
         OtherGameModesManager.GameModeStarted -= PlusOneStarted;
         ObstacleSpawner.ObstacleSet -= ObstacleSet;
         Ball.AbsorbDone -= AbsorbDone;
-        Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         Ball.PlayerMissed -= PlayerMissed;
     }
 
@@ -97,10 +97,30 @@ public class GameMode_Plus1 : MonoBehaviour
         {
             tempBalls2Spawn--;
 
+            gameModeManager.Scored();
+
             if (tempBalls2Spawn == 0)
             {
-                gameModeManager.Scored();
+                balls2Spawn++;
+                tempBalls2Spawn = balls2Spawn;
 
+                ballC.SetBalls2Absorb(balls2Spawn);
+
+                obSpawner.DespawnObstacle(true);
+            }
+        }
+    }
+
+    void AbsorbDoneAndRichochet()
+    {
+        if (gameRunning)
+        {
+            tempBalls2Spawn--;
+
+            gameModeManager.DoubleScored();
+
+            if (tempBalls2Spawn == 0)
+            {
                 balls2Spawn++;
                 tempBalls2Spawn = balls2Spawn;
 
