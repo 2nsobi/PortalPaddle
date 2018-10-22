@@ -810,6 +810,9 @@ public class LevelGenerator : MonoBehaviour
                 filterBools[1] = false;
             }
 
+            nextMusic2Play = "skyMusic";
+            musicOnDeck = true;
+
             nextLvlSound2Play = "caves2Sky";
             soundOnDeck = true;
         }
@@ -827,6 +830,7 @@ public class LevelGenerator : MonoBehaviour
                 soundOnDeck = true;
             }
         }
+
         if(NextLvl == transitionLvls[1])
         {
             nextLvlSound2Play = null;
@@ -838,8 +842,17 @@ public class LevelGenerator : MonoBehaviour
             interstellar = true;
         }
 
-        if(NextLvl == transitionLvls[3])
+        if (NextLvl == transitionLvls[2])
         {
+            musicOnDeck = true;
+            nextMusic2Play = "moonMusic";
+        }
+
+        if (NextLvl == transitionLvls[3])
+        {
+            musicOnDeck = true;
+            nextMusic2Play = "spaceMusic";
+
             lunarKing = true;
         }
 
@@ -860,7 +873,7 @@ public class LevelGenerator : MonoBehaviour
         {
             if(nextMusic2Play != null)
             {
-                audioManager.PlayMusic(nextMusic2Play);
+                audioManager.Fade2Music(nextMusic2Play);
             }
             musicOnDeck = false;
         }
@@ -1038,6 +1051,8 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
+        audioManager.PlayMusic("cavesMusic");
+
         for (int i = 0; i < filterBools.Length; i++)
         {
             filterBools[i] = true;

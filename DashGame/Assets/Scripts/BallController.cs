@@ -113,6 +113,8 @@ public class BallController : MonoBehaviour
         selectedBallIndex = ZPlayerPrefs.GetInt("ballInUse");
 
         offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
+
+
     }
 
     public int Link2BallItem(string name)
@@ -266,37 +268,84 @@ public class BallController : MonoBehaviour
                 whiteFlashCG.alpha += Time.deltaTime * 4;
                 if (!noSound)
                 {
+                    if (dontStartGameMode)
+                    {
+                        audioManager.LetCurrentMusicIgnoreFadeOut(true);
+                    }
+
                     AudioListener.volume -= Time.deltaTime * 4;
-                }
-                if (whiteFlashCG.alpha >= 1)
-                {
-                    whiteFlashCG.alpha = 1;
 
-                    if (!dontStartGameMode)
+                    if (whiteFlashCG.alpha >= 1 && AudioListener.volume <= 0)
                     {
-                        gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
-                    }
-                    obSpawner.SetGameModeBackground();
-                    gameModeManager.SetPageState(currentPage2Fade2);
+                        whiteFlashCG.alpha = 1;
 
-                    startSpeed = initialSpeed;
-                    targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
-                    obSpawner.EndGame();
+                        AudioListener.volume = 0;
 
-                    grayScaleMat.SetFloat("_EffectAmount", 0);
-                    obSpawner.InvertDeadeyeBackground(true);
-                    isGray = false;
-
-                    if (currentGameMode == 1)
-                    {
-                        if (playedOnce)
+                        if (!dontStartGameMode)
                         {
-                            DisableBallsInQ();
+                            gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
                         }
-                        playedOnce = true;
-                    }
 
-                    fadeBack = true;
+                        obSpawner.SetGameModeBackground();
+                        gameModeManager.SetPageState(currentPage2Fade2);
+
+                        startSpeed = initialSpeed;
+                        targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
+                        obSpawner.EndGame();
+
+                        grayScaleMat.SetFloat("_EffectAmount", 0);
+                        obSpawner.InvertDeadeyeBackground(true);
+                        isGray = false;
+
+                        if (currentGameMode == 1)
+                        {
+                            if (playedOnce)
+                            {
+                                DisableBallsInQ();
+                            }
+                            playedOnce = true;
+                        }
+
+                        if (currentGameMode == 0)
+                        {
+                            audioManager.StopMusic();
+                        }
+
+                        fadeBack = true;
+                    }
+                }
+                else
+                {
+                    if (whiteFlashCG.alpha >= 1)
+                    {
+                        whiteFlashCG.alpha = 1;
+
+                        if (!dontStartGameMode)
+                        {
+                            gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
+                        }
+                        obSpawner.SetGameModeBackground();
+                        gameModeManager.SetPageState(currentPage2Fade2);
+
+                        startSpeed = initialSpeed;
+                        targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
+                        obSpawner.EndGame();
+
+                        grayScaleMat.SetFloat("_EffectAmount", 0);
+                        obSpawner.InvertDeadeyeBackground(true);
+                        isGray = false;
+
+                        if (currentGameMode == 1)
+                        {
+                            if (playedOnce)
+                            {
+                                DisableBallsInQ();
+                            }
+                            playedOnce = true;
+                        }
+
+                        fadeBack = true;
+                    }
                 }
             }
             else
@@ -305,13 +354,32 @@ public class BallController : MonoBehaviour
                 if (!noSound)
                 {
                     AudioListener.volume += Time.deltaTime * 4;
+
+                    if (whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1)
+                    {
+                        whiteFlashCG.alpha = 0;
+
+                        AudioListener.volume = 1;
+
+                        gameModeManager.StartGameMode();
+                        fade2GameMode = false;
+                        fadeBack = false;
+
+                        if (dontStartGameMode)
+                        {
+                            audioManager.LetCurrentMusicIgnoreFadeOut(false);
+                        }
+                    }
                 }
-                if (whiteFlashCG.alpha <= 0)
+                else
                 {
-                    whiteFlashCG.alpha = 0;
-                    gameModeManager.StartGameMode();
-                    fade2GameMode = false;
-                    fadeBack = false;
+                    if (whiteFlashCG.alpha <= 0)
+                    {
+                        whiteFlashCG.alpha = 0;
+                        gameModeManager.StartGameMode();
+                        fade2GameMode = false;
+                        fadeBack = false;
+                    }
                 }
             }
         }
@@ -359,7 +427,7 @@ public class BallController : MonoBehaviour
             game.EnableTutorial();
         }
     }
-    
+
     void NowStartGame()
     {
         balls[selectedBallIndex].gameObject.SetActive(true);
@@ -603,7 +671,7 @@ public class BallController : MonoBehaviour
     {
         if (currentGameMode == 1)
         {
-            if (balls2Absorb>1)
+            if (balls2Absorb > 1)
             {
                 balls2Absorb--;
             }
@@ -638,7 +706,7 @@ public class BallController : MonoBehaviour
         else
         {
             tutorialDisabled = false;
-        }      
+        }
     }
 
     public void ToggleTutorial()
@@ -656,7 +724,7 @@ public class BallController : MonoBehaviour
 
     public void SetTutorialToggle()
     {
-        
+
         if (tutorialDisabled)
         {
             tutorialToggleAnimC.SetTrigger("off");

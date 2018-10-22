@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
     Vector3 currentPoint;
     Vector3 nextPoint;
     Vector3[] travelPath, tempPath;
-    AudioSource idleSound;
+    AudioSource portalHum; // the idle hum of the portal when it is on screen
     Transform portalSpriteTransform;
     Vector2 vectorNearFloor;
 
@@ -36,8 +36,8 @@ public class Target : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         portal = transform.Find("PortalSprite");
-        idleSound = GetComponent<AudioSource>();
-        idleVolumeMax = idleSound.volume;
+        portalHum = GetComponent<AudioSource>();
+        idleVolumeMax = portalHum.volume;
         portalSpriteTransform = transform.GetChild(0);
     }
 
@@ -54,7 +54,7 @@ public class Target : MonoBehaviour
     {
         TargetController.ChangeSpeedImmediately += ChangeSpeedImmediately;
 
-        idleSound.volume = 0;
+        portalHum.volume = 0;
     }
 
     private void OnDisable()
@@ -67,7 +67,7 @@ public class Target : MonoBehaviour
         travelOnPath = false;
         growShrink = false;
         shrink = true;
-        currentIdleVolume = idleSound.volume;
+        currentIdleVolume = portalHum.volume;
     }
 
     public void Shrink2() //used for other game modes to make transitions less weird
@@ -76,7 +76,7 @@ public class Target : MonoBehaviour
         travelOnPath = false;
         growShrink = false;
         shrink = true;
-        currentIdleVolume = idleSound.volume;
+        currentIdleVolume = portalHum.volume;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -105,7 +105,7 @@ public class Target : MonoBehaviour
         t = 0;
         currentMaxIdleVolume = idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor), 0, 1);
 
-        idleSound.Play();
+        portalHum.Play();
 
         if (travel)
         {
@@ -143,21 +143,21 @@ public class Target : MonoBehaviour
 
         if(transform.position.y < -(cameraHeight + 0.3))
         {
-            idleSound.volume = 0;
+            portalHum.volume = 0;
         }
         else if(t <= spawnTime)
         {
             t += Time.deltaTime/spawnTime;
-            idleSound.volume = Mathf.Lerp(0, idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor), 0, 1), t);
+            portalHum.volume = Mathf.Lerp(0, idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor), 0, 1), t);
         }
         else if(!shrink)
         {
             // Eq. for normalizing data between 0 and 1 is: (x-min(x)) / (max(x)-min(x))
-            idleSound.volume = idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor),0,1);
+            portalHum.volume = idleVolumeMax - idleVolumeMax * Mathf.Clamp((Vector2.Distance(transform.position, vectorNearFloor) / maxDistanceFromFloor),0,1);
         }
         else
         {
-            idleSound.volume = Mathf.Clamp(portalSpriteTransform.localScale.x - 0.2f, 0, currentIdleVolume);
+            portalHum.volume = Mathf.Clamp(portalSpriteTransform.localScale.x - 0.2f, 0, currentIdleVolume);
             //if(idleSound.volume == 0)
             //{
             //    idleSound.Stop();

@@ -12,6 +12,8 @@ public class Sound
     [Range(-3, 3)]
     public float pitch;
     public bool loop;
+    [HideInInspector]
+    public int index;
 
     [HideInInspector] //hides this variable since source is set in the awake method of the AudioManager
     public AudioSource source;

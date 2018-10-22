@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameMode_Deadeye : MonoBehaviour
@@ -45,7 +44,7 @@ public class GameMode_Deadeye : MonoBehaviour
     {
         OtherGameModesManager.GameModeStarted += DeadeyeStarted;
         Ball.AbsorbDone += AbsorbDone;
-        Ball.AbsorbDoneAndRichochet += AbsorbDone;
+        Ball.AbsorbDoneAndRichochet += AbsorbDoneAndRichochet;
         Ball.PlayerMissed += PlayerMissed;
 
         firstPlay = true;
@@ -55,7 +54,7 @@ public class GameMode_Deadeye : MonoBehaviour
     {
         OtherGameModesManager.GameModeStarted -= DeadeyeStarted;
         Ball.AbsorbDone -= AbsorbDone;
-        Ball.AbsorbDoneAndRichochet -= AbsorbDone;
+        Ball.AbsorbDoneAndRichochet -= AbsorbDoneAndRichochet;
         Ball.PlayerMissed -= PlayerMissed;
     }
 
@@ -98,6 +97,13 @@ public class GameMode_Deadeye : MonoBehaviour
     void AbsorbDone()
     {
         gameModeManager.Scored();
+
+        startNextRound = StartCoroutine(StartNextRound());
+    }
+
+    void AbsorbDoneAndRichochet()
+    {
+        gameModeManager.DoubleScored();
 
         startNextRound = StartCoroutine(StartNextRound());
     }
