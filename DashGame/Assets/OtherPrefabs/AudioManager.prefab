@@ -82,7 +82,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8c6e7e569baccef49b0648a3b5a98eb8, type: 3}
     name: ComputerPixelBall
-    volume: 0.23
+    volume: 0.21
     pitch: 1
     loop: 0
     index: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: bbd12fdda56610c42b0fb9a4dfb09021, type: 3}
     name: ComputerPixelBallFI
-    volume: 0.8
+    volume: 0.61
     pitch: 1
     loop: 0
     index: 0
@@ -244,7 +244,7 @@ MonoBehaviour:
     loop: 1
     index: 0
     source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
+  - clip: {fileID: 0}
     name: otherGameModeMusic
     volume: 0.45
     pitch: 1

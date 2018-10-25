@@ -32,7 +32,9 @@ public class AchievementsAndLeaderboards : MonoBehaviour
         PlayGamesPlatform.InitializeInstance(playGamesConfig);
         PlayGamesPlatform.Activate();
 
-        GoogleSignIn();
+        //GoogleSignIn();
+
+        PlayGamesPlatform.Instance.Authenticate(SignInCallback, true);
     }
 
     public void GoogleSignIn()
@@ -42,7 +44,6 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             // Sign in with Play Game Services, showing the consent dialog
             // by setting the second parameter to isSilent=false.
             PlayGamesPlatform.Instance.Authenticate(SignInCallback, false);
-            Social.localUser.Authenticate(SignInCallback);
         }
         else
         {
