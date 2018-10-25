@@ -6,7 +6,6 @@ public class GameMode_Plus1 : MonoBehaviour
 {
     BallController ballC;
     PaddleController paddle;
-    AdManager ads;
     LevelGenerator LG;
     ObstacleSpawner obSpawner;
     OtherGameModesManager gameModeManager;
@@ -37,7 +36,6 @@ public class GameMode_Plus1 : MonoBehaviour
     {
         ballC = BallController.Instance;
         paddle = PaddleController.Instance;
-        ads = AdManager.Instance;
         LG = LevelGenerator.Instance;
         obSpawner = ObstacleSpawner.Instance;
         gameModeManager = OtherGameModesManager.Instance;

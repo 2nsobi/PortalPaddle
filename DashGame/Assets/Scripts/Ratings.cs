@@ -6,9 +6,8 @@ public class Ratings : MonoBehaviour
 
     GameObject RateMePage;
 
-    float timeSinceStartup;
     float timeSinceLastAsk = 0;
-    static float timeOfLastAsk = 0;
+    float timeOfLastAsk;
     static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
 
     private void Awake()
@@ -28,15 +27,18 @@ public class Ratings : MonoBehaviour
         RateMePage = transform.GetChild(0).gameObject;
     }
 
+    private void Start()
+    {
+        timeOfLastAsk = 0;
+    }
+
     public void Ask4Rate()
     {
-        timeSinceStartup = Time.realtimeSinceStartup;
-
-        timeSinceLastAsk = timeSinceStartup - timeOfLastAsk;
+        timeSinceLastAsk = Time.realtimeSinceStartup - timeOfLastAsk;
 
         if (timeSinceLastAsk / 360 >= 1)
         {
-            timeOfLastAsk = timeSinceStartup;
+            timeOfLastAsk = Time.realtimeSinceStartup;
 
             RateMePage.SetActive(true);
         }

@@ -194,16 +194,31 @@ public class AudioManager : MonoBehaviour
         {
             t2 += Time.deltaTime / time4MusicFade;
 
-            currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
-            nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
-
-            if (currentMusic.source.volume == 0 && nextMusic.source.volume == nextMusic.volume)
+            if (currentMusic!=null)
             {
-                currentMusic.source.Stop();
-                currentMusic = nextMusic;
-                nextMusic = null;
+                currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
 
-                fade2Music = false;
+                nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
+
+                if (currentMusic.source.volume == 0 && nextMusic.source.volume == nextMusic.volume)
+                {
+                    currentMusic.source.Stop();
+                    currentMusic = nextMusic;
+                    nextMusic = null;
+
+                    fade2Music = false;
+                }
+            }
+            else
+            {
+                nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
+                if (nextMusic.source.volume == nextMusic.volume)
+                {
+                    currentMusic = nextMusic;
+                    nextMusic = null;
+
+                    fade2Music = false;
+                }
             }
         }
 
