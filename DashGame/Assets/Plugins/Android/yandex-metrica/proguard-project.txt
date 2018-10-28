@@ -1,4 +1,0 @@
-# Yandex
--keep class com.yandex.metrica.** { *; }
--dontwarn com.yandex.metrica.**
--keepattributes *Annotation*
