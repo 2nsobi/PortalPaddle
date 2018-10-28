@@ -1,3 +1,0 @@
-# Tapjoy
--keep class com.tapjoy.** { *; }
--dontwarn com.tapjoy.**
