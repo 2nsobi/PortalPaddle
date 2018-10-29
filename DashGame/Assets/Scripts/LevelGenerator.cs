@@ -219,15 +219,13 @@ public class LevelGenerator : MonoBehaviour
     int tempNum = 0;
     int tempNum2 = 0;
     bool[] filterBools = new bool[3];
-    bool moonLvlPassed = false;
-    bool earthLvlPassed = false;
     bool soundOnDeck;
     string nextLvlSound2Play;
     bool musicOnDeck;
     string nextMusic2Play;
     AchievementsAndLeaderboards rankings;
-    bool interstellar = false;
-    bool lunarKing = false;
+    bool interstellar;
+    bool lunarKing;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -253,8 +251,8 @@ public class LevelGenerator : MonoBehaviour
 
         distanceDiff4Walls = GetDistanceDifferenceForWalls();
 
-        earthLvlPassed = PlayerPrefsX.GetBool("earthLvlPassed");
-        moonLvlPassed = PlayerPrefsX.GetBool("moonLvlPassed");
+        interstellar = PlayerPrefsX.GetBool("interstellar");
+        lunarKing = PlayerPrefsX.GetBool("lunarKing");
     }
 
     /*********************************************
@@ -301,29 +299,16 @@ public class LevelGenerator : MonoBehaviour
         Ball.AbsorbDone -= AbsorbDone;
         Ball.AbsorbDoneAndRichochet -= AbsorbDone;
 
-        PlayerPrefsX.SetBool("earthLvlPassed", earthLvlPassed);
-        PlayerPrefsX.SetBool("moonLvlPassed", moonLvlPassed);
-
-        if (interstellar)
-        {
-            rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
-        }
-
-        if (lunarKing)
-        {
-            rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
-        }
+        PlayerPrefsX.SetBool("interstellar", interstellar);
+        PlayerPrefsX.SetBool("lunarKing", lunarKing);
     }
 
-    private void OnApplicationFocus(bool focus)
+    private void OnApplicationPause(bool pause)
     {
-        if (!focus)
+        if (pause)
         {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
+            PlayerPrefsX.SetBool("interstellar", interstellar);
+            PlayerPrefsX.SetBool("lunarKing", lunarKing);
         }
     }
 
@@ -361,11 +346,11 @@ public class LevelGenerator : MonoBehaviour
 
         playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
         playButtonGlowMainMod = playButtonGlow.main;
-        if (earthLvlPassed)
+        if (interstellar)
         {
             playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
         }
-        if (moonLvlPassed)
+        if (lunarKing)
         {
             playButtonGlowMainMod.startColor = Color.yellow;
         }
@@ -531,6 +516,9 @@ public class LevelGenerator : MonoBehaviour
         NextLvl = null;
         LvlOnDeck = null;
         PreviousLvl = dummyLvlPref;
+
+        nextLvlSound2Play = null;
+        nextMusic2Play = null;
 
         if (playedOnce)
         {
@@ -788,6 +776,8 @@ public class LevelGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
+        // first update sounds for the lvls
+
         if (NextLvl.gameObject.tag == "level1")
         {
             if (filterBools[0])
@@ -816,7 +806,7 @@ public class LevelGenerator : MonoBehaviour
             nextLvlSound2Play = "caves2Sky";
             soundOnDeck = true;
         }
-        if(nextLvlNumber == 2)
+        if (nextLvlNumber == 2)
         {
             if (filterBools[2])
             {
@@ -824,22 +814,20 @@ public class LevelGenerator : MonoBehaviour
                 filterBools[2] = false;
             }
 
-            if(nextLvlSound2Play != "ambientSky")
+            if (nextLvlSound2Play != "ambientSky")
             {
                 nextLvlSound2Play = "ambientSky";
                 soundOnDeck = true;
             }
         }
 
-        if(NextLvl == transitionLvls[1])
+        if (NextLvl == transitionLvls[1])
         {
             nextLvlSound2Play = null;
             soundOnDeck = true;
 
             nextMusic2Play = "spaceMusic";
             musicOnDeck = true;
-
-            interstellar = true;
         }
 
         if (NextLvl == transitionLvls[2])
@@ -852,8 +840,6 @@ public class LevelGenerator : MonoBehaviour
         {
             musicOnDeck = true;
             nextMusic2Play = "spaceMusic";
-
-            lunarKing = true;
         }
 
         if (soundOnDeck)
@@ -871,12 +857,36 @@ public class LevelGenerator : MonoBehaviour
 
         if (musicOnDeck)
         {
-            if(nextMusic2Play != null)
+            if (nextMusic2Play != null)
             {
                 audioManager.Fade2Music(nextMusic2Play);
             }
             musicOnDeck = false;
         }
+
+        // now update acheivements if they unlocked any
+
+        if (!interstellar)
+        {
+            if (CurrentLvl == transitionLvls[1])
+            {
+                interstellar = true;
+                rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
+                playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
+            }
+        }
+
+        if (!lunarKing)
+        {
+            if (CurrentLvl == transitionLvls[3])
+            {
+                lunarKing = true;
+                rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
+                playButtonGlowMainMod.startColor = Color.yellow;
+            }
+        }
+
+        // finally start moving the lvls
 
         currentlyTransitioning = true;
     }
@@ -996,23 +1006,6 @@ public class LevelGenerator : MonoBehaviour
                     PreviousLvl = CurrentLvl;
 
                     CurrentLvl = NextLvl; //which is the level currently on screen
-
-                    if (!earthLvlPassed)
-                    {
-                        if (CurrentLvl == transitionLvls[1])
-                        {
-                            playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
-                            earthLvlPassed = true;
-                        }
-                    }
-                    if (!moonLvlPassed)
-                    {
-                        if (CurrentLvl == transitionLvls[3])
-                        {
-                            playButtonGlowMainMod.startColor = Color.yellow;
-                            moonLvlPassed = true;
-                        }
-                    }
 
                     NextLvl = LvlOnDeck;
 
@@ -1195,7 +1188,7 @@ public class LevelGenerator : MonoBehaviour
             break;
         }
 
-        if (lvlSpawnQ.Count <= 5) //limit the amount of lvls being queued to prevent obstacle theft errors
+        if (lvlSpawnQ.Count <= 5) //limit the amount of lvls being queued to prevent obstacle theft errors between lvl prefs
         {
             activeLvl = SpawnFromPool(activeLvlName);
             if (activeLvl != null)

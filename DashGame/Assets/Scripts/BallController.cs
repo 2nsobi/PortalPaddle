@@ -13,7 +13,6 @@ public class BallController : MonoBehaviour
     public float CameraShakeDuration;
     public GameObject[] ballPrefabs;
     public Animator tutorialToggleAnimC;
-    public Toggle tutorialToggle;
 
     TargetController targetC;
     GameObject ballSpawner;
@@ -49,7 +48,7 @@ public class BallController : MonoBehaviour
     OtherGameModesManager.pageState currentPage2Fade2;
     OtherGameModesManager.gameMode currentGameMode2Start;
     bool dontStartGameMode = false;
-    bool noSound = false;
+    bool noSound;
     bool tutorialDisabled;
 
     public static BallController Instance;
@@ -114,7 +113,7 @@ public class BallController : MonoBehaviour
 
         offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
 
-
+        noSound = PlayerPrefsX.GetBool("noSound");
     }
 
     public int Link2BallItem(string name)
@@ -151,24 +150,13 @@ public class BallController : MonoBehaviour
         selectedBallIndex = index;
     }
 
-    private void OnApplicationFocus(bool focus)
-    {
-        if (!focus)
-        {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
-    }
-
     private void OnApplicationPause(bool pause)
     {
         if (pause)
         {
             pauseAllCoroutines = true;
             ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+            PlayerPrefsX.SetBool("tutorialDisabled", tutorialDisabled);
         }
         else
         {
@@ -179,6 +167,7 @@ public class BallController : MonoBehaviour
     private void OnApplicationQuit()
     {
         ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+        PlayerPrefsX.SetBool("tutorialDisabled", tutorialDisabled);
     }
 
     private void OnEnable()
@@ -698,7 +687,6 @@ public class BallController : MonoBehaviour
 
     public void SetTutorial(bool turnOff)
     {
-        tutorialToggle.isOn = !turnOff;
         if (turnOff)
         {
             tutorialDisabled = true;
@@ -724,7 +712,6 @@ public class BallController : MonoBehaviour
 
     public void SetTutorialToggle()
     {
-
         if (tutorialDisabled)
         {
             tutorialToggleAnimC.SetTrigger("off");

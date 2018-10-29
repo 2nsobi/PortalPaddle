@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     PaddleController Paddle;
     LevelGenerator LG;
-    BallController ball;
+    BallController ballC;
     SceneChanger sceneChanger;
     AudioManager audioManager;
     AchievementsAndLeaderboards rankings;
@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
         Paddle = PaddleController.Instance;
         target = TargetController.Instance;
         LG = LevelGenerator.Instance;
-        ball = BallController.Instance;
+        ballC = BallController.Instance;
         ads = AdManager.Instance;
         sceneChanger = SceneChanger.Instance;
         audioManager = AudioManager.Instance;
@@ -209,11 +209,13 @@ public class GameManager : MonoBehaviour
         gameRunning = false;
         paused = false;
 
+        Coroutine fadeInVolume = StartCoroutine(FadeInVolume());
+        audioManager.PlayLvlSound("ambientLab");
         noSound = PlayerPrefsX.GetBool("noSound");
-        if (!noSound)
+        if (noSound)
         {
-            StartCoroutine(FadeInVolume());
-            audioManager.PlayLvlSound("ambientLab");
+            StopCoroutine(fadeInVolume);
+            AudioListener.volume = 0;
         }
     }
 
@@ -265,11 +267,6 @@ public class GameManager : MonoBehaviour
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
         ZPlayerPrefs.SetInt("firstPlayEver", firstPlayEver);
-
-        if (updateHS)
-        {
-            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
-        }
     }
 
     void PlayerMissed()
@@ -656,7 +653,7 @@ public class GameManager : MonoBehaviour
                 yield return null;
             }
         }
-        ball.Fade2Black();
+        ballC.Fade2Black();
     }
 
     IEnumerator DisableReplayButon()
@@ -729,6 +726,11 @@ public class GameManager : MonoBehaviour
             ZPlayerPrefs.SetInt("HighScore", highScore);
 
             ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+
+            if (updateHS)
+            {
+                rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
+            }
         }
         else
         {
@@ -742,18 +744,6 @@ public class GameManager : MonoBehaviour
         ZPlayerPrefs.SetInt("HighScore", highScore);
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
-    }
-
-    private void OnApplicationFocus(bool focus)
-    {
-        if (!focus)
-        {
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
     }
 
     public int GetScore
@@ -813,6 +803,9 @@ public class GameManager : MonoBehaviour
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
+
+            audioManager.PlayMiscSound("countdownPing");
+
             yield return new WaitForSecondsRealtime(1);
             while (pauseAllCoroutines)
             {
@@ -848,7 +841,7 @@ public class GameManager : MonoBehaviour
         InfoPage.SetActive(true);
 
         infoScrollRect.verticalNormalizedPosition = 1;
-        ball.SetTutorialToggle();
+        ballC.SetTutorialToggle();
     }
 
     public void ExitInfo()

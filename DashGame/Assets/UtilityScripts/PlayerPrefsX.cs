@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-
-public static class PlayerPrefsX {
+﻿public static class PlayerPrefsX {
 
     //uses ZPlayerPrefs class
 

@@ -22,7 +22,6 @@ public class Tutorial : MonoBehaviour
     bool fadeIn = false;
     bool fadeOut = false;
     float t;
-    bool firstPlayEver;
 
     private void Awake()
     {
