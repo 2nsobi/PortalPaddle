@@ -14,8 +14,8 @@ public class SettingsController : MonoBehaviour
     Purchaser purchaser;
     BallController ballC;
 
-    bool noSound = false;
-    bool noAds = false;
+    bool noSound;
+    bool noAds;
 
     private void Awake()
     {
@@ -85,6 +85,19 @@ public class SettingsController : MonoBehaviour
     private void OnDisable()
     {
         PlayerPrefsX.SetBool("noSound", noSound);
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefsX.SetBool("noSound", noSound);
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            PlayerPrefsX.SetBool("noSound", noSound);
+        }
     }
 
     public void DisableBuyNoAdsButton()

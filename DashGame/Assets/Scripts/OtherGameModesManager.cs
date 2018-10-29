@@ -542,23 +542,6 @@ public class OtherGameModesManager : MonoBehaviour
         sceneChanger.Fade2Scene(0);
     }
 
-    private void OnApplicationFocus(bool focus)
-    {
-        if (!focus)
-        {
-            ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
-            ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
-            ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
-            ZPlayerPrefs.SetInt("gems", (int)gems);
-
-            pauseAllCoroutines = true;
-        }
-        else
-        {
-            pauseAllCoroutines = false;
-        }
-    }
-
     private void OnApplicationPause(bool pause)
     {
         if (pause)
@@ -567,6 +550,11 @@ public class OtherGameModesManager : MonoBehaviour
             ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
             ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
             ZPlayerPrefs.SetInt("gems", (int)gems);
+
+            if (updateHS)
+            {
+                rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+            }
 
             pauseAllCoroutines = true;
         }
@@ -594,11 +582,6 @@ public class OtherGameModesManager : MonoBehaviour
         ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
         ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
         ZPlayerPrefs.SetInt("gems", (int)gems);
-
-        if (updateHS)
-        {
-            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
-        }
     }
 
     void UpdateUltraScore()

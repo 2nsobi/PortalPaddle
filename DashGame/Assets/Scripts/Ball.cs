@@ -204,6 +204,8 @@ public class Ball : MonoBehaviour
         gameObject.layer = ignoreObstaclesLayer;
         wrappingEnabled = false;
         insideCollider = false;
+        wallHit = false;
+        wrappedAround = false;
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);

@@ -6,7 +6,7 @@ public class AchievementsAndLeaderboards : MonoBehaviour
 {
     public static AchievementsAndLeaderboards Instance;
 
-    string currentPlatform;
+    int currentPlatform;
 
     private void Awake()
     {
@@ -20,21 +20,22 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             return;
         }
 
-        currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
+        currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? 2 : 1; // 2 is for apple and 1 is for android 
     }
 
     private void Start()
     {
-        PlayGamesClientConfiguration playGamesConfig = new PlayGamesClientConfiguration.Builder().Build();
+        if (currentPlatform == 1)
+        {
+            PlayGamesClientConfiguration playGamesConfig = new PlayGamesClientConfiguration.Builder().Build();
 
-        PlayGamesPlatform.DebugLogEnabled = true;
+            PlayGamesPlatform.DebugLogEnabled = true;
 
-        PlayGamesPlatform.InitializeInstance(playGamesConfig);
-        PlayGamesPlatform.Activate();
+            PlayGamesPlatform.InitializeInstance(playGamesConfig);
+            PlayGamesPlatform.Activate();
 
-        //GoogleSignIn();
-
-        PlayGamesPlatform.Instance.Authenticate(SignInCallback, true);
+            PlayGamesPlatform.Instance.Authenticate(FirstStartSignInCallback, false);
+        }
     }
 
     public void GoogleSignIn()
@@ -64,22 +65,50 @@ public class AchievementsAndLeaderboards : MonoBehaviour
         }
     }
 
+    public void FirstStartSignInCallback(bool success)
+    {
+        if (success)
+        {
+            Debug.Log("(Lollygagger) Signed in!");
+        }
+        else
+        {
+            Debug.Log("(Lollygagger) Sign-in failed...trying again");
+            GoogleSignIn();
+        }
+    }
+
     #region Achievements
     public void UnlockAchievement(string ID)
     {
-        Social.ReportProgress(ID, 100, (bool success) => { if(success) PlayGamesPlatform.Instance.Events.IncrementEvent(GPGSIds.event_passed_moon, 1); });
+        if (Social.localUser.authenticated)
+        {
+            if (currentPlatform == 1)
+            {
+                PlayGamesPlatform.Instance.ReportProgress(ID, 100.0f, (bool success) =>
+                {
+                    if (success && ID == GPGSIds.achievement_lunar_king)
+                    {
+                        PlayGamesPlatform.Instance.Events.IncrementEvent(GPGSIds.event_passed_moon, 1);
+                    }
+                });
+            }
+        }
     }
 
     public void ShowAchievements()
     {
-        if (PlayGamesPlatform.Instance.localUser.authenticated)
+        if (currentPlatform == 1)
         {
-            PlayGamesPlatform.Instance.ShowAchievementsUI();
-        }
-        else
-        {
-            Debug.Log("Cannot show Achievements, not logged in");
-            GoogleSignIn();
+            if (PlayGamesPlatform.Instance.localUser.authenticated)
+            {
+                PlayGamesPlatform.Instance.ShowAchievementsUI();
+            }
+            else
+            {
+                Debug.Log("Cannot show Achievements, not logged in");
+                GoogleSignIn();
+            }
         }
     }
     #endregion
@@ -87,19 +116,32 @@ public class AchievementsAndLeaderboards : MonoBehaviour
     #region Leaderboards
     public void AddScore2LeaderBoard(string leaderboardID, long score)
     {
-        Social.ReportScore(score, leaderboardID, success => { });
+        if (Social.localUser.authenticated)
+        {
+            if (currentPlatform == 1)
+            {
+                // Note: make sure to add 'using GooglePlayGames'
+                PlayGamesPlatform.Instance.ReportScore(score, leaderboardID, (bool success) =>
+                {
+                    Debug.Log(leaderboardID + ", (Lollygagger) Leaderboard update success: " + success);
+                });
+            }
+        }
     }
 
     public void ShowLeaderboards()
     {
-        if (PlayGamesPlatform.Instance.localUser.authenticated)
+        if (currentPlatform == 1)
         {
-            PlayGamesPlatform.Instance.ShowLeaderboardUI();
-        }
-        else
-        {
-            Debug.Log("Cannot show leaderboard: not authenticated");
-            GoogleSignIn();
+            if (PlayGamesPlatform.Instance.localUser.authenticated)
+            {
+                PlayGamesPlatform.Instance.ShowLeaderboardUI();
+            }
+            else
+            {
+                Debug.Log("Cannot show leaderboard: not authenticated");
+                GoogleSignIn();
+            }
         }
     }
     #endregion
