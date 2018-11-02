@@ -181,14 +181,20 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             }
             else
             {
-                Appodeal.show(Appodeal.REWARDED_VIDEO, "noReward"); //reward1 is name of your placemnt on appodeal
+                Appodeal.show(Appodeal.REWARDED_VIDEO, "reviveReward"); //reviveReward is name of your placemnt on appodeal
             }
         }
     }
 
     public void onRewardedVideoLoaded(bool precache) { }
 
-    public void onRewardedVideoFailedToLoad() { }
+    public void onRewardedVideoFailedToLoad()
+    {
+        if (game.IsGameRunning)
+        {
+            game.GoToScoreReview();
+        }
+    }
 
     public void onRewardedVideoShown() { }
 
@@ -198,10 +204,14 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     public void onRewardedVideoFinished(double amount, string name)
     {
-        if (amount > 0)
+        if (name == "reward1")
         {
             giveReward = true;
             activeRewardAmount = (int)amount;
+        }
+        else if (name == "reviveReward")
+        {
+            game.Continue();
         }
     }
 
@@ -216,7 +226,17 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
-    public void onBannerFailedToLoad() { }
+    public void onBannerFailedToLoad()
+    {
+        if (!noAds)
+        {
+            if (!bannerActive)
+            {
+                if(Appodeal.isPrecache(Appodeal.BANNER))
+                    Appodeal.show(Appodeal.BANNER_BOTTOM);
+            }
+        }
+    }
 
     public void onBannerShown()
     {

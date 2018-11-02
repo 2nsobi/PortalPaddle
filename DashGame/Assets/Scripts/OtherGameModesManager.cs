@@ -7,6 +7,7 @@ public class OtherGameModesManager : MonoBehaviour
 
     public static OtherGameModesManager Instance;
 
+    public AudioListener audioListener;
     public GameObject StartPage;
     public GameObject PauseMenu;
     public GameObject CountdownPage;
@@ -52,6 +53,7 @@ public class OtherGameModesManager : MonoBehaviour
     bool pauseAllCoroutines = false;
     bool paused = false;
     bool firstStart = true;
+    bool replaying = false;
     int PlusOneHS;
     int DeadeyeHS;
     int ClairvoyanceHS;
@@ -67,6 +69,7 @@ public class OtherGameModesManager : MonoBehaviour
     int incrementor4Asks;
     int rateAsks;
     bool updateHS = false;
+    float volB4Pause;
 
     public delegate void OtherGameModesManagerDelegate();
     public static event OtherGameModesManagerDelegate StartPlusOne;
@@ -116,6 +119,8 @@ public class OtherGameModesManager : MonoBehaviour
         rate = Ratings.Instance;
 
         noSound = PlayerPrefsX.GetBool("noSound");
+        AudioListener.volume = 0;
+        audioListener.enabled = true;
         if (!noSound)
         {
             StartCoroutine(FadeInVolume());
@@ -131,14 +136,28 @@ public class OtherGameModesManager : MonoBehaviour
 
     IEnumerator FadeInVolume() //fade in the games master volume
     {
-        AudioListener.volume = 0;
-
         float targetTime = 1;
         float elaspedTime = 0;
 
         while (elaspedTime < targetTime)
         {
             elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeInVolumeFromPause() //fade in the games master volume
+    {
+        AudioListener.pause = false;
+
+        float targetTime = 0.2f;
+        float elaspedTime = 0;
+
+        while (AudioListener.volume != 1)
+        {
+            elaspedTime += Time.unscaledDeltaTime;
 
             AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
             yield return null;
@@ -152,10 +171,15 @@ public class OtherGameModesManager : MonoBehaviour
 
         while (elaspedTime < targetTime)
         {
-            elaspedTime += Time.deltaTime;
+            elaspedTime += Time.unscaledDeltaTime;
 
             AudioListener.volume = Mathf.Lerp(1, 0, elaspedTime / targetTime);
             yield return null;
+        }
+
+        if (paused)
+        {
+            AudioListener.pause = true;
         }
     }
 
@@ -452,6 +476,8 @@ public class OtherGameModesManager : MonoBehaviour
 
         score = 0;
         scoreText.text = score.ToString();
+
+        replaying = true;
     }
 
     public void StartGameMode()
@@ -469,6 +495,9 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if (!noSound)
+            StartCoroutine(FadeOutVolume());
+
         SetPageState(pageState.Paused);
         Time.timeScale = 0;
         if (pauseCoroutine != null)
@@ -524,13 +553,19 @@ public class OtherGameModesManager : MonoBehaviour
         gameModeRunning = true;
         if (firstStart)
         {
-            firstStart = false;
-
             ActivatePaddle();
 
             audioManager.PlayMusic("otherGameModeMusic");
         }
-        GameModeStarted();
+        if (firstStart || replaying)
+        {
+            if (firstStart) firstStart = false;
+
+            GameModeStarted();
+        }
+
+        if (!noSound)
+            StartCoroutine(FadeInVolumeFromPause());
     }
 
     public void GoBackHome()
@@ -546,6 +581,9 @@ public class OtherGameModesManager : MonoBehaviour
     {
         if (pause)
         {
+            volB4Pause = AudioListener.volume;
+            AudioListener.volume = 0;
+
             ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
             ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
             ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
@@ -560,6 +598,10 @@ public class OtherGameModesManager : MonoBehaviour
         }
         else
         {
+            if (!noSound)
+            {
+                AudioListener.volume = volB4Pause;
+            }
             pauseAllCoroutines = false;
         }
     }

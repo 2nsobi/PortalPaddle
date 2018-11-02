@@ -106,7 +106,7 @@ AudioListener:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1961242485683314}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &114200618017194826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,7 +146,9 @@ MonoBehaviour:
   InfoPage: {fileID: 0}
   ScoresPage: {fileID: 0}
   RateMePage: {fileID: 0}
+  AudioCredits: {fileID: 0}
   GemsText: {fileID: 0}
+  AudioCreditsButton: {fileID: 0}
   GDPRConsentForm: {fileID: 0}
 --- !u!114 &114255521714248996
 MonoBehaviour:
