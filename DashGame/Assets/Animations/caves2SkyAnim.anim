@@ -3,7 +3,7 @@
 --- !u!74 &7400000
 AnimationClip:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: caves2SkyAnim
   serializedVersion: 6
@@ -19,7 +19,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: -5.81, y: 0, z: 0}
+        value: {x: -6.78, y: 3.82, z: 0}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 1.365, y: 0, z: 0}
         tangentMode: 0
@@ -28,7 +28,7 @@ AnimationClip:
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
         time: 10
-        value: {x: 7.84, y: 0, z: 0}
+        value: {x: 6.87, y: 3.82, z: 0}
         inSlope: {x: 1.365, y: -0, z: -0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -38,7 +38,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: caves2SkyBackgroundClouds
+    path: caves2SkyBackgroundClouds (1)
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves: []
@@ -50,7 +50,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1347530913
+      path: 3414508853
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -83,7 +83,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: -5.81
+        value: -6.78
         inSlope: 0
         outSlope: 1.365
         tangentMode: 65
@@ -92,7 +92,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 10
-        value: 7.84
+        value: 6.87
         inSlope: 1.365
         outSlope: 0
         tangentMode: 5
@@ -103,7 +103,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: caves2SkyBackgroundClouds
+    path: caves2SkyBackgroundClouds (1)
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -111,7 +111,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 3.82
         inSlope: 0
         outSlope: 0
         tangentMode: 65
@@ -120,7 +120,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 10
-        value: 0
+        value: 3.82
         inSlope: -0
         outSlope: 0
         tangentMode: 5
@@ -131,7 +131,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: caves2SkyBackgroundClouds
+    path: caves2SkyBackgroundClouds (1)
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -159,7 +159,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: caves2SkyBackgroundClouds
+    path: caves2SkyBackgroundClouds (1)
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves: []

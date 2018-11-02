@@ -80,6 +80,9 @@ public class GameManager : MonoBehaviour
     int firstPlayEver; // indicated first time playing since download, a value of 0 means its the first time playing
     static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
     bool updateHS = false;
+    AudioListener audioListener;
+    float volB4Pause;
+    static CryptoRandom rng = new CryptoRandom();
 
     public static GameManager Instance;
 
@@ -101,7 +104,9 @@ public class GameManager : MonoBehaviour
     public GameObject InfoPage;
     public GameObject ScoresPage;
     public GameObject RateMePage;
+    public GameObject AudioCredits;
     public Text GemsText;
+    public GameObject AudioCreditsButton;
 
     public GameObject GDPRConsentForm;
 
@@ -120,11 +125,40 @@ public class GameManager : MonoBehaviour
         return 0;
     }
 
+    private static string CreateRandomPassword(int passwordLength)
+    {
+        string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789!@$?_-";
+        char[] chars = new char[passwordLength];
+
+        for (int i = 0; i < passwordLength; i++)
+        {
+            chars[i] = allowedChars[rng.Next(0, allowedChars.Length)];
+        }
+
+        return new string(chars);
+    }
+
     private void Awake()
     {
         Instance = this;
 
-        ZPlayerPrefs.Initialize("K]28y[+$SZAjM3V$", "EJw8mBv5xJ4~R@q:");
+        audioListener = gameObject.GetComponent<AudioListener>();
+    
+        string rAFARRfwej82qwe = ZPlayerPrefs.GetString("rAFARRfwej82qwe"); //password for Zplayerprefs initialization
+        string asfmn2348HKOA823 = ZPlayerPrefs.GetString("asfmn2348HKOA823"); //salt for Zplayerprefs initialization
+
+        if(rAFARRfwej82qwe.Length == 0) //default value for a playerprefs string is "" (a string with length of 0)
+        {
+            print("first time playing");
+
+            rAFARRfwej82qwe = CreateRandomPassword(17);
+            asfmn2348HKOA823 = CreateRandomPassword(17);
+
+            ZPlayerPrefs.SetString("rAFARRfwej82qwe", rAFARRfwej82qwe);
+            ZPlayerPrefs.SetString("asfmn2348HKOA823", asfmn2348HKOA823);
+        }
+
+        ZPlayerPrefs.Initialize(rAFARRfwej82qwe, asfmn2348HKOA823);
 
         //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
         //{
@@ -212,6 +246,8 @@ public class GameManager : MonoBehaviour
         Coroutine fadeInVolume = StartCoroutine(FadeInVolume());
         audioManager.PlayLvlSound("ambientLab");
         noSound = PlayerPrefsX.GetBool("noSound");
+        AudioListener.volume = 0;
+        audioListener.enabled = true;
         if (noSound)
         {
             StopCoroutine(fadeInVolume);
@@ -221,14 +257,28 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FadeInVolume() //fade in the games master volume
     {
-        AudioListener.volume = 0;
-
         float targetTime = 1;
         float elaspedTime = 0;
 
-        while (elaspedTime < targetTime)
+        while (AudioListener.volume != 1)
         {
             elaspedTime += Time.deltaTime;
+
+            AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeInVolumeFromPause() //fade in the games master volume
+    {
+        AudioListener.pause = false;
+
+        float targetTime = 0.2f;
+        float elaspedTime = 0;
+
+        while (AudioListener.volume != 1)
+        {
+            elaspedTime += Time.unscaledDeltaTime;
 
             AudioListener.volume = Mathf.Lerp(0, 1, elaspedTime / targetTime);
             yield return null;
@@ -240,12 +290,17 @@ public class GameManager : MonoBehaviour
         float targetTime = 0.28f;
         float elaspedTime = 0;
 
-        while (elaspedTime < targetTime)
+        while (AudioListener.volume != 0)
         {
-            elaspedTime += Time.deltaTime;
+            elaspedTime += Time.unscaledDeltaTime;
 
             AudioListener.volume = Mathf.Lerp(1, 0, elaspedTime / targetTime);
             yield return null;
+        }
+
+        if (paused)
+        {
+            AudioListener.pause = true;
         }
     }
 
@@ -369,6 +424,7 @@ public class GameManager : MonoBehaviour
                 ShopPage.SetActive(false);
                 InfoPage.SetActive(false);
                 ScoresPage.SetActive(false);
+                AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
@@ -384,6 +440,7 @@ public class GameManager : MonoBehaviour
                 ShopPage.SetActive(false);
                 InfoPage.SetActive(false);
                 ScoresPage.SetActive(false);
+                AudioCreditsButton.SetActive(true);
                 GemsText.gameObject.SetActive(true);
 
                 ShowGameModeButton(true);
@@ -453,6 +510,7 @@ public class GameManager : MonoBehaviour
                 ShopPage.SetActive(false);
                 InfoPage.SetActive(false);
                 ScoresPage.SetActive(false);
+                AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 LG.settingsPage.SetActive(true);
@@ -485,6 +543,7 @@ public class GameManager : MonoBehaviour
                 ShopPage.SetActive(true);
                 InfoPage.SetActive(false);
                 ScoresPage.SetActive(false);
+                AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
                 LG.shop.SetActive(true);
@@ -561,16 +620,18 @@ public class GameManager : MonoBehaviour
 
     public void Continue()
     {
-        richochetCount = 0;
-
-        ads.ShowRewardVideo(false);
-
         StartCoroutine(ReviveDelay());
         Paddle.gameObject.SetActive(true);
         gameRunning = true;
         SetPageState(pageState.Game);
 
         canContinue = false;
+    }
+
+    public void RequestContinue()
+    {
+        richochetCount = 0;
+        ads.ShowRewardVideo(false);
     }
 
     public void ResumeGame()
@@ -613,6 +674,9 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if(!noSound)
+            StartCoroutine(FadeOutVolume());
+
         SetPageState(pageState.Paused);
         Time.timeScale = 0;
         if (pauseCoroutine != null)
@@ -720,6 +784,8 @@ public class GameManager : MonoBehaviour
     {
         if (pause)
         {
+            volB4Pause = AudioListener.volume;
+            AudioListener.volume = 0;
             pauseAllCoroutines = true;
 
             ZPlayerPrefs.SetInt("gems", (int)gems);
@@ -734,6 +800,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            if (!noSound)
+            {
+                AudioListener.volume = volB4Pause;
+            }
             pauseAllCoroutines = false;
         }
     }
@@ -816,6 +886,9 @@ public class GameManager : MonoBehaviour
         paused = false;
         Paddle.gameObject.SetActive(true);
         Time.timeScale = timeScale;
+
+        if (!noSound)
+            StartCoroutine(FadeInVolumeFromPause());
     }
 
     void Go2GameModesMenu()
@@ -861,11 +934,23 @@ public class GameManager : MonoBehaviour
         ScoresPage.SetActive(false);
     }
 
+    public void Go2AudioCredits() 
+    {
+        AudioCredits.SetActive(true);
+        AudioCreditsButton.SetActive(false);
+    }
+
+    public void ExitAudioCredits()
+    {
+        AudioCredits.SetActive(false);
+        AudioCreditsButton.SetActive(true);
+    }
+
     public void Go2Rate()
     {
         if (currentPlatform == "android")
         {
-            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.Portal.Paddle");
+            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
         }
     }
 

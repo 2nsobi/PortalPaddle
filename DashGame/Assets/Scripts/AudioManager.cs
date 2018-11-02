@@ -50,7 +50,8 @@ public class AudioManager : MonoBehaviour
             ballSounds[i].source.volume = ballSounds[i].volume;
             ballSounds[i].source.pitch = ballSounds[i].pitch;
             ballSounds[i].source.loop = ballSounds[i].loop;
-
+            ballSounds[i].source.ignoreListenerVolume = ballSounds[i].ignoreListenerVolume;
+            ballSounds[i].source.ignoreListenerPause = ballSounds[i].ignoreListenerPause;
             ballSounds[i].index = i;
 
             for (int n = 0; n < 4; n++)
@@ -61,6 +62,8 @@ public class AudioManager : MonoBehaviour
                 s.volume = ballSounds[i].volume;
                 s.pitch = ballSounds[i].pitch;
                 s.loop = ballSounds[i].loop;
+                s.ignoreListenerVolume = ballSounds[i].ignoreListenerVolume;
+                s.ignoreListenerPause = ballSounds[i].ignoreListenerPause;
 
                 ballSounds[i].backUpSources.Enqueue(s);
             }
@@ -73,6 +76,8 @@ public class AudioManager : MonoBehaviour
             ballFISounds[i].source.volume = ballFISounds[i].volume;
             ballFISounds[i].source.pitch = ballFISounds[i].pitch;
             ballFISounds[i].source.loop = ballFISounds[i].loop;
+            ballFISounds[i].source.ignoreListenerVolume = ballFISounds[i].ignoreListenerVolume;
+            ballFISounds[i].source.ignoreListenerPause = ballFISounds[i].ignoreListenerPause;
 
             ballFISounds[i].index = i;
         }
@@ -84,6 +89,8 @@ public class AudioManager : MonoBehaviour
             UISounds[i].source.volume = UISounds[i].volume;
             UISounds[i].source.pitch = UISounds[i].pitch;
             UISounds[i].source.loop = UISounds[i].loop;
+            UISounds[i].source.ignoreListenerVolume = UISounds[i].ignoreListenerVolume;
+            UISounds[i].source.ignoreListenerPause = UISounds[i].ignoreListenerPause;
         }
         for (int i = 0; i < music.Length; i++)
         {
@@ -93,6 +100,8 @@ public class AudioManager : MonoBehaviour
             music[i].source.volume = music[i].volume;
             music[i].source.pitch = music[i].pitch;
             music[i].source.loop = music[i].loop;
+            music[i].source.ignoreListenerVolume = music[i].ignoreListenerVolume;
+            music[i].source.ignoreListenerPause = music[i].ignoreListenerPause;
         }
         for (int i = 0; i < ambientSounds.Length; i++)
         {
@@ -102,6 +111,8 @@ public class AudioManager : MonoBehaviour
             ambientSounds[i].source.volume = ambientSounds[i].volume;
             ambientSounds[i].source.pitch = ambientSounds[i].pitch;
             ambientSounds[i].source.loop = ambientSounds[i].loop;
+            ambientSounds[i].source.ignoreListenerVolume = ambientSounds[i].ignoreListenerVolume;
+            ambientSounds[i].source.ignoreListenerPause = ambientSounds[i].ignoreListenerPause;
         }
         for (int i = 0; i < miscSounds.Length; i++)
         {
@@ -111,6 +122,8 @@ public class AudioManager : MonoBehaviour
             miscSounds[i].source.volume = miscSounds[i].volume;
             miscSounds[i].source.pitch = miscSounds[i].pitch;
             miscSounds[i].source.loop = miscSounds[i].loop;
+            miscSounds[i].source.ignoreListenerVolume = miscSounds[i].ignoreListenerVolume;
+            miscSounds[i].source.ignoreListenerPause = miscSounds[i].ignoreListenerPause;
         }
     }
 

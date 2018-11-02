@@ -112,6 +112,8 @@ public class GameMode_Clairvoyance : MonoBehaviour
 
     void AbsorbDoneAndRichochet()
     {
+        print("doubleScroed!!!");
+
         gameModeManager.DoubleScored();
 
         obSpawner.DespawnObstacle(true);
