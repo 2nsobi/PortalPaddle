@@ -57,6 +57,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e077c3b7e5d47ec4593074a24e5fb99d, type: 3}
@@ -64,6 +66,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 1fd608b5b4bd2b5409b730c6b9488b6e, type: 3}
@@ -71,6 +75,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: dceb3442d2ff47548a4072082a707990, type: 3}
@@ -78,6 +84,8 @@ MonoBehaviour:
     volume: 0.7
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8c6e7e569baccef49b0648a3b5a98eb8, type: 3}
@@ -85,6 +93,8 @@ MonoBehaviour:
     volume: 0.21
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 18a8d42890d47964694e4772762b9c0e, type: 3}
@@ -92,6 +102,8 @@ MonoBehaviour:
     volume: 0.65
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 246298242202abd45a05abb73cb69519, type: 3}
@@ -99,6 +111,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 5df8e3e012be27e4d8213eaa594d0b11, type: 3}
@@ -106,6 +120,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e57422568900dc14c9b32373b30b1ee5, type: 3}
@@ -113,6 +129,8 @@ MonoBehaviour:
     volume: 0.5
     pitch: 1.2
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   ballFISounds:
@@ -121,6 +139,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8855187c0287ae64380f6552ea8ace63, type: 3}
@@ -128,6 +148,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: a3dde4d312e7e824d80e18c66916366b, type: 3}
@@ -135,6 +157,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: bbd12fdda56610c42b0fb9a4dfb09021, type: 3}
@@ -142,6 +166,8 @@ MonoBehaviour:
     volume: 0.61
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 14c163ea0e284284ebab7147db98526a, type: 3}
@@ -149,6 +175,8 @@ MonoBehaviour:
     volume: 0.7
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 925954a9eb07f8040a4f0e3bc6b76d11, type: 3}
@@ -156,6 +184,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: a320fe97b86c96847884b1364e5cd64d, type: 3}
@@ -163,14 +193,18 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   UISounds:
   - clip: {fileID: 8300000, guid: 3d5ac4ff0524e714d8aa5b31e534138d, type: 3}
     name: play
-    volume: 1
+    volume: 0.54
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: d145c3c8e3a3e9443bff3a75eec986da, type: 3}
@@ -178,6 +212,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 3ee46539ac443bb4fa36fef28d8c640e, type: 3}
@@ -185,13 +221,17 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 960313aa184b58045860f71ba9352aeb, type: 3}
+  - clip: {fileID: 8300000, guid: ab428179fc0dabd498f6b69ab54d4686, type: 3}
     name: switchPage
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 1
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 64a46c6890512c740a5dfe40faaae7a8, type: 3}
@@ -199,6 +239,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: b4965b018a6b5cf41a064e5a42c4bead, type: 3}
@@ -206,6 +248,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 9e0ca6493e0e72c45afabe8278e43611, type: 3}
@@ -213,6 +257,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: cb13518df72140849a507ba4e4f7c2f1, type: 3}
@@ -220,6 +266,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: c367da11ca3b8d14d8b22b809f240350, type: 3}
@@ -227,6 +275,8 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 9a48fe8634103c94ea4b453d96e5ede2, type: 3}
@@ -234,6 +284,17 @@ MonoBehaviour:
     volume: 0.9
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    index: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: ab428179fc0dabd498f6b69ab54d4686, type: 3}
+    name: switchPageLouder
+    volume: 1
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 1
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   music:
@@ -242,6 +303,8 @@ MonoBehaviour:
     volume: 0.45
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 0}
@@ -249,6 +312,8 @@ MonoBehaviour:
     volume: 0.45
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   ambientSounds:
@@ -257,6 +322,8 @@ MonoBehaviour:
     volume: 0.3
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e66d660fd85b42f4786a57237bb65cee, type: 3}
@@ -264,6 +331,8 @@ MonoBehaviour:
     volume: 0.3
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 16dfcf034eccbab4f89d62b3d9d1e1e5, type: 3}
@@ -271,6 +340,8 @@ MonoBehaviour:
     volume: 0.3
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 24e01218d42679b498c4a5715e47d30b, type: 3}
@@ -278,6 +349,8 @@ MonoBehaviour:
     volume: 0.25
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 6de3f7e36c3a1db40936c74270dbc07f, type: 3}
@@ -285,6 +358,8 @@ MonoBehaviour:
     volume: 0.25
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8640074ce3f17a14fbde640674483fc2, type: 3}
@@ -292,6 +367,8 @@ MonoBehaviour:
     volume: 0.25
     pitch: 1
     loop: 1
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   miscSounds:
@@ -300,6 +377,8 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: bddbe9467f8694746acda8de705f86c9, type: 3}
@@ -307,6 +386,8 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 309fe8842b59e7247a0d56a26cde1231, type: 3}
@@ -314,6 +395,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: f44e16a0ba39d3a4683566987624e778, type: 3}
@@ -321,6 +404,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 2d0c065efb6f5894f8090a0fd2876e83, type: 3}
@@ -328,6 +413,8 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e4e02323f36f4494ba82764056a42ab8, type: 3}
@@ -335,5 +422,7 @@ MonoBehaviour:
     volume: 0.6
     pitch: 1
     loop: 0
+    ignoreListenerVolume: 1
+    ignoreListenerPause: 1
     index: 0
     source: {fileID: 0}

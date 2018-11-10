@@ -24,6 +24,14 @@ public class SettingsController : MonoBehaviour
             Instance = this;
         }
 
+        disabledNoAdsButtonFilter.SetActive(false);
+    }
+
+    private void Start()
+    {
+        purchaser = Purchaser.Instance;
+        ballC = BallController.Instance;
+
         noSound = PlayerPrefsX.GetBool("noSound");
         if (noSound)
         {
@@ -37,14 +45,11 @@ public class SettingsController : MonoBehaviour
         }
 
         noAds = PlayerPrefsX.GetBool("noAds");
-
-        disabledNoAdsButtonFilter.SetActive(false);
-    }
-
-    private void Start()
-    {
-        purchaser = Purchaser.Instance;
-        ballC = BallController.Instance; 
+        if (noAds)
+        {
+            buyNoAdsButton.interactable = false;
+            disabledNoAdsButtonFilter.SetActive(true);
+        }
     }
 
     public void SetLocalizedPrices()
@@ -71,15 +76,6 @@ public class SettingsController : MonoBehaviour
             SoundOnIcon.SetActive(true);
         }
         ballC.SetNoSound(noSound);
-    }
-
-    private void OnEnable()
-    {
-        if (noAds)
-        {
-            buyNoAdsButton.interactable = false;
-            disabledNoAdsButtonFilter.SetActive(true);
-        }
     }
 
     private void OnDisable()

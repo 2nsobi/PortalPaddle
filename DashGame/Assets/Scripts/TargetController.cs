@@ -124,7 +124,7 @@ public class TargetController : MonoBehaviour
                     if (nextObstaclePath != null)
                     {
                         targets[i].gameObject.SetActive(true);
-                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
+                        targets[i].Spawn(nextLvl, Vector2.zero, defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
                     }
                     else
                     {
@@ -141,7 +141,7 @@ public class TargetController : MonoBehaviour
                         if (nextObstaclePath != null)
                         {
                             targets[i].gameObject.SetActive(true);
-                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
+                            targets[i].Spawn(nextLvl, Vector2.zero, defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
                         }
                         else
                         {
@@ -154,7 +154,7 @@ public class TargetController : MonoBehaviour
                         if (nextObstaclePath != null)
                         {
                             targets[i].gameObject.SetActive(true);
-                            targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
+                            targets[i].Spawn(nextLvl, Vector2.zero, defaultTargetSize, true, false, nextObstaclePath, tempSpeed);
                         }
                         else
                         {
@@ -169,7 +169,7 @@ public class TargetController : MonoBehaviour
                     if (nextObstaclePath != null)
                     {
                         targets[i].gameObject.SetActive(true);
-                        targets[i].Spawn(nextLvl, RandomPos(), defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
+                        targets[i].Spawn(nextLvl, Vector2.zero, defaultTargetSize, true, true, nextObstaclePath, tempSpeed, growShrinkSpeed);
                     }
                     else
                     {
@@ -232,7 +232,7 @@ public class TargetController : MonoBehaviour
     {
         get
         {
-            return RandomFloat(spawnAreaCorners[0].x + (0.64f), spawnAreaCorners[3].x - (0.64f)); //float comes from measuring radius of ballspawner
+            return Mathf.Clamp(rng.Next(Mathf.RoundToInt(spawnAreaCorners[0].x), Mathf.RoundToInt(spawnAreaCorners[3].x)), spawnAreaCorners[0].x + (0.57f), spawnAreaCorners[3].x - (0.57f)); //the float comes from measuring radius of ballspawner
         }
     }
 
