@@ -66,20 +66,9 @@ public class ShopController : MonoBehaviour
         purchaseButtonPrice = purchaseButton.GetComponentInChildren<Text>();
         purchaseButtonPrice.text = "$0.99";
 
-        noAds = PlayerPrefsX.GetBool("noAds");
-
         disabledNoAdsButtonFilter.SetActive(false);
 
         Start();
-    }
-
-    private void OnEnable()
-    {
-        if (noAds)
-        {
-            buyNoAdsButton.interactable = false;
-            disabledNoAdsButtonFilter.SetActive(true);
-        }
     }
 
     private void Start()
@@ -88,6 +77,13 @@ public class ShopController : MonoBehaviour
         ads = AdManager.Instance;
         purchaser = Purchaser.Instance;
         audioManager = AudioManager.Instance;
+
+        noAds = PlayerPrefsX.GetBool("noAds");
+        if (noAds)
+        {
+            buyNoAdsButton.interactable = false;
+            disabledNoAdsButtonFilter.SetActive(true);
+        }
     }
 
     public void SetLocalizedPrices()
@@ -173,10 +169,10 @@ public class ShopController : MonoBehaviour
 
     public void GoToPaddleSelection()
     {
+        // take this out if once you add paddle prefabs----------------------------------------------------------
         comingSoonNorm.SetActive(true);
         comingSoonMad.SetActive(false);
-
-
+        //--------------------------------------------------------------------------------------------------
 
 
         audioManager.PlayUISound("switchPage");

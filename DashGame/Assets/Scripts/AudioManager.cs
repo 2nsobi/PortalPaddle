@@ -457,6 +457,7 @@ public class AudioManager : MonoBehaviour
 
     public void ComeBackFromBasement()
     {
+        PlayUISound("switchPageLouder");
         go2Basement = false;
 
         t3 = 0;

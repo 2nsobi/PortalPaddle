@@ -42,7 +42,7 @@ public class CryptoRandom : RandomNumberGenerator
     ///<param name=”maxValue”>The exclusive upper bound of the random number returned. maxValue must be greater than or equal to minValue.</param>
     public int Next(int minValue, int maxValue)
     {
-        return (int)Math.Round(NextDouble() * (maxValue - minValue - 1)) +minValue;
+        return (int)Math.Round(NextDouble() * (maxValue - minValue - 1)) + minValue;
     }
 
     ///<summary>

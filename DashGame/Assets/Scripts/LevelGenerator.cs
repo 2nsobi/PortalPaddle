@@ -143,8 +143,8 @@ public class LevelGenerator : MonoBehaviour
     public float transitionSpeed;
     public float finishTransitionSpeed;
     public float finishTransitionThreshold; //number used to determine when the next lvl becomes teh current lvl
-    static Dictionary<string, List<Queue<LvlPrefab>>> LvlComponentDict; //for background use mainly
-    static Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use mainly
+    static Dictionary<string, List<Queue<LvlPrefab>>> LvlComponentDict; //for lvlprefab use 
+    static Dictionary<string, Queue<Obstacle>> ObstacleDict; //for obstacle use 
     public List<ObstacleTexture> obstacleTextures;
     public static List<ObstacleTexture> obstacletextures;
     public List<MultiPool> levels;
@@ -250,9 +250,6 @@ public class LevelGenerator : MonoBehaviour
         ConfigureCamera(); //called here before the tap area rect is configured
 
         distanceDiff4Walls = GetDistanceDifferenceForWalls();
-
-        interstellar = PlayerPrefsX.GetBool("interstellar");
-        lunarKing = PlayerPrefsX.GetBool("lunarKing");
     }
 
     /*********************************************
@@ -299,8 +296,15 @@ public class LevelGenerator : MonoBehaviour
         Ball.AbsorbDone -= AbsorbDone;
         Ball.AbsorbDoneAndRichochet -= AbsorbDone;
 
-        PlayerPrefsX.SetBool("interstellar", interstellar);
-        PlayerPrefsX.SetBool("lunarKing", lunarKing);
+        if (interstellar)
+        {
+            PlayerPrefsX.SetBool("interstellar", interstellar);
+
+            if (lunarKing)
+            {
+                PlayerPrefsX.SetBool("lunarKing", lunarKing);
+            }
+        }
     }
 
     private void OnApplicationPause(bool pause)
@@ -343,6 +347,9 @@ public class LevelGenerator : MonoBehaviour
 
         StartLevel = new LvlPrefab(Instantiate(StartLvl, transform));
         labMonitorsAnimC = StartLevel.gameObject.transform.Find("labBackground1Monitors2_0").GetComponent<Animator>();
+
+        interstellar = PlayerPrefsX.GetBool("interstellar");
+        lunarKing = PlayerPrefsX.GetBool("lunarKing");
 
         playButtonGlow = StartLevel.gameObject.transform.Find("playButtonGlow").GetComponent<ParticleSystem>();
         playButtonGlowMainMod = playButtonGlow.main;
@@ -475,6 +482,7 @@ public class LevelGenerator : MonoBehaviour
             ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
         }
 
+        ShufflePrefabsInLevels();
         GenerateNextLvl();
     }
 
@@ -596,6 +604,7 @@ public class LevelGenerator : MonoBehaviour
         settingsLevel.transform.position = levelOffset * -1;
         moveSettings = true;
 
+        ShufflePrefabsInLevels();
         GenerateNextLvl();
     }
 
@@ -870,9 +879,10 @@ public class LevelGenerator : MonoBehaviour
         {
             if (CurrentLvl == transitionLvls[1])
             {
+                print("you are now interstallar");
                 interstellar = true;
-                rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
                 playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
+                rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
             }
         }
 
@@ -880,9 +890,11 @@ public class LevelGenerator : MonoBehaviour
         {
             if (CurrentLvl == transitionLvls[3])
             {
+                print("you are now lunarking");
+
                 lunarKing = true;
-                rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
                 playButtonGlowMainMod.startColor = Color.yellow;
+                rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
             }
         }
 
@@ -1050,8 +1062,6 @@ public class LevelGenerator : MonoBehaviour
         {
             filterBools[i] = true;
         }
-
-        ShufflePrefabsInLevels();
 
         NextLvlGenerated(); //need to call this here outside of GenerateNextLvl() since two levels are always loaded above before game starts
 

@@ -13,7 +13,9 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     Coroutine showInterstitialDelay;
     GameManager game;
     bool giveReward = false;
-    string appKey;
+    bool revive = false;
+    bool justEndGame = false;
+    string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
     bool bannerActive = false;
     int activeRewardAmount = 0;
     bool noAds = false;
@@ -31,15 +33,12 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
 
         DontDestroyOnLoad(this.gameObject);
-
-        noAds = PlayerPrefsX.GetBool("noAds");
     }
 
     private void Start()
     {
         game = GameManager.Instance;
 
-        appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
         Appodeal.disableLocationPermissionCheck();
 
         if (Application.platform == RuntimePlatform.Android)
@@ -57,6 +56,8 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
         Appodeal.setTesting(true);
         Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+
+        noAds = PlayerPrefsX.GetBool("noAds");
 
         if (!noAds)
         {
@@ -114,7 +115,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     IEnumerator CanShowInterstitialDelay()
     {
         canShowInterstitial = false;
-        yield return new WaitForSecondsRealtime(90);
+        yield return new WaitForSecondsRealtime(75);
         canShowInterstitial = true;
     }
 
@@ -168,6 +169,16 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
                 giveReward = false;
                 activeRewardAmount = 0;
             }
+            if (revive)
+            {
+                revive = false;
+                game.Continue();
+            }
+            if (justEndGame)
+            {
+                justEndGame = false;
+                game.GoToScoreReview();
+            }
         }
     }
 
@@ -192,7 +203,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     {
         if (game.IsGameRunning)
         {
-            game.GoToScoreReview();
+            justEndGame = true;
         }
     }
 
@@ -202,7 +213,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     public void onRewardedVideoExpired() { }
 
-    public void onRewardedVideoFinished(double amount, string name)
+    public void onRewardedVideoFinished(double amount, string name) // "name" argument is not the name of the placement on appodeal but instead the name of the currency for the reward
     {
         if (name == "reward1")
         {
@@ -211,7 +222,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
         else if (name == "reviveReward")
         {
-            game.Continue();
+            revive = true;
         }
     }
 

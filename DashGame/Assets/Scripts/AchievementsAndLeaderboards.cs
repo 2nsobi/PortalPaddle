@@ -20,6 +20,8 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             return;
         }
 
+        DontDestroyOnLoad(this.gameObject);
+
         currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? 2 : 1; // 2 is for apple and 1 is for android 
     }
 
@@ -34,7 +36,7 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             PlayGamesPlatform.InitializeInstance(playGamesConfig);
             PlayGamesPlatform.Activate();
 
-            PlayGamesPlatform.Instance.Authenticate(FirstStartSignInCallback, false);
+            PlayGamesPlatform.Instance.Authenticate(SignInCallback, false);
         }
     }
 
@@ -62,19 +64,6 @@ public class AchievementsAndLeaderboards : MonoBehaviour
         else
         {
             Debug.Log("(Lollygagger) Sign-in failed...");
-        }
-    }
-
-    public void FirstStartSignInCallback(bool success)
-    {
-        if (success)
-        {
-            Debug.Log("(Lollygagger) Signed in!");
-        }
-        else
-        {
-            Debug.Log("(Lollygagger) Sign-in failed...trying again");
-            GoogleSignIn();
         }
     }
 

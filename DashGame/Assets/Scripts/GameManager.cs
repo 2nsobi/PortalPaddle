@@ -143,9 +143,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         audioListener = gameObject.GetComponent<AudioListener>();
-    
-        string rAFARRfwej82qwe = ZPlayerPrefs.GetString("rAFARRfwej82qwe"); //password for Zplayerprefs initialization
-        string asfmn2348HKOA823 = ZPlayerPrefs.GetString("asfmn2348HKOA823"); //salt for Zplayerprefs initialization
+
+        AudioListener.volume = 0;
+
+        string rAFARRfwej82qwe = PlayerPrefs.GetString("rAFARRfwej82qwe"); //password for Zplayerprefs initialization
+        string asfmn2348HKOA823 = PlayerPrefs.GetString("asfmn2348HKOA823"); //salt for Zplayerprefs initialization
 
         if(rAFARRfwej82qwe.Length == 0) //default value for a playerprefs string is "" (a string with length of 0)
         {
@@ -154,11 +156,13 @@ public class GameManager : MonoBehaviour
             rAFARRfwej82qwe = CreateRandomPassword(17);
             asfmn2348HKOA823 = CreateRandomPassword(17);
 
-            ZPlayerPrefs.SetString("rAFARRfwej82qwe", rAFARRfwej82qwe);
-            ZPlayerPrefs.SetString("asfmn2348HKOA823", asfmn2348HKOA823);
+            PlayerPrefs.DeleteAll();
+
+            PlayerPrefs.SetString("rAFARRfwej82qwe", rAFARRfwej82qwe);
+            PlayerPrefs.SetString("asfmn2348HKOA823", asfmn2348HKOA823);
         }
 
-        ZPlayerPrefs.Initialize(rAFARRfwej82qwe, asfmn2348HKOA823);
+        ZPlayerPrefs.Initialize(rAFARRfwej82qwe, asfmn2348HKOA823); //ZPlayerPrefs does not work until it is initialized
 
         //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
         //{
@@ -246,7 +250,6 @@ public class GameManager : MonoBehaviour
         Coroutine fadeInVolume = StartCoroutine(FadeInVolume());
         audioManager.PlayLvlSound("ambientLab");
         noSound = PlayerPrefsX.GetBool("noSound");
-        AudioListener.volume = 0;
         audioListener.enabled = true;
         if (noSound)
         {
@@ -408,6 +411,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //do not add any menus or pages here that have scripts attached to them with doNotDestoyOnLoad()
     public void SetPageState(pageState page)
     {
         switch (page)
@@ -422,8 +426,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
@@ -438,8 +440,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 AudioCreditsButton.SetActive(true);
                 GemsText.gameObject.SetActive(true);
 
@@ -457,8 +457,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
@@ -472,8 +470,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(false);
@@ -490,8 +486,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 pauseButton.gameObject.SetActive(true);
@@ -508,8 +502,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
@@ -526,8 +518,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(true);
                 ShopPage.SetActive(false);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
@@ -541,8 +531,6 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(true);
-                InfoPage.SetActive(false);
-                ScoresPage.SetActive(false);
                 AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
@@ -919,6 +907,7 @@ public class GameManager : MonoBehaviour
 
     public void ExitInfo()
     {
+        audioManager.PlayUISound("switchPageLouder");
         InfoPage.SetActive(false);
     }
 
@@ -931,17 +920,20 @@ public class GameManager : MonoBehaviour
 
     public void ExitScoresPage()
     {
+        audioManager.PlayUISound("switchPageLouder");
         ScoresPage.SetActive(false);
     }
 
     public void Go2AudioCredits() 
     {
+        audioManager.PlayUISound("switchPageLouder");
         AudioCredits.SetActive(true);
         AudioCreditsButton.SetActive(false);
     }
 
     public void ExitAudioCredits()
     {
+        audioManager.PlayUISound("switchPageLouder");
         AudioCredits.SetActive(false);
         AudioCreditsButton.SetActive(true);
     }
@@ -965,5 +957,15 @@ public class GameManager : MonoBehaviour
     public void LowEarthOrbitLink()
     {
         Application.OpenURL("https://www.youtube.com/watch?v=dgCnYsDTiXU");
+    }
+
+    public void ShowLeaderboards()
+    {
+        rankings.ShowLeaderboards();
+    }
+
+    public void ShowAchievements()
+    {
+        rankings.ShowAchievements();
     }
 }
