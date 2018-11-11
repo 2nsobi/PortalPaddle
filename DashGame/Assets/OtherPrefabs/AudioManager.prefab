@@ -200,7 +200,7 @@ MonoBehaviour:
   UISounds:
   - clip: {fileID: 8300000, guid: 3d5ac4ff0524e714d8aa5b31e534138d, type: 3}
     name: play
-    volume: 0.54
+    volume: 0.46
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
@@ -302,13 +302,31 @@ MonoBehaviour:
     name: spaceMusic
     volume: 0.45
     pitch: 1
-    loop: 1
+    loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}
-  - clip: {fileID: 0}
-    name: otherGameModeMusic
+  - clip: {fileID: 8300000, guid: b8bc089dad71fe245a5a56d532fcbae5, type: 3}
+    name: skyMusic
+    volume: 0.45
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    index: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 810786655bb72da418fc46b66d1ebf0a, type: 3}
+    name: moonMusic
+    volume: 0.45
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    index: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 268c42ca35ba67e41b00890dac6749df, type: 3}
+    name: spaceMusicLooped
     volume: 0.45
     pitch: 1
     loop: 1
@@ -319,7 +337,7 @@ MonoBehaviour:
   ambientSounds:
   - clip: {fileID: 8300000, guid: 990ed7340814877458e94812aaa5573b, type: 3}
     name: ambientLab
-    volume: 0.3
+    volume: 0.35
     pitch: 1
     loop: 1
     ignoreListenerVolume: 0
@@ -424,5 +442,24 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 1
     ignoreListenerPause: 1
+    index: 0
+    source: {fileID: 0}
+  otherGameModesMusic:
+  - clip: {fileID: 8300000, guid: 1407610f4e078104c856efcadc02eb27, type: 3}
+    name: OGMM1
+    volume: 0.45
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    index: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: a2911369549fe6b4fb64d3f119a3945a, type: 3}
+    name: OGMM2
+    volume: 0.45
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
     index: 0
     source: {fileID: 0}

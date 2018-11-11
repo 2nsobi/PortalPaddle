@@ -19,7 +19,6 @@ public class TargetController : MonoBehaviour
     float tempSpeed;
     Transform nextLvl;
     public float growShrinkSpeed;
-    float smallestTargestSize = 0.03f; //smallest a target will get when it grows and shrinks
     Vector3[] nextObstaclePath;
     float targetRadius = 2.53f; //based on 2d circle collider radius
     float targetSpawnOffset = 0.667f;

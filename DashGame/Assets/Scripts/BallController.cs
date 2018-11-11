@@ -51,6 +51,9 @@ public class BallController : MonoBehaviour
     bool noSound;
     bool tutorialDisabled;
 
+    List<float> times = new List<float>();
+    float startTime;
+
     public static BallController Instance;
 
     public delegate void BallCDelegate();
@@ -196,7 +199,6 @@ public class BallController : MonoBehaviour
         {
             yield return null;
         }
-
     }
 
     private void Update()
@@ -219,19 +221,37 @@ public class BallController : MonoBehaviour
                 if (!noSound)
                 {
                     AudioListener.volume -= Time.deltaTime * 4;
+
+                    if (whiteFlashCG.alpha >= 1 && AudioListener.volume <= 0)
+                    {
+                        whiteFlashCG.alpha = 1;
+                        AudioListener.volume = 0;
+
+                        targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
+                        LG.GoBack2StartLvl(); //sent to levelgenerator
+
+                        startSpeed = initialSpeed;
+                        grayScaleMat.SetFloat("_EffectAmount", 0);
+                        isGray = false;
+
+                        fadeBack = true;
+                    }
                 }
-                if (whiteFlashCG.alpha >= 1)
+                else
                 {
-                    whiteFlashCG.alpha = 1;
+                    if (whiteFlashCG.alpha >= 1)
+                    {
+                        whiteFlashCG.alpha = 1;
 
-                    targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
-                    LG.GoBack2StartLvl(); //sent to levelgenerator
+                        targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
+                        LG.GoBack2StartLvl(); //sent to levelgenerator
 
-                    startSpeed = initialSpeed;
-                    grayScaleMat.SetFloat("_EffectAmount", 0);
-                    isGray = false;
+                        startSpeed = initialSpeed;
+                        grayScaleMat.SetFloat("_EffectAmount", 0);
+                        isGray = false;
 
-                    fadeBack = true;
+                        fadeBack = true;
+                    }
                 }
             }
             else
@@ -240,12 +260,24 @@ public class BallController : MonoBehaviour
                 if (!noSound)
                 {
                     AudioListener.volume += Time.deltaTime * 4;
+
+                    if (whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1)
+                    {
+                        whiteFlashCG.alpha = 0;
+                        AudioListener.volume = 1;
+
+                        fade2Black = false;
+                        fadeBack = false;
+                    }
                 }
-                if ((whiteFlashCG.alpha <= 0 && AudioListener.volume >= 1) || (whiteFlashCG.alpha <= 0 && noSound))
+                else
                 {
-                    whiteFlashCG.alpha = 0;
-                    fade2Black = false;
-                    fadeBack = false;
+                    if (whiteFlashCG.alpha <= 0)
+                    {
+                        whiteFlashCG.alpha = 0;
+                        fade2Black = false;
+                        fadeBack = false;
+                    }
                 }
             }
         }
@@ -261,6 +293,10 @@ public class BallController : MonoBehaviour
                     {
                         audioManager.LetCurrentMusicIgnoreFadeOut(true);
                     }
+                    else
+                    {
+                        audioManager.LetCurrentMusicIgnoreFadeOut(false);
+                    }
 
                     AudioListener.volume -= Time.deltaTime * 4;
 
@@ -273,6 +309,7 @@ public class BallController : MonoBehaviour
                         if (!dontStartGameMode)
                         {
                             gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
+                            audioManager.StopOGGMusicRadio();
                         }
 
                         obSpawner.SetGameModeBackground();
@@ -386,6 +423,8 @@ public class BallController : MonoBehaviour
         whiteFlashCGPanel.color = Color.black;
         fade2Black = true;
         whiteFlashCG.alpha = 0;
+
+        times.Clear();
     }
 
     IEnumerator BallSpawnerSounds()
@@ -415,6 +454,9 @@ public class BallController : MonoBehaviour
         {
             game.EnableTutorial();
         }
+
+        startTime = Time.time;
+        print(startTime);
     }
 
     void NowStartGame()
@@ -429,6 +471,21 @@ public class BallController : MonoBehaviour
 
     void TransitionDone()
     {
+        print("current time: + " + Time.time);
+        times.Add(Time.time - startTime);
+
+        startTime = Time.time;
+
+        print("time it took for that lvl: " + times[times.Count - 1]);
+        float sum = 0;
+        foreach (float t in times)
+        {
+            sum += t;
+        }
+        print("average time: " + (sum / times.Count));
+
+        //-----------------------------------------------------
+
         RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, startPos.y);
 
         tempSpeed = startSpeed;

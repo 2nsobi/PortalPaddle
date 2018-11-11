@@ -66,6 +66,7 @@ public class Ball : MonoBehaviour
     string origImpactSound;
     int index;
     int impactSoundNum, FISoundNum;
+    bool clairvoyance = false;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -206,6 +207,7 @@ public class Ball : MonoBehaviour
         insideCollider = false;
         wallHit = false;
         wrappedAround = false;
+        clairvoyance = false;
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
@@ -470,6 +472,17 @@ public class Ball : MonoBehaviour
         if (transform.position.y < -4.95f)
         {
             gameObject.layer = ignoreObstaclesLayer;
+        }
+
+        //failsafes for when ball is jammed between two colliders and the resulting velocity is very slow or if the ball just stops
+        if(rigidbody.velocity.magnitude < 10 && shouldBoost && !clairvoyance)
+        {
+            rigidbody.velocity = rigidbody.velocity.normalized * 16; //make sure the magnitude of this velocity is equal to the value for public boost speed variable set in BallController
+        }
+
+        if (clairvoyance && rigidbody.velocity.magnitude < 1 && shouldBoost)
+        {
+            rigidbody.velocity = rigidbody.velocity.normalized * 16;
         }
     }
 
@@ -796,6 +809,7 @@ public class Ball : MonoBehaviour
 
     void ChangeSpeedImmediately(float tSpeed, float bSpeed)
     {
+        clairvoyance = true;
         if (!canAbsorb)
         {
             rigidbody.velocity = rigidbody.velocity.normalized * tSpeed;

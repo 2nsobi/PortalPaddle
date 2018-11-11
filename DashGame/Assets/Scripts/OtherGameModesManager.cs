@@ -123,6 +123,8 @@ public class OtherGameModesManager : MonoBehaviour
         audioListener.enabled = true;
         if (!noSound)
         {
+            audioManager.SwitchUpRadioFirstSong();
+
             StartCoroutine(FadeInVolume());
             audioManager.PlayLvlSound("elevator");
         }
@@ -191,7 +193,7 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void DoubleScored()
     {
-        score+=2;
+        score += 2;
         scoreText.text = score.ToString();
     }
 
@@ -539,7 +541,6 @@ public class OtherGameModesManager : MonoBehaviour
             countdownText.text = i.ToString();
 
             audioManager.PlayMiscSound("countdownPing");
-
             yield return new WaitForSecondsRealtime(1);
             while (pauseAllCoroutines)
             {
@@ -555,7 +556,8 @@ public class OtherGameModesManager : MonoBehaviour
         {
             ActivatePaddle();
 
-            audioManager.PlayMusic("otherGameModeMusic");
+            if (!noSound)
+                audioManager.StartPlayingOGMMusicRadio();
         }
         if (firstStart || replaying)
         {

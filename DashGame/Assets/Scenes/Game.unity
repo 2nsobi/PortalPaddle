@@ -2629,10 +2629,10 @@ RectTransform:
   m_Father: {fileID: 789650918}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.026694352, y: 0.31}
-  m_AnchorMax: {x: 0.9778515, y: 0.484641}
-  m_AnchoredPosition: {x: -2.2000122, y: 1.199997}
-  m_SizeDelta: {x: 2.600006, y: -1.7000008}
+  m_AnchorMin: {x: 0.5, y: 0.37346143}
+  m_AnchorMax: {x: 0.5, y: 0.37346143}
+  m_AnchoredPosition: {x: -0.7000122, y: -3}
+  m_SizeDelta: {x: 689.6, y: 126.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &490272751
 MonoBehaviour:
@@ -3540,9 +3540,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "CREDITS:\n\n<size=70>CAVES MUSIC - \nSKY MUSIC - \nSPACE MUSIC - \n<color=#ffff00>'Low
-    Earth Ortbit' by Mike Noise</color>\nMOON MUSIC - \nPOST MOON MUSIC -\nSOUNDS
-    - Soundsnap</size>"
+  m_Text: "CREDITS:\n\n<size=70>CAVES MUSIC - \nSKY MUSIC - \n<color=#ffff00>'Natsuki
+    \u83DC\u6708' by Abel Jiro</color>\nSPACE MUSIC - \n<color=#ffff00>'Low Earth
+    Ortbit' by Mike Noise</color>\nMOON MUSIC - \nPOST MOON MUSIC -\nSOUNDS - Soundsnap</size>"
 --- !u!222 &789650920
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4484,25 +4484,21 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 223573978460734026, guid: 6405e27f456272a45b0f806046868aae,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 519420031}
-    - target: {fileID: 114512112588498136, guid: 6405e27f456272a45b0f806046868aae,
-        type: 2}
-      propertyPath: spawnArea
-      value: 
-      objectReference: {fileID: 1054657167}
     - target: {fileID: 114074390370165354, guid: 6405e27f456272a45b0f806046868aae,
         type: 2}
       propertyPath: tutorialToggleAnimC
       value: 
       objectReference: {fileID: 419842319}
-    - target: {fileID: 1153453727601030, guid: 6405e27f456272a45b0f806046868aae, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 114512112588498136, guid: 6405e27f456272a45b0f806046868aae,
+        type: 2}
+      propertyPath: spawnArea
+      value: 
+      objectReference: {fileID: 1054657167}
+    - target: {fileID: 223573978460734026, guid: 6405e27f456272a45b0f806046868aae,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6405e27f456272a45b0f806046868aae, type: 2}
   m_IsPrefabAsset: 0
@@ -4860,11 +4856,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
-        type: 2}
-      propertyPath: UISounds.Array.data[0].volume
-      value: 0.46
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55ec5f4b6612e6a4880633fd6c7904f4, type: 2}
   m_IsPrefabAsset: 0
@@ -5168,7 +5159,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4848075085512456, guid: 01a636322ad4cb745a19da00521630e5, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01a636322ad4cb745a19da00521630e5, type: 2}
@@ -5452,7 +5443,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1506298686 stripped
 MonoBehaviour:
