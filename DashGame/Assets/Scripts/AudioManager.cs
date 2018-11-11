@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -12,11 +13,17 @@ public class AudioManager : MonoBehaviour
     public Sound[] music;
     public Sound[] ambientSounds;
     public Sound[] miscSounds;
+    public Sound[] otherGameModesMusic;
 
     Sound currentLvlSound;
     Sound nextLvlSound;
     Sound currentMusic;
     Sound nextMusic;
+    Sound currentSong;
+
+    Queue<Sound> OGGMRadioQ = new Queue<Sound>();
+    int song2StartRadioWith; // the track you hear first changes each time you leave and enter a new game mode, could be same game mode
+    Coroutine OGGMRadio;
 
     float t1, t2, t3;
     bool fade2LvlSound = false;
@@ -27,6 +34,7 @@ public class AudioManager : MonoBehaviour
     bool clearMusic = false;
     bool go2Basement = false;
     bool comeBackFromBasement = false;
+    System.Random rng = new System.Random();
 
     private void Awake()
     {
@@ -103,6 +111,17 @@ public class AudioManager : MonoBehaviour
             music[i].source.ignoreListenerVolume = music[i].ignoreListenerVolume;
             music[i].source.ignoreListenerPause = music[i].ignoreListenerPause;
         }
+        for (int i = 0; i < otherGameModesMusic.Length; i++)
+        {
+            otherGameModesMusic[i].source = gameObject.AddComponent<AudioSource>();
+            otherGameModesMusic[i].source.clip = otherGameModesMusic[i].clip;
+
+            otherGameModesMusic[i].source.volume = otherGameModesMusic[i].volume;
+            otherGameModesMusic[i].source.pitch = otherGameModesMusic[i].pitch;
+            otherGameModesMusic[i].source.loop = otherGameModesMusic[i].loop;
+            otherGameModesMusic[i].source.ignoreListenerVolume = otherGameModesMusic[i].ignoreListenerVolume;
+            otherGameModesMusic[i].source.ignoreListenerPause = otherGameModesMusic[i].ignoreListenerPause;
+        }
         for (int i = 0; i < ambientSounds.Length; i++)
         {
             ambientSounds[i].source = gameObject.AddComponent<AudioSource>();
@@ -113,6 +132,10 @@ public class AudioManager : MonoBehaviour
             ambientSounds[i].source.loop = ambientSounds[i].loop;
             ambientSounds[i].source.ignoreListenerVolume = ambientSounds[i].ignoreListenerVolume;
             ambientSounds[i].source.ignoreListenerPause = ambientSounds[i].ignoreListenerPause;
+
+            //since these sound are streaming it is best to not stop and start them but instead change their volume when needed
+            ambientSounds[i].source.volume = 0;
+            ambientSounds[i].source.Play();
         }
         for (int i = 0; i < miscSounds.Length; i++)
         {
@@ -133,7 +156,6 @@ public class AudioManager : MonoBehaviour
         {
             Sound s = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
             s.source.volume = 0;
-            s.source.Play();
 
             t1 = 0;
 
@@ -180,7 +202,6 @@ public class AudioManager : MonoBehaviour
 
             if (currentLvlSound.source.volume == 0 && nextLvlSound.source.volume == nextLvlSound.volume)
             {
-                currentLvlSound.source.Stop();
                 currentLvlSound = nextLvlSound;
                 nextLvlSound = null;
 
@@ -196,7 +217,6 @@ public class AudioManager : MonoBehaviour
 
             if (currentLvlSound.source.volume == 0)
             {
-                currentLvlSound.source.Stop();
                 currentLvlSound = null;
 
                 clearLvlSounds = false;
@@ -207,7 +227,7 @@ public class AudioManager : MonoBehaviour
         {
             t2 += Time.deltaTime / time4MusicFade;
 
-            if (currentMusic!=null)
+            if (currentMusic != null)
             {
                 currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
 
@@ -280,12 +300,11 @@ public class AudioManager : MonoBehaviour
         {
             if (currentLvlSound != null)
             {
-                currentLvlSound.source.Stop();
+                currentLvlSound.source.volume = 0;
             }
             currentLvlSound = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
 
             currentLvlSound.source.volume = currentLvlSound.volume;
-            currentLvlSound.source.Play();
         }
         catch (System.NullReferenceException)
         {
@@ -304,7 +323,7 @@ public class AudioManager : MonoBehaviour
     {
         if (currentLvlSound != null)
         {
-            currentLvlSound.source.Stop();
+            currentLvlSound.source.volume = 0;
         }
     }
 
@@ -447,6 +466,53 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void SwitchUpRadioFirstSong()
+    {
+        song2StartRadioWith = rng.Next(0, otherGameModesMusic.Length);
+    }
+
+    public void StartPlayingOGMMusicRadio()
+    {
+        int j = song2StartRadioWith;
+        for (int i = 0; i < otherGameModesMusic.Length; i++)
+        {
+            OGGMRadioQ.Enqueue(otherGameModesMusic[j]);
+
+            j++;
+            if (j == otherGameModesMusic.Length)
+                j = 0;
+        }
+
+        song2StartRadioWith++;
+        if (song2StartRadioWith == otherGameModesMusic.Length)
+            song2StartRadioWith = 0;
+
+        OGGMRadio = StartCoroutine(PlayNextSongInRadio());
+    }
+
+    IEnumerator PlayNextSongInRadio()
+    {
+        currentSong = OGGMRadioQ.Dequeue();
+        OGGMRadioQ.Enqueue(currentSong);
+
+        currentSong.source.Play();
+        yield return new WaitForSeconds(currentSong.source.clip.length);
+
+        OGGMRadio = StartCoroutine(PlayNextSongInRadio());
+    }
+
+    public void StopOGGMusicRadio()
+    {
+        if (OGGMRadio != null)
+            StopCoroutine(OGGMRadio);
+
+        if (currentSong != null)
+            currentSong.source.Stop();
+
+        if (OGGMRadioQ.Count > 0)
+            OGGMRadioQ.Clear();
+    }
+
     public void Go2LabBasement()
     {
         comeBackFromBasement = false;
@@ -466,12 +532,12 @@ public class AudioManager : MonoBehaviour
 
     public void LetCurrentMusicIgnoreFadeOut(bool yes)
     {
-        if (currentMusic != null)
+        if (currentSong != null)
         {
             if (yes)
-                currentMusic.source.ignoreListenerVolume = true;
+                currentSong.source.ignoreListenerVolume = true;
             else
-                currentMusic.source.ignoreListenerVolume = false;
+                currentSong.source.ignoreListenerVolume = false;
         }
     }
 }

@@ -1080,6 +1080,7 @@ public class LevelGenerator : MonoBehaviour
 
     void GenerateNextLvl()
     {
+        //remember to account for the 2 lvls that are already spawned
         while (generateNextLvlSequence)
         {
             if (game.GetScore >= 0)
@@ -1093,7 +1094,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 2)
+            if (game.GetScore >= 8)
             {
                 if (levels[1].about2Spawn)
                 {
@@ -1122,7 +1123,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 4)
+            if (game.GetScore >= 38)
             {
                 if (levels[2].about2Spawn)
                 {
@@ -1148,7 +1149,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 6)
+            if (game.GetScore >= 78)
             {
                 if (levels[3].about2Spawn)
                 {
@@ -1177,7 +1178,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 8)
+            if (game.GetScore >= 86)
             {
                 if (levels[2].about2Spawn)
                 {
