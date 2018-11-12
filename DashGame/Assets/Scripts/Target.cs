@@ -17,7 +17,7 @@ public class Target : MonoBehaviour
     int aRandomNum;
     float travelSpeed;
     int pointCounter = 0;
-    float smallestTargestSize = 0.03f; //the smallest radius a target can get when it grows and shrinks
+    float smallestTargestSize = 0.09f;//0.03f; //the smallest radius a target can get when it grows and shrinks
     float growShrinkSpeed;
     bool hit = false;
     bool inUse = false;

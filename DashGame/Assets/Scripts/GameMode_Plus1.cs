@@ -16,6 +16,7 @@ public class GameMode_Plus1 : MonoBehaviour
     int balls2Spawn;
     int tempBalls2Spawn;
     bool gameRunning = false;
+    float dropDelay;
 
     public static GameMode_Plus1 Instance;
 
@@ -66,7 +67,12 @@ public class GameMode_Plus1 : MonoBehaviour
         for(int i = 0; i < balls2Spawn; i++)
         {
             ballC.SpawnQuickBall();
-            yield return new WaitForSeconds(0.85f);
+            yield return new WaitForSeconds(dropDelay);
+        }
+        dropDelay -= 0.1f;
+        if(dropDelay < 1)
+        {
+            dropDelay = 1;
         }
     }
 
@@ -76,6 +82,8 @@ public class GameMode_Plus1 : MonoBehaviour
 
         balls2Spawn = 1;
         tempBalls2Spawn = balls2Spawn;
+
+        dropDelay = 2.1f; //remember to account for first drop where it is only one ball so drop delay doesnt actually matter
 
         ballC.SetBalls2Absorb(balls2Spawn);
 

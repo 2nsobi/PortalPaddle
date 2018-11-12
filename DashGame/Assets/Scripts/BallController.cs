@@ -756,7 +756,7 @@ public class BallController : MonoBehaviour
 
     public void ToggleTutorial()
     {
-        audioManager.PlayUISound("switchPageLouder");
+        audioManager.PlayUISound("switchPage");
 
         tutorialDisabled = !tutorialDisabled;
         if (tutorialDisabled)

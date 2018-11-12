@@ -672,7 +672,6 @@ public class ObstacleSpawner : MonoBehaviour
                             obstacleToSpawn.inUse = true;
 
                             targetC.SpawnTarget(obstacleToSpawn.transform, true, targetGrowShrink, obstacleToSpawn.path);
-                            print(targetGrowShrink);
 
                             obstacleToSpawn.SetObstacleTextures(texture);
 

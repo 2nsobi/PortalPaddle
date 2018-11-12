@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
     public GameObject RateMePage;
     public GameObject AudioCredits;
     public Text GemsText;
-    public GameObject AudioCreditsButton;
+    //public GameObject AudioCreditsButton; for if the audiocredits button was on the home screen instead of in the settings page
 
     public GameObject GDPRConsentForm;
 
@@ -426,7 +426,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                AudioCreditsButton.SetActive(false);
+                //AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
                 break;
 
@@ -440,7 +440,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                AudioCreditsButton.SetActive(true);
+                //AudioCreditsButton.SetActive(true);
                 GemsText.gameObject.SetActive(true);
 
                 ShowGameModeButton(true);
@@ -502,7 +502,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-                AudioCreditsButton.SetActive(false);
+               //AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 LG.settingsPage.SetActive(true);
@@ -531,7 +531,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(false);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(true);
-                AudioCreditsButton.SetActive(false);
+                //AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(true);
 
                 LG.shop.SetActive(true);
@@ -928,14 +928,14 @@ public class GameManager : MonoBehaviour
     {
         audioManager.PlayUISound("switchPageLouder");
         AudioCredits.SetActive(true);
-        AudioCreditsButton.SetActive(false);
+        //AudioCreditsButton.SetActive(false);
     }
 
     public void ExitAudioCredits()
     {
-        audioManager.PlayUISound("switchPageLouder");
+        audioManager.PlayUISound("switchPage"); //do not need the "switchPageLouder" sound because this button is on the settings page where the ambient sounds are not as loud
         AudioCredits.SetActive(false);
-        AudioCreditsButton.SetActive(true);
+        //AudioCreditsButton.SetActive(true);
     }
 
     public void Go2Rate()

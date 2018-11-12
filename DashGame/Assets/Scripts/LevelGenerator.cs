@@ -809,8 +809,10 @@ public class LevelGenerator : MonoBehaviour
                 filterBools[1] = false;
             }
 
-            nextMusic2Play = "skyMusic";
-            musicOnDeck = true;
+            //nextMusic2Play = "skyMusic";
+            //musicOnDeck = true;
+
+            audioManager.ClearMusic();
 
             nextLvlSound2Play = "caves2Sky";
             soundOnDeck = true;
@@ -828,6 +830,9 @@ public class LevelGenerator : MonoBehaviour
                 nextLvlSound2Play = "ambientSky";
                 soundOnDeck = true;
             }
+
+            nextMusic2Play = "skyMusic";
+            musicOnDeck = true;
         }
 
         if (NextLvl == transitionLvls[1])
@@ -848,7 +853,7 @@ public class LevelGenerator : MonoBehaviour
         if (NextLvl == transitionLvls[3])
         {
             musicOnDeck = true;
-            nextMusic2Play = "spaceMusic";
+            nextMusic2Play = "spaceMusicLooped";
         }
 
         if (soundOnDeck)
@@ -1094,7 +1099,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 8)
+            if (game.GetScore >= 1)
             {
                 if (levels[1].about2Spawn)
                 {
@@ -1123,7 +1128,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 38)
+            if (game.GetScore >= 2)
             {
                 if (levels[2].about2Spawn)
                 {
@@ -1149,7 +1154,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 78)
+            if (game.GetScore >= 3)
             {
                 if (levels[3].about2Spawn)
                 {
@@ -1178,7 +1183,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 86)
+            if (game.GetScore >= 4)
             {
                 if (levels[2].about2Spawn)
                 {
