@@ -14,6 +14,7 @@ public class Sound
     public bool loop;
     public bool ignoreListenerVolume;
     public bool ignoreListenerPause;
+    public bool dontFadeMeIn = false;
     [HideInInspector]
     public int index;
 

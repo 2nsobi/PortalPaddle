@@ -36,7 +36,6 @@ public class LvlMaker : MonoBehaviour
 
     private void Start()
     {
-        startPageButtons.SetActive(false);
         activeObject = null;
         renameObstacle = new GameObject("renameObstacle");
         renameObstacle.transform.parent = this.transform;

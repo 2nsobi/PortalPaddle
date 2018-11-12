@@ -498,7 +498,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1593379380410232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.13, y: -2.22, z: 0}
+  m_LocalPosition: {x: 1.51, y: -0.03, z: 0}
   m_LocalScale: {x: 0.2636045, y: 0.2636045, z: 1}
   m_Children:
   - {fileID: 4544133496024320}
@@ -843,9 +843,9 @@ MonoBehaviour:
   - prefab: {fileID: 1888698245684188, guid: c61c4f0015586e948bffa1f8e3cc5d9f, type: 2}
     size: 4
     easy: 0
-  - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
+  - prefab: {fileID: 1258778015654152, guid: ce31dc2a29302634e901b1a9f74153f3, type: 2}
     size: 4
-    easy: 0
+    easy: 1
   - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
     size: 4
     easy: 0
@@ -864,6 +864,9 @@ MonoBehaviour:
   - prefab: {fileID: 1719640622051030, guid: db01da38f8bb9b54ba0d8f91bd1f76d5, type: 2}
     size: 2
     easy: 1
+  - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
+    size: 4
+    easy: 0
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}
   SettingsLvl: {fileID: 1164789961757968, guid: f62a9245ab6a2d542ac7ace5fc4326a7,
     type: 2}

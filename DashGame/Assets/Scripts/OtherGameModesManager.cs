@@ -572,7 +572,7 @@ public class OtherGameModesManager : MonoBehaviour
 
     public void GoBackHome()
     {
-        audioManager.PlayUISound("switchPageLouder");
+        audioManager.PlayUISound("computerSelect2");
         if (!noSound)
         {
             StartCoroutine(FadeOutVolume());

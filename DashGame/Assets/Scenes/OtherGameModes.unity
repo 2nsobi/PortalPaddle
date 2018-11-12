@@ -5671,9 +5671,9 @@ MonoBehaviour:
     size: 2
     easy: 0
     onlyMotion: 0
-  - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
+  - prefab: {fileID: 1258778015654152, guid: ce31dc2a29302634e901b1a9f74153f3, type: 2}
     size: 2
-    easy: 0
+    easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
     size: 2
@@ -5696,6 +5696,10 @@ MonoBehaviour:
     easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1719640622051030, guid: db01da38f8bb9b54ba0d8f91bd1f76d5, type: 2}
+    size: 2
+    easy: 1
+    onlyMotion: 0
+  - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
     size: 2
     easy: 0
     onlyMotion: 0

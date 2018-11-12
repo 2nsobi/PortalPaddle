@@ -25,6 +25,9 @@ public class AudioManager : MonoBehaviour
     int song2StartRadioWith; // the track you hear first changes each time you leave and enter a new game mode, could be same game mode
     Coroutine OGGMRadio;
 
+    Coroutine stopMusicDelay;
+    System.Random rng = new System.Random();
+
     float t1, t2, t3;
     bool fade2LvlSound = false;
     bool clearLvlSounds = false;
@@ -34,7 +37,10 @@ public class AudioManager : MonoBehaviour
     bool clearMusic = false;
     bool go2Basement = false;
     bool comeBackFromBasement = false;
-    System.Random rng = new System.Random();
+    bool noMusic;
+    bool fadeOut;
+    bool dontFadeSoundIn = false;
+    string musicAbout2End; //name of music that is about to end in stopMusicDelay() coroutine
 
     private void Awake()
     {
@@ -150,6 +156,11 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        noMusic = PlayerPrefsX.GetBool("noMusic");
+    }
+
     public void Fade2LvlSound(string lvlSoundName)
     {
         try
@@ -172,15 +183,27 @@ public class AudioManager : MonoBehaviour
 
     public void Fade2Music(string musicName)
     {
+        if (noMusic)
+        {
+            return;
+        }
         try
         {
             Sound s = Array.Find(music, sound => sound.name == musicName);
             s.source.volume = 0;
-            s.source.Play();
 
             t2 = 0;
 
             nextMusic = s;
+
+            dontFadeSoundIn = s.dontFadeMeIn;
+
+            fadeOut = true;
+
+            if (currentMusic == null)
+            {
+                nextMusic.source.Play();
+            }
 
             fade2Music = true;
         }
@@ -229,24 +252,63 @@ public class AudioManager : MonoBehaviour
 
             if (currentMusic != null)
             {
-                currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
-
-                nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
-
-                if (currentMusic.source.volume == 0 && nextMusic.source.volume == nextMusic.volume)
+                if (fadeOut)
                 {
-                    currentMusic.source.Stop();
-                    currentMusic = nextMusic;
-                    nextMusic = null;
+                    currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
 
-                    fade2Music = false;
+                    if (currentMusic.source.volume == 0)
+                    {
+                        t2 = 0;
+
+                        fadeOut = false;
+
+                        nextMusic.source.Play();
+                    }
+                }
+                else
+                {
+                    if (!dontFadeSoundIn)
+                    {
+                        nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
+
+                        if (nextMusic.source.volume == nextMusic.volume)
+                        {
+                            currentMusic.source.Stop();
+                            currentMusic = nextMusic;
+                            nextMusic = null;
+
+                            fade2Music = false;
+                        }
+                    }
+                    else
+                    {
+                        nextMusic.source.volume = nextMusic.volume;
+
+                        currentMusic.source.Stop();
+                        currentMusic = nextMusic;
+                        nextMusic = null;
+
+                        fade2Music = false;
+                    }
                 }
             }
             else
             {
-                nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
-                if (nextMusic.source.volume == nextMusic.volume)
+                if (!dontFadeSoundIn)
                 {
+                    nextMusic.source.volume = Mathf.Lerp(0, nextMusic.volume, t2);
+                    if (nextMusic.source.volume == nextMusic.volume)
+                    {
+                        currentMusic = nextMusic;
+                        nextMusic = null;
+
+                        fade2Music = false;
+                    }
+                }
+                else
+                {
+                    nextMusic.source.volume = nextMusic.volume;
+
                     currentMusic = nextMusic;
                     nextMusic = null;
 
@@ -329,12 +391,21 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string musicName, bool stop = false)
     {
+        if (noMusic)
+        {
+            return;
+        }
         try
         {
             currentMusic = Array.Find(music, sound => sound.name == musicName);
 
-            currentMusic.source.volume = currentMusic.volume;
+            if (currentMusic.name == musicAbout2End)
+            {
+                StopCoroutine(stopMusicDelay);
+            }
+
             currentMusic.source.Play();
+            currentMusic.source.volume = currentMusic.volume;
         }
         catch (NullReferenceException)
         {
@@ -345,6 +416,10 @@ public class AudioManager : MonoBehaviour
 
     public void ClearMusic()
     {
+        if (noMusic)
+        {
+            return;
+        }
         t2 = 0;
         clearMusic = true;
     }
@@ -353,9 +428,17 @@ public class AudioManager : MonoBehaviour
     {
         if (currentMusic != null)
         {
-            currentMusic.source.Stop();
+            stopMusicDelay = StartCoroutine(StopMusicDelay(currentMusic));
             currentMusic = null;
         }
+    }
+
+    IEnumerator StopMusicDelay(Sound music) //this prevents music crackling when stopping it since its streaming audio
+    {
+        music.source.volume = 0;
+        musicAbout2End = music.name;
+        yield return new WaitForSecondsRealtime(2);
+        music.source.Stop();
     }
 
     public int BallImpactSound(string regImpactSoundName)
@@ -468,11 +551,19 @@ public class AudioManager : MonoBehaviour
 
     public void SwitchUpRadioFirstSong()
     {
+        if (noMusic)
+        {
+            return;
+        }
         song2StartRadioWith = rng.Next(0, otherGameModesMusic.Length);
     }
 
     public void StartPlayingOGMMusicRadio()
     {
+        if (noMusic)
+        {
+            return;
+        }
         int j = song2StartRadioWith;
         for (int i = 0; i < otherGameModesMusic.Length; i++)
         {
@@ -503,6 +594,10 @@ public class AudioManager : MonoBehaviour
 
     public void StopOGGMusicRadio()
     {
+        if (noMusic)
+        {
+            return;
+        }
         if (OGGMRadio != null)
             StopCoroutine(OGGMRadio);
 
@@ -532,6 +627,10 @@ public class AudioManager : MonoBehaviour
 
     public void LetCurrentMusicIgnoreFadeOut(bool yes)
     {
+        if (noMusic)
+        {
+            return;
+        }
         if (currentSong != null)
         {
             if (yes)
@@ -539,5 +638,10 @@ public class AudioManager : MonoBehaviour
             else
                 currentSong.source.ignoreListenerVolume = false;
         }
+    }
+
+    public void SetNoMusic(bool noMusic)
+    {
+        this.noMusic = noMusic;
     }
 }

@@ -10,12 +10,16 @@ public class SettingsController : MonoBehaviour
     public Text NoAdsPrice;
     public GameObject SoundOnIcon;
     public GameObject SoundOffIcon;
+    public GameObject MusicOnIcon;
+    public GameObject MusicOffIcon;
 
     Purchaser purchaser;
     BallController ballC;
+    AudioManager audioManager;
 
     bool noSound;
     bool noAds;
+    bool noMusic;
 
     private void Awake()
     {
@@ -31,6 +35,7 @@ public class SettingsController : MonoBehaviour
     {
         purchaser = Purchaser.Instance;
         ballC = BallController.Instance;
+        audioManager = AudioManager.Instance;
 
         noSound = PlayerPrefsX.GetBool("noSound");
         if (noSound)
@@ -42,6 +47,18 @@ public class SettingsController : MonoBehaviour
         {
             SoundOffIcon.SetActive(false);
             SoundOnIcon.SetActive(true);
+        }
+
+        noMusic = PlayerPrefsX.GetBool("noMusic");
+        if (noMusic)
+        {
+            MusicOffIcon.SetActive(true);
+            MusicOnIcon.SetActive(false);
+        }
+        else
+        {
+            MusicOffIcon.SetActive(false);
+            MusicOnIcon.SetActive(true);
         }
 
         noAds = PlayerPrefsX.GetBool("noAds");
@@ -78,14 +95,35 @@ public class SettingsController : MonoBehaviour
         ballC.SetNoSound(noSound);
     }
 
+    public void ToggleMusic()
+    {
+        audioManager.PlayUISound("switchPage");
+
+        noMusic = !noMusic;
+        if (noMusic)
+        {
+            MusicOffIcon.SetActive(true);
+            MusicOnIcon.SetActive(false);
+        }
+        else
+        {
+            MusicOffIcon.SetActive(false);
+            MusicOnIcon.SetActive(true);
+        }
+
+        audioManager.SetNoMusic(noMusic);
+    }
+
     private void OnDisable()
     {
         PlayerPrefsX.SetBool("noSound", noSound);
+        PlayerPrefsX.SetBool("noMusic", noMusic);
     }
 
     private void OnApplicationQuit()
     {
         PlayerPrefsX.SetBool("noSound", noSound);
+        PlayerPrefsX.SetBool("noMusic", noMusic);
     }
 
     private void OnApplicationPause(bool pause)
@@ -93,6 +131,7 @@ public class SettingsController : MonoBehaviour
         if (pause)
         {
             PlayerPrefsX.SetBool("noSound", noSound);
+            PlayerPrefsX.SetBool("noMusic", noMusic);
         }
     }
 
