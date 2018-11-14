@@ -4310,22 +4310,23 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 223573978460734026, guid: 6405e27f456272a45b0f806046868aae,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 519420031}
     - target: {fileID: 114512112588498136, guid: 6405e27f456272a45b0f806046868aae,
         type: 2}
       propertyPath: spawnArea
       value: 
       objectReference: {fileID: 1054657167}
+    - target: {fileID: 223573978460734026, guid: 6405e27f456272a45b0f806046868aae,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 114074390370165354, guid: 6405e27f456272a45b0f806046868aae,
         type: 2}
       propertyPath: tutorialToggleAnimC
       value: 
       objectReference: {fileID: 419842319}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114467362351338558, guid: 6405e27f456272a45b0f806046868aae, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 6405e27f456272a45b0f806046868aae, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &1207940636
@@ -4650,6 +4651,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.size
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4458351088543436, guid: 55ec5f4b6612e6a4880633fd6c7904f4, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4686,6 +4692,101 @@ Prefab:
         type: 2}
       propertyPath: music.Array.data[0].volume
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: miscSounds.Array.data[0].volume
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: miscSounds.Array.data[1].volume
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: miscSounds.Array.data[2].volume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[1].volume
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[2].volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[3].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 6de3f7e36c3a1db40936c74270dbc07f, type: 3}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[3].volume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[3].name
+      value: flickeringLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[4].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8640074ce3f17a14fbde640674483fc2, type: 3}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[4].name
+      value: elevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[5].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8640074ce3f17a14fbde640674483fc2, type: 3}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[5].name
+      value: elevator
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[5].volume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[5].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: ambientSounds.Array.data[5].loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: music.Array.data[2].volume
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: music.Array.data[3].volume
+      value: 0.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: UISounds.Array.data[4].pitch
+      value: 0.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 114770693368816742, guid: 55ec5f4b6612e6a4880633fd6c7904f4,
+        type: 2}
+      propertyPath: UISounds.Array.data[4].volume
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55ec5f4b6612e6a4880633fd6c7904f4, type: 2}

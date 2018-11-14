@@ -758,7 +758,6 @@ public class GameManager : MonoBehaviour
         {
             gems += gems2Add;
             GemsText.text = gems.ToString();
-            print("updatedGems");
         }
         else
         {
