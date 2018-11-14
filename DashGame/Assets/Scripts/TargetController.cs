@@ -134,8 +134,8 @@ public class TargetController : MonoBehaviour
 
                 if (nextLvlNum == 3)
                 {
-                    int randomNumber = Random.Range(1, 11);
-                    if (randomNumber % 2 == 0)
+                    int randomNumber = rng.Next(1,12);
+                    if (randomNumber % 2 != 0) //if this if statement is true then the target will growShrink
                     {
                         if (nextObstaclePath != null)
                         {

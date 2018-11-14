@@ -5613,7 +5613,7 @@ MonoBehaviour:
   obstacles:
   - prefab: {fileID: 1133324666389770, guid: 9a989ab5f5fd8704295ace245db9dad2, type: 2}
     size: 2
-    easy: 0
+    easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1780568989254076, guid: f3857d98a513e6c4cb207611b9973b2b, type: 2}
     size: 2
@@ -5641,7 +5641,7 @@ MonoBehaviour:
     onlyMotion: 1
   - prefab: {fileID: 1157972592696636, guid: 1fbc925e0dfbb42499d2dae3a4aacb6a, type: 2}
     size: 2
-    easy: 0
+    easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1351860417301378, guid: c99f408458c2e2c48882f70fabd646ed, type: 2}
     size: 2
@@ -5668,12 +5668,8 @@ MonoBehaviour:
     easy: 0
     onlyMotion: 0
   - prefab: {fileID: 1888698245684188, guid: c61c4f0015586e948bffa1f8e3cc5d9f, type: 2}
-    size: 2
+    size: 1
     easy: 0
-    onlyMotion: 0
-  - prefab: {fileID: 1258778015654152, guid: ce31dc2a29302634e901b1a9f74153f3, type: 2}
-    size: 2
-    easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1204026790334560, guid: 3044f50a4963b4b428a34d25b629ac88, type: 2}
     size: 2
@@ -5684,23 +5680,19 @@ MonoBehaviour:
     easy: 1
     onlyMotion: 0
   - prefab: {fileID: 1826946630696652, guid: d447f7ebfd48de140950f1163221b141, type: 2}
-    size: 2
+    size: 1
     easy: 0
     onlyMotion: 0
   - prefab: {fileID: 1406720898656728, guid: ce2ca7c660356b64182b4682308a12e6, type: 2}
     size: 2
     easy: 1
     onlyMotion: 1
-  - prefab: {fileID: 1806070437768842, guid: 7291c2c094dfd3044ba919114111e394, type: 2}
-    size: 2
-    easy: 1
-    onlyMotion: 0
-  - prefab: {fileID: 1719640622051030, guid: db01da38f8bb9b54ba0d8f91bd1f76d5, type: 2}
-    size: 2
-    easy: 1
-    onlyMotion: 0
   - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
-    size: 2
+    size: 1
+    easy: 0
+    onlyMotion: 0
+  - prefab: {fileID: 1387137365626362, guid: 83351b295d029ad4295747415c9fc0f3, type: 2}
+    size: 1
     easy: 0
     onlyMotion: 0
 --- !u!114 &209706810

@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
     bool fade2LvlSound = false;
     bool clearLvlSounds = false;
     float time4SoundFade = 1.5f;
-    float time4MusicFade = 2.5f;
+    float time4MusicFade = 3;
     bool fade2Music = false;
     bool clearMusic = false;
     bool go2Basement = false;
@@ -204,6 +204,11 @@ public class AudioManager : MonoBehaviour
             {
                 nextMusic.source.Play();
             }
+            else
+            {
+                if (!currentMusic.source.isPlaying)
+                    currentMusic = null;
+            }
 
             fade2Music = true;
         }
@@ -256,13 +261,13 @@ public class AudioManager : MonoBehaviour
                 {
                     currentMusic.source.volume = Mathf.Lerp(currentMusic.volume, 0, t2);
 
-                    if (currentMusic.source.volume == 0)
+                    if (currentMusic.source.volume == 0 && !nextMusic.source.isPlaying)
                     {
                         t2 = 0;
 
                         fadeOut = false;
 
-                        nextMusic.source.Play();
+                        nextMusic.source.PlayDelayed(1.4f);
                     }
                 }
                 else

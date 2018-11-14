@@ -226,6 +226,7 @@ public class LevelGenerator : MonoBehaviour
     AchievementsAndLeaderboards rankings;
     bool interstellar;
     bool lunarKing;
+    int transitionsCompleted = 0;
 
     public delegate void LevelDelegate();
     public static event LevelDelegate TransitionDone;
@@ -528,6 +529,8 @@ public class LevelGenerator : MonoBehaviour
         nextLvlSound2Play = null;
         nextMusic2Play = null;
 
+        transitionsCompleted = 0;
+
         if (playedOnce)
         {
             #region Disactivates All Level Prefabs
@@ -786,9 +789,16 @@ public class LevelGenerator : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         // first update sounds for the lvls
+        // note that when this is being called NextLvl is the lvl prefab that will be at vector2.zero after the function is done
 
-        if (NextLvl.gameObject.tag == "level1")
+        if (nextLvlNumber == 1)
         {
+            if (nextMusic2Play != "cavesMusic")
+            {
+                nextMusic2Play = "cavesMusic";
+                musicOnDeck = true;
+            }
+
             if (filterBools[0])
             {
                 filterController.Fade2Filter("CavesBlack2TransparentGradient");
@@ -801,7 +811,7 @@ public class LevelGenerator : MonoBehaviour
                 soundOnDeck = true;
             }
         }
-        if (NextLvl.gameObject.tag == "caves2Sky")
+        if (NextLvl == transitionLvls[0])
         {
             if (filterBools[1])
             {
@@ -814,7 +824,7 @@ public class LevelGenerator : MonoBehaviour
 
             audioManager.ClearMusic();
 
-            nextLvlSound2Play = "caves2Sky";
+            nextLvlSound2Play = "ambientSky";
             soundOnDeck = true;
         }
         if (nextLvlNumber == 2)
@@ -825,14 +835,17 @@ public class LevelGenerator : MonoBehaviour
                 filterBools[2] = false;
             }
 
-            if (nextLvlSound2Play != "ambientSky")
-            {
-                nextLvlSound2Play = "ambientSky";
-                soundOnDeck = true;
-            }
+            //if (nextLvlSound2Play != "ambientSky")
+            //{
+            //    nextLvlSound2Play = "ambientSky";
+            //    soundOnDeck = true;
+            //}
 
-            nextMusic2Play = "skyMusic";
-            musicOnDeck = true;
+            if (nextMusic2Play != "skyMusic")
+            {
+                nextMusic2Play = "skyMusic";
+                musicOnDeck = true;
+            }
         }
 
         if (NextLvl == transitionLvls[1])
@@ -850,7 +863,7 @@ public class LevelGenerator : MonoBehaviour
             nextMusic2Play = "moonMusic";
         }
 
-        if (NextLvl == transitionLvls[3])
+        if (CurrentLvl == transitionLvls[3])
         {
             musicOnDeck = true;
             nextMusic2Play = "spaceMusicLooped";
@@ -878,8 +891,9 @@ public class LevelGenerator : MonoBehaviour
             musicOnDeck = false;
         }
 
-        // now update acheivements if they unlocked any
-
+        // also update acheivements if they unlocked any
+        
+        // after this function currentLvl will lvl be right below the lvl at vector2.zero, so it will be at vector2(0,-10.8)
         if (!interstellar)
         {
             if (CurrentLvl == transitionLvls[1])
@@ -1026,7 +1040,9 @@ public class LevelGenerator : MonoBehaviour
 
                     NextLvl = LvlOnDeck;
 
-                    TransitionDone();
+                    transitionsCompleted += 1;
+
+                    TransitionDone();                 
                     GenerateNextLvl();
                     currentlyTransitioning = false;
 
@@ -1061,8 +1077,6 @@ public class LevelGenerator : MonoBehaviour
 
     void GameStarted()
     {
-        audioManager.PlayMusic("cavesMusic");
-
         for (int i = 0; i < filterBools.Length; i++)
         {
             filterBools[i] = true;
@@ -1099,7 +1113,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 1)
+            if (game.GetScore >= 13)
             {
                 if (levels[1].about2Spawn)
                 {
@@ -1128,7 +1142,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 2)
+            if (game.GetScore >= 33)
             {
                 if (levels[2].about2Spawn)
                 {
@@ -1154,7 +1168,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 3)
+            if (game.GetScore >= 53)
             {
                 if (levels[3].about2Spawn)
                 {
@@ -1183,7 +1197,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 4)
+            if (game.GetScore >= 69)
             {
                 if (levels[2].about2Spawn)
                 {
@@ -1240,29 +1254,29 @@ public class LevelGenerator : MonoBehaviour
         else if (NextLvl.gameObject.tag == "level2")
         {
             nextLvlNumber = 2;
-            ballC.IncreaseDropSpeed(4.75f, 18.25f);
-            target.IncreaseTravelSpeed(3);
+            ballC.IncreaseDropSpeed(5.75f, 19.25f);
+            target.IncreaseTravelSpeed(3.5f);
         }
         else if (NextLvl.gameObject.tag == "level3")
         {
             if (nextLvlNumber >= 4)
             {
                 nextLvlNumber = 5;
-                ballC.IncreaseDropSpeed(10, 25);
-                target.IncreaseTravelSpeed(6);
+                ballC.IncreaseDropSpeed(10f, 22.5f);
+                target.IncreaseTravelSpeed(6.5f);
             }
             else
             {
                 nextLvlNumber = 3;
-                ballC.IncreaseDropSpeed(6.5f, 20.5f);
-                target.IncreaseTravelSpeed(4);
+                ballC.IncreaseDropSpeed(7.5f, 20.5f);
+                target.IncreaseTravelSpeed(4.75f);
             }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
-            ballC.IncreaseDropSpeed(8.25f, 22.75f);
-            target.IncreaseTravelSpeed(5);
+            ballC.IncreaseDropSpeed(9.25f, 22);
+            target.IncreaseTravelSpeed(6);
         }
         NextLvl.gameObject.SetActive(true);
         NextLvl.gameObject.transform.position = transform.position + levelOffset;
