@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 114512112588498136}
   - component: {fileID: 114168755837657140}
   - component: {fileID: 114074390370165354}
-  - component: {fileID: 114467362351338558}
   m_Layer: 0
   m_Name: Enviroment
   m_TagString: Untagged
@@ -632,7 +631,7 @@ MonoBehaviour:
   absorbSpeed: 3
   startPos: {x: 0, y: 3.5}
   initialSpeed: 3
-  boostSpeed: 16
+  boostSpeed: 12
   CameraShakeIntensity: 0.175
   CameraShakeDuration: 0.375
   ballPrefabs:
@@ -869,33 +868,6 @@ MonoBehaviour:
   GameOverZoneS: {fileID: 4604160769390600}
   settingsPage: {fileID: 0}
   shop: {fileID: 0}
---- !u!114 &114467362351338558
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1153453727601030}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2536eaccfd4d26e4f95bc936a98b2ed5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startPageButtons: {fileID: 0}
-  pathCircle: {fileID: 1696653882052094, guid: e91981c43c9d3af41910569df5f628fc, type: 2}
-  square: {fileID: 1317317838467676, guid: ea053752afe680b4a884b6f792322be5, type: 2}
-  circle: {fileID: 1862150040289592, guid: 32b8ef6e6f98a5d498c5f6294fcc9650, type: 2}
-  triangle: {fileID: 1000633006158390, guid: f090af36e44d58c49b647bf10cfdaff3, type: 2}
-  wallObstacle: {fileID: 1065557284023646, guid: 34f995d8e8467bb4581a786dff714824,
-    type: 2}
-  triangle2: {fileID: 1889992240540192, guid: b7fb3917cbe888a428c0469ea36a5286, type: 2}
-  customSprite: {fileID: 0}
-  ReferenceTarget: {fileID: 1034687097400636, guid: f33ae021fe56b1a45b0ffa38fea0850e,
-    type: 2}
-  blankCanvas: {fileID: 1756012092053584, guid: 3261b3a571632d747ac1fe8c20a8523c,
-    type: 2}
-  circlePathRadius: 0
-  NumPointsOnCirclePath: 0
-  TestTravelSpeed: 0
 --- !u!114 &114512112588498136
 MonoBehaviour:
   m_ObjectHideFlags: 1

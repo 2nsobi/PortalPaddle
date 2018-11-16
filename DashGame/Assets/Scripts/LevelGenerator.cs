@@ -898,7 +898,6 @@ public class LevelGenerator : MonoBehaviour
         {
             if (CurrentLvl == transitionLvls[1])
             {
-                print("you are now interstallar");
                 interstellar = true;
                 playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
                 rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
@@ -909,8 +908,6 @@ public class LevelGenerator : MonoBehaviour
         {
             if (CurrentLvl == transitionLvls[3])
             {
-                print("you are now lunarking");
-
                 lunarKing = true;
                 playButtonGlowMainMod.startColor = Color.yellow;
                 rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
@@ -1254,7 +1251,7 @@ public class LevelGenerator : MonoBehaviour
         else if (NextLvl.gameObject.tag == "level2")
         {
             nextLvlNumber = 2;
-            ballC.IncreaseDropSpeed(5.75f, 19.25f);
+            ballC.IncreaseDropSpeed(5.75f, 14.7f);
             target.IncreaseTravelSpeed(3.5f);
         }
         else if (NextLvl.gameObject.tag == "level3")
@@ -1262,20 +1259,20 @@ public class LevelGenerator : MonoBehaviour
             if (nextLvlNumber >= 4)
             {
                 nextLvlNumber = 5;
-                ballC.IncreaseDropSpeed(10f, 22.5f);
+                ballC.IncreaseDropSpeed(10f, 22f);
                 target.IncreaseTravelSpeed(6.5f);
             }
             else
             {
                 nextLvlNumber = 3;
-                ballC.IncreaseDropSpeed(7.5f, 20.5f);
+                ballC.IncreaseDropSpeed(7.5f, 17.3f);
                 target.IncreaseTravelSpeed(4.75f);
             }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
-            ballC.IncreaseDropSpeed(9.25f, 22);
+            ballC.IncreaseDropSpeed(9.25f, 20);
             target.IncreaseTravelSpeed(6);
         }
         NextLvl.gameObject.SetActive(true);

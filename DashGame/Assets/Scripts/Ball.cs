@@ -8,6 +8,7 @@ public class Ball : MonoBehaviour
     public GameObject ghost;
     public string firstImpactSound;
     public bool defaultSounds;
+    public int collisionParticlesBurstAmount;
 
     SpriteRenderer ballSprite;
     ParticleSystem collisionEffect;
@@ -50,11 +51,11 @@ public class Ball : MonoBehaviour
     SpriteRenderer ghost1Sprite, ghost2Sprite;
     SpriteRenderer ghost1SpecialSprite, ghost2SpecialSprite;
     bool hasSpecialSprite = true;
-    bool callPlayerMissed = false;
     bool isTargetHitMoving = false;
     float targetTravelSpeed;
     bool insideCollider = false;
     string collisionTag;
+    string lastWallHit = "";
     int ballLayer = 11;
     int ignoreObstaclesLayer = 16;
     int ignoreEverythingLayer = 17;
@@ -63,7 +64,7 @@ public class Ball : MonoBehaviour
     string impactSound;
     bool noFISound = false;
     bool playingDeadeye = false;
-    string origImpactSound;
+    int origImpactSoundNum;
     int index;
     int impactSoundNum, FISoundNum;
     bool clairvoyance = false;
@@ -171,8 +172,6 @@ public class Ball : MonoBehaviour
 
             noFISound = false;
         }
-
-        origImpactSound = impactSound;
     }
 
     private void Start()
@@ -183,6 +182,7 @@ public class Ball : MonoBehaviour
         audioManager = AudioManager.Instance;
 
         impactSoundNum = audioManager.BallImpactSound(impactSound);
+        origImpactSoundNum = impactSoundNum;
         if (!noFISound)
         {
             FISoundNum = audioManager.BallFISound(firstImpactSound);
@@ -208,9 +208,12 @@ public class Ball : MonoBehaviour
         wallHit = false;
         wrappedAround = false;
         clairvoyance = false;
+        lastWallHit = "";
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
+
+        collisionEffect.Play();
     }
 
     private void OnDisable()
@@ -477,12 +480,12 @@ public class Ball : MonoBehaviour
         //failsafes for when ball is jammed between two colliders and the resulting velocity is very slow or if the ball just stops
         if(rigidbody.velocity.magnitude < 10 && shouldBoost && !clairvoyance)
         {
-            rigidbody.velocity = rigidbody.velocity.normalized * 16; //make sure the magnitude of this velocity is equal to the value for public boost speed variable set in BallController
+            rigidbody.velocity = rigidbody.velocity.normalized * boostVelocity; //make sure the magnitude of this velocity is equal to the value for public boost speed variable set in BallController
         }
 
         if (clairvoyance && rigidbody.velocity.magnitude < 1 && shouldBoost)
         {
-            rigidbody.velocity = rigidbody.velocity.normalized * 16;
+            rigidbody.velocity = rigidbody.velocity.normalized * boostVelocity;
         }
     }
 
@@ -607,18 +610,18 @@ public class Ball : MonoBehaviour
         }
     }
 
-    public void PlayerMissedBackup()
-    {
-        if (callPlayerMissed)
-        {
-            PlayerMissed();
-        }
-    }
-
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        print(collision.gameObject.name + ", current ball layer = " + gameObject.layer);
         collisionTag = collision.gameObject.tag;
+
+        if(collisionTag == lastWallHit) // this will prevent weird reactions from the walls with colliders that overlap each other
+        {
+            return;
+        }
+        else
+        {
+            lastWallHit = null;
+        }
 
         if (collisionTag == "Paddle")
         {
@@ -648,11 +651,20 @@ public class Ball : MonoBehaviour
         if (collisionTag == "Wall")
         {
             wallHit = true;
+
+            lastWallHit = collisionTag;
+        }
+
+        if(collisionTag == "Wall2")
+        {
+            wallHit = true;
+
+            lastWallHit = collisionTag;
         }
 
         if (!shouldAbsorb)
         {
-            collisionEffect.Play();
+            collisionEffect.Emit(collisionParticlesBurstAmount);
         }
 
         ContactPoint2D cp = collision.contacts[0]; // 0 indicates the first contact point between the colliders. Since there is only one contact point a higher index would cause a runtime error
@@ -824,9 +836,12 @@ public class Ball : MonoBehaviour
     {
         if (!ballC.TurnGray()) //returns isGray as a bool
         {
-            impactSound = "YellowBall";
+            impactSoundNum = 0;
         }
-        else impactSound = origImpactSound;
+        else
+        {
+            impactSoundNum = origImpactSoundNum;
+        }
     }
 
     public void PlayLaserSound()

@@ -93,6 +93,7 @@ public class SettingsController : MonoBehaviour
             SoundOnIcon.SetActive(true);
         }
         ballC.SetNoSound(noSound);
+        audioManager.SetNoSound(noSound);
     }
 
     public void ToggleMusic()

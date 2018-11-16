@@ -227,12 +227,12 @@ public class TargetController : MonoBehaviour
         return new Vector2(RandomFloat(spawnAreaCorners[0].x + (targetSpawnOffset), spawnAreaCorners[3].x - (targetSpawnOffset)), RandomFloat(spawnAreaCorners[0].y + (targetSpawnOffset), spawnAreaCorners[2].y - (targetSpawnOffset)));
     }
 
-    public float RandomSpawnAreaXRange
+    public float GetSpawnAreaXPositions(bool leftEdge) //returns right edge if this argument is false
     {
-        get
-        {
-            return Mathf.Clamp(rng.Next(Mathf.RoundToInt(spawnAreaCorners[0].x), Mathf.RoundToInt(spawnAreaCorners[3].x)), spawnAreaCorners[0].x + (0.57f), spawnAreaCorners[3].x - (0.57f)); //the float comes from measuring radius of ballspawner
-        }
+        if (leftEdge)
+            return spawnAreaCorners[0].x;
+        else
+            return spawnAreaCorners[3].x;
     }
 
     float RandomFloat(double min, double max)

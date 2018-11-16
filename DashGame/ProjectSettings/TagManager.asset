@@ -16,6 +16,7 @@ TagManager:
   - caves2Sky
   - ghost
   - floor
+  - Wall2
   layers:
   - Default
   - TransparentFX

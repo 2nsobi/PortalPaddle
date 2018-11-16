@@ -50,9 +50,13 @@ public class BallController : MonoBehaviour
     bool dontStartGameMode = false;
     bool noSound;
     bool tutorialDisabled;
+    static CryptoRandom rng = new CryptoRandom();
+    float spawnAreaLeftEdge, spawnAreaRightEdge;
+    float newXRange;
+    float oldXRange = 100;
 
-    List<float> times = new List<float>();
-    float startTime;
+    //List<float> times = new List<float>();
+    //float startTime;
 
     public static BallController Instance;
 
@@ -117,6 +121,9 @@ public class BallController : MonoBehaviour
         offScreenSpawnHeight = Camera.main.orthographicSize + 0.25f;
 
         noSound = PlayerPrefsX.GetBool("noSound");
+
+        spawnAreaLeftEdge = targetC.GetSpawnAreaXPositions(true);
+        spawnAreaRightEdge = targetC.GetSpawnAreaXPositions(false);
     }
 
     public int Link2BallItem(string name)
@@ -232,6 +239,7 @@ public class BallController : MonoBehaviour
 
                         startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
+                        audioManager.MuffleSound(false);
                         isGray = false;
 
                         fadeBack = true;
@@ -248,6 +256,7 @@ public class BallController : MonoBehaviour
 
                         startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
+                        audioManager.MuffleSound(false);
                         isGray = false;
 
                         fadeBack = true;
@@ -320,6 +329,7 @@ public class BallController : MonoBehaviour
                         obSpawner.EndGame();
 
                         grayScaleMat.SetFloat("_EffectAmount", 0);
+                        audioManager.MuffleSound(false);
                         obSpawner.InvertDeadeyeBackground(true);
                         isGray = false;
 
@@ -358,6 +368,7 @@ public class BallController : MonoBehaviour
                         obSpawner.EndGame();
 
                         grayScaleMat.SetFloat("_EffectAmount", 0);
+                        audioManager.MuffleSound(false);
                         obSpawner.InvertDeadeyeBackground(true);
                         isGray = false;
 
@@ -424,7 +435,7 @@ public class BallController : MonoBehaviour
         fade2Black = true;
         whiteFlashCG.alpha = 0;
 
-        times.Clear();
+        //times.Clear();
     }
 
     IEnumerator BallSpawnerSounds()
@@ -432,6 +443,29 @@ public class BallController : MonoBehaviour
         audioManager.PlayMiscSound("portalSpawn");
         yield return new WaitForSeconds(1.45f); //it takes about 1.4 seconds for the ballspawner portal to start shrinking
         audioManager.PlayMiscSound("portalShrink");
+    }
+
+    public float RandomSpawnAreaXRange()
+    {
+        newXRange = Mathf.Clamp(rng.Next(Mathf.RoundToInt(spawnAreaLeftEdge), Mathf.RoundToInt(spawnAreaRightEdge)), spawnAreaLeftEdge + (0.57f), spawnAreaRightEdge - (0.57f));
+
+        print("old x range before = " + oldXRange);
+        print("new x range before = " + newXRange);
+
+        if(newXRange == oldXRange)
+        {
+            if (newXRange <= 0)
+                newXRange += 1;
+            else
+                newXRange -= 1;
+        }
+
+        oldXRange = newXRange;
+
+        print("old x range after = " + oldXRange);
+        print("new x range after = " + newXRange);
+
+        return newXRange; //the float comes from measuring radius of ballspawner
     }
 
     void GameStarted()
@@ -443,11 +477,13 @@ public class BallController : MonoBehaviour
 
         if (tutorialDisabled)
         {
+            RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
+
             balls[selectedBallIndex].gameObject.SetActive(true);
-            balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+            balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
             spawnerAnimator.SetTrigger("GameStarted");
-            ballSpawner.transform.position = startPos;
+            ballSpawner.transform.position = RandomXPos;
             StartCoroutine(BallSpawnerSounds());
         }
         else
@@ -455,38 +491,40 @@ public class BallController : MonoBehaviour
             game.EnableTutorial();
         }
 
-        startTime = Time.time;
-        print(startTime);
+        //startTime = Time.time;
+        //print(startTime);
     }
 
     void NowStartGame()
     {
+        RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
+
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, startPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
-        ballSpawner.transform.position = startPos;
+        ballSpawner.transform.position = RandomXPos;
         StartCoroutine(BallSpawnerSounds());
     }
 
     void TransitionDone()
     {
-        print("current time: + " + Time.time);
-        times.Add(Time.time - startTime);
+        //print("current time: + " + Time.time);
+        //times.Add(Time.time - startTime);
 
-        startTime = Time.time;
+        //startTime = Time.time;
 
-        print("time it took for that lvl: " + times[times.Count - 1]);
-        float sum = 0;
-        foreach (float t in times)
-        {
-            sum += t;
-        }
-        print("average time: " + (sum / times.Count));
+        //print("time it took for that lvl: " + times[times.Count - 1]);
+        //float sum = 0;
+        //foreach (float t in times)
+        //{
+        //    sum += t;
+        //}
+        //print("average time: " + (sum / times.Count));
 
-        //-----------------------------------------------------
+        ////-----------------------------------------------------
 
-        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, startPos.y);
+        RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
         tempSpeed = startSpeed;
         tempBoostSpeed = boostSpeed;
@@ -500,7 +538,7 @@ public class BallController : MonoBehaviour
 
     void Revive()
     {
-        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, startPos.y);
+        RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
         balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
@@ -545,6 +583,7 @@ public class BallController : MonoBehaviour
         if (isGray)
         {
             grayScaleMat.SetFloat("_EffectAmount", 1);
+            audioManager.MuffleSound(true,false);
             if (obSpawner)
             {
                 obSpawner.InvertDeadeyeBackground();
@@ -553,6 +592,7 @@ public class BallController : MonoBehaviour
         else
         {
             grayScaleMat.SetFloat("_EffectAmount", 0);
+            audioManager.MuffleSound(false);
             if (obSpawner)
             {
                 obSpawner.InvertDeadeyeBackground(true);
@@ -567,7 +607,7 @@ public class BallController : MonoBehaviour
         tempSpeed = startSpeed;
         tempBoostSpeed = boostSpeed;
 
-        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, spawnHeight);
+        RandomXPos = new Vector2(RandomSpawnAreaXRange(), spawnHeight);
 
         Ball ball2Spawn = ballsQ.Dequeue();
 
@@ -605,7 +645,7 @@ public class BallController : MonoBehaviour
         tempSpeed = startSpeed;
         tempBoostSpeed = boostSpeed;
 
-        RandomXPos = new Vector2(targetC.RandomSpawnAreaXRange, spawnHeight);
+        RandomXPos = new Vector2(RandomSpawnAreaXRange(), spawnHeight);
 
         Ball ball2Spawn = ballsQ.Dequeue();
 

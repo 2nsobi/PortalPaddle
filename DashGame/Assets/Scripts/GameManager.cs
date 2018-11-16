@@ -151,8 +151,6 @@ public class GameManager : MonoBehaviour
 
         if(rAFARRfwej82qwe.Length == 0) //default value for a playerprefs string is "" (a string with length of 0)
         {
-            print("first time playing");
-
             rAFARRfwej82qwe = CreateRandomPassword(17);
             asfmn2348HKOA823 = CreateRandomPassword(17);
 
@@ -236,6 +234,8 @@ public class GameManager : MonoBehaviour
         audioManager = AudioManager.Instance;
         rankings = AchievementsAndLeaderboards.Instance;
         rate = Ratings.Instance;
+
+        audioManager.GetAudioFiltersFromCamera();
 
         selectedPaddle = paddles[ZPlayerPrefs.GetInt("paddleInUse")];
         paddleChanged = true;
