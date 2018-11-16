@@ -21,6 +21,9 @@ public class AudioManager : MonoBehaviour
     Sound nextMusic;
     Sound currentSong;
 
+    AudioLowPassFilter audioLowPassFilter;
+    AudioReverbFilter audioReverbFilter;
+
     Queue<Sound> OGGMRadioQ = new Queue<Sound>();
     int song2StartRadioWith; // the track you hear first changes each time you leave and enter a new game mode, could be same game mode
     Coroutine OGGMRadio;
@@ -28,11 +31,12 @@ public class AudioManager : MonoBehaviour
     Coroutine stopMusicDelay;
     System.Random rng = new System.Random();
 
-    float t1, t2, t3;
+    float t1, t2, t3, t4;
     bool fade2LvlSound = false;
     bool clearLvlSounds = false;
     float time4SoundFade = 1.5f;
     float time4MusicFade = 3;
+    float time4MuffleSound = 0.4f;
     bool fade2Music = false;
     bool clearMusic = false;
     bool go2Basement = false;
@@ -40,7 +44,11 @@ public class AudioManager : MonoBehaviour
     bool noMusic;
     bool fadeOut;
     bool dontFadeSoundIn = false;
+    bool muffleSound = false;
+    bool fadeInMuffle;
     string musicAbout2End; //name of music that is about to end in stopMusicDelay() coroutine
+    bool noSound;
+    float audioLowPassCutOffFreq = 1500;
 
     private void Awake()
     {
@@ -66,6 +74,7 @@ public class AudioManager : MonoBehaviour
             ballSounds[i].source.loop = ballSounds[i].loop;
             ballSounds[i].source.ignoreListenerVolume = ballSounds[i].ignoreListenerVolume;
             ballSounds[i].source.ignoreListenerPause = ballSounds[i].ignoreListenerPause;
+            ballSounds[i].source.bypassListenerEffects = ballSounds[i].bypassListenerEffects;
             ballSounds[i].index = i;
 
             for (int n = 0; n < 4; n++)
@@ -78,6 +87,7 @@ public class AudioManager : MonoBehaviour
                 s.loop = ballSounds[i].loop;
                 s.ignoreListenerVolume = ballSounds[i].ignoreListenerVolume;
                 s.ignoreListenerPause = ballSounds[i].ignoreListenerPause;
+                s.bypassListenerEffects = ballSounds[i].bypassListenerEffects;
 
                 ballSounds[i].backUpSources.Enqueue(s);
             }
@@ -92,6 +102,7 @@ public class AudioManager : MonoBehaviour
             ballFISounds[i].source.loop = ballFISounds[i].loop;
             ballFISounds[i].source.ignoreListenerVolume = ballFISounds[i].ignoreListenerVolume;
             ballFISounds[i].source.ignoreListenerPause = ballFISounds[i].ignoreListenerPause;
+            ballFISounds[i].source.bypassListenerEffects = ballFISounds[i].bypassListenerEffects;
 
             ballFISounds[i].index = i;
         }
@@ -105,6 +116,7 @@ public class AudioManager : MonoBehaviour
             UISounds[i].source.loop = UISounds[i].loop;
             UISounds[i].source.ignoreListenerVolume = UISounds[i].ignoreListenerVolume;
             UISounds[i].source.ignoreListenerPause = UISounds[i].ignoreListenerPause;
+            UISounds[i].source.bypassListenerEffects = UISounds[i].bypassListenerEffects;
         }
         for (int i = 0; i < music.Length; i++)
         {
@@ -116,6 +128,7 @@ public class AudioManager : MonoBehaviour
             music[i].source.loop = music[i].loop;
             music[i].source.ignoreListenerVolume = music[i].ignoreListenerVolume;
             music[i].source.ignoreListenerPause = music[i].ignoreListenerPause;
+            music[i].source.bypassListenerEffects = music[i].bypassListenerEffects;
         }
         for (int i = 0; i < otherGameModesMusic.Length; i++)
         {
@@ -127,6 +140,7 @@ public class AudioManager : MonoBehaviour
             otherGameModesMusic[i].source.loop = otherGameModesMusic[i].loop;
             otherGameModesMusic[i].source.ignoreListenerVolume = otherGameModesMusic[i].ignoreListenerVolume;
             otherGameModesMusic[i].source.ignoreListenerPause = otherGameModesMusic[i].ignoreListenerPause;
+            otherGameModesMusic[i].source.bypassListenerEffects = otherGameModesMusic[i].bypassListenerEffects;
         }
         for (int i = 0; i < ambientSounds.Length; i++)
         {
@@ -138,6 +152,7 @@ public class AudioManager : MonoBehaviour
             ambientSounds[i].source.loop = ambientSounds[i].loop;
             ambientSounds[i].source.ignoreListenerVolume = ambientSounds[i].ignoreListenerVolume;
             ambientSounds[i].source.ignoreListenerPause = ambientSounds[i].ignoreListenerPause;
+            ambientSounds[i].source.bypassListenerEffects = ambientSounds[i].bypassListenerEffects;
 
             //since these sound are streaming it is best to not stop and start them but instead change their volume when needed
             ambientSounds[i].source.volume = 0;
@@ -153,12 +168,14 @@ public class AudioManager : MonoBehaviour
             miscSounds[i].source.loop = miscSounds[i].loop;
             miscSounds[i].source.ignoreListenerVolume = miscSounds[i].ignoreListenerVolume;
             miscSounds[i].source.ignoreListenerPause = miscSounds[i].ignoreListenerPause;
+            miscSounds[i].source.bypassListenerEffects = miscSounds[i].bypassListenerEffects;
         }
     }
 
     private void Start()
     {
         noMusic = PlayerPrefsX.GetBool("noMusic");
+        noSound = PlayerPrefsX.GetBool("noSound");
     }
 
     public void Fade2LvlSound(string lvlSoundName)
@@ -359,6 +376,39 @@ public class AudioManager : MonoBehaviour
                 comeBackFromBasement = false;
             }
         }
+
+        // applying the lowpassfilter before other audio effects like reverb prevents noticeable crackling
+        if (muffleSound)
+        {
+            t4 += Time.deltaTime / time4MuffleSound;
+            if (fadeInMuffle)
+            {
+                audioLowPassFilter.cutoffFrequency = Mathf.Lerp(22000, audioLowPassCutOffFreq, t4);
+                //ApplyReverb();
+
+                if (audioLowPassFilter.cutoffFrequency <= audioLowPassCutOffFreq)
+                {
+                    muffleSound = false;
+                    audioReverbFilter.reverbPreset = AudioReverbPreset.Psychotic;
+                    audioReverbFilter.reverbPreset = AudioReverbPreset.User; // have to make the preset user before you can change any of the filters values
+                    audioReverbFilter.reverbLevel = 0; //this prevents static
+                    print(audioReverbFilter.reverbLevel);
+                }
+            }
+            else
+            {
+                audioLowPassFilter.cutoffFrequency = Mathf.Lerp(audioLowPassCutOffFreq, 22000, t4);
+                //RemoveReverb();
+
+                if (audioLowPassFilter.cutoffFrequency >= 22000)
+                {
+                    muffleSound = false;
+                    audioReverbFilter.reverbPreset = AudioReverbPreset.Off;
+                }
+
+                time4MuffleSound = 0.4f; //this line is called slighlty less if placed here instead of in mufflesound()
+            }
+        }
     }
 
     public void PlayLvlSound(string lvlSoundName)
@@ -464,8 +514,7 @@ public class AudioManager : MonoBehaviour
             if (s.source.isPlaying)
             {
                 AudioSource a = s.backUpSources.Dequeue();
-                s.source = a;
-                s.source.Play();
+                a.Play();
                 s.backUpSources.Enqueue(a);
             }
             else
@@ -648,5 +697,78 @@ public class AudioManager : MonoBehaviour
     public void SetNoMusic(bool noMusic)
     {
         this.noMusic = noMusic;
+    }
+
+    public void MuffleSound(bool yes, bool immediately = true)
+    {
+        if (!noSound)
+        {
+            if (yes)
+            {
+                t4 = 0;
+                muffleSound = true;
+                fadeInMuffle = true;
+            }
+            else
+            {
+                if (immediately)
+                {
+                    t4 = 0;
+                    muffleSound = true;
+                    fadeInMuffle = false;
+                    time4MuffleSound = 0.2f;
+                }
+                else
+                {
+                    t4 = 0;
+                    muffleSound = true;
+                    fadeInMuffle = false;
+                }
+            }
+        }
+    }
+
+    public void GetAudioFiltersFromCamera()
+    {
+        audioLowPassFilter = Camera.main.GetComponent<AudioLowPassFilter>();
+        audioLowPassFilter.cutoffFrequency = 22000;
+        audioReverbFilter = Camera.main.GetComponent<AudioReverbFilter>();
+        TurnOffReverb();
+    }
+
+    public void TurnOffReverb()
+    {
+        audioReverbFilter.reverbPreset = AudioReverbPreset.Off;
+    }
+
+    //void ApplyReverb()
+    //{
+    //    audioReverbFilter.room = Mathf.Lerp(-10000, -1000, t4);
+    //    audioReverbFilter.roomHF = Mathf.Lerp(-10000, -400, t4);
+    //    audioReverbFilter.decayTime = Mathf.Lerp(1, 17.23f, t4);
+    //    audioReverbFilter.decayHFRatio = Mathf.Lerp(1, 0.56f, t4);
+    //    audioReverbFilter.reflectionsLevel = Mathf.Lerp(-2602, -1713, t4);
+    //    audioReverbFilter.reverbLevel = Mathf.Lerp(200, -613, t4);
+    //    audioReverbFilter.reverbDelay = Mathf.Lerp(0.011f, 0.03f, t4);
+    //    audioReverbFilter.diffusion = Mathf.Lerp(0, 100, t4);
+    //    audioReverbFilter.density = Mathf.Lerp(0, 100, t4);
+    //}
+
+    //void RemoveReverb()
+    //{
+    //    audioReverbFilter.room = Mathf.Lerp(-1000, -10000, t4);
+    //    audioReverbFilter.roomHF = Mathf.Lerp(-400, -10000, t4);
+    //    audioReverbFilter.decayTime = Mathf.Lerp(17.23f, 1, t4);
+    //    audioReverbFilter.decayHFRatio = Mathf.Lerp(0.56f, 1, t4);
+    //    audioReverbFilter.reflectionsLevel = Mathf.Lerp(-1713, -2602, t4);
+    //    audioReverbFilter.reverbLevel = Mathf.Lerp(-613, 200, t4);
+    //    audioReverbFilter.reverbDelay = Mathf.Lerp(0.03f, 0.011f, t4);
+    //    audioReverbFilter.diffusion = Mathf.Lerp(100, 0, t4);
+    //    audioReverbFilter.density = Mathf.Lerp(100, 0, t4);
+    //}
+
+    public void SetNoSound(bool noSound)
+    {
+        this.noSound = noSound;
     }
 }

@@ -118,6 +118,8 @@ public class OtherGameModesManager : MonoBehaviour
         rankings = AchievementsAndLeaderboards.Instance;
         rate = Ratings.Instance;
 
+        audioManager.GetAudioFiltersFromCamera();
+
         noSound = PlayerPrefsX.GetBool("noSound");
         AudioListener.volume = 0;
         audioListener.enabled = true;

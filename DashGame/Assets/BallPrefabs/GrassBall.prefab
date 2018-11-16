@@ -313,7 +313,7 @@ TrailRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Time: 0.5
   m_Parameters:
@@ -399,6 +399,8 @@ MonoBehaviour:
     rgba: 4278207341
   ghost: {fileID: 1833387116422006, guid: 7b9d196784e229b4ab7d098ba5260925, type: 2}
   firstImpactSound: GrassBallFI
+  defaultSounds: 0
+  collisionParticlesBurstAmount: 10
 --- !u!198 &198103532682505314
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -10104,7 +10106,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 100
+    maxNumParticles: 500
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -10251,7 +10253,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
     arc:
-      value: 241.13
+      value: 360
       mode: 0
       spread: 0
       speed:
@@ -10308,7 +10310,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
   EmissionModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
@@ -14297,7 +14299,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 7
   m_RenderMode: 0
   m_SortMode: 3
@@ -14352,7 +14354,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 0690310c4d4c6a74789393f8be0cca4a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -14398,7 +14400,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: dbe3059c9ab128b48b7a43ff5b5eaef7, type: 3}
   m_Color: {r: 0.42700002, g: 0.26196954, b: 0, a: 1}

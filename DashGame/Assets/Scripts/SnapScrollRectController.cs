@@ -146,7 +146,6 @@ public class SnapScrollRectController : MonoBehaviour
 
         public void Select()
         {
-            print(index);
             valueChanged = true;
             if (!unlocked)
             {

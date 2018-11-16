@@ -36,6 +36,8 @@ GameObject:
   - component: {fileID: 224815526948030990}
   - component: {fileID: 20667148453196536}
   - component: {fileID: 81670900034264830}
+  - component: {fileID: 169224027237097484}
+  - component: {fileID: 164034613675447526}
   - component: {fileID: 114200618017194826}
   - component: {fileID: 114255521714248996}
   m_Layer: 0
@@ -147,7 +149,6 @@ MonoBehaviour:
   RateMePage: {fileID: 0}
   AudioCredits: {fileID: 0}
   GemsText: {fileID: 0}
-  AudioCreditsButton: {fileID: 0}
   GDPRConsentForm: {fileID: 0}
 --- !u!114 &114255521714248996
 MonoBehaviour:
@@ -163,6 +164,52 @@ MonoBehaviour:
   mainPanel: {fileID: 0}
   yesPanel: {fileID: 0}
   noPanel: {fileID: 0}
+--- !u!164 &164034613675447526
+AudioReverbFilter:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1961242485683314}
+  m_Enabled: 1
+  m_DryLevel: 0
+  m_Room: -10000
+  m_RoomHF: -10000
+  m_DecayTime: 1
+  m_DecayHFRatio: 1
+  m_ReflectionsLevel: -2602
+  m_ReverbLevel: 200
+  m_ReverbDelay: 0.011
+  m_Diffusion: 0
+  m_Density: 0
+  m_HFReference: 5000
+  m_RoomLF: 0
+  m_LFReference: 250
+  m_ReflectionsDelay: 0
+  m_ReverbPreset: 0
+--- !u!169 &169224027237097484
+AudioLowPassFilter:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1961242485683314}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!224 &224815526948030990
 RectTransform:
   m_ObjectHideFlags: 1

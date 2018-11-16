@@ -304,7 +304,6 @@ public class ShopController : MonoBehaviour
         comingSoonMad.SetActive(true);
 
         Vector3 originalPos = rectTransform.localPosition;
-        print(originalPos);
         float elapsedTime = 0;
         float CameraShakeIntensity = 1.5f;
         float shakeDuration = 1.436f;
@@ -341,10 +340,5 @@ public class ShopController : MonoBehaviour
         }
         comingSoonButton.interactable = true;
         audioManager.PlayUISound("comingSoon",true);
-    }
-
-    public void printAmsg()
-    {
-        print("asdadasdasfafasfasff");
     }
 }

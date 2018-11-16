@@ -59,86 +59,95 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e077c3b7e5d47ec4593074a24e5fb99d, type: 3}
     name: FireBall
     volume: 0.6
-    pitch: 1
+    pitch: 0.8
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 1fd608b5b4bd2b5409b730c6b9488b6e, type: 3}
     name: GrassBall
-    volume: 0.6
+    volume: 0.35
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: dceb3442d2ff47548a4072082a707990, type: 3}
     name: PurpleBall
-    volume: 0.7
+    volume: 0.85
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8c6e7e569baccef49b0648a3b5a98eb8, type: 3}
     name: ComputerPixelBall
-    volume: 0.21
+    volume: 0.1
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 18a8d42890d47964694e4772762b9c0e, type: 3}
     name: Black&WhiteBall
-    volume: 0.65
+    volume: 0.6
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 246298242202abd45a05abb73cb69519, type: 3}
     name: RainbowBall
-    volume: 0.6
+    volume: 0.35
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 5df8e3e012be27e4d8213eaa594d0b11, type: 3}
     name: SmokeBall
-    volume: 0.6
+    volume: 0.8
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e57422568900dc14c9b32373b30b1ee5, type: 3}
     name: PinkBall
-    volume: 0.5
+    volume: 0.75
     pitch: 1.2
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -150,77 +159,85 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 8855187c0287ae64380f6552ea8ace63, type: 3}
     name: FireBallFI
-    volume: 0.8
+    volume: 0.6
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: a3dde4d312e7e824d80e18c66916366b, type: 3}
     name: GrassBallFI
-    volume: 0.8
+    volume: 0.55
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: bbd12fdda56610c42b0fb9a4dfb09021, type: 3}
     name: ComputerPixelBallFI
-    volume: 0.61
+    volume: 0.4
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 14c163ea0e284284ebab7147db98526a, type: 3}
     name: Black&WhiteBallFI
-    volume: 0.7
+    volume: 0.75
     pitch: 1
     loop: 0
-    ignoreListenerVolume: 0
+    ignoreListenerVolume: 1
     ignoreListenerPause: 0
+    bypassListenerEffects: 1
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 925954a9eb07f8040a4f0e3bc6b76d11, type: 3}
     name: RainbowBallFI
-    volume: 0.8
+    volume: 0.5
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: a320fe97b86c96847884b1364e5cd64d, type: 3}
     name: SmokeBallFI
-    volume: 0.8
+    volume: 0.85
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   UISounds:
   - clip: {fileID: 8300000, guid: 3d5ac4ff0524e714d8aa5b31e534138d, type: 3}
     name: play
-    volume: 0.46
+    volume: 0.4
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -231,6 +248,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -241,6 +259,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 1
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -251,16 +270,18 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 64a46c6890512c740a5dfe40faaae7a8, type: 3}
     name: selectItem
-    volume: 0.55
-    pitch: 1
+    volume: 0.3
+    pitch: 0.97
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -271,6 +292,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -281,6 +303,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -291,6 +314,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -301,6 +325,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -311,6 +336,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -321,17 +347,19 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   music:
   - clip: {fileID: 8300000, guid: 7a3dfeb08d80e7d4fbfcd2f128d4dfcc, type: 3}
     name: cavesMusic
-    volume: 0.45
+    volume: 0.8
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -342,26 +370,29 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: b8bc089dad71fe245a5a56d532fcbae5, type: 3}
     name: skyMusic
-    volume: 0.45
+    volume: 0.55
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 1
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 810786655bb72da418fc46b66d1ebf0a, type: 3}
     name: moonMusic
-    volume: 0.45
+    volume: 0.97
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -372,6 +403,7 @@ MonoBehaviour:
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -383,36 +415,29 @@ MonoBehaviour:
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: e66d660fd85b42f4786a57237bb65cee, type: 3}
     name: ambientCaves
-    volume: 0.3
+    volume: 0.8
     pitch: 1
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: 16dfcf034eccbab4f89d62b3d9d1e1e5, type: 3}
     name: ambientSky
-    volume: 0.3
+    volume: 0.5
     pitch: 1
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
-    dontFadeMeIn: 0
-    index: 0
-    source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 24e01218d42679b498c4a5715e47d30b, type: 3}
-    name: caves2Sky
-    volume: 0.25
-    pitch: 1
-    loop: 1
-    ignoreListenerVolume: 0
-    ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -423,6 +448,7 @@ MonoBehaviour:
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -433,37 +459,41 @@ MonoBehaviour:
     loop: 1
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   miscSounds:
   - clip: {fileID: 8300000, guid: d72b92def2d1e3447a5897be6930b9f1, type: 3}
     name: portalSpawn
-    volume: 1
+    volume: 0.65
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
   - clip: {fileID: 8300000, guid: bddbe9467f8694746acda8de705f86c9, type: 3}
     name: portalShrink
-    volume: 1
-    pitch: 1
-    loop: 0
-    ignoreListenerVolume: 0
-    ignoreListenerPause: 0
-    dontFadeMeIn: 0
-    index: 0
-    source: {fileID: 0}
-  - clip: {fileID: 8300000, guid: 309fe8842b59e7247a0d56a26cde1231, type: 3}
-    name: suckIn
     volume: 0.6
     pitch: 1
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
+    dontFadeMeIn: 0
+    index: 0
+    source: {fileID: 0}
+  - clip: {fileID: 8300000, guid: 309fe8842b59e7247a0d56a26cde1231, type: 3}
+    name: suckIn
+    volume: 0.4
+    pitch: 1
+    loop: 0
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -474,6 +504,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -484,6 +515,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -494,6 +526,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 1
     ignoreListenerPause: 1
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -505,6 +538,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}
@@ -515,6 +549,7 @@ MonoBehaviour:
     loop: 0
     ignoreListenerVolume: 0
     ignoreListenerPause: 0
+    bypassListenerEffects: 0
     dontFadeMeIn: 0
     index: 0
     source: {fileID: 0}

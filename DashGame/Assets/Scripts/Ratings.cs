@@ -6,8 +6,8 @@ public class Ratings : MonoBehaviour
 
     GameObject RateMePage;
 
-    float timeSinceLastAsk = 0;
-    float timeOfLastAsk;
+    float timeSinceLastAsk = 0; // time since Ask4Rate() was called
+    float timeOfLastAsk; //time since the rating panel popped up on screen
     static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
 
     private void Awake()
