@@ -1,24 +1,8 @@
 fileFormatVersion: 2
-guid: bb9cca642f873460583c43bdb38721a9
-PluginImporter:
-  externalObjects: {}
-  serializedVersion: 2
-  iconMap: {}
-  executionOrder: {}
-  isPreloaded: 0
-  isOverridable: 0
-  platformData:
-  - first:
-      Any: 
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      Editor: Editor
-    second:
-      enabled: 0
-      settings:
-        DefaultValueInitialized: true
+guid: 5287c2716010d4ea28628f69ebaa424a
+timeCreated: 1532084009
+licenseType: Pro
+DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 

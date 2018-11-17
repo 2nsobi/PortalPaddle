@@ -24,8 +24,11 @@ namespace AppodealAds.Unity.iOS {
 
 		[DllImport("__Internal")]
 		internal static extern void AppodealInitialize (string apiKey, int types, bool hasConsent, string pluginVer, string engineVersion);
-		
-		[DllImport("__Internal")]
+
+        [DllImport("__Internal")]
+        internal static extern bool AppodealIsInitialized(int type);
+
+        [DllImport("__Internal")]
 		internal static extern bool AppodealShowAd (int style);
 
 		[DllImport("__Internal")]
@@ -58,7 +61,10 @@ namespace AppodealAds.Unity.iOS {
 		[DllImport("__Internal")]
         internal static extern void AppodealSetSmartBanners(bool value);
 
-		[DllImport("__Internal")]
+        [DllImport("__Internal")]
+        internal static extern void AppodealSetTabletBanners(bool value);
+
+        [DllImport("__Internal")]
         internal static extern void AppodealSetBannerBackground(bool value);
 
 		[DllImport("__Internal")]

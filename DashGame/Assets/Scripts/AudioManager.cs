@@ -180,6 +180,11 @@ public class AudioManager : MonoBehaviour
 
     public void Fade2LvlSound(string lvlSoundName)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             Sound s = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
@@ -200,7 +205,7 @@ public class AudioManager : MonoBehaviour
 
     public void Fade2Music(string musicName)
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
@@ -238,6 +243,10 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
+        if (noSound)
+        {
+            return;
+        }
         if (fade2LvlSound)
         {
             t1 += Time.deltaTime / time4SoundFade;
@@ -392,7 +401,6 @@ public class AudioManager : MonoBehaviour
                     audioReverbFilter.reverbPreset = AudioReverbPreset.Psychotic;
                     audioReverbFilter.reverbPreset = AudioReverbPreset.User; // have to make the preset user before you can change any of the filters values
                     audioReverbFilter.reverbLevel = 0; //this prevents static
-                    print(audioReverbFilter.reverbLevel);
                 }
             }
             else
@@ -413,6 +421,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayLvlSound(string lvlSoundName)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (currentLvlSound != null)
@@ -432,12 +445,22 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLvlSounds()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         t1 = 0;
         clearLvlSounds = true;
     }
 
     public void StopLvlSounds()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         if (currentLvlSound != null)
         {
             currentLvlSound.source.volume = 0;
@@ -446,10 +469,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string musicName, bool stop = false)
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         try
         {
             currentMusic = Array.Find(music, sound => sound.name == musicName);
@@ -471,16 +495,22 @@ public class AudioManager : MonoBehaviour
 
     public void ClearMusic()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         t2 = 0;
         clearMusic = true;
     }
 
     public void StopMusic()
     {
+        if (noMusic || noSound)
+        {
+            return;
+        }
+
         if (currentMusic != null)
         {
             stopMusicDelay = StartCoroutine(StopMusicDelay(currentMusic));
@@ -508,6 +538,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBallSound(int index)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             Sound s = ballSounds[index];
@@ -532,6 +567,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBallFISound(int index)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             ballFISounds[index].source.Play();
@@ -545,6 +585,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayUISound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -565,6 +610,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayAmbientSound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -585,6 +635,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMiscSound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -614,10 +669,11 @@ public class AudioManager : MonoBehaviour
 
     public void StartPlayingOGMMusicRadio()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         int j = song2StartRadioWith;
         for (int i = 0; i < otherGameModesMusic.Length; i++)
         {
@@ -648,10 +704,11 @@ public class AudioManager : MonoBehaviour
 
     public void StopOGGMusicRadio()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         if (OGGMRadio != null)
             StopCoroutine(OGGMRadio);
 
@@ -664,6 +721,11 @@ public class AudioManager : MonoBehaviour
 
     public void Go2LabBasement()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         comeBackFromBasement = false;
 
         t3 = 0;
@@ -672,6 +734,11 @@ public class AudioManager : MonoBehaviour
 
     public void ComeBackFromBasement()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         PlayUISound("switchPageLouder");
         go2Basement = false;
 
@@ -733,11 +800,6 @@ public class AudioManager : MonoBehaviour
         audioLowPassFilter = Camera.main.GetComponent<AudioLowPassFilter>();
         audioLowPassFilter.cutoffFrequency = 22000;
         audioReverbFilter = Camera.main.GetComponent<AudioReverbFilter>();
-        TurnOffReverb();
-    }
-
-    public void TurnOffReverb()
-    {
         audioReverbFilter.reverbPreset = AudioReverbPreset.Off;
     }
 

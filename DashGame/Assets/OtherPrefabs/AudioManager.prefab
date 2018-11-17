@@ -201,7 +201,7 @@ MonoBehaviour:
     volume: 0.75
     pitch: 1
     loop: 0
-    ignoreListenerVolume: 1
+    ignoreListenerVolume: 0
     ignoreListenerPause: 0
     bypassListenerEffects: 1
     dontFadeMeIn: 0
