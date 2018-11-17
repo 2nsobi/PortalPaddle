@@ -967,4 +967,9 @@ public class GameManager : MonoBehaviour
     {
         rankings.ShowAchievements();
     }
+
+    public void SetNoSound(bool noSound)
+    {
+        this.noSound = noSound;
+    }
 }

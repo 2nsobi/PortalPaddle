@@ -54,28 +54,24 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             }
         }
 
-        Appodeal.setTesting(true);
-        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
-
         noAds = PlayerPrefsX.GetBool("noAds");
+
+        //Appodeal.setTesting(true);
+        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         if (!noAds)
         {
-            Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
-            Appodeal.setAutoCache(Appodeal.BANNER, true);
-            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
-
             Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, false);
             Appodeal.setRewardedVideoCallbacks(this);
             Appodeal.setBannerCallbacks(this);
 
             Appodeal.show(Appodeal.BANNER_BOTTOM);
+
             showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
             showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
         }
         else
         {
-            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
             Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, false);
             Appodeal.setRewardedVideoCallbacks(this);
         }
@@ -182,6 +178,14 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Appodeal.onResume();
+        }
+    }
+
     public void ShowRewardVideo(bool givereward = true)
     {
         if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
@@ -226,16 +230,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
-    public void onBannerLoaded(bool isPrecache)
-    {
-        if (!noAds)
-        {
-            if (!bannerActive)
-            {
-                Appodeal.show(Appodeal.BANNER_BOTTOM);
-            }
-        }
-    }
+    public void onBannerLoaded(bool isPrecache){ }
 
     public void onBannerFailedToLoad()
     {

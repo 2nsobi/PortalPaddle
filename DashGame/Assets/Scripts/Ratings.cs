@@ -48,7 +48,7 @@ public class Ratings : MonoBehaviour
     {
         if (currentPlatform == "android")
         {
-            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.Portal.Paddle");
+            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
         }
     }
 

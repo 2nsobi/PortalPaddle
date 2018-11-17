@@ -5,6 +5,7 @@ namespace AppodealAds.Unity.Common {
 
 		void initialize(string appKey, int type);
 		void initialize(string appKey, int type, bool hasConsent);
+        bool isInitialized(int adType);
 
 		bool show(int adTypes);
 		bool show(int adTypes, string placement);
