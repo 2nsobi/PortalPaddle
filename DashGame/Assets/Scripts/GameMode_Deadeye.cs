@@ -68,7 +68,7 @@ public class GameMode_Deadeye : MonoBehaviour
             firstPlay = false;
         }
 
-        ballC.IncreaseDropSpeed(18,22);//(20, 22);
+        ballC.IncreaseDropSpeed(16,22);//(20, 22);
 
         ballDropDelay = StartCoroutine(BallDropDelay());
 

@@ -472,11 +472,6 @@ public class Ball : MonoBehaviour
     {
         SetAnimBools("ShouldShrink", shouldAbsorb);
 
-        if (transform.position.y < -4.95f)
-        {
-            gameObject.layer = ignoreObstaclesLayer;
-        }
-
         //failsafes for when ball is jammed between two colliders and the resulting velocity is very slow or if the ball just stops
         if(rigidbody.velocity.magnitude < 10 && shouldBoost && !clairvoyance)
         {
@@ -501,6 +496,11 @@ public class Ball : MonoBehaviour
         if (wrappingEnabled)
         {
             Wrap();
+        }
+
+        if (transform.position.y < -4.5f)
+        {
+            gameObject.layer = ignoreObstaclesLayer;
         }
     }
 
