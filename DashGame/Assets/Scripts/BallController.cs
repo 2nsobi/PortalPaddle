@@ -54,6 +54,7 @@ public class BallController : MonoBehaviour
     float spawnAreaLeftEdge, spawnAreaRightEdge;
     float newXRange;
     float oldXRange = 100;
+    float origInitialSpeed, origBoostSpeed;
 
     //List<float> times = new List<float>();
     //float startTime;
@@ -101,6 +102,9 @@ public class BallController : MonoBehaviour
         grayScaleMat.SetFloat("_EffectAmount", 0);
 
         tutorialDisabled = PlayerPrefsX.GetBool("tutorialDisabled");
+
+        origInitialSpeed = initialSpeed;
+        origBoostSpeed = boostSpeed;
     }
 
     private void Start()
@@ -318,7 +322,7 @@ public class BallController : MonoBehaviour
                         if (!dontStartGameMode)
                         {
                             gameModeManager.SetGameMode(currentGameMode2Start); //make sure to set the game mode before setting any pagestates or backgrounds
-                            audioManager.StopOGGMusicRadio();
+                            audioManager.StopOGMusicRadio();
                         }
 
                         obSpawner.SetGameModeBackground();
@@ -335,10 +339,9 @@ public class BallController : MonoBehaviour
 
                         if (currentGameMode == 1)
                         {
-                            if (playedOnce)
-                            {
-                                DisableBallsInQ();
-                            }
+
+                            DisableBallsInQ();
+
                             playedOnce = true;
                         }
 
@@ -374,10 +377,9 @@ public class BallController : MonoBehaviour
 
                         if (currentGameMode == 1)
                         {
-                            if (playedOnce)
-                            {
-                                DisableBallsInQ();
-                            }
+
+                            DisableBallsInQ();
+
                             playedOnce = true;
                         }
 
@@ -431,6 +433,9 @@ public class BallController : MonoBehaviour
 
     public void Fade2Black() //comes from gamemanager
     {
+        initialSpeed = origInitialSpeed;
+        boostSpeed = origBoostSpeed;
+
         whiteFlashCGPanel.color = Color.black;
         fade2Black = true;
         whiteFlashCG.alpha = 0;
@@ -447,12 +452,12 @@ public class BallController : MonoBehaviour
 
     public float RandomSpawnAreaXRange()
     {
-        newXRange = Mathf.Clamp(rng.Next(Mathf.RoundToInt(spawnAreaLeftEdge), Mathf.RoundToInt(spawnAreaRightEdge)), spawnAreaLeftEdge + (0.57f), spawnAreaRightEdge - (0.57f));
+        newXRange = rng.Next(Mathf.RoundToInt(spawnAreaLeftEdge + (0.57f)), Mathf.RoundToInt(spawnAreaRightEdge - (0.57f)));    //0.57 is radius of ballspawner sprite
 
         print("old x range before = " + oldXRange);
         print("new x range before = " + newXRange);
 
-        if(newXRange == oldXRange)
+        if (newXRange == oldXRange)
         {
             if (newXRange <= 0)
                 newXRange += 1;
@@ -583,7 +588,7 @@ public class BallController : MonoBehaviour
         if (isGray)
         {
             grayScaleMat.SetFloat("_EffectAmount", 1);
-            audioManager.MuffleSound(true,false);
+            audioManager.MuffleSound(true, false);
             if (obSpawner)
             {
                 obSpawner.InvertDeadeyeBackground();
@@ -722,6 +727,9 @@ public class BallController : MonoBehaviour
 
     public void Fade2GameMode(OtherGameModesManager.pageState page2Fade2, OtherGameModesManager.gameMode gameMode2Start, bool dontStartGM = false)
     {
+        initialSpeed = origInitialSpeed;
+        boostSpeed = origBoostSpeed;
+
         currentPage2Fade2 = page2Fade2;
         currentGameMode2Start = gameMode2Start;
 

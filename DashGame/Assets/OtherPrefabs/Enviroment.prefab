@@ -220,6 +220,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4671856399696050}
   - component: {fileID: 95104644593187978}
+  - component: {fileID: 58762590361534572}
   m_Layer: 0
   m_Name: BallSpawner
   m_TagString: Untagged
@@ -498,7 +499,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1593379380410232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.73, y: -5.53, z: 0}
+  m_LocalPosition: {x: -3.99, y: -2.85, z: 0}
   m_LocalScale: {x: 0.2636045, y: 0.2636045, z: 1}
   m_Children:
   - {fileID: 4544133496024320}
@@ -531,6 +532,21 @@ Transform:
   m_Father: {fileID: 4544133496024320}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &58762590361534572
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1593379380410232}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2.16
 --- !u!61 &61125843653288830
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -849,16 +865,10 @@ MonoBehaviour:
   - prefab: {fileID: 1503209895976950, guid: 3b15005f23b2f294dbf8139b0ae6eb75, type: 2}
     size: 4
     easy: 1
-  - prefab: {fileID: 1826946630696652, guid: d447f7ebfd48de140950f1163221b141, type: 2}
-    size: 1
-    easy: 0
   - prefab: {fileID: 1406720898656728, guid: ce2ca7c660356b64182b4682308a12e6, type: 2}
     size: 4
     easy: 1
   - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
-    size: 1
-    easy: 0
-  - prefab: {fileID: 1387137365626362, guid: 83351b295d029ad4295747415c9fc0f3, type: 2}
     size: 1
     easy: 0
   StartLvl: {fileID: 1751773122447060, guid: 251f08367dd23204bb29a1bf8706f40e, type: 2}

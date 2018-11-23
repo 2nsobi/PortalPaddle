@@ -32,6 +32,7 @@ public class OtherGameModesManager : MonoBehaviour
     public Text DeadeyeHighScore;
     public Text ClairvoyanceHighScore;
     public Text UltraHighScore; // just the sum of all the other high scores
+    public GameObject TapBlocker; //just blocks taps for when a player leaves a game mode and goes back to the OGM Menu. stops player from tapping another game mode button until the menu is fully loaded
 
     GameManager game;
     ObstacleSpawner obSpawner;
@@ -46,6 +47,7 @@ public class OtherGameModesManager : MonoBehaviour
 
     Coroutine disableReplayButtonC;
     Coroutine pauseCoroutine;
+    Coroutine fadeInVolume;
     Text scoreReviewGems;
 
     bool gemsOnScreen = false;
@@ -72,9 +74,6 @@ public class OtherGameModesManager : MonoBehaviour
     float volB4Pause;
 
     public delegate void OtherGameModesManagerDelegate();
-    public static event OtherGameModesManagerDelegate StartPlusOne;
-    public static event OtherGameModesManagerDelegate StartDeadeye;
-    public static event OtherGameModesManagerDelegate StartClairvoyance;
     public static event OtherGameModesManagerDelegate GameModeStarted;
 
     private void Awake()
@@ -127,8 +126,8 @@ public class OtherGameModesManager : MonoBehaviour
         {
             audioManager.SwitchUpRadioFirstSong();
 
-            StartCoroutine(FadeInVolume());
-            audioManager.PlayLvlSound("elevator");
+            fadeInVolume = StartCoroutine(FadeInVolume());
+            audioManager.StartOGMMenuMusic();
         }
 
         Paddle.SetPauseButtonRect(pauseButtonRect);
@@ -170,6 +169,8 @@ public class OtherGameModesManager : MonoBehaviour
 
     IEnumerator FadeOutVolume() //fade out games master volume
     {
+        if (fadeInVolume != null) StopCoroutine(fadeInVolume);
+
         float targetTime = 0.28f;
         float elaspedTime = 0;
 
@@ -346,7 +347,6 @@ public class OtherGameModesManager : MonoBehaviour
                 }
                 break;
 
-
             case pageState.Paused:
                 currentPageState = pageState.Paused;
                 GamePage.SetActive(true);
@@ -466,7 +466,6 @@ public class OtherGameModesManager : MonoBehaviour
         ads.ShowInterstitialOrNonSkipAd();
 
         ballC.Fade2GameMode(pageState.StartPage, gameMode.None);
-        SetGameModeSelectButtons(true);
     }
 
     public void Replay()
@@ -491,6 +490,10 @@ public class OtherGameModesManager : MonoBehaviour
             Time.timeScale = 0;
             SetPageState(pageState.CountdownPage);
             pauseCoroutine = StartCoroutine(Countdown());
+        }
+        else
+        {
+            SetGameModeSelectButtons(true);
         }
 
         replayButton.interactable = true;
@@ -564,6 +567,7 @@ public class OtherGameModesManager : MonoBehaviour
         if (firstStart || replaying)
         {
             if (firstStart) firstStart = false;
+            if (replaying) replaying = false;
 
             GameModeStarted();
         }

@@ -20,13 +20,14 @@ public class AudioManager : MonoBehaviour
     Sound currentMusic;
     Sound nextMusic;
     Sound currentSong;
+    Sound OGMMenuMusic;
 
     AudioLowPassFilter audioLowPassFilter;
     AudioReverbFilter audioReverbFilter;
 
-    Queue<Sound> OGGMRadioQ = new Queue<Sound>();
+    Queue<Sound> OGMRadioQ = new Queue<Sound>();
     int song2StartRadioWith; // the track you hear first changes each time you leave and enter a new game mode, could be same game mode
-    Coroutine OGGMRadio;
+    Coroutine OGMRadio;
 
     Coroutine stopMusicDelay;
     System.Random rng = new System.Random();
@@ -170,6 +171,8 @@ public class AudioManager : MonoBehaviour
             miscSounds[i].source.ignoreListenerPause = miscSounds[i].ignoreListenerPause;
             miscSounds[i].source.bypassListenerEffects = miscSounds[i].bypassListenerEffects;
         }
+
+        OGMMenuMusic = Array.Find(ambientSounds, sound => sound.name == "elevator");
     }
 
     private void Start()
@@ -621,7 +624,7 @@ public class AudioManager : MonoBehaviour
         int j = song2StartRadioWith;
         for (int i = 0; i < otherGameModesMusic.Length; i++)
         {
-            OGGMRadioQ.Enqueue(otherGameModesMusic[j]);
+            OGMRadioQ.Enqueue(otherGameModesMusic[j]);
 
             j++;
             if (j == otherGameModesMusic.Length)
@@ -632,34 +635,34 @@ public class AudioManager : MonoBehaviour
         if (song2StartRadioWith == otherGameModesMusic.Length)
             song2StartRadioWith = 0;
 
-        OGGMRadio = StartCoroutine(PlayNextSongInRadio());
+        OGMRadio = StartCoroutine(PlayNextSongInRadio());
     }
 
     IEnumerator PlayNextSongInRadio()
     {
-        currentSong = OGGMRadioQ.Dequeue();
-        OGGMRadioQ.Enqueue(currentSong);
+        currentSong = OGMRadioQ.Dequeue();
+        OGMRadioQ.Enqueue(currentSong);
 
         currentSong.source.Play();
         yield return new WaitForSeconds(currentSong.source.clip.length);
 
-        OGGMRadio = StartCoroutine(PlayNextSongInRadio());
+        OGMRadio = StartCoroutine(PlayNextSongInRadio());
     }
 
-    public void StopOGGMusicRadio()
+    public void StopOGMusicRadio()
     {
         if (noMusic)
         {
             return;
         }
-        if (OGGMRadio != null)
-            StopCoroutine(OGGMRadio);
+        if (OGMRadio != null)
+            StopCoroutine(OGMRadio);
 
         if (currentSong != null)
             currentSong.source.Stop();
 
-        if (OGGMRadioQ.Count > 0)
-            OGGMRadioQ.Clear();
+        if (OGMRadioQ.Count > 0)
+            OGMRadioQ.Clear();
     }
 
     public void Go2LabBasement()
@@ -770,5 +773,16 @@ public class AudioManager : MonoBehaviour
     public void SetNoSound(bool noSound)
     {
         this.noSound = noSound;
+    }
+
+    public void StartOGMMenuMusic()  // sets the volume of the elevator music you hear in the other game modes menu to 1 and restarts if from the beginning
+    {
+        OGMMenuMusic.source.volume = 1;
+        OGMMenuMusic.source.Play();
+    }
+
+    public void StopOGMMenuMusic()  // sets the volume of the elevator music you hear in the other game modes menu to 0
+    {
+        OGMMenuMusic.source.volume = 0;
     }
 }

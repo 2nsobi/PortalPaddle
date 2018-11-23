@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
     AudioListener audioListener;
     float volB4Pause;
     static CryptoRandom rng = new CryptoRandom();
+    Coroutine fadeInVolume;
 
     public static GameManager Instance;
 
@@ -247,7 +248,7 @@ public class GameManager : MonoBehaviour
         gameRunning = false;
         paused = false;
 
-        Coroutine fadeInVolume = StartCoroutine(FadeInVolume());
+        fadeInVolume = StartCoroutine(FadeInVolume());
         audioManager.PlayLvlSound("ambientLab");
         noSound = PlayerPrefsX.GetBool("noSound");
         audioListener.enabled = true;
@@ -290,6 +291,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FadeOutVolume() //fade out games master volume
     {
+        if (fadeInVolume != null) StopCoroutine(fadeInVolume);
+
         float targetTime = 0.28f;
         float elaspedTime = 0;
 
