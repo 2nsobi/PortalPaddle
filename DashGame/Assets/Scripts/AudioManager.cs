@@ -183,6 +183,11 @@ public class AudioManager : MonoBehaviour
 
     public void Fade2LvlSound(string lvlSoundName)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             Sound s = Array.Find(ambientSounds, sound => sound.name == lvlSoundName);
@@ -203,10 +208,11 @@ public class AudioManager : MonoBehaviour
 
     public void Fade2Music(string musicName)
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         try
         {
             Sound s = Array.Find(music, sound => sound.name == musicName);
@@ -241,6 +247,11 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         if (fade2LvlSound)
         {
             t1 += Time.deltaTime / time4SoundFade;
@@ -383,7 +394,7 @@ public class AudioManager : MonoBehaviour
         // applying the lowpassfilter before other audio effects like reverb prevents noticeable crackling
         if (muffleSound)
         {
-            t4 += Time.deltaTime / time4MuffleSound;
+            t4 += Time.unscaledDeltaTime / time4MuffleSound;
             if (fadeInMuffle)
             {
                 audioLowPassFilter.cutoffFrequency = Mathf.Lerp(22000, audioLowPassCutOffFreq, t4);
@@ -435,12 +446,22 @@ public class AudioManager : MonoBehaviour
 
     public void ClearLvlSounds()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         t1 = 0;
         clearLvlSounds = true;
     }
 
     public void StopLvlSounds()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         if (currentLvlSound != null)
         {
             currentLvlSound.source.volume = 0;
@@ -449,7 +470,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string musicName, bool stop = false)
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
@@ -474,7 +495,7 @@ public class AudioManager : MonoBehaviour
 
     public void ClearMusic()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
@@ -484,6 +505,11 @@ public class AudioManager : MonoBehaviour
 
     public void StopMusic()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         if (currentMusic != null)
         {
             stopMusicDelay = StartCoroutine(StopMusicDelay(currentMusic));
@@ -511,6 +537,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBallSound(int index)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             Sound s = ballSounds[index];
@@ -535,6 +566,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBallFISound(int index)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             ballFISounds[index].source.Play();
@@ -548,6 +584,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayUISound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -568,6 +609,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayAmbientSound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -588,6 +634,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMiscSound(string name, bool stop = false)
     {
+        if (noSound)
+        {
+            return;
+        }
+
         try
         {
             if (!stop)
@@ -612,15 +663,17 @@ public class AudioManager : MonoBehaviour
         {
             return;
         }
+
         song2StartRadioWith = rng.Next(0, otherGameModesMusic.Length);
     }
 
     public void StartPlayingOGMMusicRadio()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         int j = song2StartRadioWith;
         for (int i = 0; i < otherGameModesMusic.Length; i++)
         {
@@ -651,10 +704,11 @@ public class AudioManager : MonoBehaviour
 
     public void StopOGMusicRadio()
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         if (OGMRadio != null)
             StopCoroutine(OGMRadio);
 
@@ -667,6 +721,11 @@ public class AudioManager : MonoBehaviour
 
     public void Go2LabBasement()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         comeBackFromBasement = false;
 
         t3 = 0;
@@ -675,6 +734,11 @@ public class AudioManager : MonoBehaviour
 
     public void ComeBackFromBasement()
     {
+        if (noSound)
+        {
+            return;
+        }
+
         PlayUISound("switchPageLouder");
         go2Basement = false;
 
@@ -684,10 +748,11 @@ public class AudioManager : MonoBehaviour
 
     public void LetCurrentMusicIgnoreFadeOut(bool yes)
     {
-        if (noMusic)
+        if (noMusic || noSound)
         {
             return;
         }
+
         if (currentSong != null)
         {
             if (yes)
@@ -777,12 +842,22 @@ public class AudioManager : MonoBehaviour
 
     public void StartOGMMenuMusic()  // sets the volume of the elevator music you hear in the other game modes menu to 1 and restarts if from the beginning
     {
+        if (noSound)
+        {
+            return;
+        }
+
         OGMMenuMusic.source.volume = 1;
         OGMMenuMusic.source.Play();
     }
 
     public void StopOGMMenuMusic()  // sets the volume of the elevator music you hear in the other game modes menu to 0
     {
+        if (noSound)
+        {
+            return;
+        }
+
         OGMMenuMusic.source.volume = 0;
     }
 }

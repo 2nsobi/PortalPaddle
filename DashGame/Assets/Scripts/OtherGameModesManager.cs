@@ -615,6 +615,19 @@ public class OtherGameModesManager : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
+        ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
+        ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+        ZPlayerPrefs.SetInt("gems", (int)gems);
+
+        if (updateHS)
+        {
+            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+        }
+    }
+
     public void DeactivatePaddle()
     {
         Paddle.DeactivatePaddle(); // deactivatePaddle also sets othergamerunning bool to false;

@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 212026836474237430}
   m_Layer: 10
   m_Name: triangle
-  m_TagString: Untagged
+  m_TagString: obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
