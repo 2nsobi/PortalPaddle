@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 169224027237097484}
   - component: {fileID: 164034613675447526}
   - component: {fileID: 114200618017194826}
-  - component: {fileID: 114255521714248996}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -70,7 +69,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.10702207, g: 0.11309629, b: 0.122641504, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -149,21 +148,6 @@ MonoBehaviour:
   RateMePage: {fileID: 0}
   AudioCredits: {fileID: 0}
   GemsText: {fileID: 0}
-  GDPRConsentForm: {fileID: 0}
---- !u!114 &114255521714248996
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1961242485683314}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52c44dc67b646e4dbd7844fc2f1fba0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainPanel: {fileID: 0}
-  yesPanel: {fileID: 0}
-  noPanel: {fileID: 0}
 --- !u!164 &164034613675447526
 AudioReverbFilter:
   m_ObjectHideFlags: 1

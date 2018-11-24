@@ -109,8 +109,6 @@ public class GameManager : MonoBehaviour
     public Text GemsText;
     //public GameObject AudioCreditsButton; for if the audiocredits button was on the home screen instead of in the settings page
 
-    public GameObject GDPRConsentForm;
-
     public enum pageState { Game, StartPage, GameOver, Paused, CountdownPage, SettingsPage, ScoreReview, ShopPage };
     pageState currentPageState;
 
@@ -162,29 +160,6 @@ public class GameManager : MonoBehaviour
         }
 
         ZPlayerPrefs.Initialize(rAFARRfwej82qwe, asfmn2348HKOA823); //ZPlayerPrefs does not work until it is initialized
-
-        //if (ZPlayerPrefs.GetInt("result_gdpr") == 0)
-        //{
-        //    GDPRConsentForm.SetActive(true);
-        //}
-        //else
-        //{
-        //    GDPRConsentForm.SetActive(false);
-        //}
-
-
-
-
-
-        /********************************************
-         DELETE THING BELOW
-         **********************************************/
-
-        //ZPlayerPrefs.DeleteAll();
-
-        /********************************************
-        DELETE THING ABOVE
-        **********************************************/
 
 
         GameModeButtonAnimC = GameModeButton.GetComponent<Animator>();
@@ -804,6 +779,11 @@ public class GameManager : MonoBehaviour
         ZPlayerPrefs.SetInt("HighScore", highScore);
 
         ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+
+        if (updateHS)
+        {
+            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
+        }
     }
 
     public int GetScore

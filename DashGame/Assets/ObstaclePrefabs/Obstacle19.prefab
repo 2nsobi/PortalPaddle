@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 212739585032907598}
   m_Layer: 10
   m_Name: triangle
-  m_TagString: Untagged
+  m_TagString: obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 212823608522435830}
   m_Layer: 10
   m_Name: triangle
-  m_TagString: Untagged
+  m_TagString: obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 212889621945700334}
   m_Layer: 10
   m_Name: triangle
-  m_TagString: Untagged
+  m_TagString: obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 212795477022065724}
   m_Layer: 10
   m_Name: triangle
-  m_TagString: Untagged
+  m_TagString: obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,7 +237,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4473078725165388}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Obstacle19
   m_TagString: Untagged
   m_Icon: {fileID: 0}
