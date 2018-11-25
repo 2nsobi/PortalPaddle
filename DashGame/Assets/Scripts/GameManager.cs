@@ -760,7 +760,7 @@ public class GameManager : MonoBehaviour
 
             if (updateHS)
             {
-                rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
+                rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.highScores, highScore);
             }
         }
         else
@@ -782,7 +782,7 @@ public class GameManager : MonoBehaviour
 
         if (updateHS)
         {
-            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_high_scores, highScore);
+            rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.highScores, highScore);
         }
     }
 
