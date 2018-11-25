@@ -600,7 +600,7 @@ public class OtherGameModesManager : MonoBehaviour
 
             if (updateHS)
             {
-                rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+                rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.ultraHighScores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
             }
 
             pauseAllCoroutines = true;
@@ -624,7 +624,7 @@ public class OtherGameModesManager : MonoBehaviour
 
         if (updateHS)
         {
-            rankings.AddScore2LeaderBoard(GPGSIds.leaderboard_ultra_high_scores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+            rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.ultraHighScores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
         }
     }
 

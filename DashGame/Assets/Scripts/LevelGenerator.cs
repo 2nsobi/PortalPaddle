@@ -906,7 +906,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 interstellar = true;
                 playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
-                rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
+                rankings.UnlockAchievement(AchievementsAndLeaderboards.achievements.interstellar);
             }
         }
 
@@ -916,7 +916,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 lunarKing = true;
                 playButtonGlowMainMod.startColor = Color.yellow;
-                rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
+                rankings.UnlockAchievement(AchievementsAndLeaderboards.achievements.lunarKing);
             }
         }
 
