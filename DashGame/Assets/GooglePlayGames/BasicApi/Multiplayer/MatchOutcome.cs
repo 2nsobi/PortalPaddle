@@ -64,7 +64,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         }
 
         /// <summary>
-        /// <see cref="SetParticipantResult(string,ParticipantResult,uint)"/>
+        /// <see cref="SetParticipantResult(string,ParticipantResult,int)"/>
         /// </summary>
         public void SetParticipantResult(string participantId, ParticipantResult result)
         {
@@ -72,7 +72,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         }
 
         /// <summary>
-        /// <see cref="SetParticipantResult(string,ParticipantResult,uint)"/>
+        /// <see cref="SetParticipantResult(string,ParticipantResult,int)"/>
         /// </summary>
         public void SetParticipantResult(string participantId, uint placement)
         {

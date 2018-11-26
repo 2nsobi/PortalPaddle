@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.appodeal.applovin.unity">
-<uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="27" />
 <application>
 <!-- Applovin -->
         <activity android:name="com.applovin.adview.AppLovinInterstitialActivity" android:configChanges="orientation|screenSize"/>

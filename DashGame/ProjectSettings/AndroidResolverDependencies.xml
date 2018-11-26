@@ -5,7 +5,7 @@
     <package>com.google.android.gms:play-services-ads:15.0.1</package>
     <package>com.google.android.gms:play-services-gcm:15.0.1</package>
     <package>com.google.android.gms:play-services-location:15.0.1</package>
-    <package>com.google.games:gpgs-plugin-support:0.9.53</package>
+    <package>com.google.games:gpgs-plugin-support:0.9.51</package>
   </packages>
   <files>
     <file>Assets/Plugins/Android/android.arch.core.common-1.0.0.jar</file>
@@ -39,6 +39,6 @@
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-places-placereport-15.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-15.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.games.gpgs-plugin-support-0.9.53.aar</file>
+    <file>Assets/Plugins/Android/com.google.games.gpgs-plugin-support-0.9.51.aar</file>
   </files>
 </dependencies>

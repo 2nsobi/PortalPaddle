@@ -17,12 +17,6 @@ namespace AppodealAds.Unity.Dummy
 		{
 			Debug.Log("Call to Appodeal.initialize on not supported platform");
 		}
-
-        public bool isInitialized(int adType)
-        {
-            Debug.Log("Call Appodeal.isInitialized on not supported platform");
-            return false;
-        }
 		
 		public bool show(int adTypes)
 		{

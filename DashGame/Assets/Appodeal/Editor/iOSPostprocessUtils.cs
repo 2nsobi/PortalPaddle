@@ -74,9 +74,11 @@ namespace Appodeal.Unity.Editor.iOS
                 }
             }
             string resourcesFolder = "InternalResources";
-            string chZip = "CrashHunter.zip";
+            string chScript = "CrashHunterScript.sh";
+            string uploader = "dSYMUploader";
             string resourcesPath = Path.Combine(appodealPath, resourcesFolder);
-            MacOSUnzip(Path.Combine(resourcesPath, chZip), buildPath);
+            File.Copy(Path.Combine(resourcesPath, chScript), Path.Combine(buildPath, chScript));
+            File.Copy(Path.Combine(resourcesPath, chScript), Path.Combine(buildPath, uploader));
             project.AppendShellScriptBuildPhase(target, "Run Script ChashHunter", "/bin/sh", "$PROJECT_DIR/CrashHunterScript.sh");
 
 #if UNITY_4
@@ -87,23 +89,6 @@ namespace Appodeal.Unity.Editor.iOS
 #endif
 
             File.WriteAllText(projPath, project.WriteToString());
-        }
-
-        static void MacOSUnzip(string source, string dest)
-        {
-            try {
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo()
-                {
-                    FileName = "unzip",
-                    Arguments = source + " -d " + dest
-                };
-                System.Diagnostics.Process proc = new System.Diagnostics.Process() { StartInfo = startInfo, };
-                bool started = proc.Start();
-            }
-            catch(Exception e){
-                Debug.Log(e.Message);
-                ExtractZip(source, dest);
-            }
         }
 
         protected static void AddProjectFrameworks(string[] frameworks, PBXProject project, string target, bool weak)

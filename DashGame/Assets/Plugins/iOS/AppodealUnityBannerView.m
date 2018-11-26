@@ -19,9 +19,11 @@
 
 - (id)init {
     self = [super init];
-    _tabletBanner = YES;
-    [self reinitAppodealBannerView];
     if(self) {
+        CGSize size = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kAPDAdSize728x90 : kAPDAdSize320x50;
+        self.bannerView = [[APDBannerView alloc] initWithSize:size];
+        self.onScreen = NO;
+        
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didRecieveNotification)
@@ -29,18 +31,6 @@
                                                    object:nil];
     }
     return self;
-}
-
--(void)setTabletBanner:(BOOL)value {
-    _tabletBanner = value;
-    [self reinitAppodealBannerView];
-}
-
--(void)reinitAppodealBannerView {
-    BOOL tabletOrPhoneSize = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.tabletBanner;
-    CGSize size = tabletOrPhoneSize ? kAPDAdSize728x90 : kAPDAdSize320x50;
-    self.bannerView = [[APDBannerView alloc] initWithSize:size];
-    self.onScreen = NO;
 }
 
 - (void)didRecieveNotification {

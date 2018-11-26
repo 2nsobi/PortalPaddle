@@ -98,9 +98,7 @@ public class BallController : MonoBehaviour
                 grayScaleMat = balls[i].gameObject.GetComponentInChildren<SpriteRenderer>().sharedMaterial;
             }
         }
-
         grayScaleMat.SetFloat("_EffectAmount", 0);
-        Ball.swapColor = false;
 
         tutorialDisabled = PlayerPrefsX.GetBool("tutorialDisabled");
     }
@@ -241,7 +239,6 @@ public class BallController : MonoBehaviour
 
                         startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
-                        Ball.swapColor = false;
                         audioManager.MuffleSound(false);
                         isGray = false;
 
@@ -259,7 +256,6 @@ public class BallController : MonoBehaviour
 
                         startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
-                        Ball.swapColor = false;
                         audioManager.MuffleSound(false);
                         isGray = false;
 
@@ -333,7 +329,6 @@ public class BallController : MonoBehaviour
                         obSpawner.EndGame();
 
                         grayScaleMat.SetFloat("_EffectAmount", 0);
-                        Ball.swapColor = false;
                         audioManager.MuffleSound(false);
                         obSpawner.InvertDeadeyeBackground(true);
                         isGray = false;
@@ -373,7 +368,6 @@ public class BallController : MonoBehaviour
                         obSpawner.EndGame();
 
                         grayScaleMat.SetFloat("_EffectAmount", 0);
-                        Ball.swapColor = false;
                         audioManager.MuffleSound(false);
                         obSpawner.InvertDeadeyeBackground(true);
                         isGray = false;
@@ -598,7 +592,6 @@ public class BallController : MonoBehaviour
         else
         {
             grayScaleMat.SetFloat("_EffectAmount", 0);
-            Ball.swapColor = false;
             audioManager.MuffleSound(false);
             if (obSpawner)
             {

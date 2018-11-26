@@ -68,10 +68,6 @@ public class Ball : MonoBehaviour
     int index;
     int impactSoundNum, FISoundNum;
     bool clairvoyance = false;
-    bool swapCollisionEffectColor = false;
-    [HideInInspector]
-    public static bool swapColor = false; //if true will switch to secondary color
-    Color origCollisionC;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -95,7 +91,6 @@ public class Ball : MonoBehaviour
         }
         collisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
         mainMods[0] = collisionEffect.main;
-        origCollisionC = mainMods[0].startColor.color;
         try
         {
             fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
@@ -214,12 +209,6 @@ public class Ball : MonoBehaviour
         wrappedAround = false;
         clairvoyance = false;
         lastWallHit = "";
-
-        mainMods[0].startColor = origCollisionC;
-        if (swapColor && swapCollisionEffectColor)
-        {
-            mainMods[0].startColor = Color.white;
-        }       
 
         SetAnimTrigs("Boost", true);
         SetAnimTrigs("ImmediateShrink", true);
@@ -602,14 +591,6 @@ public class Ball : MonoBehaviour
 
             if (!shouldAbsorb)
             {
-                if (swapCollisionEffectColor)
-                {
-                    if (swapColor)
-                        mainMods[0].startColor = Color.white;
-                    else
-                        mainMods[0].startColor = Color.black;
-                }
-
                 if (wallHit || wrappedAround)
                 {
                     wallHit = false;
@@ -856,15 +837,9 @@ public class Ball : MonoBehaviour
         if (!ballC.TurnGray()) //returns isGray as a bool
         {
             impactSoundNum = 0;
-
-            swapCollisionEffectColor = true;
-            swapColor = false;
         }
         else
         {
-            swapCollisionEffectColor = true;
-            swapColor = true;
-
             impactSoundNum = origImpactSoundNum;
         }
     }
