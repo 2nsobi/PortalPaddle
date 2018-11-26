@@ -223,14 +223,12 @@ public class GameManager : MonoBehaviour
         gameRunning = false;
         paused = false;
 
-        fadeInVolume = StartCoroutine(FadeInVolume());
-        audioManager.PlayLvlSound("ambientLab");
         noSound = PlayerPrefsX.GetBool("noSound");
+        audioManager.PlayLvlSound("ambientLab");
         audioListener.enabled = true;
-        if (noSound)
+        if (!noSound)
         {
-            StopCoroutine(fadeInVolume);
-            AudioListener.volume = 0;
+            fadeInVolume = StartCoroutine(FadeInVolume());
         }
     }
 
@@ -949,5 +947,10 @@ public class GameManager : MonoBehaviour
     public void ShowAchievements()
     {
         rankings.ShowAchievements();
+    }
+
+    public void SetNoSound(bool noSound)
+    {
+        this.noSound = noSound;
     }
 }

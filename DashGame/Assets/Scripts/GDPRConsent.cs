@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
-using System;
 
 public class GDPRConsent : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class GDPRConsent : MonoBehaviour
     {
         if (PlayerPrefsX.GetBool("answeredGDPR") == false)
         {
-            StartCoroutine(GetCountryCode());
+            StartCoroutine(DetermineGDPRMeasures());
         }
         else
         {
@@ -29,18 +28,19 @@ public class GDPRConsent : MonoBehaviour
         }
     }
 
-    IEnumerator GetCountryCode()
+    IEnumerator DetermineGDPRMeasures()
     {
         UnityWebRequest www = UnityWebRequest.Get("http://ip-api.com/json");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
         {
+            AdManager.Instance.InitializeAds(true);
             Debug.Log(www.error);
         }
         else
         {
-            string code = GetCountryCodeFromJSON(www.downloadHandler.text);
+            string code = GetCountryCode(www.downloadHandler.text);
 
             bool foundCountry = false;
             for(int i = 0; i < GDPRCountries.Length;i++)
@@ -61,11 +61,11 @@ public class GDPRConsent : MonoBehaviour
             }
 
             // Show results as text
-            Debug.Log(code + ", length = " + code.Length);
+            Debug.Log(code + ", String Length = " + code.Length);
         }
     }
 
-    string GetCountryCodeFromJSON(string json)
+    string GetCountryCode(string json)
     {
         JSONInfo info = JsonUtility.FromJson<JSONInfo>(json);
         return info.countryCode.ToUpper();
