@@ -207,8 +207,10 @@ public class ObstacleSpawner : MonoBehaviour
 
         ObstacleDict = new Dictionary<string, Queue<Obstacle>>();
 
+        int k = 0;
         foreach (SinglePool obstacleType in obstacles)
         {
+            k++;
             Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
 
             if (obstacleType.easy)
@@ -218,7 +220,7 @@ public class ObstacleSpawner : MonoBehaviour
                 for (int i = 0; i < obstacleType.size; i++)
                 {
                     GameObject go = Instantiate(obstacleType.prefab);
-                    go.name = obstacleType.prefab.name + "_easy";
+                    go.name = "Obstacle" + k + "_easy";
 
                     Obstacle ob1 = new Obstacle(go);
 
@@ -236,7 +238,7 @@ public class ObstacleSpawner : MonoBehaviour
                 for (int i = 0; i < obstacleType.size; i++)
                 {
                     GameObject go = Instantiate(obstacleType.prefab);
-                    go.name = obstacleType.prefab.name + "_easy";
+                    go.name = "Obstacle" + k + "_easy";
 
                     Obstacle ob1 = new Obstacle(go);
 
@@ -250,13 +252,15 @@ public class ObstacleSpawner : MonoBehaviour
             for (int i = 0; i < obstacleType.size; i++)
             {
                 Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
+                ob.gameObject.name = "Obstacle" + k;
 
                 ob.gameObject.SetActive(false);
                 obstaclePool.Enqueue(ob);
             }
 
-            ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
+            ObstacleDict.Add("Obstacle" + k, obstaclePool);
         }
+        k = 0;
     }
 
     public void ConfigureCamera()

@@ -1,10 +1,16 @@
 ﻿using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using UnityEngine;
+#if UNITY_IOS
+using UnityEngine.SocialPlatforms;
+#endif
 
 public class AchievementsAndLeaderboards : MonoBehaviour
 {
     public static AchievementsAndLeaderboards Instance;
+
+    public enum achievements { interstellar, lunarKing };
+    public enum leaderBoards { highScores, ultraHighScores };
 
     int currentPlatform;
 
@@ -27,6 +33,7 @@ public class AchievementsAndLeaderboards : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_ANDROID
         if (currentPlatform == 1)
         {
             PlayGamesClientConfiguration playGamesConfig = new PlayGamesClientConfiguration.Builder().Build();
@@ -38,8 +45,56 @@ public class AchievementsAndLeaderboards : MonoBehaviour
 
             PlayGamesPlatform.Instance.Authenticate(SignInCallback, false);
         }
+#endif
+
+#if UNITY_IOS
+        if (currentPlatform == 2)
+        {
+            // Authenticate and register a ProcessAuthentication callback
+            // This call needs to be made before we can proceed to other calls in the Social API
+            Social.localUser.Authenticate(ProcessAuthentication);
+        }
+#endif
     }
 
+#if UNITY_IOS
+    // This function gets called when Authenticate completes
+    // Note that if the operation is successful, Social.localUser will contain data from the server. 
+    void ProcessAuthentication(bool success)
+    {
+        if (success)
+        {
+            Debug.Log("Authenticated, checking achievements");
+
+            // Request loaded achievements, and register a callback for processing them
+            Social.LoadAchievements(ProcessLoadedAchievements);
+        }
+        else
+            Debug.Log("Failed to authenticate");
+    }
+#endif
+
+#if UNITY_IOS
+    // This function gets called when the LoadAchievement call completes
+    void ProcessLoadedAchievements(IAchievement[] achievements)
+    {
+        if (achievements.Length == 0)
+            Debug.Log("Error: no achievements found");
+        else
+            Debug.Log("Got " + achievements.Length + " achievements");
+
+        // You can also call into the functions like this
+        Social.ReportProgress("Achievement01", 100.0, result =>
+        {
+            if (result)
+                Debug.Log("Successfully reported achievement progress");
+            else
+                Debug.Log("Failed to report achievement");
+        });
+    }
+#endif
+
+#if UNITY_ANDROID
     public void GoogleSignIn()
     {
         if (!PlayGamesPlatform.Instance.localUser.authenticated)
@@ -54,6 +109,7 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             PlayGamesPlatform.Instance.SignOut();
         }
     }
+#endif
 
     public void SignInCallback(bool success)
     {
@@ -68,10 +124,13 @@ public class AchievementsAndLeaderboards : MonoBehaviour
     }
 
     #region Achievements
-    public void UnlockAchievement(string ID)
+    public void UnlockAchievement(achievements achievement)
     {
+        string ID = GetAchievementID(achievement);
+
         if (Social.localUser.authenticated)
         {
+#if UNITY_ANDROID
             if (currentPlatform == 1)
             {
                 PlayGamesPlatform.Instance.ReportProgress(ID, 100.0f, (bool success) =>
@@ -82,11 +141,52 @@ public class AchievementsAndLeaderboards : MonoBehaviour
                     }
                 });
             }
+#endif
+
+#if UNITY_IOS
+            if(currentPlatform == 2)
+            {
+                Social.ReportProgress(ID, 100, (bool success) => { Debug.Log(ID + " achievement " + (success ? "unlocked successfully." : "failed to unlock")); });
+            }
+#endif
         }
+    }
+
+    string GetAchievementID(achievements achievement)
+    {
+        string ID = "";
+
+        if (currentPlatform == 1) // for android achievements
+        {
+            switch (achievement)
+            {
+                case achievements.interstellar:
+                    ID = GPGSIds.achievement_interstellar;
+                    break;
+                case achievements.lunarKing:
+                    ID = GPGSIds.achievement_lunar_king;
+                    break;
+            }
+        }
+        else // for iphone achievements
+        {
+            switch (achievement)
+            {
+                case achievements.interstellar:
+                    ID = "";
+                    break;
+                case achievements.lunarKing:
+                    ID = "";
+                    break;
+            }
+        }
+
+        return ID;
     }
 
     public void ShowAchievements()
     {
+#if UNITY_ANDROID
         if (currentPlatform == 1)
         {
             if (PlayGamesPlatform.Instance.localUser.authenticated)
@@ -99,14 +199,34 @@ public class AchievementsAndLeaderboards : MonoBehaviour
                 GoogleSignIn();
             }
         }
+#endif
+
+#if UNITY_IOS
+        if(currentPlatform == 2)
+        {
+            if (Social.localUser.authenticated)
+            {
+                Social.ShowAchievementsUI();
+            }
+            else
+            {
+                Debug.Log("Cannot show Achievements, not logged in");
+                Social.localUser.Authenticate(ProcessAuthentication);
+            }
+        }
+#endif
+
     }
     #endregion
 
     #region Leaderboards
-    public void AddScore2LeaderBoard(string leaderboardID, long score)
+    public void AddScore2LeaderBoard(leaderBoards leaderBoard, long score)
     {
+        string leaderboardID = GetLeaderBoardID(leaderBoard);
+
         if (Social.localUser.authenticated)
         {
+#if UNITY_ANDROID
             if (currentPlatform == 1)
             {
                 // Note: make sure to add 'using GooglePlayGames'
@@ -115,11 +235,55 @@ public class AchievementsAndLeaderboards : MonoBehaviour
                     Debug.Log(leaderboardID + ", (Lollygagger) Leaderboard update success: " + success);
                 });
             }
+#endif
+
+#if UNITY_IOS
+            if (currentPlatform == 2)
+            {
+                Social.ReportScore(score,leaderboardID, (bool success) =>
+                {
+                    Debug.Log(leaderboardID + ", (Lollygagger) Leaderboard update success: " + success);
+                });
+            }
+#endif
         }
+    }
+
+    string GetLeaderBoardID(leaderBoards leaderBoard)
+    {
+        string ID = "";
+
+        if (currentPlatform == 1)   //for android
+        {
+            switch (leaderBoard)
+            {
+                case leaderBoards.highScores:
+                    ID = GPGSIds.leaderboard_high_scores;
+                    break;
+                case leaderBoards.ultraHighScores:
+                    ID = GPGSIds.leaderboard_ultra_high_scores;
+                    break;
+            }
+        }
+        else   //for IOS
+        {
+            switch (leaderBoard)
+            {
+                case leaderBoards.highScores:
+                    ID = "";
+                    break;
+                case leaderBoards.ultraHighScores:
+                    ID = "";
+                    break;
+            }
+        }
+
+        return ID;
     }
 
     public void ShowLeaderboards()
     {
+#if UNITY_ANDROID
         if (currentPlatform == 1)
         {
             if (PlayGamesPlatform.Instance.localUser.authenticated)
@@ -132,6 +296,22 @@ public class AchievementsAndLeaderboards : MonoBehaviour
                 GoogleSignIn();
             }
         }
+#endif
+
+#if UNITY_IOS
+        if(currentPlatform == 2)
+        {
+            if (Social.localUser.authenticated)
+            {
+                Social.ShowLeaderboardUI();
+            }
+            else
+            {
+                Debug.Log("Cannot show LeaderBoards, not logged in");
+                Social.localUser.Authenticate(ProcessAuthentication);
+            }
+        }
+#endif
     }
     #endregion
 }

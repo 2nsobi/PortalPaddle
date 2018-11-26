@@ -16,7 +16,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     bool revive = false;
     bool justEndGame = false;
     string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
-    bool bannerActive = false;
     int activeRewardAmount = 0;
     bool noAds = false;
 
@@ -54,18 +53,23 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             }
         }
 
-        Appodeal.setTesting(true);
-        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+        //Appodeal.setTesting(true);
+        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         noAds = PlayerPrefsX.GetBool("noAds");
+    }
 
+    //Ads are initialized from the GDPRConsent script
+    public void InitializeAds(bool GDPRCompliance)
+    {
+        print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
         if (!noAds)
         {
             Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
             Appodeal.setAutoCache(Appodeal.BANNER, true);
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
 
-            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, false);
+            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
             Appodeal.setRewardedVideoCallbacks(this);
             Appodeal.setBannerCallbacks(this);
 
@@ -76,34 +80,10 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         else
         {
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
-            Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, false);
+            Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
             Appodeal.setRewardedVideoCallbacks(this);
         }
-
-        //if (ZPlayerPrefs.GetInt("result_gdpr") != 0)
-        //{
-        //    Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
-        //    Appodeal.setRewardedVideoCallbacks(this);
-        //    Appodeal.setBannerCallbacks(this);
-
-        //    Appodeal.show(Appodeal.BANNER_BOTTOM);
-
-        //    showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
-        //    showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-        //}
     }
-
-    //public void InitializeAds()
-    //{
-    //    Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, ZPlayerPrefs.GetInt("result_gdpr_sdk") == 1);
-    //    Appodeal.setRewardedVideoCallbacks(this);
-    //    Appodeal.setBannerCallbacks(this);
-
-    //    Appodeal.show(Appodeal.BANNER_BOTTOM);
-
-    //    showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
-    //    showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-    //}
 
     IEnumerator CanShowRewardVidDelay()
     {
@@ -155,6 +135,14 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
                     attempts2ShowInterstitial = 0;
                 }
             }
+        }
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Appodeal.onResume();
         }
     }
 
@@ -226,40 +214,15 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
-    public void onBannerLoaded(bool isPrecache)
-    {
-        if (!noAds)
-        {
-            if (!bannerActive)
-            {
-                Appodeal.show(Appodeal.BANNER_BOTTOM);
-            }
-        }
-    }
+    public void onBannerLoaded(bool isPrecache) { }
 
-    public void onBannerFailedToLoad()
-    {
-        if (!noAds)
-        {
-            if (!bannerActive)
-            {
-                if(Appodeal.isPrecache(Appodeal.BANNER))
-                    Appodeal.show(Appodeal.BANNER_BOTTOM);
-            }
-        }
-    }
+    public void onBannerFailedToLoad() { }
 
-    public void onBannerShown()
-    {
-        bannerActive = true;
-    }
+    public void onBannerShown() { }
 
     public void onBannerClicked() { }
 
-    public void onBannerExpired()
-    {
-        bannerActive = false;
-    }
+    public void onBannerExpired() { }
 
     public void RemoveAds()
     {

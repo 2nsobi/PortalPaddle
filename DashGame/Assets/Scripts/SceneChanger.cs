@@ -30,6 +30,10 @@ public class SceneChanger : MonoBehaviour
 
     public void SceneFadeDone()
     {
+        if(scene2Load == 0)
+        {
+            AudioManager.Instance.StopOGMMenuMusic();
+        }
         SceneManager.LoadScene(scene2Load);
     }
 }
