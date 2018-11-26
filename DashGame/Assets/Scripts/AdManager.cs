@@ -18,6 +18,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
     int activeRewardAmount = 0;
     bool noAds = false;
+    bool initialized = false;
 
     private void Awake()
     {
@@ -62,26 +63,31 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     //Ads are initialized from the GDPRConsent script
     public void InitializeAds(bool GDPRCompliance)
     {
-        print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
-        if (!noAds)
+        if (!initialized)
         {
-            Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
-            Appodeal.setAutoCache(Appodeal.BANNER, true);
-            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
+            print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
+            if (!noAds)
+            {
+                Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
+                Appodeal.setAutoCache(Appodeal.BANNER, true);
+                Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
 
-            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
-            Appodeal.setRewardedVideoCallbacks(this);
-            Appodeal.setBannerCallbacks(this);
+                Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
+                Appodeal.setRewardedVideoCallbacks(this);
+                Appodeal.setBannerCallbacks(this);
 
-            Appodeal.show(Appodeal.BANNER_BOTTOM);
-            showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
-            showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-        }
-        else
-        {
-            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
-            Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
-            Appodeal.setRewardedVideoCallbacks(this);
+                Appodeal.show(Appodeal.BANNER_BOTTOM);
+                showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+                showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
+            }
+            else
+            {
+                Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
+                Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
+                Appodeal.setRewardedVideoCallbacks(this);
+            }
+
+            initialized = true;
         }
     }
 

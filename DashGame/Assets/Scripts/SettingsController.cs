@@ -92,7 +92,8 @@ public class SettingsController : MonoBehaviour
             SoundOffIcon.SetActive(false);
             SoundOnIcon.SetActive(true);
         }
-        ballC.SetNoSound(noSound);
+
+        ballC.SetNoSound(noSound);  //noSound in gamemanager is set through this function
         audioManager.SetNoSound(noSound);
     }
 

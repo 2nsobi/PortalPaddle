@@ -788,6 +788,8 @@ public class BallController : MonoBehaviour
     public void SetNoSound(bool noSound)
     {
         this.noSound = noSound;
+
+        game.SetNoSound(noSound);
     }
 
     public void SetTutorial(bool turnOff)
