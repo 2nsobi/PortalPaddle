@@ -120,10 +120,6 @@ namespace AppodealAds.Unity.Android {
 			getAppodealClass().CallStatic("initialize", getActivity(), appKey, nativeAdTypesForType(adTypes), hasConsent);
 		}
 
-        public bool isInitialized(int adType) {
-            return getAppodealClass().CallStatic<bool>("isInitialized", nativeAdTypesForType(adType));
-        }
-
 		public bool show(int adTypes) {
             return getAppodealUnityClass().CallStatic<bool>("show", getActivity(), nativeAdTypesForType(adTypes));
 		}

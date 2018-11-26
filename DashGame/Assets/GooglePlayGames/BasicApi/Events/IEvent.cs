@@ -16,6 +16,7 @@
 
 namespace GooglePlayGames.BasicApi.Events
 {
+
     public enum EventVisibility
     {
         Hidden = 1,
@@ -23,7 +24,7 @@ namespace GooglePlayGames.BasicApi.Events
     }
 
     /// <summary>
-    /// Data object representing an Event. <see cref="Native.PInvoke.EventManager"/> for more.
+    /// Data object representing an Event. <see cref="EventManager"/> for more.
     /// </summary>
     public interface IEvent
     {

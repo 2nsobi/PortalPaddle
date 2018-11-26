@@ -16,7 +16,6 @@ public class SettingsController : MonoBehaviour
     Purchaser purchaser;
     BallController ballC;
     AudioManager audioManager;
-    GameManager game;
 
     bool noSound;
     bool noAds;
@@ -37,7 +36,6 @@ public class SettingsController : MonoBehaviour
         purchaser = Purchaser.Instance;
         ballC = BallController.Instance;
         audioManager = AudioManager.Instance;
-        game = GameManager.Instance;
 
         noSound = PlayerPrefsX.GetBool("noSound");
         if (noSound)
@@ -96,7 +94,6 @@ public class SettingsController : MonoBehaviour
         }
         ballC.SetNoSound(noSound);
         audioManager.SetNoSound(noSound);
-        game.SetNoSound(noSound);
     }
 
     public void ToggleMusic()

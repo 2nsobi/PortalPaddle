@@ -38,10 +38,6 @@ void AppodealInitialize(const char *apiKey, int types, BOOL consent, const char 
     [Appodeal initializeWithApiKey:[NSString stringWithUTF8String:apiKey] types:types hasConsent:consent];
 }
 
-BOOL AppodealIsInitialized(int types) {
-    return [Appodeal isInitalizedForAdType:types];
-}
-
 BOOL AppodealShowAd(int style) {
     return [Appodeal showAd:style rootViewController: RootViewController()];
 }
@@ -80,13 +76,6 @@ void AppodealHideMrecView() {
 
 void AppodealSetSmartBanners(bool value) {
     [Appodeal setSmartBannersEnabled:value];
-}
-
-void AppodealSetTabletBanners(bool value) {
-    if(!bannerUnity) {
-        bannerUnity = [AppodealUnityBannerView sharedInstance];
-    }
-    [bannerUnity setTabletBanner:value];
 }
 
 void AppodealSetBannerBackground(BOOL value) {

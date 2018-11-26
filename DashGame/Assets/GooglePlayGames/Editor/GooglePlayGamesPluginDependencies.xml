@@ -4,11 +4,6 @@
     It also defines the transitive dependencies on play-services
 -->
   <androidPackages>
-    <androidPackage spec="com.google.games:gpgs-plugin-support:0.9.53">
-      <repositories>
-        <repository>Assets/GooglePlayGames/Editor/m2repository</repository>
-      </repositories>
-    </androidPackage>
     <!--For Appodeal-->
     <androidPackage spec="com.google.android.gms:play-services-ads:15.0.1">
       <androidSdkPackageIds>
@@ -50,6 +45,11 @@
         <repository>https://maven.google.com</repository>
       </repositories>
     </androidPackage>
-  <!--^^^For Appodeal^^^-->
+    <!--^^^For Appodeal^^^-->
+    <androidPackage spec="com.google.games:gpgs-plugin-support:0.9.51">
+      <repositories>
+        <repository>Assets/GooglePlayGames/Editor/m2repository</repository>
+      </repositories>
+    </androidPackage>
   </androidPackages>
 </dependencies>
