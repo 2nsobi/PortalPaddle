@@ -25,7 +25,7 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - _ColorMask: 15
-    - _EffectAmount: 1
+    - _EffectAmount: 0
     - _GrayscaleAmount: 0
     - _InvertColors: 0
     - _Stencil: 0

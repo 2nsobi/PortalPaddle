@@ -452,6 +452,8 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (SinglePool obstacleType in obstacles)
         {
+            k++;
+
             Queue<Obstacle> obstaclePool = new Queue<Obstacle>();
 
             if (obstacleType.easy)
@@ -461,7 +463,7 @@ public class LevelGenerator : MonoBehaviour
                 for (int i = 0; i < obstacleType.size; i++)
                 {
                     GameObject go = Instantiate(obstacleType.prefab);
-                    go.name = obstacleType.prefab.name + "_easy";
+                    go.name = "Obstacle" + k + "_easy";
 
                     Obstacle ob1 = new Obstacle(go);
 
@@ -475,13 +477,17 @@ public class LevelGenerator : MonoBehaviour
             for (int i = 0; i < obstacleType.size; i++)
             {
                 Obstacle ob = new Obstacle(Instantiate(obstacleType.prefab));
+                ob.gameObject.name = "Obstacle" + k;
 
                 ob.gameObject.SetActive(false);
                 obstaclePool.Enqueue(ob);
             }
 
-            ObstacleDict.Add(obstacleType.prefab.name, obstaclePool);
+            ObstacleDict.Add("Obstacle" + k, obstaclePool);
         }
+        k = 0;
+
+        
 
         ShufflePrefabsInLevels();
         GenerateNextLvl();
@@ -900,7 +906,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 interstellar = true;
                 playButtonGlowMainMod.startColor = new Color(0, 1, 0.9901032f, 0.9176471f); // turquoise
-                rankings.UnlockAchievement(GPGSIds.achievement_interstellar);
+                rankings.UnlockAchievement(AchievementsAndLeaderboards.achievements.interstellar);
             }
         }
 
@@ -910,7 +916,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 lunarKing = true;
                 playButtonGlowMainMod.startColor = Color.yellow;
-                rankings.UnlockAchievement(GPGSIds.achievement_lunar_king);
+                rankings.UnlockAchievement(AchievementsAndLeaderboards.achievements.lunarKing);
             }
         }
 
@@ -1110,7 +1116,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 13)
+            if (game.GetScore >= 13) //13
             {
                 if (levels[1].about2Spawn)
                 {
@@ -1139,7 +1145,7 @@ public class LevelGenerator : MonoBehaviour
                 break;
             }
 
-            if (game.GetScore >= 33)
+            if (game.GetScore >= 33) //33
             {
                 if (levels[2].about2Spawn)
                 {

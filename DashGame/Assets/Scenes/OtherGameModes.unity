@@ -5440,7 +5440,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -5679,20 +5679,16 @@ MonoBehaviour:
     size: 2
     easy: 1
     onlyMotion: 0
-  - prefab: {fileID: 1826946630696652, guid: d447f7ebfd48de140950f1163221b141, type: 2}
-    size: 1
-    easy: 0
-    onlyMotion: 0
   - prefab: {fileID: 1406720898656728, guid: ce2ca7c660356b64182b4682308a12e6, type: 2}
     size: 2
     easy: 1
     onlyMotion: 1
   - prefab: {fileID: 1459739736557384, guid: a9c77c1c86672b043b3f7473c2f62cd1, type: 2}
-    size: 1
+    size: 2
     easy: 0
     onlyMotion: 0
-  - prefab: {fileID: 1387137365626362, guid: 83351b295d029ad4295747415c9fc0f3, type: 2}
-    size: 1
+  - prefab: {fileID: 1942762949252398, guid: 0be47690b76905441bdcdcd2e4bd0a7e, type: 2}
+    size: 2
     easy: 0
     onlyMotion: 0
 --- !u!114 &209706810
@@ -5709,7 +5705,7 @@ MonoBehaviour:
   absorbSpeed: 3
   startPos: {x: 0, y: 3.5}
   initialSpeed: 3
-  boostSpeed: 16
+  boostSpeed: 12
   CameraShakeIntensity: 0.175
   CameraShakeDuration: 0.375
   ballPrefabs:
@@ -6119,6 +6115,7 @@ MonoBehaviour:
   DeadeyeHighScore: {fileID: 212459409}
   ClairvoyanceHighScore: {fileID: 349355857}
   UltraHighScore: {fileID: 699330503}
+  TapBlocker: {fileID: 0}
 --- !u!1 &245937620
 GameObject:
   m_ObjectHideFlags: 0
@@ -6335,7 +6332,7 @@ GameObject:
   - component: {fileID: 303879009}
   - component: {fileID: 303879008}
   m_Layer: 0
-  m_Name: Filter2MakeColorsLookLessBright
+  m_Name: Filter2MakeColorsLookLessBright_DoNotDeleteNnaji
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6690,7 +6687,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -12641,7 +12638,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
