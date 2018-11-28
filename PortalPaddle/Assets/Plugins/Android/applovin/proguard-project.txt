@@ -1,0 +1,2 @@
+-keep class com.applovin.** { *; }
+-dontwarn com.applovin.**

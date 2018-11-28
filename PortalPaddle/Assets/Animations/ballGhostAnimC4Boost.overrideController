@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: ballGhostAnimC4Boost
+  m_Controller: {fileID: 9100000, guid: dfc962043a1fcec40970a5eb316d0a79, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 3adea18d2f5458042bed30850ca304ba, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: cd31c1998ba110743813bb8ceaba5f48, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 2295a37d74f9d044bb5cfc919677defb, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 7faf2b7621edf514e8d98f25c4e5fff6, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 64219b6e1c2a8d94d9e0363491cae79e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 93bf6653b7b95584491afb5dd5e4e30c, type: 2}

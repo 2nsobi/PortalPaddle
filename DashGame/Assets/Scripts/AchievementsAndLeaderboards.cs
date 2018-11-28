@@ -1,5 +1,7 @@
-﻿using GooglePlayGames;
+﻿#if UNITY_ANDROID
+using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+#endif
 using UnityEngine;
 #if UNITY_IOS
 using UnityEngine.SocialPlatforms;
