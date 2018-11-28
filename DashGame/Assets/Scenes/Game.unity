@@ -3311,10 +3311,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 1280970600183906, guid: 9deba5469f2d7f24b8bdce5d6debdd7b, type: 2}
-      propertyPath: m_Name
-      value: GDPR
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9deba5469f2d7f24b8bdce5d6debdd7b, type: 2}
   m_IsPrefabAsset: 0
