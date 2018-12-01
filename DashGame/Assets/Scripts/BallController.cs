@@ -134,11 +134,12 @@ public class BallController : MonoBehaviour
     {
         for (int i = 0; i < balls.Length; i++)
         {
-            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(balls[i].name))
+            if ((name + "(Clone)").Equals(balls[i].name))
             {
                 return i;
             }
         }
+        Debug.LogError(name + " Ball not linked to shop ball");
         return 0;
     }
 

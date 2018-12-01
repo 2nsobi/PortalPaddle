@@ -150,10 +150,13 @@ public class LevelGenerator : MonoBehaviour
     public List<MultiPool> levels;
     public List<SinglePool> obstacles;
     public GameObject StartLvl;
-    public GameObject SettingsLvl;
     public Transform GameOverZoneN;
     public Transform GameOverZoneS;
-    public GameObject settingsPage;
+    public GameObject settingsLevel;
+
+    [HideInInspector]
+    public GameObject settingsPage, shop;
+
     LvlPrefab StartLevel; //for code use
     GameManager game;
     AudioManager audioManager;
@@ -195,14 +198,12 @@ public class LevelGenerator : MonoBehaviour
     bool allPrefsInQAttached2Lvl = true; // for spawnfrom obstacles method
     bool go2Settings = false;
     bool comeBackFromSettings;
-    GameObject settingsLevel;
     Vector3 offset2 = new Vector3(0, 10.6f);
     string tag4Obstacles;
     bool pauseAllCoroutines = false;
     bool generateNextLvlSequence = true;
     float distanceDiff4Walls;
     bool comeBackFromShop = false;
-    public GameObject shop;
     ShopController shopC;
     ParticleSystem playButtonGlow;
     ParticleSystem.MainModule playButtonGlowMainMod;
@@ -245,8 +246,6 @@ public class LevelGenerator : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        settingsLevel = Instantiate(SettingsLvl, levelOffset * -1, Quaternion.identity); //should be instantiated here so that all the awake methods in the shop scripts are done
 
         ConfigureCamera(); //called here before the tap area rect is configured
 
@@ -323,6 +322,8 @@ public class LevelGenerator : MonoBehaviour
         dummyGO.SetActive(false);
         dummyLvlPref = new LvlPrefab(dummyGO);
         PreviousLvl = dummyLvlPref;
+
+        settingsLevel.transform.position = new Vector2(0, -10.8f);
 
         shop = settingsLevel.transform.Find("ShopCanvas").gameObject;
         settingsPage = settingsLevel.transform.Find("SettingsCanvas").gameObject;

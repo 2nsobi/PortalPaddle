@@ -33,6 +33,8 @@ public class Purchaser : MonoBehaviour, IStoreListener
     // Google Play Store-specific product identifier subscription product.
     private static string kProductNameGooglePlaySubscription = "com.unity3d.subscription.original";
 
+    string item2Purchase1, item2Purchase2; //item 1 is for reg balls, and item 2 is for premium balls
+
     private void Awake()
     {
         Instance = this;
@@ -107,12 +109,14 @@ public class Purchaser : MonoBehaviour, IStoreListener
         // Buy the consumable product using its general identifier. Expect a response either 
         // through ProcessPurchase or OnPurchaseFailed asynchronously.
         BuyProductID(PRODUCT_BALL);
+        item2Purchase1 = name;
     }
     public void BuyPremiumBall()
     {
         // Buy the consumable product using its general identifier. Expect a response either 
         // through ProcessPurchase or OnPurchaseFailed asynchronously.
         BuyProductID(PRODUCT_PREMIUM_BALL);
+        item2Purchase2 = name;
     }
     public void Buy1800GemChest()
     {
@@ -234,7 +238,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            ShopController.Instance.BuyItem();
+            ShopController.Instance.PurchaseItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_PREMIUM_BALL, StringComparison.Ordinal))
         {
@@ -242,7 +246,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
             audioManager.PlayUISound("unlockItem");
-            ShopController.Instance.BuyItem();
+            ShopController.Instance.PurchaseItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1800_GEM_CHEST, StringComparison.Ordinal))
         {

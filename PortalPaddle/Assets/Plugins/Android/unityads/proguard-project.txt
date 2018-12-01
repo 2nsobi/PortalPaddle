@@ -1,4 +1,0 @@
-# Unity Ads
--keepattributes SourceFile,LineNumberTable
--keep class com.unity3d.** { *; }
--dontwarn com.unity3d.**

@@ -175,10 +175,10 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             switch (achievement)
             {
                 case achievements.interstellar:
-                    ID = "";
+                    ID = GPGSIds.achievement_interstellar;
                     break;
                 case achievements.lunarKing:
-                    ID = "";
+                    ID = GPGSIds.achievement_lunar_king;
                     break;
             }
         }
@@ -272,10 +272,10 @@ public class AchievementsAndLeaderboards : MonoBehaviour
             switch (leaderBoard)
             {
                 case leaderBoards.highScores:
-                    ID = "";
+                    ID = GPGSIds.leaderboard_high_scores;
                     break;
                 case leaderBoards.ultraHighScores:
-                    ID = "";
+                    ID = GPGSIds.leaderboard_ultra_high_scores;
                     break;
             }
         }
