@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
         public GameObject rightEnd;
         public GameObject leftEnd;
         public int index;
-        public SnapScrollRectController.ShopItem shopItem;
 
         public PaddlePrefab(GameObject pref)
         {
@@ -116,7 +115,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < paddles.Length; i++)
         {
-            if ((name.Substring(0, name.Length - 1) + "(Clone)").Equals(paddles[i].mainParticles.name))
+            if ((name + "(Clone)").Equals(paddles[i].mainParticles.name))
             {
                 return i;
             }
