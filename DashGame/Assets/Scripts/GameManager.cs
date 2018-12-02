@@ -349,7 +349,7 @@ public class GameManager : MonoBehaviour
         for (float i = 0.0f; i < 1.8f; i += 0.1f)  //make sure this delay is longer than the length of the ball shrink anim which is 1.3 seconds
         {
             yield return new WaitForSeconds(0.1f);
-            while (pauseAllCoroutines || paused)
+            while (paused)
             {
                 yield return null;
             }

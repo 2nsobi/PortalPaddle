@@ -311,7 +311,6 @@ GameObject:
   - component: {fileID: 223734613066752408}
   - component: {fileID: 114408309236285084}
   - component: {fileID: 114111660687334878}
-  - component: {fileID: 114416418299516832}
   m_Layer: 0
   m_Name: SettingsCanvas
   m_TagString: Untagged
@@ -1981,7 +1980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114416418299516832}
+      - m_Target: {fileID: 114410385377100030}
         m_MethodName: ToggleSound
         m_Mode: 1
         m_Arguments:
@@ -2112,7 +2111,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 114697270286545992}
         m_MethodName: BuyNoAds
         m_Mode: 1
         m_Arguments:
@@ -2952,24 +2951,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114416418299516832
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1249959982841066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2981ede65de32144a3eaabb44034154, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buyNoAdsButton: {fileID: 114104478811191456}
-  disabledNoAdsButtonFilter: {fileID: 1623571647187418}
-  NoAdsPrice: {fileID: 114196043294195936}
-  SoundOnIcon: {fileID: 1794176057571382}
-  SoundOffIcon: {fileID: 1442292927325220}
-  MusicOnIcon: {fileID: 1741297239778250}
-  MusicOffIcon: {fileID: 1778785770343614}
 --- !u!114 &114435780260616716
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3320,7 +3301,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114416418299516832}
+      - m_Target: {fileID: 114410385377100030}
         m_MethodName: ToggleMusic
         m_Mode: 1
         m_Arguments:
@@ -3373,8 +3354,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Request2BuyItem
+      - m_Target: {fileID: 114697270286545992}
+        m_MethodName: RequestItemPurchase
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4523,7 +4504,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114416418299516832}
+      - m_Target: {fileID: 114410385377100030}
         m_MethodName: RestorePurchases
         m_Mode: 1
         m_Arguments:
