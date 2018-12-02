@@ -58,7 +58,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
 
         //Appodeal.setTesting(true);
-        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         noAds = PlayerPrefsX.GetBool("noAds");
     }
@@ -68,7 +68,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     {
         if (!initialized)
         {
-            print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
+            // print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
             if (!noAds)
             {
                 Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
