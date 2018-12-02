@@ -61,7 +61,7 @@ public class GDPRConsent : MonoBehaviour
             }
 
             // Show results as text
-            Debug.Log(code + ", String Length = " + code.Length);
+            //Debug.Log(code + ", String Length = " + code.Length);
         }
     }
 
