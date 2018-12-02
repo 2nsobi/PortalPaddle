@@ -11,14 +11,19 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     bool canShowInterstitial = false;
     Coroutine showRewardVidDelay;
     Coroutine showInterstitialDelay;
-    GameManager game;
     bool giveReward = false;
     bool revive = false;
-    bool justEndGame = false;
-    string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; //this is the app key appodeal gives each app you make
     int activeRewardAmount = 0;
     bool noAds = false;
     bool initialized = false;
+    bool vidFinished = false;
+
+#if UNITY_ANDROID
+    string appKey = "23409dd0a45bf3a469ebc0ce6f629cc799bc6485b135934f"; // the app key from appodeal for the android app version
+#endif
+#if UNITY_IOS
+    string appKey = "7772ed0a2fc4d93e847e97f1e73256434d8caa2a16a7c40a"; // the app key from appodeal for the IOS app version
+#endif
 
     private void Awake()
     {
@@ -37,8 +42,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     private void Start()
     {
-        game = GameManager.Instance;
-
         Appodeal.disableLocationPermissionCheck();
 
         if (Application.platform == RuntimePlatform.Android)
@@ -55,7 +58,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
 
         //Appodeal.setTesting(true);
-        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+        Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
         noAds = PlayerPrefsX.GetBool("noAds");
     }
@@ -122,16 +125,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             {
                 attempts2ShowInterstitial++;
 
-                if ((Appodeal.isPrecache(Appodeal.INTERSTITIAL) && attempts2ShowInterstitial >= 3) || (Appodeal.isPrecache(Appodeal.INTERSTITIAL) && canShowInterstitial))
-                {
-                    Appodeal.show(Appodeal.INTERSTITIAL);
-
-                    StopCoroutine(showInterstitialDelay);
-                    showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-
-                    attempts2ShowInterstitial = 0;
-                }
-                else if ((Appodeal.isLoaded(Appodeal.INTERSTITIAL) && attempts2ShowInterstitial >= 3) || (Appodeal.isLoaded(Appodeal.INTERSTITIAL) && canShowInterstitial))
+                if ((Appodeal.isLoaded(Appodeal.INTERSTITIAL) && attempts2ShowInterstitial >= 3) || (Appodeal.isLoaded(Appodeal.INTERSTITIAL) && canShowInterstitial))
                 {
                     Appodeal.show(Appodeal.INTERSTITIAL);
 
@@ -152,30 +146,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
-    void OnApplicationPause(bool pause)
-    {
-        if (!pause)
-        {
-            if (giveReward)
-            {
-                game.UpdateGems(activeRewardAmount);
-
-                giveReward = false;
-                activeRewardAmount = 0;
-            }
-            if (revive)
-            {
-                revive = false;
-                game.Continue();
-            }
-            if (justEndGame)
-            {
-                justEndGame = false;
-                game.GoToScoreReview();
-            }
-        }
-    }
-
     public void ShowRewardVideo(bool givereward = true)
     {
         if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
@@ -191,19 +161,37 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
         }
     }
 
-    public void onRewardedVideoLoaded(bool precache) { }
-
-    public void onRewardedVideoFailedToLoad()
+    private void Update()
     {
-        if (game.IsGameRunning)
+        if (vidFinished)
         {
-            justEndGame = true;
+            vidFinished = false;
+
+            if (giveReward)
+            {
+                GameManager.Instance.UpdateGems(activeRewardAmount);
+
+                giveReward = false;
+                activeRewardAmount = 0;
+            }
+            if (revive)
+            {
+                revive = false;
+                GameManager.Instance.Continue();
+            }
         }
     }
 
+    public void onRewardedVideoLoaded(bool precache) { }
+
+    public void onRewardedVideoFailedToLoad() {}
+
     public void onRewardedVideoShown() { }
 
-    public void onRewardedVideoClosed(bool finished) { }
+    public void onRewardedVideoClosed(bool finished)
+    {
+        vidFinished = true; //must use this method with update because the appodeal API runs on a different thread than the main thread
+    }
 
     public void onRewardedVideoExpired() { }
 

@@ -3647,12 +3647,6 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 882293910}
   m_CullTransparentMesh: 0
---- !u!114 &890379132 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114697270286545992, guid: cadd998af6b0fc642b8cdfc530eca6f0,
-    type: 2}
-  m_PrefabInternal: {fileID: 1075296214}
-  m_Script: {fileID: 11500000, guid: bd769920f82356b47bc7acb163b90ff3, type: 3}
 --- !u!1 &910990345
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,26 +4221,6 @@ Prefab:
     - target: {fileID: 4789600858026790, guid: cadd998af6b0fc642b8cdfc530eca6f0, type: 2}
       propertyPath: m_RootOrder
       value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 114104478811191456, guid: cadd998af6b0fc642b8cdfc530eca6f0,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 890379132}
-    - target: {fileID: 114104478811191456, guid: cadd998af6b0fc642b8cdfc530eca6f0,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: BuyNoAds
-      objectReference: {fileID: 0}
-    - target: {fileID: 114537678980553692, guid: cadd998af6b0fc642b8cdfc530eca6f0,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 890379132}
-    - target: {fileID: 114537678980553692, guid: cadd998af6b0fc642b8cdfc530eca6f0,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RequestItemPurchase
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cadd998af6b0fc642b8cdfc530eca6f0, type: 2}

@@ -7,8 +7,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
 {
     public static Purchaser Instance;
 
-    AudioManager audioManager;
-
     private static IStoreController m_StoreController;          // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
 
@@ -37,7 +35,17 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Start()
@@ -48,8 +56,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
             // Begin to configure our connection to Purchasing
             InitializePurchasing();
         }
-
-        audioManager = AudioManager.Instance;
     }
 
     
@@ -237,7 +243,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased a ball!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
-            audioManager.PlayUISound("unlockItem");
+            AudioManager.Instance.PlayUISound("unlockItem");
             ShopController.Instance.PurchaseItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_PREMIUM_BALL, StringComparison.Ordinal))
@@ -245,7 +251,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased an ultra ball!!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
-            audioManager.PlayUISound("unlockItem");
+            AudioManager.Instance.PlayUISound("unlockItem");
             ShopController.Instance.PurchaseItem();
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_1800_GEM_CHEST, StringComparison.Ordinal))
@@ -253,7 +259,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just purchased a gem chest!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
-            audioManager.PlayUISound("unlockItem");
+            AudioManager.Instance.PlayUISound("unlockItem");
             GameManager.Instance.UpdateGems(1800);
         }
         else if (String.Equals(args.purchasedProduct.definition.id, PRODUCT_REMOVE_ADS, StringComparison.Ordinal))
@@ -261,7 +267,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
             Debug.Log("You just removed ads forever!");
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
 
-            audioManager.PlayUISound("unlockItem");
+            AudioManager.Instance.PlayUISound("unlockItem");
             AdManager.Instance.RemoveAds();
             ShopController.Instance.DisableBuyNoAdsButton();
             SettingsController.Instance.DisableBuyNoAdsButton();
