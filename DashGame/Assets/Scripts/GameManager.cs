@@ -632,6 +632,8 @@ public class GameManager : MonoBehaviour
     {
         settingsPageAnimC.SetTrigger("leave");
         shopPageAnimC.SetTrigger("leave");
+
+        ShopController.Instance.StopComingSoonShake();
         LG.ComeBackFromShop();
     }
 

@@ -636,7 +636,7 @@ public class ShopController : MonoBehaviour
         comingSoonButton.interactable = true;
     }
 
-    void StopComingSoonShake()
+    public void StopComingSoonShake()
     {
         if (comingSoonCoroutine != null)
         {
