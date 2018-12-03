@@ -389,6 +389,10 @@ namespace AppodealAds.Unity.iOS {
             AppodealObjCBridge.AppodealInitialize(appKey, nativeAdTypesForType(adTypes), hasConsent, Appodeal.getPluginVersion(), Application.unityVersion);
 		}
 
+        public bool isInitialized(int adType) {
+            return AppodealObjCBridge.AppodealIsInitialized(adType);
+        }
+
 		public bool show(int adTypes) {
 			return AppodealObjCBridge.AppodealShowAd(nativeShowStyleForType(adTypes));
 		}
@@ -451,7 +455,7 @@ namespace AppodealAds.Unity.iOS {
 		}
 
 		public void setTabletBanners(bool value) {
-			// Handled by os
+            AppodealObjCBridge.AppodealSetTabletBanners(value); // Works only for banner view
 		}
 
 		public void setTesting(bool test) {

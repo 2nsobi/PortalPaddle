@@ -3,8 +3,11 @@ using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 using System.Collections;
 
-public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListener
+public class AdManager : MonoBehaviour, IRewardedVideoAdListener
 {
+    [HideInInspector]
+    public bool initialized = false;
+
     public static AdManager Instance;
     int attempts2ShowInterstitial = 0;
     bool canShowRewardVid = false;
@@ -15,7 +18,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
     bool revive = false;
     int activeRewardAmount = 0;
     bool noAds = false;
-    bool initialized = false;
     bool vidFinished = false;
 
 #if UNITY_ANDROID
@@ -42,10 +44,20 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     private void Start()
     {
-        Appodeal.disableLocationPermissionCheck();
+        //Appodeal.setTesting(true);
+        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
 
+        noAds = PlayerPrefsX.GetBool("noAds");
+    }
+
+    //Ads are initialized from the GDPRConsent script
+    public void InitializeAds(bool GDPRCompliance)
+    {
+        // print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
         if (Application.platform == RuntimePlatform.Android)
         {
+            Appodeal.disableLocationPermissionCheck();
+
             using (var version = new AndroidJavaClass("android.os.Build$VERSION"))
             {
                 int SDKLvl = version.GetStatic<int>("SDK_INT");
@@ -57,41 +69,27 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             }
         }
 
-        //Appodeal.setTesting(true);
-        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
-
-        noAds = PlayerPrefsX.GetBool("noAds");
-    }
-
-    //Ads are initialized from the GDPRConsent script
-    public void InitializeAds(bool GDPRCompliance)
-    {
-        if (!initialized)
+        if (!noAds)
         {
-            // print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
-            if (!noAds)
-            {
-                Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
-                Appodeal.setAutoCache(Appodeal.BANNER, true);
-                Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
+            Appodeal.setAutoCache(Appodeal.INTERSTITIAL, true);
+            Appodeal.setAutoCache(Appodeal.BANNER, true);
+            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
 
-                Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
-                Appodeal.setRewardedVideoCallbacks(this);
-                Appodeal.setBannerCallbacks(this);
+            Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
+            Appodeal.setRewardedVideoCallbacks(this);
 
-                Appodeal.show(Appodeal.BANNER_BOTTOM);
-                showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
-                showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
-            }
-            else
-            {
-                Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
-                Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
-                Appodeal.setRewardedVideoCallbacks(this);
-            }
-
-            initialized = true;
+            Appodeal.show(Appodeal.BANNER_BOTTOM);
+            showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
+            showInterstitialDelay = StartCoroutine(CanShowInterstitialDelay());
         }
+        else
+        {
+            Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
+            Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
+            Appodeal.setRewardedVideoCallbacks(this);
+        }
+
+        initialized = true;
     }
 
     IEnumerator CanShowRewardVidDelay()
@@ -184,7 +182,7 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
 
     public void onRewardedVideoLoaded(bool precache) { }
 
-    public void onRewardedVideoFailedToLoad() {}
+    public void onRewardedVideoFailedToLoad() { }
 
     public void onRewardedVideoShown() { }
 
@@ -207,16 +205,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener, IBannerAdListe
             revive = true;
         }
     }
-
-    public void onBannerLoaded(bool isPrecache) { }
-
-    public void onBannerFailedToLoad() { }
-
-    public void onBannerShown() { }
-
-    public void onBannerClicked() { }
-
-    public void onBannerExpired() { }
 
     public void RemoveAds()
     {

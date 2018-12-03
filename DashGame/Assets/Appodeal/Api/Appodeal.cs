@@ -23,7 +23,7 @@ namespace AppodealAds.Unity.Api {
 		public const int BANNER_HORIZONTAL_RIGHT = -3;
 		public const int BANNER_HORIZONTAL_LEFT = -4;
 
-		public const string APPODEAL_PLUGIN_VERSION = "2.8.46-beta";
+		public const string APPODEAL_PLUGIN_VERSION = "2.8.48-beta-nodex";
 
 		public enum LogLevel { None, Debug, Verbose };
 

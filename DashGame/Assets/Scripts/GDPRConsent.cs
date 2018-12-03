@@ -24,7 +24,10 @@ public class GDPRConsent : MonoBehaviour
         }
         else
         {
-            AdManager.Instance.InitializeAds(PlayerPrefsX.GetBool("GDPRCompliant"));
+            if (!AdManager.Instance.initialized)
+            {
+                AdManager.Instance.InitializeAds(PlayerPrefsX.GetBool("GDPRCompliant"));
+            }
         }
     }
 
