@@ -270,6 +270,7 @@ MonoBehaviour:
   firstImpactSound: ComputerPixelBallFI
   defaultSounds: 0
   collisionParticlesBurstAmount: 40
+  boostEffectRadius: 0.3885
 --- !u!198 &198348276844336624
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -10245,7 +10246,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
   EmissionModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
@@ -14159,7 +14160,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 7
   m_RenderMode: 0
   m_SortMode: 3
@@ -14214,7 +14215,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: d88aa6838acd3814ea87e0319dc94661, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -14260,7 +14261,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1188425647
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: dbe3059c9ab128b48b7a43ff5b5eaef7, type: 3}
   m_Color: {r: 0, g: 1, b: 0.9843137, a: 1}
