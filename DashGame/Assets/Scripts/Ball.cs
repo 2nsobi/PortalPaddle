@@ -9,12 +9,13 @@ public class Ball : MonoBehaviour
     public string firstImpactSound;
     public bool defaultSounds;
     public int collisionParticlesBurstAmount;
+    public float boostEffectRadius; //needed to make wrapping look good
 
     SpriteRenderer ballSprite;
     ParticleSystem collisionEffect;
-    ParticleSystem fallEffect;
+    //ParticleSystem fallEffect;
     ParticleSystem firstImpact;
-    ParticleSystem boostEffect;
+    //ParticleSystem boostEffect;
     TrailRenderer hostTrail;
     Animator animator;
     GameManager game;
@@ -40,7 +41,7 @@ public class Ball : MonoBehaviour
     bool wrappingEnabled = false;
     bool wrappingRightNow = false;
     float cameraRadius;
-    float ballRadius = 0.147f; //got from measuring ball collider radius
+    float ballRadius;
     bool spawnedIn = false;
     TrailRenderer tempTrail, tempTrail2;
     bool wrappedAround = false;
@@ -68,6 +69,8 @@ public class Ball : MonoBehaviour
     int index;
     int impactSoundNum, FISoundNum;
     bool clairvoyance = false;
+    bool hasBoostEffect = true;
+    float cameraWidth;
 
     public delegate void BallDelegate();
     public static event BallDelegate PlayerMissed;
@@ -91,14 +94,14 @@ public class Ball : MonoBehaviour
         }
         collisionEffect = transform.Find("CollisionEffect").GetComponent<ParticleSystem>();
         mainMods[0] = collisionEffect.main;
-        try
-        {
-            fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
-        }
-        catch (System.NullReferenceException)
-        {
+        //try
+        //{
+        //    fallEffect = transform.Find("FallEffect").GetComponent<ParticleSystem>();
+        //}
+        //catch (System.NullReferenceException)
+        //{
 
-        }
+        //}
         try
         {
             firstImpact = transform.Find("FirstImpact").GetComponent<ParticleSystem>();
@@ -120,7 +123,19 @@ public class Ball : MonoBehaviour
         {
             mainMods[2] = transform.Find("BoostEffect").GetComponent<ParticleSystem>().main;
         }
-        catch (System.NullReferenceException) { }
+        catch (System.NullReferenceException)
+        {
+            hasBoostEffect = false;
+        }
+
+        if (!hasBoostEffect)
+        {
+            ballRadius = 0.147f; //got from measuring ball sprite radius with a circle collider
+        }
+        else
+        {
+            ballRadius = boostEffectRadius;
+        }
 
         ghostBall1 = Instantiate(ghost, Vector2.right * 600, Quaternion.Euler(0, 0, 0));
         ghost1Sprite = ghostBall1.transform.Find("BallSprite").GetComponent<SpriteRenderer>();
@@ -158,9 +173,10 @@ public class Ball : MonoBehaviour
         {
             cameraRadius = (Camera.main.aspect * Camera.main.orthographicSize);
         }
+        cameraWidth = cameraRadius * 2;
 
         impactSound = gameObject.name.Substring(0, gameObject.name.Length - 7);
-        if(firstImpactSound.Length == 0)
+        if (firstImpactSound.Length == 0)
         {
             noFISound = true;
         }
@@ -327,15 +343,15 @@ public class Ball : MonoBehaviour
     {
         if (rigidbody.velocity.y >= 0)
         {
-            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y + 1);  //ghost1 is always to the left, 0.2f makes it so that for balls with boost effects aren't reaching over screen
 
-            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y + 1); //ghost2 is always to the right
         }
         else
         {
-            ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
+            ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y - 1);  //ghost1 is always to the left
 
-            ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+            ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y - 1); //ghost2 is always to the right
         }
     }
 
@@ -357,15 +373,15 @@ public class Ball : MonoBehaviour
             transform.position = ghostBall1.transform.position;
             if (rigidbody.velocity.y >= 0)
             {
-                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y + 1);  //ghost1 is always to the left, 0.2f makes it so that for balls with boost effects aren't reaching over screen
 
-                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y + 1); //ghost2 is always to the right
             }
             else
             {
-                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y - 1);  //ghost1 is always to the left
 
-                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y - 1); //ghost2 is always to the right
             }
 
             if (!noTrail)
@@ -402,15 +418,15 @@ public class Ball : MonoBehaviour
             transform.position = ghostBall2.transform.position;
             if (rigidbody.velocity.y >= 0)
             {
-                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y + 1);  //ghost1 is always to the left
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y + 1);  //ghost1 is always to the left, 0.2f makes it so that for balls with boost effects aren't reaching over screen
 
-                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y + 1); //ghost2 is always to the right
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y + 1); //ghost2 is always to the right
             }
             else
             {
-                ghostBall1.transform.position = new Vector2(transform.position.x - cameraRadius * 2, transform.position.y - 1);  //ghost1 is always to the left
+                ghostBall1.transform.position = new Vector2(transform.position.x - cameraWidth, transform.position.y - 1);  //ghost1 is always to the left
 
-                ghostBall2.transform.position = new Vector2(transform.position.x + cameraRadius * 2, transform.position.y - 1); //ghost2 is always to the right
+                ghostBall2.transform.position = new Vector2(transform.position.x + cameraWidth, transform.position.y - 1); //ghost2 is always to the right
             }
 
             if (!noTrail)
@@ -453,7 +469,6 @@ public class Ball : MonoBehaviour
             return;
         }
 
-
         if (!wrappingRightNow)
         {
             wrappingRightNow = true;
@@ -473,7 +488,7 @@ public class Ball : MonoBehaviour
         SetAnimBools("ShouldShrink", shouldAbsorb);
 
         //failsafes for when ball is jammed between two colliders and the resulting velocity is very slow or if the ball just stops
-        if(rigidbody.velocity.magnitude < 10 && shouldBoost && !clairvoyance)
+        if (rigidbody.velocity.magnitude < 10 && shouldBoost && !clairvoyance)
         {
             rigidbody.velocity = rigidbody.velocity.normalized * boostVelocity; //make sure the magnitude of this velocity is equal to the value for public boost speed variable set in BallController
         }
@@ -614,7 +629,7 @@ public class Ball : MonoBehaviour
     {
         collisionTag = collision.gameObject.tag;
 
-        if(collisionTag == lastWallHit) // this will prevent weird reactions from the walls with colliders that overlap each other
+        if (collisionTag == lastWallHit) // this will prevent weird reactions from the walls with colliders that overlap each other
         {
             return;
         }
@@ -655,7 +670,7 @@ public class Ball : MonoBehaviour
             lastWallHit = collisionTag;
         }
 
-        if(collisionTag == "Wall2")
+        if (collisionTag == "Wall2")
         {
             wallHit = true;
 
