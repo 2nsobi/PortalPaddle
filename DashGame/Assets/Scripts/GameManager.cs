@@ -925,6 +925,10 @@ public class GameManager : MonoBehaviour
         {
             Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
         }
+        else
+        {
+            Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
+        }
     }
 
     public bool FirstPlayEver
