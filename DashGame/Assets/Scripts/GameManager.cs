@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     bool noSound = false;
     ScrollRect infoScrollRect;
     int firstPlayEver; // indicated first time playing since download, a value of 0 means its the first time playing
-    static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
+    //static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
     bool updateHS = false;
     AudioListener audioListener;
     float volB4Pause;
@@ -921,14 +921,11 @@ public class GameManager : MonoBehaviour
 
     public void Go2Rate()
     {
-        if (currentPlatform == "android")
-        {
-            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
-        }
-        else
-        {
-            Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
-        }
+#if UNITY_ANDROID
+        Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
+#elif UNITY_IOS
+        Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
+#endif    
     }
 
     public bool FirstPlayEver

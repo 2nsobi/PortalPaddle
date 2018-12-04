@@ -8,7 +8,7 @@ public class Ratings : MonoBehaviour
 
     float timeSinceLastAsk = 0; // time since Ask4Rate() was called
     float timeOfLastAsk; //time since the rating panel popped up on screen
-    static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
+    //static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
 
     private void Awake()
     {
@@ -46,14 +46,11 @@ public class Ratings : MonoBehaviour
 
     public void Go2Rate()
     {
-        if (currentPlatform == "android")
-        {
-            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
-        }
-        else
-        {
-            Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
-        }
+#if UNITY_ANDROID
+        Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
+#elif UNITY_IOS
+        Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
+#endif   
     }
 
     public void ExitRateMePage()
