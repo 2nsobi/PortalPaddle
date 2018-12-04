@@ -1415,6 +1415,11 @@ Prefab:
       propertyPath: m_Color.a
       value: 0.4509804
       objectReference: {fileID: 0}
+    - target: {fileID: 114316552508372312, guid: d6bbc415d3f8fda46aa37a8136616935,
+        type: 2}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6bbc415d3f8fda46aa37a8136616935, type: 2}
   m_IsPrefabAsset: 0

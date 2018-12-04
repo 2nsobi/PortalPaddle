@@ -36,7 +36,7 @@ public class Ratings : MonoBehaviour
     {
         timeSinceLastAsk = Time.realtimeSinceStartup - timeOfLastAsk;
 
-        if (timeSinceLastAsk / 360 >= 1)
+        if (timeSinceLastAsk / 420 >= 1)
         {
             timeOfLastAsk = Time.realtimeSinceStartup;
 
@@ -48,7 +48,11 @@ public class Ratings : MonoBehaviour
     {
         if (currentPlatform == "android")
         {
-            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.Portal.Paddle");
+            Application.OpenURL("https://play.google.com/store/apps/details?id=com.nnaji.PortalPaddle");
+        }
+        else
+        {
+            Application.OpenURL("itms-apps://itunes.apple.com/app/id1444939274");
         }
     }
 
