@@ -22,7 +22,8 @@ public class BallController : MonoBehaviour
     OtherGameModesManager gameModeManager;
     AudioManager audioManager;
 
-    float startSpeed;
+    float tempInitialSpeed;
+    float tempBoostSpeed;
     Animator spawnerAnimator;
     Vector2 RandomXPos;
     Camera mainCam;
@@ -35,7 +36,6 @@ public class BallController : MonoBehaviour
     bool pauseAllCoroutines = false;
     int selectedBallIndex;
     Ball[] balls;
-    float tempSpeed, tempBoostSpeed;
     bool isGray = false;
     Material grayScaleMat;
     int currentGameMode = 0;
@@ -54,7 +54,6 @@ public class BallController : MonoBehaviour
     float spawnAreaLeftEdge, spawnAreaRightEdge;
     float newXRange;
     float oldXRange = 100;
-    float origInitialSpeed, origBoostSpeed;
 
     //List<float> times = new List<float>();
     //float startTime;
@@ -84,7 +83,8 @@ public class BallController : MonoBehaviour
         spawnerAnimator = ballSpawner.GetComponent<Animator>();
         DontDestroyOnLoad(ballSpawner);
 
-        startSpeed = initialSpeed;
+        tempInitialSpeed = initialSpeed;
+        tempBoostSpeed = boostSpeed;
 
         balls = new Ball[ballPrefabs.Length];
 
@@ -102,9 +102,6 @@ public class BallController : MonoBehaviour
         grayScaleMat.SetFloat("_EffectAmount", 0);
 
         tutorialDisabled = PlayerPrefsX.GetBool("tutorialDisabled");
-
-        origInitialSpeed = initialSpeed;
-        origBoostSpeed = boostSpeed;
     }
 
     private void Start()
@@ -143,13 +140,13 @@ public class BallController : MonoBehaviour
         return 0;
     }
 
-    public void IncreaseDropSpeed(float speed, float deflectSpeed) //original speed is 3, and original deflect speed is 16
+    public void IncreaseDropSpeed(float speed, float deflectSpd) //original speed is 3, and original deflect speed is 10
     {
-        startSpeed = speed;
-        boostSpeed = deflectSpeed;
+        tempInitialSpeed = speed;
+        tempBoostSpeed = deflectSpd;
     }
 
-    public void IncreaseDropSpeedImmediately(float speed, float deflectSpeed) //original speed is 3, and original deflect speed is 16
+    public void IncreaseDropSpeedImmediately(float speed, float deflectSpeed) //original speed is 3, and original deflect speed is 10
     {
         try
         {
@@ -242,7 +239,6 @@ public class BallController : MonoBehaviour
                         targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
                         LG.GoBack2StartLvl(); //sent to levelgenerator
 
-                        startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
                         audioManager.MuffleSound(false);
                         isGray = false;
@@ -259,7 +255,6 @@ public class BallController : MonoBehaviour
                         targetC.ResetTargets(); //sent to targetcontroller // make sure to reset targets before calling goback2startlvl for LG so that targets aren't still in use while parented to an inactive obstacle
                         LG.GoBack2StartLvl(); //sent to levelgenerator
 
-                        startSpeed = initialSpeed;
                         grayScaleMat.SetFloat("_EffectAmount", 0);
                         audioManager.MuffleSound(false);
                         isGray = false;
@@ -329,7 +324,6 @@ public class BallController : MonoBehaviour
                         obSpawner.SetGameModeBackground();
                         gameModeManager.SetPageState(currentPage2Fade2);
 
-                        startSpeed = initialSpeed;
                         targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
                         obSpawner.EndGame();
 
@@ -367,7 +361,6 @@ public class BallController : MonoBehaviour
                         obSpawner.SetGameModeBackground();
                         gameModeManager.SetPageState(currentPage2Fade2);
 
-                        startSpeed = initialSpeed;
                         targetC.ResetTargets(); // make sure to reset targets before calling endgame for obspawner so that targets aren't still in use while parented to an inactive obstacle
                         obSpawner.EndGame();
 
@@ -434,8 +427,8 @@ public class BallController : MonoBehaviour
 
     public void Fade2Black() //comes from gamemanager
     {
-        initialSpeed = origInitialSpeed;
-        boostSpeed = origBoostSpeed;
+        tempInitialSpeed = initialSpeed;
+        tempBoostSpeed = boostSpeed;
 
         whiteFlashCGPanel.color = Color.black;
         fade2Black = true;
@@ -478,15 +471,12 @@ public class BallController : MonoBehaviour
     {
         isGray = false;
 
-        tempSpeed = startSpeed;
-        tempBoostSpeed = boostSpeed;
-
         if (tutorialDisabled)
         {
             RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
             balls[selectedBallIndex].gameObject.SetActive(true);
-            balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+            balls[selectedBallIndex].Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
             spawnerAnimator.SetTrigger("GameStarted");
             ballSpawner.transform.position = RandomXPos;
@@ -506,7 +496,7 @@ public class BallController : MonoBehaviour
         RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
@@ -532,10 +522,8 @@ public class BallController : MonoBehaviour
 
         RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
-        tempSpeed = startSpeed;
-        tempBoostSpeed = boostSpeed;
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
@@ -547,7 +535,7 @@ public class BallController : MonoBehaviour
         RandomXPos = new Vector2(RandomSpawnAreaXRange(), startPos.y);
 
         balls[selectedBallIndex].gameObject.SetActive(true);
-        balls[selectedBallIndex].Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        balls[selectedBallIndex].Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
@@ -610,9 +598,6 @@ public class BallController : MonoBehaviour
 
     public bool SpawnQuickBall()
     {
-        tempSpeed = startSpeed;
-        tempBoostSpeed = boostSpeed;
-
         RandomXPos = new Vector2(RandomSpawnAreaXRange(), spawnHeight);
 
         Ball ball2Spawn = ballsQ.Dequeue();
@@ -628,7 +613,7 @@ public class BallController : MonoBehaviour
                 if (!ball2Spawn.isActiveAndEnabled)
                 {
                     ball2Spawn.gameObject.SetActive(true);
-                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
+                    ball2Spawn.Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
 
                     ballsQ.Enqueue(ball2Spawn);
 
@@ -639,7 +624,7 @@ public class BallController : MonoBehaviour
             return false;
         }
         ball2Spawn.gameObject.SetActive(true);
-        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
+        ball2Spawn.Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true, currentGameMode == 2);
 
         ballsQ.Enqueue(ball2Spawn);
 
@@ -648,9 +633,6 @@ public class BallController : MonoBehaviour
 
     public bool SpawnQuickBallWithBallSpawner()
     {
-        tempSpeed = startSpeed;
-        tempBoostSpeed = boostSpeed;
-
         RandomXPos = new Vector2(RandomSpawnAreaXRange(), spawnHeight);
 
         Ball ball2Spawn = ballsQ.Dequeue();
@@ -666,7 +648,7 @@ public class BallController : MonoBehaviour
                 if (!ball2Spawn.isActiveAndEnabled)
                 {
                     ball2Spawn.gameObject.SetActive(true);
-                    ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+                    ball2Spawn.Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
                     spawnerAnimator.SetTrigger("GameStarted");
                     ballSpawner.transform.position = startPos;
@@ -681,7 +663,7 @@ public class BallController : MonoBehaviour
             return false;
         }
         ball2Spawn.gameObject.SetActive(true);
-        ball2Spawn.Spawn(tempSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
+        ball2Spawn.Spawn(tempInitialSpeed, tempBoostSpeed, absorbSpeed, RandomXPos, Quaternion.Euler(0, 0, 0), true);
 
         spawnerAnimator.SetTrigger("GameStarted");
         ballSpawner.transform.position = RandomXPos;
@@ -728,8 +710,8 @@ public class BallController : MonoBehaviour
 
     public void Fade2GameMode(OtherGameModesManager.pageState page2Fade2, OtherGameModesManager.gameMode gameMode2Start, bool dontStartGM = false)
     {
-        initialSpeed = origInitialSpeed;
-        boostSpeed = origBoostSpeed;
+        tempInitialSpeed = initialSpeed;
+        tempBoostSpeed = boostSpeed;
 
         currentPage2Fade2 = page2Fade2;
         currentGameMode2Start = gameMode2Start;

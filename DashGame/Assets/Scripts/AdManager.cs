@@ -42,18 +42,18 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void Start()
-    {
-        //Appodeal.setTesting(true);
-        //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
-
-        noAds = PlayerPrefsX.GetBool("noAds");
-    }
+    //private void Start()
+    //{
+    //    //Appodeal.setTesting(true);
+    //    //Appodeal.setLogLevel(Appodeal.LogLevel.Debug);
+    //}
 
     //Ads are initialized from the GDPRConsent script
     public void InitializeAds(bool GDPRCompliance)
     {
         // print("Personalized ads are " + (GDPRCompliance ? "enabled" : "disabled"));
+        noAds = PlayerPrefsX.GetBool("noAds");
+
         if (Application.platform == RuntimePlatform.Android)
         {
             Appodeal.disableLocationPermissionCheck();
