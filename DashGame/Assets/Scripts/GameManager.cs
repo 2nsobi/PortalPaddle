@@ -75,7 +75,6 @@ public class GameManager : MonoBehaviour
     PaddlePrefab selectedPaddle;
     bool paddleChanged = false;
     bool noSound = false;
-    ScrollRect infoScrollRect;
     int firstPlayEver; // indicated first time playing since download, a value of 0 means its the first time playing
     //static string currentPlatform = (Application.platform == RuntimePlatform.IPhonePlayer) ? "apple" : "android";
     bool updateHS = false;
@@ -147,7 +146,7 @@ public class GameManager : MonoBehaviour
         string rAFARRfwej82qwe = PlayerPrefs.GetString("rAFARRfwej82qwe"); //password for Zplayerprefs initialization
         string asfmn2348HKOA823 = PlayerPrefs.GetString("asfmn2348HKOA823"); //salt for Zplayerprefs initialization
 
-        if(rAFARRfwej82qwe.Length == 0) //default value for a playerprefs string is "" (a string with length of 0)
+        if (rAFARRfwej82qwe.Length == 0) //default value for a playerprefs string is "" (a string with length of 0)
         {
             rAFARRfwej82qwe = CreateRandomPassword(17);
             asfmn2348HKOA823 = CreateRandomPassword(17);
@@ -185,8 +184,6 @@ public class GameManager : MonoBehaviour
         extraBallSprite.SetActive(false);
 
         tutorial.SetActive(false);
-
-        infoScrollRect = InfoPage.GetComponentInChildren<ScrollRect>();
 
         firstPlayEver = ZPlayerPrefs.GetInt("firstPlayEver");
     }
@@ -477,7 +474,7 @@ public class GameManager : MonoBehaviour
                 SettingsPage.SetActive(true);
                 ScoreReview.SetActive(false);
                 ShopPage.SetActive(false);
-               //AudioCreditsButton.SetActive(false);
+                //AudioCreditsButton.SetActive(false);
                 GemsText.gameObject.SetActive(false);
 
                 LG.settingsPage.SetActive(true);
@@ -518,12 +515,15 @@ public class GameManager : MonoBehaviour
     {
         if (gemsOnScreen)
         {
-            t += 0.1f * Time.deltaTime;
-            tempGems = Mathf.Lerp(tempGems, newGems, t);
-            if (tempGems == newGems)
+            if (tempGems >= newGems) // >= beceause updategemsvisuallyalso() can make tempgems greater than 0
             {
                 gemsOnScreen = false;
+                scoreReviewGems.text = Mathf.RoundToInt(tempGems).ToString();
+                return;
             }
+
+            t += 0.1f * Time.deltaTime;
+            tempGems = Mathf.Lerp(tempGems, newGems, t);
             scoreReviewGems.text = Mathf.RoundToInt(tempGems).ToString();
         }
     }
@@ -639,7 +639,7 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        if(!noSound)
+        if (!noSound)
             StartCoroutine(FadeOutVolume());
 
         SetPageState(pageState.Paused);
@@ -702,7 +702,7 @@ public class GameManager : MonoBehaviour
 
     public void GoToScoreReview()
     {
-        rate.Ask4Rate();
+        rate.Ask4RateOrGetDailyReward();
 
         t = 0.0f;
         tempGems = gems;
@@ -740,6 +740,22 @@ public class GameManager : MonoBehaviour
         {
             gems -= gems2Add;
             GemsText.text = gems.ToString();
+        }
+    }
+
+    public void UpdateGemsVisuallyAlso(int gems2Add) // updates the gems on the score review page as well, used by daily reward script
+    {
+        gems += gems2Add;
+        GemsText.text = gems.ToString();
+
+        if (gemsOnScreen)
+        {
+            tempGems += gems2Add;
+        }
+        else
+        {
+            int num = gems2Add + int.Parse(scoreReviewGems.text);
+            scoreReviewGems.text = num.ToString();
         }
     }
 
@@ -882,7 +898,6 @@ public class GameManager : MonoBehaviour
 
         InfoPage.SetActive(true);
 
-        infoScrollRect.verticalNormalizedPosition = 1;
         ballC.SetTutorialToggle();
     }
 
@@ -905,7 +920,7 @@ public class GameManager : MonoBehaviour
         ScoresPage.SetActive(false);
     }
 
-    public void Go2AudioCredits() 
+    public void Go2AudioCredits()
     {
         audioManager.PlayUISound("switchPageLouder");
         AudioCredits.SetActive(true);

@@ -1258,30 +1258,31 @@ public class LevelGenerator : MonoBehaviour
         else if (NextLvl.gameObject.tag == "level2")
         {
             nextLvlNumber = 2;
-            ballC.IncreaseDropSpeed(5.75f, 14.7f);
-            target.IncreaseTravelSpeed(3.5f);
+            ballC.IncreaseDropSpeed(4.5f, 12);
+            target.IncreaseTravelSpeed(3);
         }
         else if (NextLvl.gameObject.tag == "level3")
         {
             if (nextLvlNumber >= 4)
             {
                 nextLvlNumber = 5;
-                ballC.IncreaseDropSpeed(10f, 22f);
-                target.IncreaseTravelSpeed(6.5f);
+                ballC.IncreaseDropSpeed(8, 19);//20
+                target.IncreaseTravelSpeed(5.5f);
             }
             else
             {
                 nextLvlNumber = 3;
-                ballC.IncreaseDropSpeed(7.5f, 17.3f);
-                target.IncreaseTravelSpeed(4.75f);
+                ballC.IncreaseDropSpeed(6, 15);
+                target.IncreaseTravelSpeed(4);
             }
         }
         else if (NextLvl.gameObject.tag == "level4")
         {
             nextLvlNumber = 4;
-            ballC.IncreaseDropSpeed(9.25f, 20);
-            target.IncreaseTravelSpeed(6);
+            ballC.IncreaseDropSpeed(7.5f, 18);
+            target.IncreaseTravelSpeed(5);
         }
+
         NextLvl.gameObject.SetActive(true);
         NextLvl.gameObject.transform.position = transform.position + levelOffset;
         NextLvl.gameObject.transform.rotation = transform.rotation;
