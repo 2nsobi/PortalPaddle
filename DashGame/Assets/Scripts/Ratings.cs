@@ -206,6 +206,17 @@ public class Ratings : MonoBehaviour
         DailyRewardPage.SetActive(false);
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            if (lastDateTimeString != dateOriginalVal)
+                ZPlayerPrefs.SetString("lastDateTime", lastDateTimeString);
+
+            if (daysPlayed != daysOriginalVal)
+                ZPlayerPrefs.SetInt("daysPlayed", daysPlayed);
+        }
+    }
 
     private void OnApplicationQuit()
     {
