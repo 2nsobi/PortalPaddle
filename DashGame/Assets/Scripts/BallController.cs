@@ -38,6 +38,7 @@ public class BallController : MonoBehaviour
     Ball[] balls;
     bool isGray = false;
     Material grayScaleMat;
+    Material BWBallParticlesMat; //used to change the color of the BW ball deflect particles since they are not made of a sprite mat
     int currentGameMode = 0;
     bool fade2GameMode = false;
     float offScreenSpawnHeight;
@@ -97,6 +98,11 @@ public class BallController : MonoBehaviour
             if (i == 0)
             {
                 grayScaleMat = balls[i].gameObject.GetComponentInChildren<SpriteRenderer>().sharedMaterial;
+            }
+
+            if (ballPrefabs[i].name == "Black&WhiteBall")
+            {
+                BWBallParticlesMat = balls[i].gameObject.transform.Find("CollisionEffect").GetComponent<ParticleSystemRenderer>().material;
             }
         }
         grayScaleMat.SetFloat("_EffectAmount", 0);
@@ -577,7 +583,10 @@ public class BallController : MonoBehaviour
         if (isGray)
         {
             grayScaleMat.SetFloat("_EffectAmount", 1);
+            BWBallParticlesMat.SetColor("_TintColor", Color.black);
+
             audioManager.MuffleSound(true, false);
+
             if (obSpawner)
             {
                 obSpawner.InvertDeadeyeBackground();
@@ -586,7 +595,10 @@ public class BallController : MonoBehaviour
         else
         {
             grayScaleMat.SetFloat("_EffectAmount", 0);
+            BWBallParticlesMat.SetColor("_TintColor", Color.white);
+
             audioManager.MuffleSound(false);
+
             if (obSpawner)
             {
                 obSpawner.InvertDeadeyeBackground(true);
