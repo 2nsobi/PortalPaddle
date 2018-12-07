@@ -102,7 +102,7 @@ public class BallController : MonoBehaviour
 
             if (ballPrefabs[i].name == "Black&WhiteBall")
             {
-                BWBallParticlesMat = balls[i].gameObject.transform.Find("CollisionEffect").GetComponent<ParticleSystemRenderer>().material;
+                BWBallParticlesMat = balls[i].gameObject.transform.Find("CollisionEffect").GetComponent<ParticleSystemRenderer>().sharedMaterial;
             }
         }
         grayScaleMat.SetFloat("_EffectAmount", 0);
