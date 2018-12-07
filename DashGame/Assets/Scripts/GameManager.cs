@@ -788,18 +788,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
-    {
-        ZPlayerPrefs.SetInt("gems", (int)gems);
-        ZPlayerPrefs.SetInt("HighScore", highScore);
+    //private void OnApplicationQuit()
+    //{
+    //    ZPlayerPrefs.SetInt("gems", (int)gems);
+    //    ZPlayerPrefs.SetInt("HighScore", highScore);
 
-        ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
+    //    ZPlayerPrefs.SetInt("paddleInUse", selectedPaddle.index);
 
-        if (updateHS)
-        {
-            rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.highScores, highScore);
-        }
-    }
+    //    if (updateHS)
+    //    {
+    //        rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.highScores, highScore);
+    //    }
+    //}
 
     public int GetScore
     {

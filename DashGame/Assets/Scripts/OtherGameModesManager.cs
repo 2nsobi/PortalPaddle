@@ -615,18 +615,18 @@ public class OtherGameModesManager : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
-    {
-        ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
-        ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
-        ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
-        ZPlayerPrefs.SetInt("gems", (int)gems);
+    //private void OnApplicationQuit()
+    //{
+    //    ZPlayerPrefs.SetInt("PlusOneHighScore", PlusOneHS);
+    //    ZPlayerPrefs.SetInt("DeadeyeHighScore", DeadeyeHS);
+    //    ZPlayerPrefs.SetInt("ClairvoyanceHighScore", ClairvoyanceHS);
+    //    ZPlayerPrefs.SetInt("gems", (int)gems);
 
-        if (updateHS)
-        {
-            rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.ultraHighScores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
-        }
-    }
+    //    if (updateHS)
+    //    {
+    //        rankings.AddScore2LeaderBoard(AchievementsAndLeaderboards.leaderBoards.ultraHighScores, PlusOneHS + DeadeyeHS + ClairvoyanceHS);
+    //    }
+    //}
 
     public void DeactivatePaddle()
     {

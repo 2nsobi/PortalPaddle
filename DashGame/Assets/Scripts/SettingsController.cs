@@ -122,11 +122,11 @@ public class SettingsController : MonoBehaviour
         PlayerPrefsX.SetBool("noMusic", noMusic);
     }
 
-    private void OnApplicationQuit()
-    {
-        PlayerPrefsX.SetBool("noSound", noSound);
-        PlayerPrefsX.SetBool("noMusic", noMusic);
-    }
+    //private void OnApplicationQuit()
+    //{
+    //    PlayerPrefsX.SetBool("noSound", noSound);
+    //    PlayerPrefsX.SetBool("noMusic", noMusic);
+    //}
 
     private void OnApplicationPause(bool pause)
     {

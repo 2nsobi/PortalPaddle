@@ -656,10 +656,10 @@ public class ShopController : MonoBehaviour
         ZPlayerPrefs.SetInt("selectedBallIndex", selectedBallIndex);
     }
 
-    public void OnApplicationQuit()
-    {
-        SetPlayerPrefs4Items();
-    }
+    //public void OnApplicationQuit()
+    //{
+    //    SetPlayerPrefs4Items();
+    //}
 
     public void OnApplicationPause(bool pause)
     {
