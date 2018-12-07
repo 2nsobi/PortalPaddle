@@ -182,11 +182,11 @@ public class BallController : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
-    {
-        ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
-        PlayerPrefsX.SetBool("tutorialDisabled", tutorialDisabled);
-    }
+    //private void OnApplicationQuit()
+    //{
+    //    ZPlayerPrefs.SetInt("ballInUse", selectedBallIndex);
+    //    PlayerPrefsX.SetBool("tutorialDisabled", tutorialDisabled);
+    //}
 
     private void OnEnable()
     {

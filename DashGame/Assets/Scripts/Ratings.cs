@@ -218,12 +218,12 @@ public class Ratings : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
-    {
-        if (lastDateTimeString != dateOriginalVal)
-            ZPlayerPrefs.SetString("lastDateTime", lastDateTimeString);
+    //private void OnApplicationQuit()
+    //{
+    //    if (lastDateTimeString != dateOriginalVal)
+    //        ZPlayerPrefs.SetString("lastDateTime", lastDateTimeString);
 
-        if (daysPlayed != daysOriginalVal)
-            ZPlayerPrefs.SetInt("daysPlayed", daysPlayed);
-    }
+    //    if (daysPlayed != daysOriginalVal)
+    //        ZPlayerPrefs.SetInt("daysPlayed", daysPlayed);
+    //}
 }
