@@ -160,7 +160,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1567665621786004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.24440098, y: 1.3219417, z: 0}
+  m_LocalPosition: {x: 0.058762074, y: 0.37050796, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 1}
   m_Children:
   - {fileID: 4817642061075640}
@@ -5770,19 +5770,19 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.49999237
-          inSlope: 0.5731141
-          outSlope: 0.5000076
-          tangentMode: 65
+          value: 1
+          inSlope: -1
+          outSlope: -1
+          tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.10738255
+          outWeight: 0
         - serializedVersion: 3
           time: 1
-          value: 1
-          inSlope: 0.5000076
-          outSlope: 1
-          tangentMode: 5
+          value: 0.2627716
+          inSlope: -1
+          outSlope: -1
+          tangentMode: 0
           weightedMode: 0
           inWeight: 0
           outWeight: 0
@@ -6099,10 +6099,10 @@ ParticleSystem:
         key5: {r: 1, g: 0, b: 0.07359362, a: 0}
         key6: {r: 1, g: 0, b: 0.07359362, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
-        ctime0: 4433
-        ctime1: 11372
-        ctime2: 16577
-        ctime3: 33731
+        ctime0: 1928
+        ctime1: 9445
+        ctime2: 14071
+        ctime3: 26985
         ctime4: 37779
         ctime5: 49151
         ctime6: 65535
