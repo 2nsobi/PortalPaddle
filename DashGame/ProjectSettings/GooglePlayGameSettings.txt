@@ -1,9 +1,0 @@
-lastUpgrade=00953
-proj.pluginVersion=0.9.53
-proj.AppId=314508433139
-and.BundleId=com.nnaji.PortalPaddle
-proj.classDir=Assets
-proj.ConstantsClassName=GPGSIds
-and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--%0d%0aGoogle+Play+game+services+IDs.%0d%0aSave+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.%0d%0a--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--+app_id+--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e314508433139%3c%2fstring%3e%0d%0a++%3c%21--+package_name+--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.nnaji.PortalPaddle%3c%2fstring%3e%0d%0a++%3c%21--+achievement+Interstellar+--%3e%0d%0a++%3cstring+name%3d%22achievement_interstellar%22+translatable%3d%22false%22%3eCgkI862n0ZMJEAIQAg%3c%2fstring%3e%0d%0a++%3c%21--+achievement+Lunar+King+--%3e%0d%0a++%3cstring+name%3d%22achievement_lunar_king%22+translatable%3d%22false%22%3eCgkI862n0ZMJEAIQAw%3c%2fstring%3e%0d%0a++%3c%21--+leaderboard+High+Scores+--%3e%0d%0a++%3cstring+name%3d%22leaderboard_high_scores%22+translatable%3d%22false%22%3eCgkI862n0ZMJEAIQBA%3c%2fstring%3e%0d%0a++%3c%21--+leaderboard+Ultra+High+Scores+--%3e%0d%0a++%3cstring+name%3d%22leaderboard_ultra_high_scores%22+translatable%3d%22false%22%3eCgkI862n0ZMJEAIQBQ%3c%2fstring%3e%0d%0a++%3c%21--+event+Passed+Moon+--%3e%0d%0a++%3cstring+name%3d%22event_passed_moon%22+translatable%3d%22false%22%3eCgkI862n0ZMJEAIQBw%3c%2fstring%3e%0d%0a%3c%2fresources%3e
-and.ClientId=
-android.SetupDone=true

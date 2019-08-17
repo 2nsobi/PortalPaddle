@@ -48,13 +48,6 @@ public class TargetController : MonoBehaviour
         codeTravelSpeed = travelSpeed;
 
         collider = TargetPrefab.GetComponent<CircleCollider2D>();
-
-        spawnAreaRect = spawnArea.transform as RectTransform;
-        spawnAreaRect.GetWorldCorners(spawnAreaCorners);
-
-        targets = new List<Target>();
-
-        SpawnTargets(3, Color.yellow);
     }
 
     private void Start()
@@ -62,6 +55,13 @@ public class TargetController : MonoBehaviour
         LG = LevelGenerator.Instance;
         game = GameManager.Instance;
         ballC = BallController.Instance;
+
+        spawnAreaRect = spawnArea.transform as RectTransform;
+        spawnAreaRect.GetWorldCorners(spawnAreaCorners);
+
+        targets = new List<Target>();
+
+        SpawnTargets(3, Color.yellow);
     }
 
     public void SpawnTargets(int size, Color color)

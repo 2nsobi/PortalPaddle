@@ -454,9 +454,6 @@ public class BallController : MonoBehaviour
     {
         newXRange = rng.Next(Mathf.RoundToInt(spawnAreaLeftEdge + (0.57f)), Mathf.RoundToInt(spawnAreaRightEdge - (0.57f)));    //0.57 is radius of ballspawner sprite
 
-        print("old x range before = " + oldXRange);
-        print("new x range before = " + newXRange);
-
         if (newXRange == oldXRange)
         {
             if (newXRange <= 0)
@@ -466,9 +463,6 @@ public class BallController : MonoBehaviour
         }
 
         oldXRange = newXRange;
-
-        print("old x range after = " + oldXRange);
-        print("new x range after = " + newXRange);
 
         return newXRange; //the float comes from measuring radius of ballspawner
     }

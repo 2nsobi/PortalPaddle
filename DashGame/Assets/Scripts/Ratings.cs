@@ -110,7 +110,7 @@ public class Ratings : MonoBehaviour
 
     IEnumerator TryDailyRewardC()
     {
-        UnityWebRequest www = UnityWebRequest.Get("http://simplyconnectedgames.com/getTime.php");
+        UnityWebRequest www = UnityWebRequest.Get("https://us-central1-simplyconnectedgames-website.cloudfunctions.net/getTime");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
@@ -119,7 +119,7 @@ public class Ratings : MonoBehaviour
         }
         else
         {
-            string[] dateFromServer = www.downloadHandler.text.Split(new char[] { '-', '/', ':' }); //date from server looks like this: 12-04-2018/21:39:59 (month-day-year/hour:min;sec)
+            string[] dateFromServer = www.downloadHandler.text.Split(new char[] { '-', '/', ':' }); //date from server looks like this: 12-04-2018/21:39:59 (month-day-year/hour:min:sec)
 
             currentDate = new System.DateTime(int.Parse(dateFromServer[2]), int.Parse(dateFromServer[0]), int.Parse(dateFromServer[1]), int.Parse(dateFromServer[3]),
                  int.Parse(dateFromServer[4]), int.Parse(dateFromServer[5]));
