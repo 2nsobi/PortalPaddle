@@ -154,7 +154,7 @@ PlayerSettings:
     Standalone: com.Company.ProductName
     iOS: com.nnaji.PortalPaddle
   buildNumber: {}
-  AndroidBundleVersionCode: 40
+  AndroidBundleVersionCode: 42
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
