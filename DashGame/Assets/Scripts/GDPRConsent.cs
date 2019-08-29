@@ -13,14 +13,15 @@ public class GDPRConsent : MonoBehaviour
     public Image yesPanel;
     public Image noPanel;
 
-    string[] GDPRCountries = {"AT","BE","BG","HR","CY","CZ","DK", "EE", "FI", "FR", "DE", "EL","GR","HU", "IE", "IT", "LV", "LT", "LU",
-        "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "UK", "GB" };
+    //string[] GDPRCountries = {"AT","BE","BG","HR","CY","CZ","DK", "EE", "FI", "FR", "DE", "EL","GR","HU", "IE", "IT", "LV", "LT", "LU",
+    //    "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "UK", "GB" };
 
     private void Start()
     {
         if (PlayerPrefsX.GetBool("answeredGDPR") == false)
         {
-            StartCoroutine(DetermineGDPRMeasures());
+            //StartCoroutine(DetermineGDPRMeasures());
+            GDPRCanvas.SetActive(true);
         }
         else
         {
@@ -31,42 +32,42 @@ public class GDPRConsent : MonoBehaviour
         }
     }
 
-    IEnumerator DetermineGDPRMeasures()
-    {
-        UnityWebRequest www = UnityWebRequest.Get("http://ip-api.com/json");
-        yield return www.SendWebRequest();
+    //IEnumerator DetermineGDPRMeasures()
+    //{
+    //    UnityWebRequest www = UnityWebRequest.Get("http://ip-api.com/json");
+    //    yield return www.SendWebRequest();
 
-        if (www.isNetworkError || www.isHttpError)
-        {
-            AdManager.Instance.InitializeAds(true);
-            Debug.Log(www.error);
-        }
-        else
-        {
-            string code = GetCountryCode(www.downloadHandler.text);
+    //    if (www.isNetworkError || www.isHttpError)
+    //    {
+    //        AdManager.Instance.InitializeAds(true);
+    //        Debug.Log(www.error);
+    //    }
+    //    else
+    //    {
+    //        string code = GetCountryCode(www.downloadHandler.text);
 
-            bool foundCountry = false;
-            for(int i = 0; i < GDPRCountries.Length;i++)
-            {
-                if (code == GDPRCountries[i])
-                {
-                    GDPRCanvas.SetActive(true);
-                    foundCountry = true;
-                    break;
-                }
-            }
+    //        bool foundCountry = false;
+    //        for(int i = 0; i < GDPRCountries.Length;i++)
+    //        {
+    //            if (code == GDPRCountries[i])
+    //            {
+    //                GDPRCanvas.SetActive(true);
+    //                foundCountry = true;
+    //                break;
+    //            }
+    //        }
 
-            if (!foundCountry)
-            {
-                PlayerPrefsX.SetBool("answeredGDPR", true);
-                PlayerPrefsX.SetBool("GDPRCompliant", true);
-                AdManager.Instance.InitializeAds(true);
-            }
+    //        if (!foundCountry)
+    //        {
+    //            PlayerPrefsX.SetBool("answeredGDPR", true);
+    //            PlayerPrefsX.SetBool("GDPRCompliant", true);
+    //            AdManager.Instance.InitializeAds(true);
+    //        }
 
-            // Show results as text
-            //Debug.Log(code + ", String Length = " + code.Length);
-        }
-    }
+    //        // Show results as text
+    //        //Debug.Log(code + ", String Length = " + code.Length);
+    //    }
+    //}
 
     string GetCountryCode(string json)
     {
@@ -97,7 +98,7 @@ public class GDPRConsent : MonoBehaviour
 
     public void onPLClick()
     {
-        Application.OpenURL("https://www.appodeal.com/privacy-policy");
+        Application.OpenURL("https://simplyconnectedgames.com/privacy");
     }
 
     public void onCloseClick()
