@@ -1,34 +1,32 @@
 fileFormatVersion: 2
-guid: 2d3441d36ccb947688e631a6f2cdfb57
+guid: 6e6a02dcd7bdb4d57b23989dcc182bc5
 folderAsset: yes
-timeCreated: 1532084007
-licenseType: Pro
 PluginImporter:
+  externalObjects: {}
   serializedVersion: 2
   iconMap: {}
   executionOrder: {}
+  defineConstraints: []
   isPreloaded: 0
   isOverridable: 0
+  isExplicitlyReferenced: 0
   platformData:
-    data:
-      first:
-        Android: Android
-      second:
-        enabled: 1
-        settings: {}
-    data:
-      first:
-        Any: 
-      second:
-        enabled: 0
-        settings: {}
-    data:
-      first:
-        Editor: Editor
-      second:
-        enabled: 0
-        settings:
-          DefaultValueInitialized: true
+  - first:
+      Android: Android
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      Any: 
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
   userData: 
   assetBundleName: 
   assetBundleVariant: 

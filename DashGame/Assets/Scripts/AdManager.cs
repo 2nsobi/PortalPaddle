@@ -3,7 +3,7 @@ using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 using System.Collections;
 
-public class AdManager : MonoBehaviour, IRewardedVideoAdListener
+public class AdManager : MonoBehaviour
 {
     [HideInInspector]
     public bool initialized = false;
@@ -76,7 +76,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
 
             Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
-            Appodeal.setRewardedVideoCallbacks(this);
 
             Appodeal.show(Appodeal.BANNER_BOTTOM);
             showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
@@ -86,7 +85,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener
         {
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
             Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
-            Appodeal.setRewardedVideoCallbacks(this);
         }
 
         initialized = true;
@@ -133,14 +131,6 @@ public class AdManager : MonoBehaviour, IRewardedVideoAdListener
                     attempts2ShowInterstitial = 0;
                 }
             }
-        }
-    }
-
-    void OnApplicationFocus(bool hasFocus)
-    {
-        if (hasFocus)
-        {
-            Appodeal.onResume();
         }
     }
 

@@ -1,5 +1,5 @@
-lastUpgrade=00953
-proj.pluginVersion=0.9.53
+lastUpgrade=01004
+proj.pluginVersion=0.10.04
 proj.AppId=314508433139
 and.BundleId=com.nnaji.PortalPaddle
 proj.classDir=Assets

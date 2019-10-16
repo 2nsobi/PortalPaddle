@@ -2,26 +2,24 @@
 //  APDImage.h
 //  Appodeal
 //
-//  AppodealSDK version 2.4.8.1-Beta
+//  AppodealSDK version 2.5.11
 //
-//  Copyright © 2018 Appodeal, Inc. All rights reserved.
+//  Copyright © 2019 Appodeal, Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-/*!
- *  Instance of this class contains URL to image source and size of image
+/**
+ Instance of this class contains URL to image source and size of image
  */
 @interface APDImage : NSObject
-
-/*!
- *  Size of image, can be APDImageUndefined
+/**
+ Size of image. Can be zero
  */
-@property (nonatomic, assign) CGSize size;
-
-/*!
- *  Url to image source. Can be local
+@property (nonatomic, assign) CGSize size  __attribute__((deprecated("This getter is deprecated and will be removed in next release")));
+/**
+ Url to image source. Can be local
  */
 @property (nonatomic, strong, readonly, nonnull) NSURL * url;
 

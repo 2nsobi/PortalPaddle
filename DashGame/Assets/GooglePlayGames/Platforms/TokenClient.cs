@@ -14,7 +14,7 @@
 //  limitations under the License.
 // </copyright>
 
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+#if UNITY_ANDROID
 namespace GooglePlayGames
 {
     using System;
@@ -32,6 +32,7 @@ namespace GooglePlayGames
         /// <returns>The user email or null if not authenticated or the permission is
         /// not available.</returns>
         string GetEmail();
+
         string GetAuthCode();
         string GetIdToken();
 
@@ -47,7 +48,7 @@ namespace GooglePlayGames
         /// retrieving another auth code. </param>
         /// <param name="callback">Callback.</param>
         void GetAnotherServerAuthCode(bool reAuthenticateIfNeeded,
-                                      Action<string> callback);
+            Action<string> callback);
 
         void Signout();
 
@@ -61,13 +62,11 @@ namespace GooglePlayGames
 
         void SetAccountName(string accountName);
 
-        void AddOauthScopes(string[] scopes);
+        void AddOauthScopes(params string[] scopes);
 
         void SetHidePopups(bool flag);
 
-        bool NeedsToRun();
-
-        void FetchTokens(Action<int> callback);
+        void FetchTokens(bool silent, Action<int> callback);
     }
 }
 #endif

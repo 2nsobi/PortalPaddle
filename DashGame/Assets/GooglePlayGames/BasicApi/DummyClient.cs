@@ -13,7 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+
+#if UNITY_ANDROID
 
 namespace GooglePlayGames.BasicApi
 {
@@ -100,7 +101,7 @@ namespace GooglePlayGames.BasicApi
         }
 
         public void GetAnotherServerAuthCode(bool reAuthenticateIfNeeded,
-                                             Action<string> callback)
+            Action<string> callback)
         {
             LogUsage();
             callback(null);
@@ -179,17 +180,6 @@ namespace GooglePlayGames.BasicApi
             {
                 callback.Invoke(null);
             }
-        }
-
-        /// <summary>
-        /// Returns the achievement corresponding to the passed achievement identifier.
-        /// </summary>
-        /// <returns>The achievement.</returns>
-        /// <param name="achId">Achievement identifier.</param>
-        public Achievement GetAchievement(string achId)
-        {
-            LogUsage();
-            return null;
         }
 
         /// <summary>
@@ -317,8 +307,8 @@ namespace GooglePlayGames.BasicApi
             if (callback != null)
             {
                 callback(new LeaderboardScoreData(
-                        leaderboardId,
-                        ResponseStatus.LicenseCheckFailed));
+                    leaderboardId,
+                    ResponseStatus.LicenseCheckFailed));
             }
         }
 
@@ -341,8 +331,8 @@ namespace GooglePlayGames.BasicApi
             if (callback != null)
             {
                 callback(new LeaderboardScoreData(
-                        token.LeaderboardId,
-                        ResponseStatus.LicenseCheckFailed));
+                    token.LeaderboardId,
+                    ResponseStatus.LicenseCheckFailed));
             }
         }
 
@@ -485,22 +475,13 @@ namespace GooglePlayGames.BasicApi
         }
 
         /// <summary>
-        /// Gets the Android API client. Returns null on non-Android players.
-        /// </summary>
-        /// <returns>The API client.</returns>
-        public IntPtr GetApiClient()
-        {
-            LogUsage();
-            return IntPtr.Zero;
-        }
-
-        /// <summary>
         /// Sets the gravity for popups (Android only).
         /// </summary>
         /// <remarks>This can only be called after authentication.  It affects
         /// popups for achievements and other game services elements.</remarks>
         /// <param name="gravity">Gravity for the popup.</param>
-        public void SetGravityForPopups(Gravity gravity) {
+        public void SetGravityForPopups(Gravity gravity)
+        {
             LogUsage();
         }
 

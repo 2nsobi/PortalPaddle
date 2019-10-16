@@ -166,7 +166,7 @@ PlayerSettings:
     Standalone: com.Company.ProductName
     iPhone: com.nnaji.PortalPaddle
   buildNumber: {}
-  AndroidBundleVersionCode: 42
+  AndroidBundleVersionCode: 46
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -259,7 +259,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 7
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/NNobi/Documents/PortalPaddleKey.keystore
+  AndroidKeystoreName: C:/Users/NNobi/PortalPaddleKey.keystore
   AndroidKeyaliasName: portalpaddlekey
   AndroidBuildApkPerCpuArchitecture: 1
   AndroidTVCompatibility: 1

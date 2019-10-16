@@ -24,11 +24,11 @@
 
 public static class GPGSIds
 {
-        public const string event_passed_moon = "CgkI862n0ZMJEAIQBw"; // <GPGSID>
-        public const string leaderboard_high_scores = "CgkI862n0ZMJEAIQBA"; // <GPGSID>
-        public const string achievement_lunar_king = "CgkI862n0ZMJEAIQAw"; // <GPGSID>
-        public const string leaderboard_ultra_high_scores = "CgkI862n0ZMJEAIQBQ"; // <GPGSID>
         public const string achievement_interstellar = "CgkI862n0ZMJEAIQAg"; // <GPGSID>
+        public const string leaderboard_ultra_high_scores = "CgkI862n0ZMJEAIQBQ"; // <GPGSID>
+        public const string event_passed_moon = "CgkI862n0ZMJEAIQBw"; // <GPGSID>
+        public const string achievement_lunar_king = "CgkI862n0ZMJEAIQAw"; // <GPGSID>
+        public const string leaderboard_high_scores = "CgkI862n0ZMJEAIQBA"; // <GPGSID>
 
 }
 

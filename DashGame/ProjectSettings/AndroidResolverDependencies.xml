@@ -1,44 +1,23 @@
 <dependencies>
   <packages>
-    <package>com.android.support:recyclerview-v7:26.1.0</package>
-    <package>com.android.support:support-v4:26.1.0</package>
-    <package>com.google.android.gms:play-services-ads:15.0.1</package>
-    <package>com.google.android.gms:play-services-gcm:15.0.1</package>
-    <package>com.google.android.gms:play-services-location:15.0.1</package>
-    <package>com.google.games:gpgs-plugin-support:0.9.53</package>
+    <package>com.google.games:gpgs-plugin-support:0.10.04</package>
   </packages>
   <files>
-    <file>Assets/Plugins/Android/android.arch.core.common-1.0.0.jar</file>
-    <file>Assets/Plugins/Android/android.arch.lifecycle.common-1.0.0.jar</file>
-    <file>Assets/Plugins/Android/android.arch.lifecycle.runtime-1.0.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.customtabs-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.recyclerview-v7-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-annotations-26.1.0.jar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-compat-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-core-ui-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-core-utils-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-fragment-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-media-compat-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.android.support.support-v4-26.1.0.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-base-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-identifier-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-ads-lite-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-api-phone-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-auth-base-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-base-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-basement-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-drive-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-games-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-gass-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-gcm-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-iid-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-location-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-nearby-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-places-placereport-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-15.0.1.aar</file>
-    <file>Assets/Plugins/Android/com.google.games.gpgs-plugin-support-0.9.53.aar</file>
+    <file>Assets/GooglePlayGames/Editor/m2repository/com/google/games/gpgs-plugin-support/0.10.02/gpgs-plugin-support-0.10.02.aar</file>
+    <file>Assets/GooglePlayGames/Editor/m2repository/com/google/games/gpgs-plugin-support/0.10.03/gpgs-plugin-support-0.10.03.aar</file>
+    <file>Assets/GooglePlayGames/Editor/m2repository/com/google/games/gpgs-plugin-support/0.10.04/gpgs-plugin-support-0.10.04.aar</file>
   </files>
+  <settings>
+    <setting name="androidAbis" value="arm64-v8a,armeabi-v7a,x86" />
+    <setting name="bundleId" value="com.nnaji.PortalPaddle" />
+    <setting name="explodeAars" value="True" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="packageDir" value="Assets\Plugins\Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useJetifier" value="True" />
+  </settings>
 </dependencies>
