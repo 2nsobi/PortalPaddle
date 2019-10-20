@@ -3,7 +3,11 @@ using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 using System.Collections;
 
+<<<<<<< HEAD
 public class AdManager : MonoBehaviour
+=======
+public class AdManager : MonoBehaviour, IRewardedVideoAdListener
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 {
     [HideInInspector]
     public bool initialized = false;
@@ -76,6 +80,10 @@ public class AdManager : MonoBehaviour
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
 
             Appodeal.initialize(appKey, Appodeal.BANNER | Appodeal.INTERSTITIAL | Appodeal.REWARDED_VIDEO, GDPRCompliance);
+<<<<<<< HEAD
+=======
+            Appodeal.setRewardedVideoCallbacks(this);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             Appodeal.show(Appodeal.BANNER_BOTTOM);
             showRewardVidDelay = StartCoroutine(CanShowRewardVidDelay());
@@ -85,6 +93,10 @@ public class AdManager : MonoBehaviour
         {
             Appodeal.setAutoCache(Appodeal.REWARDED_VIDEO, true);
             Appodeal.initialize(appKey, Appodeal.REWARDED_VIDEO, GDPRCompliance);
+<<<<<<< HEAD
+=======
+            Appodeal.setRewardedVideoCallbacks(this);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         initialized = true;
@@ -134,6 +146,17 @@ public class AdManager : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
+=======
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Appodeal.onResume();
+        }
+    }
+
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     public void ShowRewardVideo(bool givereward = true)
     {
         if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))

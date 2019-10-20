@@ -13,6 +13,7 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
 namespace GooglePlayGames.OurUtils
@@ -22,6 +23,17 @@ namespace GooglePlayGames.OurUtils
 
     public static class PlatformUtils
     {
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+
+namespace GooglePlayGames.OurUtils
+{
+  using UnityEngine;
+  using System;
+
+  public static class PlatformUtils
+  {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// <summary>
         /// Check if the Google Play Games platform is supported at runtime.
         /// </summary>
@@ -30,9 +42,17 @@ namespace GooglePlayGames.OurUtils
         {
             get
             {
+<<<<<<< HEAD
 #if UNITY_EDITOR
                 return false;
 #else
+=======
+    #if UNITY_EDITOR
+                return false;
+    #elif UNITY_IOS
+                return true;
+    #else
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 var up = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
                 var ca = up.GetStatic<AndroidJavaObject>("currentActivity");
                 var packageManager = ca.Call<AndroidJavaObject>("getPackageManager");
@@ -41,8 +61,12 @@ namespace GooglePlayGames.OurUtils
                 //if the app is installed, no errors. Else, doesn't get past next line
                 try
                 {
+<<<<<<< HEAD
                     launchIntent =
  packageManager.Call<AndroidJavaObject>("getLaunchIntentForPackage", "com.google.android.play.games");
+=======
+                    launchIntent = packageManager.Call<AndroidJavaObject>("getLaunchIntentForPackage", "com.google.android.play.games");
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
                 catch (Exception)
                 {
@@ -50,9 +74,18 @@ namespace GooglePlayGames.OurUtils
                 }
 
                 return launchIntent != null;
+<<<<<<< HEAD
 #endif
             }
         }
     }
 }
 #endif //UNITY_ANDROID
+=======
+    #endif
+            }
+        }
+  }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

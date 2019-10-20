@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 guid: 97e43e86f5dfe4cb4a0eeee600af6b43
+<<<<<<< HEAD
 timeCreated: 1473188568
 licenseType: Pro
 PluginImporter:
@@ -74,6 +75,36 @@ PluginImporter:
       settings:
         CompileFlags: 
         FrameworkDependencies: 
+=======
+PluginImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  iconMap: {}
+  executionOrder: {}
+  defineConstraints: []
+  isPreloaded: 0
+  isOverridable: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
+  platformData:
+  - first:
+      Any: 
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   userData: 
   assetBundleName: 
   assetBundleVariant: 

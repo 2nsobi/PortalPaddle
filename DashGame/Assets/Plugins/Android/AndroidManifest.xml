@@ -13,11 +13,14 @@
     <meta-data android:name="unity.build-id" android:value="0d031ea4-41a3-42df-b9b2-ac1020be32a5" />
     <meta-data android:name="unity.splash-mode" android:value="0" />
     <meta-data android:name="unity.splash-enable" android:value="True" />
+<<<<<<< HEAD
     <!--For appodeal-->
     <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8748712167919890~4497635441"/>
     <!--^^For appodeal^^-->
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   </application>
   <uses-feature android:glEsVersion="0x00020000" />
   <uses-permission android:name="android.permission.INTERNET" />

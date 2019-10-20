@@ -88,7 +88,11 @@ namespace GooglePlayGames.OurUtils
         {
             if (instance != null)
             {
+<<<<<<< HEAD
                 RunOnGameThread(() => instance.StartCoroutine(action));
+=======
+                RunOnGameThread(()=>instance.StartCoroutine(action));
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -111,13 +115,20 @@ namespace GooglePlayGames.OurUtils
             }
         }
 
+<<<<<<< HEAD
         public void Update()
+=======
+         public void Update()
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             if (sIsDummy || sQueueEmpty)
             {
                 return;
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             // first copy the shared queue into a local queue
             localQueue.Clear();
             lock (sQueue)
@@ -148,7 +159,11 @@ namespace GooglePlayGames.OurUtils
                 catch (Exception e)
                 {
                     Debug.LogError("Exception in OnApplicationFocus:" +
+<<<<<<< HEAD
                                    e.Message + "\n" + e.StackTrace);
+=======
+                        e.Message + "\n" + e.StackTrace);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
             }
         }
@@ -164,7 +179,11 @@ namespace GooglePlayGames.OurUtils
                 catch (Exception e)
                 {
                     Debug.LogError("Exception in OnApplicationPause:" +
+<<<<<<< HEAD
                                    e.Message + "\n" + e.StackTrace);
+=======
+                        e.Message + "\n" + e.StackTrace);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
             }
         }
@@ -219,4 +238,8 @@ namespace GooglePlayGames.OurUtils
             return sPauseCallbackList.Remove(callback);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

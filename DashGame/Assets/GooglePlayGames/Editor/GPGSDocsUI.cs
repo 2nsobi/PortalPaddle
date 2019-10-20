@@ -37,7 +37,11 @@ namespace GooglePlayGames.Editor
         public static void MenuItemAbout()
         {
             string msg = GPGSStrings.AboutText +
+<<<<<<< HEAD
                          PluginVersion.VersionString + " (" +
+=======
+                PluginVersion.VersionString + " (" +
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                          string.Format("0x{0:X8}", GooglePlayGames.PluginVersion.VersionInt) + ")";
             EditorUtility.DisplayDialog(GPGSStrings.AboutTitle, msg,
                 GPGSStrings.Ok);
@@ -50,4 +54,8 @@ namespace GooglePlayGames.Editor
                 GPGSStrings.Ok);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

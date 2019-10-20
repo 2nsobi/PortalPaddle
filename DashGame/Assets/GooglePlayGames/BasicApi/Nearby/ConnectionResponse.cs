@@ -38,7 +38,11 @@ namespace GooglePlayGames.BasicApi.Nearby
         private readonly byte[] mPayload;
 
         private ConnectionResponse(long localClientId, string remoteEndpointId, Status code,
+<<<<<<< HEAD
             byte[] payload)
+=======
+                                   byte[] payload)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             this.mLocalClientId = localClientId;
             this.mRemoteEndpointId = Misc.CheckNotNull(remoteEndpointId);
@@ -48,22 +52,50 @@ namespace GooglePlayGames.BasicApi.Nearby
 
         public long LocalClientId
         {
+<<<<<<< HEAD
             get { return mLocalClientId; }
+=======
+            get
+            {
+                return mLocalClientId;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string RemoteEndpointId
         {
+<<<<<<< HEAD
             get { return mRemoteEndpointId; }
+=======
+            get
+            {
+                return mRemoteEndpointId;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public Status ResponseStatus
         {
+<<<<<<< HEAD
             get { return mResponseStatus; }
+=======
+            get
+            {
+                return mResponseStatus;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public byte[] Payload
         {
+<<<<<<< HEAD
             get { return mPayload; }
+=======
+            get
+            {
+                return mPayload;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public static ConnectionResponse Rejected(long localClientId, string remoteEndpointId)
@@ -91,18 +123,30 @@ namespace GooglePlayGames.BasicApi.Nearby
         }
 
         public static ConnectionResponse Accepted(long localClientId, string remoteEndpointId,
+<<<<<<< HEAD
             byte[] payload)
+=======
+                                                  byte[] payload)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             return new ConnectionResponse(localClientId, remoteEndpointId, Status.Accepted,
                 payload);
         }
 
         public static ConnectionResponse AlreadyConnected(long localClientId,
+<<<<<<< HEAD
             string remoteEndpointId)
+=======
+                                                          string remoteEndpointId)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             return new ConnectionResponse(localClientId, remoteEndpointId,
                 Status.ErrorAlreadyConnected,
                 EmptyPayload);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

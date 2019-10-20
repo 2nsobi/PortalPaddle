@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.Editor
 {
@@ -34,6 +38,7 @@ namespace GooglePlayGames.Editor
         }
 
         [MenuItem("Window/Google Play Games/Setup/Nearby Connections setup...", true)]
+<<<<<<< HEAD
         public static bool EnableNearbyMenuItem()
         {
 #if UNITY_ANDROID
@@ -41,6 +46,14 @@ namespace GooglePlayGames.Editor
 #else
             return false;
 #endif
+=======
+        public static bool EnableNearbyMenuItem() {
+        #if UNITY_ANDROID
+            return true;
+        #else
+            return false;
+        #endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public void OnEnable()
@@ -60,7 +73,11 @@ namespace GooglePlayGames.Editor
             GUILayout.Space(10);
             GUILayout.Label(GPGSStrings.Setup.NearbyServiceBlurb);
             mNearbyServiceId = EditorGUILayout.TextField(GPGSStrings.Setup.NearbyServiceId,
+<<<<<<< HEAD
                 mNearbyServiceId, GUILayout.Width(350));
+=======
+                mNearbyServiceId,GUILayout.Width(350));
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             GUILayout.FlexibleSpace();
             GUILayout.BeginHorizontal();
@@ -70,7 +87,10 @@ namespace GooglePlayGames.Editor
             {
                 DoSetup();
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (GUILayout.Button("Cancel", GUILayout.Width(100)))
             {
                 this.Close();
@@ -114,12 +134,22 @@ namespace GooglePlayGames.Editor
                 {
                     return false;
                 }
+<<<<<<< HEAD
             }
             else
             {
                 GPGSProjectSettings.Instance.Set(GPGSUtil.SERVICEIDKEY, nearbyServiceId);
                 GPGSProjectSettings.Instance.Save();
             }
+=======
+
+             }
+             else
+             {
+                 GPGSProjectSettings.Instance.Set(GPGSUtil.SERVICEIDKEY, nearbyServiceId);
+                 GPGSProjectSettings.Instance.Save();
+             }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             if (androidBuild)
             {
@@ -141,13 +171,24 @@ namespace GooglePlayGames.Editor
 
                 Google.VersionHandler.InvokeStaticMethod(
                     Google.VersionHandler.FindClass(
+<<<<<<< HEAD
                         "Google.JarResolver",
                         "GooglePlayServices.PlayServicesResolver"),
                     "MenuResolve", null);
             }
 
+=======
+                   "Google.JarResolver",
+                   "GooglePlayServices.PlayServicesResolver"),
+                   "MenuResolve", null);
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return true;
         }
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

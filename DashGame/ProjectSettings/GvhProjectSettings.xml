@@ -1,6 +1,9 @@
 <projectSettings>
   <projectSetting name="Google.VersionHandler.VerboseLoggingEnabled" value="True" />
   <projectSetting name="Google.VersionHandler.VersionHandlingEnabled" value="True" />
+<<<<<<< HEAD
   <projectSetting name="GooglePlayServices.PromptBeforeAutoResolution" value="False" />
   <projectSetting name="GooglePlayServices.UseJetifier" value="True" />
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 </projectSettings>

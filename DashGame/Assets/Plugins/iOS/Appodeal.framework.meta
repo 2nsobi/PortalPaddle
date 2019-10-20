@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 31ff38cb6c16e413496b174ed38f826d
 folderAsset: yes
 PluginImporter:
@@ -28,6 +29,38 @@ PluginImporter:
       enabled: 1
       settings:
         AddToEmbeddedBinaries: false
+=======
+guid: 5cdd10a00c0594ccebba1c37ebad1781
+folderAsset: yes
+timeCreated: 1532084007
+licenseType: Pro
+PluginImporter:
+  serializedVersion: 2
+  iconMap: {}
+  executionOrder: {}
+  isPreloaded: 0
+  isOverridable: 0
+  platformData:
+    data:
+      first:
+        Any: 
+      second:
+        enabled: 0
+        settings: {}
+    data:
+      first:
+        Editor: Editor
+      second:
+        enabled: 0
+        settings:
+          DefaultValueInitialized: true
+    data:
+      first:
+        iPhone: iOS
+      second:
+        enabled: 1
+        settings: {}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   userData: 
   assetBundleName: 
   assetBundleVariant: 

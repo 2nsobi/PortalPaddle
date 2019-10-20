@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
@@ -32,6 +36,7 @@ namespace GooglePlayGames
                 GooglePlayGames.OurUtils.Logger.d("Creating IPlayGamesClient in editor, using DummyClient.");
                 return new GooglePlayGames.BasicApi.DummyClient();
             }
+<<<<<<< HEAD
 #if UNITY_ANDROID
             GooglePlayGames.OurUtils.Logger.d("Creating Android IPlayGamesClient Client");
             return new GooglePlayGames.Android.AndroidClient(config);
@@ -43,3 +48,21 @@ namespace GooglePlayGames
     }
 }
 #endif
+=======
+            #if UNITY_ANDROID
+                GooglePlayGames.OurUtils.Logger.d("Creating Android IPlayGamesClient Client");
+                return new GooglePlayGames.Native.NativeClient(config,
+                    new GooglePlayGames.Android.AndroidClient());
+            #elif (UNITY_IPHONE && !NO_GPGS)
+            GooglePlayGames.OurUtils.Logger.d("Creating IOS IPlayGamesClient");
+                return new GooglePlayGames.Native.NativeClient(config,
+            new GooglePlayGames.IOS.IOSClient());
+            #else
+                GooglePlayGames.OurUtils.Logger.d("Cannot create IPlayGamesClient for unknown platform, returning DummyClient");
+                return new GooglePlayGames.BasicApi.DummyClient();
+            #endif
+        }
+    }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

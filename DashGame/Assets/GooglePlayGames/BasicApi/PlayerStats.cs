@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi
 {
@@ -27,6 +31,7 @@ namespace GooglePlayGames.BasicApi
     {
         private static float UNSET_VALUE = -1.0f;
 
+<<<<<<< HEAD
         public PlayerStats(
             int numberOfPurchases,
             float avgSessionLength,
@@ -69,6 +74,8 @@ namespace GooglePlayGames.BasicApi
         private float mHighSpenderProbability;
         private float mTotalSpendNext28Days;
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// <summary>
         /// If this PlayerStats object is valid (i.e. successfully retrieved from games services).
         /// </summary>
@@ -77,7 +84,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public bool Valid
         {
+<<<<<<< HEAD
             get { return mValid; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -85,6 +97,7 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public int NumberOfPurchases
         {
+<<<<<<< HEAD
             get { return mNumberOfPurchases; }
         }
 
@@ -94,6 +107,19 @@ namespace GooglePlayGames.BasicApi
         public float AvgSessionLength
         {
             get { return mAvgSessionLength; }
+=======
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The length of the avg sesson in minutes.
+        /// </summary>
+        public float AvgSessonLength
+        {
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -101,7 +127,12 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public int DaysSinceLastPlayed
         {
+<<<<<<< HEAD
             get { return mDaysSinceLastPlayed; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -109,7 +140,12 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public int NumberOfSessions
         {
+<<<<<<< HEAD
             get { return mNumberOfSessions; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -124,7 +160,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public float SessPercentile
         {
+<<<<<<< HEAD
             get { return mSessPercentile; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -139,7 +180,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public float SpendPercentile
         {
+<<<<<<< HEAD
             get { return mSpendPercentile; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -152,7 +198,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public float SpendProbability
         {
+<<<<<<< HEAD
             get { return mSpendProbability; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -164,7 +215,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public float ChurnProbability
         {
+<<<<<<< HEAD
             get { return mChurnProbability; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -172,7 +228,12 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public float HighSpenderProbability
         {
+<<<<<<< HEAD
             get { return mHighSpenderProbability; }
+=======
+            get;
+            set;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -180,7 +241,20 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public float TotalSpendNext28Days
         {
+<<<<<<< HEAD
             get { return mTotalSpendNext28Days; }
+=======
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GooglePlayGames.BasicApi.PlayerStats"/> class.
+        /// Sets all values to -1.
+        /// </summary>
+        public PlayerStats() {
+            Valid = false;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -189,6 +263,7 @@ namespace GooglePlayGames.BasicApi
         /// <returns><c>true</c> if this instance has NumberOfPurchases; otherwise, <c>false</c>.</returns>
         public bool HasNumberOfPurchases()
         {
+<<<<<<< HEAD
             return NumberOfPurchases != (int) UNSET_VALUE;
         }
 
@@ -199,6 +274,18 @@ namespace GooglePlayGames.BasicApi
         public bool HasAvgSessionLength()
         {
             return AvgSessionLength != UNSET_VALUE;
+=======
+            return NumberOfPurchases != (int)UNSET_VALUE;
+        }
+
+        /// <summary>
+        /// Determines whether this instance has AvgSessonLength.
+        /// </summary>
+        /// <returns><c>true</c> if this instance has AvgSessonLength; otherwise, <c>false</c>.</returns>
+        public bool HasAvgSessonLength()
+        {
+            return AvgSessonLength != UNSET_VALUE;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -207,7 +294,11 @@ namespace GooglePlayGames.BasicApi
         /// <returns><c>true</c> if this instance has DaysSinceLastPlayed; otherwise, <c>false</c>.</returns>
         public bool HasDaysSinceLastPlayed()
         {
+<<<<<<< HEAD
             return DaysSinceLastPlayed != (int) UNSET_VALUE;
+=======
+            return DaysSinceLastPlayed != (int)UNSET_VALUE;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -216,7 +307,11 @@ namespace GooglePlayGames.BasicApi
         /// <returns><c>true</c> if this instance has NumberOfSessions; otherwise, <c>false</c>.</returns>
         public bool HasNumberOfSessions()
         {
+<<<<<<< HEAD
             return NumberOfSessions != (int) UNSET_VALUE;
+=======
+            return NumberOfSessions != (int)UNSET_VALUE;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -263,6 +358,13 @@ namespace GooglePlayGames.BasicApi
         {
             return TotalSpendNext28Days != UNSET_VALUE;
         }
+<<<<<<< HEAD
     }
 }
 #endif
+=======
+
+    }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

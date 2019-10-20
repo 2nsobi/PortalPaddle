@@ -44,19 +44,40 @@ namespace GooglePlayGames.BasicApi.Video
         /// <summary>Returns whether the device has a front-facing camera and we can use it.</summary>
         public bool IsCameraSupported
         {
+<<<<<<< HEAD
             get { return mIsCameraSupported; }
+=======
+            get
+            {
+                return mIsCameraSupported;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>Returns whether the device has a microphone and we can use it.</summary>
         public bool IsMicSupported
         {
+<<<<<<< HEAD
             get { return mIsMicSupported; }
+=======
+            get
+            {
+                return mIsMicSupported;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>Returns whether the device has an external storage device and we can use it.</summary>
         public bool IsWriteStorageSupported
         {
+<<<<<<< HEAD
             get { return mIsWriteStorageSupported; }
+=======
+            get
+            {
+                return mIsWriteStorageSupported;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>Returns whether the device supports the given capture mode.</summary>
@@ -64,7 +85,11 @@ namespace GooglePlayGames.BasicApi.Video
         {
             if (captureMode != VideoCaptureMode.Unknown)
             {
+<<<<<<< HEAD
                 return mCaptureModesSupported[(int) captureMode];
+=======
+                return mCaptureModesSupported[(int)captureMode];
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             else
             {
@@ -78,7 +103,11 @@ namespace GooglePlayGames.BasicApi.Video
         {
             if (qualityLevel != VideoQualityLevel.Unknown)
             {
+<<<<<<< HEAD
                 return mQualityLevelsSupported[(int) qualityLevel];
+=======
+                return mQualityLevelsSupported[(int)qualityLevel];
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             else
             {
@@ -89,8 +118,12 @@ namespace GooglePlayGames.BasicApi.Video
 
         public override string ToString()
         {
+<<<<<<< HEAD
             return string.Format(
                 "[VideoCapabilities: mIsCameraSupported={0}, mIsMicSupported={1}, mIsWriteStorageSupported={2}, " +
+=======
+            return string.Format("[VideoCapabilities: mIsCameraSupported={0}, mIsMicSupported={1}, mIsWriteStorageSupported={2}, " +
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 "mCaptureModesSupported={3}, mQualityLevelsSupported={4}]",
                 mIsCameraSupported,
                 mIsMicSupported,
@@ -99,4 +132,8 @@ namespace GooglePlayGames.BasicApi.Video
                 string.Join(",", mQualityLevelsSupported.Select(p => p.ToString()).ToArray()));
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

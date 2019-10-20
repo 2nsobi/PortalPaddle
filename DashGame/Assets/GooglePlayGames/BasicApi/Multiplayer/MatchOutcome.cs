@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi.Multiplayer
 {
@@ -38,7 +42,10 @@ namespace GooglePlayGames.BasicApi.Multiplayer
 
         private List<string> mParticipantIds = new List<string>();
         private Dictionary<string, uint> mPlacements = new Dictionary<string, uint>();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         private Dictionary<string, ParticipantResult> mResults =
             new Dictionary<string, ParticipantResult>();
 
@@ -54,7 +61,11 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <param name="result">Result. May be Win, Loss, Tie or None.</param>
         /// <param name="placement">Placement. Use 0 for unset, 1 for 1st, 2 for 2nd, etc.</param>
         public void SetParticipantResult(string participantId, ParticipantResult result,
+<<<<<<< HEAD
             uint placement)
+=======
+                                     uint placement)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             if (!mParticipantIds.Contains(participantId))
             {
@@ -87,19 +98,36 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <value>The participant ids.</value>
         public List<string> ParticipantIds
         {
+<<<<<<< HEAD
             get { return mParticipantIds; }
+=======
+            get
+            {
+                return mParticipantIds;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// Returns the result for the given participant ID.
         public ParticipantResult GetResultFor(string participantId)
         {
+<<<<<<< HEAD
             return mResults.ContainsKey(participantId) ? mResults[participantId] : ParticipantResult.Unset;
+=======
+            return mResults.ContainsKey(participantId) ? mResults[participantId] :
+                    ParticipantResult.Unset;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// Returns the placement for the given participant ID.
         public uint GetPlacementFor(string participantId)
         {
+<<<<<<< HEAD
             return mPlacements.ContainsKey(participantId) ? mPlacements[participantId] : PlacementUnset;
+=======
+            return mPlacements.ContainsKey(participantId) ? mPlacements[participantId] :
+                    PlacementUnset;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public override string ToString()
@@ -115,4 +143,8 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         }
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

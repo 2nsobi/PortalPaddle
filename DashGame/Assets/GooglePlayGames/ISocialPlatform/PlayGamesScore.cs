@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
@@ -41,7 +45,11 @@ namespace GooglePlayGames
             mLbId = leaderboardID;
             this.mRank = rank;
             this.mPlayerId = playerId;
+<<<<<<< HEAD
             this.mValue = (long) value;
+=======
+            this.mValue = (long)value;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             this.mMetadata = metadata;
         }
 
@@ -61,9 +69,21 @@ namespace GooglePlayGames
         /// </returns>
         public string leaderboardID
         {
+<<<<<<< HEAD
             get { return mLbId; }
 
             set { mLbId = value; }
+=======
+            get
+            {
+                return mLbId;
+            }
+
+            set
+            {
+                mLbId = value;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -74,9 +94,21 @@ namespace GooglePlayGames
         /// </returns>
         public long value
         {
+<<<<<<< HEAD
             get { return mValue; }
 
             set { mValue = value; }
+=======
+            get
+            {
+                return mValue;
+            }
+
+            set
+            {
+                mValue = value;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -84,7 +116,14 @@ namespace GooglePlayGames
         /// </summary>
         public DateTime date
         {
+<<<<<<< HEAD
             get { return mDate; }
+=======
+            get
+            {
+                return mDate;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -92,7 +131,14 @@ namespace GooglePlayGames
         /// </summary>
         public string formattedValue
         {
+<<<<<<< HEAD
             get { return mValue.ToString(); }
+=======
+            get
+            {
+                return mValue.ToString();
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -100,7 +146,14 @@ namespace GooglePlayGames
         /// </summary>
         public string userID
         {
+<<<<<<< HEAD
             get { return mPlayerId; }
+=======
+            get
+            {
+                return mPlayerId;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -108,7 +161,14 @@ namespace GooglePlayGames
         /// </summary>
         public int rank
         {
+<<<<<<< HEAD
             get { return (int) mRank; }
+=======
+            get
+            {
+                return (int)mRank;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -119,8 +179,19 @@ namespace GooglePlayGames
         /// </returns>
         public string metaData
         {
+<<<<<<< HEAD
             get { return mMetadata; }
         }
     }
 }
 #endif
+=======
+            get 
+            {
+                return mMetadata;
+            }
+        }
+    }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

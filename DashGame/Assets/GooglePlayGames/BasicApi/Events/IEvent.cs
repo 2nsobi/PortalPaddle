@@ -30,32 +30,76 @@ namespace GooglePlayGames.BasicApi.Events
         /// <summary>
         /// The ID of the event.
         /// </summary>
+<<<<<<< HEAD
         string Id { get; }
+=======
+        string Id
+        {
+            get;
+        }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// The name of the event.
         /// </summary>
+<<<<<<< HEAD
         string Name { get; }
+=======
+        string Name
+        {
+            get;
+        }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// The description of the event.
         /// </summary>
+<<<<<<< HEAD
         string Description { get; }
+=======
+        string Description
+        {
+            get;
+        }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// The URL of the image for the event. Empty if there is no image for this event.
         /// </summary>
         /// <value>The image URL.</value>
+<<<<<<< HEAD
         string ImageUrl { get; }
+=======
+        string ImageUrl
+        {
+            get;
+        }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// The current count for this event.
         /// </summary>
+<<<<<<< HEAD
         ulong CurrentCount { get; }
+=======
+        ulong CurrentCount
+        {
+            get;
+        }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// The visibility of the event.
         /// </summary>
+<<<<<<< HEAD
         EventVisibility Visibility { get; }
     }
 }
+=======
+        EventVisibility Visibility
+        {
+            get;
+        }
+    }
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -13,15 +13,22 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi
 {
     using GooglePlayGames.BasicApi.Multiplayer;
     using GooglePlayGames.OurUtils;
     using System.Collections.Generic;
+<<<<<<< HEAD
     using System.Linq;
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
     /// <summary>
     /// Provides configuration for <see cref="PlayGamesPlatform"/>. If you wish to use either Saved
@@ -36,8 +43,12 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public static readonly PlayGamesClientConfiguration DefaultConfiguration =
             new Builder()
+<<<<<<< HEAD
                 .Build();
 
+=======
+           .Build();
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// <summary>
         /// Flag indicating to enable saved games API.
         /// </summary>
@@ -113,37 +124,86 @@ namespace GooglePlayGames.BasicApi
         /// <value><c>true</c> if enable saved games; otherwise, <c>false</c>.</value>
         public bool EnableSavedGames
         {
+<<<<<<< HEAD
             get { return mEnableSavedGames; }
+=======
+            get
+            {
+                return mEnableSavedGames;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsHidingPopups
         {
+<<<<<<< HEAD
             get { return mHidePopups; }
+=======
+            get
+            {
+                return mHidePopups;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsRequestingAuthCode
         {
+<<<<<<< HEAD
             get { return mRequestAuthCode; }
+=======
+            get
+            {
+                return mRequestAuthCode;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsForcingRefresh
         {
+<<<<<<< HEAD
             get { return mForceRefresh; }
+=======
+            get
+            {
+                return mForceRefresh;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsRequestingEmail
         {
+<<<<<<< HEAD
             get { return mRequestEmail; }
+=======
+            get
+            {
+                return mRequestEmail;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsRequestingIdToken
         {
+<<<<<<< HEAD
             get { return mRequestIdToken; }
+=======
+            get
+            {
+                return mRequestIdToken;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string AccountName
         {
+<<<<<<< HEAD
             get { return mAccountName; }
+=======
+            get
+            {
+                return mAccountName;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -152,6 +212,7 @@ namespace GooglePlayGames.BasicApi
         /// <value>String array of scopes.</value>
         public string[] Scopes
         {
+<<<<<<< HEAD
             get { return mScopes; }
         }
 
@@ -174,6 +235,12 @@ namespace GooglePlayGames.BasicApi
         public static bool operator !=(PlayGamesClientConfiguration c1, PlayGamesClientConfiguration c2)
         {
             return !(c1 == c2);
+=======
+            get
+            {
+                return mScopes;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -182,7 +249,14 @@ namespace GooglePlayGames.BasicApi
         /// <value>The invitation delegate.</value>
         public InvitationReceivedDelegate InvitationDelegate
         {
+<<<<<<< HEAD
             get { return mInvitationDelegate; }
+=======
+            get
+            {
+                return mInvitationDelegate;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -191,7 +265,14 @@ namespace GooglePlayGames.BasicApi
         /// <value>The match delegate.</value>
         public MatchDelegate MatchDelegate
         {
+<<<<<<< HEAD
             get { return mMatchDelegate; }
+=======
+            get
+            {
+                return mMatchDelegate;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -245,12 +326,24 @@ namespace GooglePlayGames.BasicApi
             /// <summary>
             /// The invitation delegate.  Default is a no-op;
             /// </summary>
+<<<<<<< HEAD
             private InvitationReceivedDelegate mInvitationDelegate = delegate { };
+=======
+            private InvitationReceivedDelegate mInvitationDelegate = delegate
+            {
+            };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             /// <summary>
             /// The match delegate.  Default is a no-op.
             /// </summary>
+<<<<<<< HEAD
             private MatchDelegate mMatchDelegate = delegate { };
+=======
+            private MatchDelegate mMatchDelegate = delegate
+            {
+            };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             /// <summary>
             /// Enables the saved games.
@@ -274,9 +367,15 @@ namespace GooglePlayGames.BasicApi
 
             public Builder RequestServerAuthCode(bool forceRefresh)
             {
+<<<<<<< HEAD
                 mRequestAuthCode = true;
                 mForceRefresh = forceRefresh;
                 return this;
+=======
+              mRequestAuthCode = true;
+              mForceRefresh = forceRefresh;
+              return this;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
 
             public Builder RequestEmail()
@@ -391,9 +490,14 @@ namespace GooglePlayGames.BasicApi
             /// Gets the Oauth scopes to be requested from the user.
             /// </summary>
             /// <returns>String array of scopes.</returns>
+<<<<<<< HEAD
             internal string[] getScopes()
             {
                 return mScopes == null ? new string[0] : mScopes.ToArray();
+=======
+            internal string[] getScopes() {
+                return mScopes == null? new string[0] : mScopes.ToArray();
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
 
             /// <summary>
@@ -413,6 +517,7 @@ namespace GooglePlayGames.BasicApi
             {
                 return mInvitationDelegate;
             }
+<<<<<<< HEAD
         }
 
         public override int GetHashCode()
@@ -440,3 +545,10 @@ namespace GooglePlayGames.BasicApi
     }
 }
 #endif
+=======
+
+        }
+    }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

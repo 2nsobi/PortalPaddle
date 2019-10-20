@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using Unity.Appodeal.Xcode.PBX;
 
+<<<<<<< HEAD
 namespace Unity.Appodeal.Xcode {
     using PBXBuildFileSection = KnownSectionBase<PBXBuildFileData>;
     using PBXFileReferenceSection = KnownSectionBase<PBXFileReferenceData>;
@@ -35,10 +36,47 @@ namespace Unity.Appodeal.Xcode {
 
     public class PBXProject {
         PBXProjectData m_Data = new PBXProjectData ();
+=======
+namespace Unity.Appodeal.Xcode
+{
+    using PBXBuildFileSection           = KnownSectionBase<PBXBuildFileData>;
+    using PBXFileReferenceSection       = KnownSectionBase<PBXFileReferenceData>;
+    using PBXGroupSection               = KnownSectionBase<PBXGroupData>;
+    using PBXContainerItemProxySection  = KnownSectionBase<PBXContainerItemProxyData>;
+    using PBXReferenceProxySection      = KnownSectionBase<PBXReferenceProxyData>;
+    using PBXSourcesBuildPhaseSection   = KnownSectionBase<PBXSourcesBuildPhaseData>;
+    using PBXFrameworksBuildPhaseSection= KnownSectionBase<PBXFrameworksBuildPhaseData>;
+    using PBXResourcesBuildPhaseSection = KnownSectionBase<PBXResourcesBuildPhaseData>;
+    using PBXCopyFilesBuildPhaseSection = KnownSectionBase<PBXCopyFilesBuildPhaseData>;
+    using PBXShellScriptBuildPhaseSection = KnownSectionBase<PBXShellScriptBuildPhaseData>;
+    using PBXVariantGroupSection        = KnownSectionBase<PBXVariantGroupData>;
+    using PBXNativeTargetSection        = KnownSectionBase<PBXNativeTargetData>;
+    using PBXTargetDependencySection    = KnownSectionBase<PBXTargetDependencyData>;
+    using XCBuildConfigurationSection   = KnownSectionBase<XCBuildConfigurationData>;
+    using XCConfigurationListSection    = KnownSectionBase<XCConfigurationListData>;
+    using UnknownSection                = KnownSectionBase<PBXObjectData>;
+
+    // Determines the tree the given path is relative to
+    public enum PBXSourceTree
+    {
+        Absolute,   // The path is absolute
+        Source,     // The path is relative to the source folder
+        Group,      // The path is relative to the folder it's in. This enum is used only internally,
+        // do not use it as function parameter
+        Build,      // The path is relative to the build products folder
+        Developer,  // The path is relative to the developer folder
+        Sdk         // The path is relative to the sdk folder
+    }
+
+    public class PBXProject
+    {
+        PBXProjectData m_Data = new PBXProjectData();
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         // convenience accessors for public members of data. This is temporary; will be fixed by an interface change
         // of PBXProjectData
         internal PBXContainerItemProxySection containerItems { get { return m_Data.containerItems; } }
+<<<<<<< HEAD
         internal PBXReferenceProxySection references { get { return m_Data.references; } }
         internal PBXSourcesBuildPhaseSection sources { get { return m_Data.sources; } }
         internal PBXFrameworksBuildPhaseSection frameworks { get { return m_Data.frameworks; } }
@@ -71,6 +109,40 @@ namespace Unity.Appodeal.Xcode {
         internal void GroupsRemove (string guid) { m_Data.GroupsRemove (guid); }
         internal FileGUIDListBase BuildSectionAny (PBXNativeTargetData target, string path, bool isFolderRef) { return m_Data.BuildSectionAny (target, path, isFolderRef); }
         internal FileGUIDListBase BuildSectionAny (string sectionGuid) { return m_Data.BuildSectionAny (sectionGuid); }
+=======
+        internal PBXReferenceProxySection references         { get { return m_Data.references; } }
+        internal PBXSourcesBuildPhaseSection sources         { get { return m_Data.sources; } }
+        internal PBXFrameworksBuildPhaseSection frameworks   { get { return m_Data.frameworks; } }
+        internal PBXResourcesBuildPhaseSection resources     { get { return m_Data.resources; } }
+        internal PBXCopyFilesBuildPhaseSection copyFiles     { get { return m_Data.copyFiles; } }
+        internal PBXShellScriptBuildPhaseSection shellScripts { get { return m_Data.shellScripts; } }
+        internal PBXNativeTargetSection nativeTargets        { get { return m_Data.nativeTargets; } }
+        internal PBXTargetDependencySection targetDependencies { get { return m_Data.targetDependencies; } }
+        internal PBXVariantGroupSection variantGroups        { get { return m_Data.variantGroups; } }
+        internal XCBuildConfigurationSection buildConfigs    { get { return m_Data.buildConfigs; } }
+        internal XCConfigurationListSection buildConfigLists { get { return m_Data.buildConfigLists; } }
+        internal PBXProjectSection project                   { get { return m_Data.project; } }
+
+        internal PBXBuildFileData BuildFilesGet(string guid) { return m_Data.BuildFilesGet(guid); }
+        internal void BuildFilesAdd(string targetGuid, PBXBuildFileData buildFile) { m_Data.BuildFilesAdd(targetGuid, buildFile); }
+        internal void BuildFilesRemove(string targetGuid, string fileGuid) { m_Data.BuildFilesRemove(targetGuid, fileGuid); }
+        internal PBXBuildFileData BuildFilesGetForSourceFile(string targetGuid, string fileGuid) { return m_Data.BuildFilesGetForSourceFile(targetGuid, fileGuid); }
+        internal IEnumerable<PBXBuildFileData> BuildFilesGetAll() { return m_Data.BuildFilesGetAll(); }
+        internal void FileRefsAdd(string realPath, string projectPath, PBXGroupData parent, PBXFileReferenceData fileRef) { m_Data.FileRefsAdd(realPath, projectPath, parent, fileRef); }
+        internal PBXFileReferenceData FileRefsGet(string guid) { return m_Data.FileRefsGet(guid); }
+        internal PBXFileReferenceData FileRefsGetByRealPath(string path, PBXSourceTree sourceTree) { return m_Data.FileRefsGetByRealPath(path, sourceTree); }
+        internal PBXFileReferenceData FileRefsGetByProjectPath(string path) { return m_Data.FileRefsGetByProjectPath(path); }
+        internal void FileRefsRemove(string guid) { m_Data.FileRefsRemove(guid); }
+        internal PBXGroupData GroupsGet(string guid) { return m_Data.GroupsGet(guid); }
+        internal PBXGroupData GroupsGetByChild(string childGuid) { return m_Data.GroupsGetByChild(childGuid); }
+        internal PBXGroupData GroupsGetMainGroup() { return m_Data.GroupsGetMainGroup(); }
+        internal PBXGroupData GroupsGetByProjectPath(string sourceGroup) { return m_Data.GroupsGetByProjectPath(sourceGroup); }
+        internal void GroupsAdd(string projectPath, PBXGroupData parent, PBXGroupData gr) { m_Data.GroupsAdd(projectPath, parent, gr); }
+        internal void GroupsAddDuplicate(PBXGroupData gr) { m_Data.GroupsAddDuplicate(gr); }
+        internal void GroupsRemove(string guid) { m_Data.GroupsRemove(guid); }
+        internal FileGUIDListBase BuildSectionAny(PBXNativeTargetData target, string path, bool isFolderRef) { return m_Data.BuildSectionAny(target, path, isFolderRef); }
+        internal FileGUIDListBase BuildSectionAny(string sectionGuid) { return m_Data.BuildSectionAny(sectionGuid); }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Returns the path to PBX project in the given Unity build path. This function can only 
@@ -78,8 +150,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="buildPath">The project build path</param>
         /// <returns>The path to the PBX project file that can later be opened via ReadFromFile function</returns> 
+<<<<<<< HEAD
         public static string GetPBXProjectPath (string buildPath) {
             return PBXPath.Combine (buildPath, "Unity-iPhone.xcodeproj/project.pbxproj");
+=======
+        public static string GetPBXProjectPath(string buildPath)
+        {
+            return PBXPath.Combine(buildPath, "Unity-iPhone.xcodeproj/project.pbxproj");
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -88,7 +166,12 @@ namespace Unity.Appodeal.Xcode {
         /// function. This function can only be used in Unity-generated projects.
         /// </summary>
         /// <returns>The default main target name.</returns>
+<<<<<<< HEAD
         public static string GetUnityTargetName () {
+=======
+        public static string GetUnityTargetName()
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return "Unity-iPhone";
         }
 
@@ -98,7 +181,12 @@ namespace Unity.Appodeal.Xcode {
         /// function. This function can only be used in Unity-generated projects.
         /// </summary>
         /// <returns>The default test target name.</returns>
+<<<<<<< HEAD
         public static string GetUnityTestTargetName () {
+=======
+        public static string GetUnityTestTargetName()
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return "Unity-iPhone Tests";
         }
 
@@ -108,7 +196,12 @@ namespace Unity.Appodeal.Xcode {
         /// target GUIDs as parameters.
         /// </summary>
         /// <returns>The GUID of the project.</returns>
+<<<<<<< HEAD
         public string ProjectGuid () {
+=======
+        public string ProjectGuid()
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return project.project.guid;
         }
 
@@ -119,8 +212,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>The name of the native target.</returns>
         /// <param name="name">The GUID identifying the native target.</param>
+<<<<<<< HEAD
         public string TargetGuidByName (string name) {
             foreach (var entry in nativeTargets.GetEntries ())
+=======
+        public string TargetGuidByName(string name)
+        {
+            foreach (var entry in nativeTargets.GetEntries())
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (entry.Value.name == name)
                     return entry.Key;
             return null;
@@ -131,8 +230,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns <c>true</c> if is the extension is known, <c>false</c> otherwise.</returns>
         /// <param name="ext">The file extension (leading dot is not necessary, but accepted).</param>
+<<<<<<< HEAD
         public static bool IsKnownExtension (string ext) {
             return FileTypeUtils.IsKnownExtension (ext);
+=======
+        public static bool IsKnownExtension(string ext)
+        {
+            return FileTypeUtils.IsKnownExtension(ext);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -141,6 +246,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns <c>true</c> if is the extension is known, <c>false</c> otherwise.</returns>
         /// <param name="ext">The file extension (leading dot is not necessary, but accepted).</param>
+<<<<<<< HEAD
         public static bool IsBuildable (string ext) {
             return FileTypeUtils.IsBuildableFile (ext);
         }
@@ -165,6 +271,35 @@ namespace Unity.Appodeal.Xcode {
                 PBXGroupData parent = CreateSourceGroup (PBXPath.GetDirectory (projectPath));
                 parent.children.AddGUID (fileRef.guid);
                 FileRefsAdd (path, projectPath, parent, fileRef);
+=======
+        public static bool IsBuildable(string ext)
+        {
+            return FileTypeUtils.IsBuildableFile(ext);
+        }
+
+        // The same file can be referred to by more than one project path.
+        private string AddFileImpl(string path, string projectPath, PBXSourceTree tree, bool isFolderReference)
+        {
+            path = PBXPath.FixSlashes(path);
+            projectPath = PBXPath.FixSlashes(projectPath);
+
+            if (!isFolderReference && Path.GetExtension(path) != Path.GetExtension(projectPath))
+                throw new Exception("Project and real path extensions do not match");
+
+            string guid = FindFileGuidByProjectPath(projectPath);
+            if (guid == null)
+                guid = FindFileGuidByRealPath(path);
+            if (guid == null)
+            {
+                PBXFileReferenceData fileRef;
+                if (isFolderReference)
+                    fileRef = PBXFileReferenceData.CreateFromFolderReference(path, PBXPath.GetFilename(projectPath), tree);
+                else
+                    fileRef = PBXFileReferenceData.CreateFromFile(path, PBXPath.GetFilename(projectPath), tree);
+                PBXGroupData parent = CreateSourceGroup(PBXPath.GetDirectory(projectPath));
+                parent.children.AddGUID(fileRef.guid);
+                FileRefsAdd(path, projectPath, parent, fileRef);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 guid = fileRef.guid;
             }
             return guid;
@@ -180,10 +315,18 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="projectPath">The project path to the file.</param>
         /// <param name="sourceTree">The source tree the path is relative to. By default it's [[PBXSourceTree.Source]].
         /// The [[PBXSourceTree.Group]] tree is not supported.</param>
+<<<<<<< HEAD
         public string AddFile (string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception ("sourceTree must not be PBXSourceTree.Group");
             return AddFileImpl (path, projectPath, sourceTree, false);
+=======
+        public string AddFile(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source)
+        {
+            if (sourceTree == PBXSourceTree.Group)
+                throw new Exception("sourceTree must not be PBXSourceTree.Group");
+            return AddFileImpl(path, projectPath, sourceTree, false);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -196,6 +339,7 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="projectPath">The project path to the folder.</param>
         /// <param name="sourceTree">The source tree the path is relative to. By default it's [[PBXSourceTree.Source]].
         /// The [[PBXSourceTree.Group]] tree is not supported.</param>
+<<<<<<< HEAD
         public string AddFolderReference (string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception ("sourceTree must not be PBXSourceTree.Group");
@@ -213,6 +357,28 @@ namespace Unity.Appodeal.Xcode {
                 PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile (fileGuid, weak, compileFlags);
                 BuildFilesAdd (targetGuid, buildFile);
                 BuildSectionAny (target, ext, fileRef.isFolderReference).files.AddGUID (buildFile.guid);
+=======
+        public string AddFolderReference(string path, string projectPath, PBXSourceTree sourceTree = PBXSourceTree.Source)
+        {
+            if (sourceTree == PBXSourceTree.Group)
+                throw new Exception("sourceTree must not be PBXSourceTree.Group");
+            return AddFileImpl(path, projectPath, sourceTree, true);
+        }
+
+        private void AddBuildFileImpl(string targetGuid, string fileGuid, bool weak, string compileFlags)
+        {
+            PBXNativeTargetData target = nativeTargets[targetGuid];
+            PBXFileReferenceData fileRef = FileRefsGet(fileGuid);
+            
+            string ext = Path.GetExtension(fileRef.path);
+ 
+            if (FileTypeUtils.IsBuildable(ext, fileRef.isFolderReference) &&
+                BuildFilesGetForSourceFile(targetGuid, fileGuid) == null)
+            {
+                PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile(fileGuid, weak, compileFlags);
+                BuildFilesAdd(targetGuid, buildFile);
+                BuildSectionAny(target, ext, fileRef.isFolderReference).files.AddGUID(buildFile.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -224,8 +390,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
+<<<<<<< HEAD
         public void AddFileToBuild (string targetGuid, string fileGuid) {
             AddBuildFileImpl (targetGuid, fileGuid, false, null);
+=======
+        public void AddFileToBuild(string targetGuid, string fileGuid)
+        {
+            AddBuildFileImpl(targetGuid, fileGuid, false, null);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -238,8 +410,14 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
         /// <param name="compileFlags">Compile flags to use.</param>
+<<<<<<< HEAD
         public void AddFileToBuildWithFlags (string targetGuid, string fileGuid, string compileFlags) {
             AddBuildFileImpl (targetGuid, fileGuid, false, compileFlags);
+=======
+        public void AddFileToBuildWithFlags(string targetGuid, string fileGuid, string compileFlags)
+        {
+            AddBuildFileImpl(targetGuid, fileGuid, false, compileFlags);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -252,10 +430,18 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="sectionGuid">The GUID of the section to add the file to.</param>
         /// <param name="fileGuid">The file guid returned by [[AddFile]] or [[AddFolderReference]].</param>
+<<<<<<< HEAD
         public void AddFileToBuildSection (string targetGuid, string sectionGuid, string fileGuid) {
             PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile (fileGuid, false, null);
             BuildFilesAdd (targetGuid, buildFile);
             BuildSectionAny (sectionGuid).files.AddGUID (buildFile.guid);
+=======
+        public void AddFileToBuildSection(string targetGuid, string sectionGuid, string fileGuid)
+        {
+            PBXBuildFileData buildFile = PBXBuildFileData.CreateFromFile(fileGuid, false, null);
+            BuildFilesAdd(targetGuid, buildFile);
+            BuildSectionAny(sectionGuid).files.AddGUID(buildFile.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -266,6 +452,7 @@ namespace Unity.Appodeal.Xcode {
         /// <returns>The compile flags for the specified file.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
+<<<<<<< HEAD
         public List<string> GetCompileFlagsForFile (string targetGuid, string fileGuid) {
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
             if (buildFile == null)
@@ -273,6 +460,16 @@ namespace Unity.Appodeal.Xcode {
             if (buildFile.compileFlags == null)
                 return new List<string> ();
             return new List<string> (buildFile.compileFlags.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+=======
+        public List<string> GetCompileFlagsForFile(string targetGuid, string fileGuid)
+        {
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+            if (buildFile == null)
+                return null;
+            if (buildFile.compileFlags == null)
+                return new List<string>();
+            return new List<string>(buildFile.compileFlags.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries));
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -281,14 +478,24 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="compileFlags">The list of compile flags or null if the flags should be unset.</param>
+<<<<<<< HEAD
         public void SetCompileFlagsForFile (string targetGuid, string fileGuid, List<string> compileFlags) {
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
+=======
+        public void SetCompileFlagsForFile(string targetGuid, string fileGuid, List<string> compileFlags)
+        {
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (buildFile == null)
                 return;
             if (compileFlags == null)
                 buildFile.compileFlags = null;
             else
+<<<<<<< HEAD
                 buildFile.compileFlags = string.Join (" ", compileFlags.ToArray ());
+=======
+                buildFile.compileFlags = string.Join(" ", compileFlags.ToArray());
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -299,6 +506,7 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="tag">The name of the asset tag.</param>
+<<<<<<< HEAD
         public void AddAssetTagForFile (string targetGuid, string fileGuid, string tag) {
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
             if (buildFile == null)
@@ -307,6 +515,17 @@ namespace Unity.Appodeal.Xcode {
                 buildFile.assetTags.Add (tag);
             if (!project.project.knownAssetTags.Contains (tag))
                 project.project.knownAssetTags.Add (tag);
+=======
+        public void AddAssetTagForFile(string targetGuid, string fileGuid, string tag)
+        {
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+            if (buildFile == null)
+                return;
+            if (!buildFile.assetTags.Contains(tag))
+                buildFile.assetTags.Add(tag);
+            if (!project.project.knownAssetTags.Contains(tag))
+                project.project.knownAssetTags.Add(tag);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -319,6 +538,7 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file.</param>
         /// <param name="tag">The name of the asset tag.</param>
+<<<<<<< HEAD
         public void RemoveAssetTagForFile (string targetGuid, string fileGuid, string tag) {
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
             if (buildFile == null)
@@ -330,6 +550,21 @@ namespace Unity.Appodeal.Xcode {
                     return;
             }
             project.project.knownAssetTags.Remove (tag);
+=======
+        public void RemoveAssetTagForFile(string targetGuid, string fileGuid, string tag)
+        {
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+            if (buildFile == null)
+                return;
+            buildFile.assetTags.Remove(tag);
+            // remove from known tags if this was the last one
+            foreach (var buildFile2 in BuildFilesGetAll())
+            {
+                if (buildFile2.assetTags.Contains(tag))
+                    return;
+            }
+            project.project.knownAssetTags.Remove(tag);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -338,10 +573,18 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="tag">The name of the asset tag.</param>
+<<<<<<< HEAD
         public void AddAssetTagToDefaultInstall (string targetGuid, string tag) {
             if (!project.project.knownAssetTags.Contains (tag))
                 return;
             AddBuildProperty (targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", tag);
+=======
+        public void AddAssetTagToDefaultInstall(string targetGuid, string tag)
+        {
+            if (!project.project.knownAssetTags.Contains(tag))
+                return;
+            AddBuildProperty(targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", tag);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -351,8 +594,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="tag">The name of the asset tag.</param>
+<<<<<<< HEAD
         public void RemoveAssetTagFromDefaultInstall (string targetGuid, string tag) {
             UpdateBuildProperty (targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", null, new [] { tag });
+=======
+        public void RemoveAssetTagFromDefaultInstall(string targetGuid, string tag)
+        {
+            UpdateBuildProperty(targetGuid, "ON_DEMAND_RESOURCES_INITIAL_INSTALL_TAGS", null, new[]{tag});
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -362,12 +611,22 @@ namespace Unity.Appodeal.Xcode {
         /// the Xcode project.
         /// </summary>
         /// <param name="tag">The name of the asset tag.</param>
+<<<<<<< HEAD
         public void RemoveAssetTag (string tag) {
             foreach (var buildFile in BuildFilesGetAll ())
                 buildFile.assetTags.Remove (tag);
             foreach (var targetGuid in nativeTargets.GetGuids ())
                 RemoveAssetTagFromDefaultInstall (targetGuid, tag);
             project.project.knownAssetTags.Remove (tag);
+=======
+        public void RemoveAssetTag(string tag)
+        {
+            foreach (var buildFile in BuildFilesGetAll())
+                buildFile.assetTags.Remove(tag);
+            foreach (var targetGuid in nativeTargets.GetGuids())
+                RemoveAssetTagFromDefaultInstall(targetGuid, tag);
+            project.project.knownAssetTags.Remove(tag);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -376,8 +635,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
+<<<<<<< HEAD
         public bool ContainsFileByRealPath (string path) {
             return FindFileGuidByRealPath (path) != null;
+=======
+        public bool ContainsFileByRealPath(string path)
+        {
+            return FindFileGuidByRealPath(path) != null;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -386,10 +651,18 @@ namespace Unity.Appodeal.Xcode {
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
         /// <param name="sourceTree">The source tree path is relative to. The [[PBXSourceTree.Group]] tree is not supported.</param>
+<<<<<<< HEAD
         public bool ContainsFileByRealPath (string path, PBXSourceTree sourceTree) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception ("sourceTree must not be PBXSourceTree.Group");
             return FindFileGuidByRealPath (path, sourceTree) != null;
+=======
+        public bool ContainsFileByRealPath(string path, PBXSourceTree sourceTree)
+        {
+            if (sourceTree == PBXSourceTree.Group)
+                throw new Exception("sourceTree must not be PBXSourceTree.Group");
+            return FindFileGuidByRealPath(path, sourceTree) != null;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -397,8 +670,14 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns <c>true</c> if the project contains the file, <c>false</c> otherwise.</returns>
         /// <param name="path">The project path of the file.</param>
+<<<<<<< HEAD
         public bool ContainsFileByProjectPath (string path) {
             return FindFileGuidByProjectPath (path) != null;
+=======
+        public bool ContainsFileByProjectPath(string path)
+        {
+            return FindFileGuidByProjectPath(path) != null;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -409,12 +688,22 @@ namespace Unity.Appodeal.Xcode {
         /// <c>false</c> otherwise.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
+<<<<<<< HEAD
         public bool ContainsFramework (string targetGuid, string framework) {
             var fileGuid = FindFileGuidByRealPath ("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
             if (fileGuid == null)
                 return false;
 
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
+=======
+        public bool ContainsFramework(string targetGuid, string framework)
+        {
+            var fileGuid = FindFileGuidByRealPath("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
+            if (fileGuid == null)
+                return false;
+ 
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return (buildFile != null);
         }
 
@@ -427,9 +716,16 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
         /// <param name="weak"><c>true</c> if the framework is optional (i.e. weakly linked) required, 
         /// <c>false</c> if the framework is required.</param>
+<<<<<<< HEAD
         public void AddFrameworkToProject (string targetGuid, string framework, bool weak) {
             string fileGuid = AddFile ("System/Library/Frameworks/" + framework, "Frameworks/" + framework, PBXSourceTree.Sdk);
             AddBuildFileImpl (targetGuid, fileGuid, weak, null);
+=======
+        public void AddFrameworkToProject(string targetGuid, string framework, bool weak)
+        {
+            string fileGuid = AddFile("System/Library/Frameworks/" + framework, "Frameworks/" + framework, PBXSourceTree.Sdk);
+            AddBuildFileImpl(targetGuid, fileGuid, weak, null);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -438,6 +734,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="framework">The name of the framework. The extension of the filename must be ".framework".</param>
+<<<<<<< HEAD
         public void RemoveFrameworkFromProject (string targetGuid, string framework) {
             var fileGuid = FindFileGuidByRealPath ("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
             if (fileGuid == null)
@@ -451,19 +748,45 @@ namespace Unity.Appodeal.Xcode {
             // If the capability requires entitlements then you have to provide the name of it or we don't add the capability.
             if (capability.requiresEntitlements && entitlementsFilePath == "") {
                 throw new Exception ("Couldn't add the Xcode Capability " + capability.id + " to the PBXProject file because this capability requires an entitlement file.");
+=======
+        public void RemoveFrameworkFromProject(string targetGuid, string framework)
+        {
+            var fileGuid = FindFileGuidByRealPath("System/Library/Frameworks/" + framework, PBXSourceTree.Sdk);
+            if (fileGuid == null)
+                return;
+
+            BuildFilesRemove(targetGuid, fileGuid);
+        }
+
+        // Allow user to add a Capability
+        public bool AddCapability(string targetGuid, PBXCapabilityType capability, string entitlementsFilePath = null, bool addOptionalFramework = false)
+        {
+            // If the capability requires entitlements then you have to provide the name of it or we don't add the capability.
+            if (capability.requiresEntitlements && entitlementsFilePath == "")
+            {
+                throw new Exception("Couldn't add the Xcode Capability " + capability.id + " to the PBXProject file because this capability requires an entitlement file.");
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             var p = project.project;
 
             // If an entitlement with a different name was added for another capability
             // we don't add this capacity.
+<<<<<<< HEAD
             if (p.entitlementsFile != null && entitlementsFilePath != null && p.entitlementsFile != entitlementsFilePath) {
                 if (p.capabilities.Count > 0)
                     throw new WarningException ("Attention, it seems that you have multiple entitlements file. Only one will be added the Project : " + p.entitlementsFile);
+=======
+            if (p.entitlementsFile != null && entitlementsFilePath != null && p.entitlementsFile != entitlementsFilePath)
+            {
+                if (p.capabilities.Count > 0)
+                    throw new WarningException("Attention, it seems that you have multiple entitlements file. Only one will be added the Project : " + p.entitlementsFile);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
                 return false;
             }
 
             // Add the capability only if it doesn't already exist.
+<<<<<<< HEAD
             if (p.capabilities.Contains (new PBXCapabilityType.TargetCapabilityPair (targetGuid, capability))) {
                 throw new WarningException ("This capability has already been added. Method ignored");
             }
@@ -481,14 +804,43 @@ namespace Unity.Appodeal.Xcode {
                 p.entitlementsFile = entitlementsFilePath;
                 AddFileImpl (entitlementsFilePath, entitlementsFilePath, PBXSourceTree.Source, false);
                 SetBuildProperty (targetGuid, "CODE_SIGN_ENTITLEMENTS", PBXPath.FixSlashes (entitlementsFilePath));
+=======
+            if (p.capabilities.Contains(new PBXCapabilityType.TargetCapabilityPair(targetGuid, capability)))
+            {
+                throw new WarningException("This capability has already been added. Method ignored");
+            }
+
+            p.capabilities.Add(new PBXCapabilityType.TargetCapabilityPair(targetGuid, capability));
+
+            // Add the required framework.
+            if (capability.framework != "" && !capability.optionalFramework ||
+               (capability.framework != "" && capability.optionalFramework && addOptionalFramework))
+            {
+                AddFrameworkToProject(targetGuid, capability.framework, false);
+            }
+
+            // Finally add the entitlement code signing if it wasn't added before.
+            if (entitlementsFilePath != null && p.entitlementsFile == null)
+            {
+                p.entitlementsFile = entitlementsFilePath;
+                AddFileImpl(entitlementsFilePath,  entitlementsFilePath, PBXSourceTree.Source, false);
+                SetBuildProperty(targetGuid, "CODE_SIGN_ENTITLEMENTS", PBXPath.FixSlashes(entitlementsFilePath));
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return true;
         }
 
         // The Xcode project needs a team set to be able to complete code signing or to add some capabilities.
+<<<<<<< HEAD
         public void SetTeamId (string targetGuid, string teamId) {
             SetBuildProperty (targetGuid, "DEVELOPMENT_TEAM", teamId);
             project.project.teamIDs.Add (targetGuid, teamId);
+=======
+        public void SetTeamId(string targetGuid, string teamId)
+        {
+            SetBuildProperty(targetGuid, "DEVELOPMENT_TEAM", teamId);
+            project.project.teamIDs.Add(targetGuid, teamId);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -497,11 +849,20 @@ namespace Unity.Appodeal.Xcode {
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
         /// <param name="sourceTree">The source tree path is relative to. The [[PBXSourceTree.Group]] tree is not supported.</param>
+<<<<<<< HEAD
         public string FindFileGuidByRealPath (string path, PBXSourceTree sourceTree) {
             if (sourceTree == PBXSourceTree.Group)
                 throw new Exception ("sourceTree must not be PBXSourceTree.Group");
             path = PBXPath.FixSlashes (path);
             var fileRef = FileRefsGetByRealPath (path, sourceTree);
+=======
+        public string FindFileGuidByRealPath(string path, PBXSourceTree sourceTree)
+        {
+            if (sourceTree == PBXSourceTree.Group)
+                throw new Exception("sourceTree must not be PBXSourceTree.Group");
+            path = PBXPath.FixSlashes(path);
+            var fileRef = FileRefsGetByRealPath(path, sourceTree);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (fileRef != null)
                 return fileRef.guid;
             return null;
@@ -513,11 +874,21 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The physical path of the file.</param>
+<<<<<<< HEAD
         public string FindFileGuidByRealPath (string path) {
             path = PBXPath.FixSlashes (path);
 
             foreach (var tree in FileTypeUtils.AllAbsoluteSourceTrees ()) {
                 string res = FindFileGuidByRealPath (path, tree);
+=======
+        public string FindFileGuidByRealPath(string path)
+        {
+            path = PBXPath.FixSlashes(path);
+
+            foreach (var tree in FileTypeUtils.AllAbsoluteSourceTrees())
+            {
+                string res = FindFileGuidByRealPath(path, tree);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (res != null)
                     return res;
             }
@@ -529,9 +900,16 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>The GUID of the file if the search succeeded, null otherwise.</returns>
         /// <param name="path">The project path of the file.</param>
+<<<<<<< HEAD
         public string FindFileGuidByProjectPath (string path) {
             path = PBXPath.FixSlashes (path);
             var fileRef = FileRefsGetByProjectPath (path);
+=======
+        public string FindFileGuidByProjectPath(string path)
+        {
+            path = PBXPath.FixSlashes(path);
+            var fileRef = FileRefsGetByProjectPath(path);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (fileRef != null)
                 return fileRef.guid;
             return null;
@@ -542,6 +920,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="fileGuid">The GUID of the file or folder reference.</param>
+<<<<<<< HEAD
         public void RemoveFileFromBuild (string targetGuid, string fileGuid) {
             var buildFile = BuildFilesGetForSourceFile (targetGuid, fileGuid);
             if (buildFile == null)
@@ -558,6 +937,26 @@ namespace Unity.Appodeal.Xcode {
                     section.Value.files.RemoveGUID (buildGuid);
                 foreach (var section in frameworks.GetEntries ())
                     section.Value.files.RemoveGUID (buildGuid);
+=======
+        public void RemoveFileFromBuild(string targetGuid, string fileGuid)
+        {
+            var buildFile = BuildFilesGetForSourceFile(targetGuid, fileGuid);
+            if (buildFile == null)
+                return;
+            BuildFilesRemove(targetGuid, fileGuid);
+
+            string buildGuid = buildFile.guid;
+            if (buildGuid != null)
+            {
+                foreach (var section in sources.GetEntries())
+                    section.Value.files.RemoveGUID(buildGuid);
+                foreach (var section in resources.GetEntries())
+                    section.Value.files.RemoveGUID(buildGuid);
+                foreach (var section in copyFiles.GetEntries())
+                    section.Value.files.RemoveGUID(buildGuid);
+                foreach (var section in frameworks.GetEntries())
+                    section.Value.files.RemoveGUID(buildGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -567,11 +966,17 @@ namespace Unity.Appodeal.Xcode {
         /// from the list of known files.
         /// </summary>
         /// <param name="fileGuid">The GUID of the file or folder reference.</param>
+<<<<<<< HEAD
         public void RemoveFile (string fileGuid) {
+=======
+        public void RemoveFile(string fileGuid)
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (fileGuid == null)
                 return;
 
             // remove from parent
+<<<<<<< HEAD
             PBXGroupData parent = GroupsGetByChild (fileGuid);
             if (parent != null)
                 parent.children.RemoveGUID (fileGuid);
@@ -611,11 +1016,59 @@ namespace Unity.Appodeal.Xcode {
                 if (gr != null) {
                     RemoveGroupChildrenRecursive (gr);
                     GroupsRemove (gr.guid);
+=======
+            PBXGroupData parent = GroupsGetByChild(fileGuid);
+            if (parent != null)
+                parent.children.RemoveGUID(fileGuid);
+            RemoveGroupIfEmpty(parent);
+
+            // remove actual file
+            foreach (var target in nativeTargets.GetEntries())
+                RemoveFileFromBuild(target.Value.guid, fileGuid);
+            FileRefsRemove(fileGuid);
+        }
+
+        void RemoveGroupIfEmpty(PBXGroupData gr)
+        {
+            if (gr.children.Count == 0 && gr != GroupsGetMainGroup())
+            {
+                // remove from parent
+                PBXGroupData parent = GroupsGetByChild(gr.guid);
+                parent.children.RemoveGUID(gr.guid);
+                RemoveGroupIfEmpty(parent);
+
+                // remove actual group
+                GroupsRemove(gr.guid);
+            }
+        }
+
+        private void RemoveGroupChildrenRecursive(PBXGroupData parent)
+        {
+            List<string> children = new List<string>(parent.children);
+            parent.children.Clear();
+            foreach (string guid in children)
+            {
+                PBXFileReferenceData file = FileRefsGet(guid);
+                if (file != null)
+                {
+                    foreach (var target in nativeTargets.GetEntries())
+                        RemoveFileFromBuild(target.Value.guid, guid);
+                    FileRefsRemove(guid);
+                    continue;
+                }
+
+                PBXGroupData gr = GroupsGet(guid);
+                if (gr != null)
+                {
+                    RemoveGroupChildrenRecursive(gr);
+                    GroupsRemove(gr.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                     continue;
                 }
             }
         }
 
+<<<<<<< HEAD
         internal void RemoveFilesByProjectPathRecursive (string projectPath) {
             projectPath = PBXPath.FixSlashes (projectPath);
             PBXGroupData gr = GroupsGetByProjectPath (projectPath);
@@ -636,11 +1089,37 @@ namespace Unity.Appodeal.Xcode {
                 PBXFileReferenceData fileRef = FileRefsGet (guid);
                 if (fileRef != null)
                     res.Add (fileRef.name);
+=======
+        internal void RemoveFilesByProjectPathRecursive(string projectPath)
+        {
+            projectPath = PBXPath.FixSlashes(projectPath);
+            PBXGroupData gr = GroupsGetByProjectPath(projectPath);
+            if (gr == null)
+                return;
+            RemoveGroupChildrenRecursive(gr);
+            RemoveGroupIfEmpty(gr);
+        }
+
+        // Returns null on error
+        internal List<string> GetGroupChildrenFiles(string projectPath)
+        {
+            projectPath = PBXPath.FixSlashes(projectPath);
+            PBXGroupData gr = GroupsGetByProjectPath(projectPath);
+            if (gr == null)
+                return null;
+            var res = new List<string>();
+            foreach (var guid in gr.children)
+            {
+                PBXFileReferenceData fileRef = FileRefsGet(guid);
+                if (fileRef != null)
+                    res.Add(fileRef.name);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return res;
         }
 
         // Returns an empty dictionary if no group or files are found
+<<<<<<< HEAD
         internal HashSet<string> GetGroupChildrenFilesRefs (string projectPath) {
             projectPath = PBXPath.FixSlashes (projectPath);
             PBXGroupData gr = GroupsGetByProjectPath (projectPath);
@@ -651,10 +1130,25 @@ namespace Unity.Appodeal.Xcode {
                 PBXFileReferenceData fileRef = FileRefsGet (guid);
                 if (fileRef != null)
                     res.Add (fileRef.path);
+=======
+        internal HashSet<string> GetGroupChildrenFilesRefs(string projectPath)
+        {
+            projectPath = PBXPath.FixSlashes(projectPath);
+            PBXGroupData gr = GroupsGetByProjectPath(projectPath);
+            if (gr == null)
+                return new HashSet<string>();
+            HashSet<string> res = new HashSet<string>();
+            foreach (var guid in gr.children)
+            {
+                PBXFileReferenceData fileRef = FileRefsGet(guid);
+                if (fileRef != null)
+                    res.Add(fileRef.path);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return res == null ? new HashSet<string> () : res;
         }
 
+<<<<<<< HEAD
         internal HashSet<string> GetFileRefsByProjectPaths (IEnumerable<string> paths) {
             HashSet<string> ret = new HashSet<string> ();
             foreach (string path in paths) {
@@ -662,13 +1156,32 @@ namespace Unity.Appodeal.Xcode {
                 var fileRef = FileRefsGetByProjectPath (fixedPath);
                 if (fileRef != null)
                     ret.Add (fileRef.path);
+=======
+        internal HashSet<string> GetFileRefsByProjectPaths(IEnumerable<string> paths)
+        {
+            HashSet<string> ret = new HashSet<string>();
+            foreach (string path in paths)
+            {
+                string fixedPath = PBXPath.FixSlashes(path);
+                var fileRef = FileRefsGetByProjectPath(fixedPath);
+                if (fileRef != null)
+                    ret.Add(fileRef.path);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return ret;
         }
 
+<<<<<<< HEAD
         private PBXGroupData GetPBXGroupChildByName (PBXGroupData group, string name) {
             foreach (string guid in group.children) {
                 var gr = GroupsGet (guid);
+=======
+        private PBXGroupData GetPBXGroupChildByName(PBXGroupData group, string name)
+        {
+            foreach (string guid in group.children)
+            {
+                var gr = GroupsGet(guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (gr != null && gr.name == name)
                     return gr;
             }
@@ -677,6 +1190,7 @@ namespace Unity.Appodeal.Xcode {
 
         /// Creates source group identified by sourceGroup, if needed, and returns it.
         /// If sourceGroup is empty or null, root group is returned
+<<<<<<< HEAD
         internal PBXGroupData CreateSourceGroup (string sourceGroup) {
             sourceGroup = PBXPath.FixSlashes (sourceGroup);
 
@@ -684,20 +1198,40 @@ namespace Unity.Appodeal.Xcode {
                 return GroupsGetMainGroup ();
 
             PBXGroupData gr = GroupsGetByProjectPath (sourceGroup);
+=======
+        internal PBXGroupData CreateSourceGroup(string sourceGroup)
+        {
+            sourceGroup = PBXPath.FixSlashes(sourceGroup);
+
+            if (sourceGroup == null || sourceGroup == "")
+                return GroupsGetMainGroup();
+
+            PBXGroupData gr = GroupsGetByProjectPath(sourceGroup);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (gr != null)
                 return gr;
 
             // the group does not exist -- create new
+<<<<<<< HEAD
             gr = GroupsGetMainGroup ();
 
             var elements = PBXPath.Split (sourceGroup);
             string projectPath = null;
             foreach (string pathEl in elements) {
+=======
+            gr = GroupsGetMainGroup();
+
+            var elements = PBXPath.Split(sourceGroup);
+            string projectPath = null;
+            foreach (string pathEl in elements)
+            {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (projectPath == null)
                     projectPath = pathEl;
                 else
                     projectPath += "/" + pathEl;
 
+<<<<<<< HEAD
                 PBXGroupData child = GetPBXGroupChildByName (gr, pathEl);
                 if (child != null)
                     gr = child;
@@ -705,6 +1239,16 @@ namespace Unity.Appodeal.Xcode {
                     PBXGroupData newGroup = PBXGroupData.Create (pathEl, pathEl, PBXSourceTree.Group);
                     gr.children.AddGUID (newGroup.guid);
                     GroupsAdd (projectPath, gr, newGroup);
+=======
+                PBXGroupData child = GetPBXGroupChildByName(gr, pathEl);
+                if (child != null)
+                    gr = child;
+                else
+                {
+                    PBXGroupData newGroup = PBXGroupData.Create(pathEl, pathEl, PBXSourceTree.Group);
+                    gr.children.AddGUID(newGroup.guid);
+                    GroupsAdd(projectPath, gr, newGroup);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                     gr = newGroup;
                 }
             }
@@ -724,6 +1268,7 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="type">The type of the target. For example:
         /// "com.apple.product-type.app-extension" - App extension,
         /// "com.apple.product-type.application.watchapp2" - WatchKit 2 application</param>
+<<<<<<< HEAD
         public string AddTarget (string name, string ext, string type) {
             var buildConfigList = XCConfigurationListData.Create ();
             buildConfigLists.AddEntry (buildConfigList);
@@ -746,6 +1291,32 @@ namespace Unity.Appodeal.Xcode {
 
             targets.Add (project.project.guid);
             targets.AddRange (nativeTargets.GetGuids ());
+=======
+        public string AddTarget(string name, string ext, string type)
+        {
+            var buildConfigList = XCConfigurationListData.Create();
+            buildConfigLists.AddEntry(buildConfigList);
+            
+            // create build file reference
+            string fullName = name + "." + FileTypeUtils.TrimExtension(ext);
+            var productFileRef = AddFile(fullName, "Products/" + fullName, PBXSourceTree.Build);
+            var newTarget = PBXNativeTargetData.Create(name, productFileRef, type, buildConfigList.guid);
+            nativeTargets.AddEntry(newTarget);
+            project.project.targets.Add(newTarget.guid);
+
+            foreach (var buildConfigName in BuildConfigNames())
+                AddBuildConfigForTarget(newTarget.guid, buildConfigName);
+            
+            return newTarget.guid;
+        }
+
+        private IEnumerable<string> GetAllTargetGuids()
+        {
+            var targets = new List<string>();
+
+            targets.Add(project.project.guid);
+            targets.AddRange(nativeTargets.GetGuids());
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             return targets;
         }
@@ -755,7 +1326,12 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>The file reference of the artifact created by building target.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string GetTargetProductFileRef (string targetGuid) {
+=======
+        public string GetTargetProductFileRef(string targetGuid)
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return nativeTargets[targetGuid].productReference;
         }
 
@@ -764,6 +1340,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <param name="targetGuid">The GUID of the target that is depending on the dependency.</param>
         /// <param name="targetDependencyGuid">The GUID of the dependency target</param>
+<<<<<<< HEAD
         internal void AddTargetDependency (string targetGuid, string targetDependencyGuid) {
             string dependencyName = nativeTargets[targetDependencyGuid].name;
             var containerProxy = PBXContainerItemProxyData.Create (project.project.guid, "1", targetDependencyGuid, dependencyName);
@@ -773,10 +1350,23 @@ namespace Unity.Appodeal.Xcode {
             targetDependencies.AddEntry (targetDependency);
 
             nativeTargets[targetGuid].dependencies.AddGUID (targetDependency.guid);
+=======
+        internal void AddTargetDependency(string targetGuid, string targetDependencyGuid)
+        {
+            string dependencyName = nativeTargets[targetDependencyGuid].name;
+            var containerProxy = PBXContainerItemProxyData.Create(project.project.guid, "1", targetDependencyGuid, dependencyName);
+            containerItems.AddEntry(containerProxy);
+
+            var targetDependency = PBXTargetDependencyData.Create(targetDependencyGuid, containerProxy.guid);
+            targetDependencies.AddEntry(targetDependency);
+
+            nativeTargets[targetGuid].dependencies.AddGUID(targetDependency.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         // Returns the GUID of the new configuration
         // targetGuid can be either native target or the project target.
+<<<<<<< HEAD
         private string AddBuildConfigForTarget (string targetGuid, string name) {
             if (BuildConfigByName (targetGuid, name) != null) {
                 throw new Exception (String.Format ("A build configuration by name {0} already exists for target {1}",
@@ -795,6 +1385,29 @@ namespace Unity.Appodeal.Xcode {
                 return;
             buildConfigs.RemoveEntry (buildConfigGuid);
             buildConfigLists[GetConfigListForTarget (targetGuid)].buildConfigs.RemoveGUID (buildConfigGuid);
+=======
+        private string AddBuildConfigForTarget(string targetGuid, string name)
+        {
+            if (BuildConfigByName(targetGuid, name) != null)
+            {
+                throw new Exception(String.Format("A build configuration by name {0} already exists for target {1}",
+                                                  targetGuid, name));
+            }
+            var buildConfig = XCBuildConfigurationData.Create(name);
+            buildConfigs.AddEntry(buildConfig);
+
+            buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs.AddGUID(buildConfig.guid);
+            return buildConfig.guid;
+        }
+
+        private void RemoveBuildConfigForTarget(string targetGuid, string name)
+        {
+            var buildConfigGuid = BuildConfigByName(targetGuid, name);
+            if (buildConfigGuid == null)
+                return;
+            buildConfigs.RemoveEntry(buildConfigGuid);
+            buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs.RemoveGUID(buildConfigGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -804,8 +1417,15 @@ namespace Unity.Appodeal.Xcode {
         /// <returns>The GUID of the build configuration or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build configuration.</param>
+<<<<<<< HEAD
         public string BuildConfigByName (string targetGuid, string name) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget (targetGuid)].buildConfigs) {
+=======
+        public string BuildConfigByName(string targetGuid, string name)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+            {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 var buildConfig = buildConfigs[guid];
                 if (buildConfig != null && buildConfig.name == name)
                     return buildConfig.guid;
@@ -821,11 +1441,20 @@ namespace Unity.Appodeal.Xcode {
         /// build configuration names returned by this function.
         /// </summary>
         /// <returns>An array of build config names.</returns>
+<<<<<<< HEAD
         public IEnumerable<string> BuildConfigNames () {
             var names = new List<string> ();
             // We use the project target to fetch the build configs
             foreach (var guid in buildConfigLists[project.project.buildConfigList].buildConfigs)
                 names.Add (buildConfigs[guid].name);
+=======
+        public IEnumerable<string> BuildConfigNames()
+        {
+            var names = new List<string>();
+            // We use the project target to fetch the build configs
+            foreach (var guid in buildConfigLists[project.project.buildConfigList].buildConfigs)
+                names.Add(buildConfigs[guid].name);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             return names;
         }
@@ -839,9 +1468,16 @@ namespace Unity.Appodeal.Xcode {
         /// The function throws an exception if a build configuration with the given name already exists.
         /// </summary>
         /// <param name="name">The name of the build configuration.</param>
+<<<<<<< HEAD
         public void AddBuildConfig (string name) {
             foreach (var targetGuid in GetAllTargetGuids ())
                 AddBuildConfigForTarget (targetGuid, name);
+=======
+        public void AddBuildConfig(string name)
+        {
+            foreach (var targetGuid in GetAllTargetGuids())
+                AddBuildConfigForTarget(targetGuid, name);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -851,9 +1487,16 @@ namespace Unity.Appodeal.Xcode {
         /// The function does nothing if the build configuration with the specified name does not exist.
         /// </summary>
         /// <param name="name">The name of the build configuration.</param>
+<<<<<<< HEAD
         public void RemoveBuildConfig (string name) {
             foreach (var targetGuid in GetAllTargetGuids ())
                 RemoveBuildConfigForTarget (targetGuid, name);
+=======
+        public void RemoveBuildConfig(string name)
+        {
+            foreach (var targetGuid in GetAllTargetGuids())
+                RemoveBuildConfigForTarget(targetGuid, name);   
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -861,10 +1504,18 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string GetSourcesBuildPhaseByTarget (string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny (phaseGuid);
+=======
+        public string GetSourcesBuildPhaseByTarget(string targetGuid)
+        {
+            var target = nativeTargets[targetGuid];
+            foreach (var phaseGuid in target.phases) {
+                var phaseAny = BuildSectionAny(phaseGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (phaseAny is PBXSourcesBuildPhaseData)
                     return phaseGuid;
             }
@@ -879,6 +1530,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string AddSourcesBuildPhase (string targetGuid) {
             var phaseGuid = GetSourcesBuildPhaseByTarget (targetGuid);
             if (phaseGuid != null)
@@ -887,6 +1539,17 @@ namespace Unity.Appodeal.Xcode {
             var phase = PBXSourcesBuildPhaseData.Create ();
             sources.AddEntry (phase);
             nativeTargets[targetGuid].phases.AddGUID (phase.guid);
+=======
+        public string AddSourcesBuildPhase(string targetGuid)
+        {
+            var phaseGuid = GetSourcesBuildPhaseByTarget(targetGuid);
+            if (phaseGuid != null)
+                return phaseGuid;
+
+            var phase = PBXSourcesBuildPhaseData.Create();
+            sources.AddEntry(phase);
+            nativeTargets[targetGuid].phases.AddGUID(phase.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return phase.guid;
         }
 
@@ -895,10 +1558,18 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string GetResourcesBuildPhaseByTarget (string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny (phaseGuid);
+=======
+        public string GetResourcesBuildPhaseByTarget(string targetGuid)
+        {
+            var target = nativeTargets[targetGuid];
+            foreach (var phaseGuid in target.phases) {
+                var phaseAny = BuildSectionAny(phaseGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (phaseAny is PBXResourcesBuildPhaseData)
                     return phaseGuid;
             }
@@ -913,6 +1584,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string AddResourcesBuildPhase (string targetGuid) {
             var phaseGuid = GetResourcesBuildPhaseByTarget (targetGuid);
             if (phaseGuid != null)
@@ -921,6 +1593,17 @@ namespace Unity.Appodeal.Xcode {
             var phase = PBXResourcesBuildPhaseData.Create ();
             resources.AddEntry (phase);
             nativeTargets[targetGuid].phases.AddGUID (phase.guid);
+=======
+        public string AddResourcesBuildPhase(string targetGuid)
+        {
+            var phaseGuid = GetResourcesBuildPhaseByTarget(targetGuid);
+            if (phaseGuid != null)
+                return phaseGuid;
+
+            var phase = PBXResourcesBuildPhaseData.Create();
+            resources.AddEntry(phase);
+            nativeTargets[targetGuid].phases.AddGUID(phase.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return phase.guid;
         }
 
@@ -929,10 +1612,18 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the existing phase or null if it does not exist.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string GetFrameworksBuildPhaseByTarget (string targetGuid) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
                 var phaseAny = BuildSectionAny (phaseGuid);
+=======
+        public string GetFrameworksBuildPhaseByTarget(string targetGuid)
+        {
+            var target = nativeTargets[targetGuid];
+            foreach (var phaseGuid in target.phases) {
+                var phaseAny = BuildSectionAny(phaseGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (phaseAny is PBXFrameworksBuildPhaseData)
                     return phaseGuid;
             }
@@ -947,6 +1638,7 @@ namespace Unity.Appodeal.Xcode {
         /// </summary>
         /// <returns>Returns the GUID of the new phase.</returns>
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
+<<<<<<< HEAD
         public string AddFrameworksBuildPhase (string targetGuid) {
             var phaseGuid = GetFrameworksBuildPhaseByTarget (targetGuid);
             if (phaseGuid != null)
@@ -955,6 +1647,17 @@ namespace Unity.Appodeal.Xcode {
             var phase = PBXFrameworksBuildPhaseData.Create ();
             frameworks.AddEntry (phase);
             nativeTargets[targetGuid].phases.AddGUID (phase.guid);
+=======
+        public string AddFrameworksBuildPhase(string targetGuid)
+        {
+            var phaseGuid = GetFrameworksBuildPhaseByTarget(targetGuid);
+            if (phaseGuid != null)
+                return phaseGuid;
+
+            var phase = PBXFrameworksBuildPhaseData.Create();
+            frameworks.AddEntry(phase);
+            nativeTargets[targetGuid].phases.AddGUID(phase.guid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return phase.guid;
         }
 
@@ -971,6 +1674,7 @@ namespace Unity.Appodeal.Xcode {
         /// "10" for embedding frameworks;
         /// "13" for embedding app extension content;
         /// "16" for embedding watch content</param>
+<<<<<<< HEAD
         public string GetCopyFilesBuildPhaseByTarget (string targetGuid, string name, string dstPath, string subfolderSpec) {
             var target = nativeTargets[targetGuid];
             foreach (var phaseGuid in target.phases) {
@@ -979,6 +1683,19 @@ namespace Unity.Appodeal.Xcode {
                     var copyPhase = (PBXCopyFilesBuildPhaseData) phaseAny;
                     if (copyPhase.name == name && copyPhase.dstPath == dstPath &&
                         copyPhase.dstSubfolderSpec == subfolderSpec) {
+=======
+        public string GetCopyFilesBuildPhaseByTarget(string targetGuid, string name, string dstPath, string subfolderSpec)
+        {
+            var target = nativeTargets[targetGuid];
+            foreach (var phaseGuid in target.phases) {
+                var phaseAny = BuildSectionAny(phaseGuid);
+                if (phaseAny is PBXCopyFilesBuildPhaseData)
+                {
+                    var copyPhase = (PBXCopyFilesBuildPhaseData) phaseAny;
+                    if (copyPhase.name == name && copyPhase.dstPath == dstPath && 
+                        copyPhase.dstSubfolderSpec == subfolderSpec)
+                    {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                         return phaseGuid;
                     }
                 }
@@ -1000,6 +1717,7 @@ namespace Unity.Appodeal.Xcode {
         /// "10" for embedding frameworks;
         /// "13" for embedding app extension content;
         /// "16" for embedding watch content</param>
+<<<<<<< HEAD
         public string AddCopyFilesBuildPhase (string targetGuid, string name, string dstPath, string subfolderSpec) {
             var phaseGuid = GetCopyFilesBuildPhaseByTarget (targetGuid, name, dstPath, subfolderSpec);
             if (phaseGuid != null)
@@ -1016,10 +1734,31 @@ namespace Unity.Appodeal.Xcode {
                 return project.project.buildConfigList;
             else
                 return nativeTargets[targetGuid].buildConfigList;
+=======
+        public string AddCopyFilesBuildPhase(string targetGuid, string name, string dstPath, string subfolderSpec)
+        {
+            var phaseGuid = GetCopyFilesBuildPhaseByTarget(targetGuid, name, dstPath, subfolderSpec);
+            if (phaseGuid != null)
+                return phaseGuid;
+
+            var phase = PBXCopyFilesBuildPhaseData.Create(name, dstPath, subfolderSpec);
+            copyFiles.AddEntry(phase);
+            nativeTargets[targetGuid].phases.AddGUID(phase.guid);
+            return phase.guid;
+        }
+ 
+        internal string GetConfigListForTarget(string targetGuid)
+        {
+            if (targetGuid == project.project.guid)
+                return project.project.buildConfigList;
+            else
+            return nativeTargets[targetGuid].buildConfigList;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         // Sets the baseConfigurationReference key for a XCBuildConfiguration. 
         // If the argument is null, the base configuration is removed.
+<<<<<<< HEAD
         internal void SetBaseReferenceForConfig (string configGuid, string baseReference) {
             buildConfigs[configGuid].baseConfigurationReference = baseReference;
         }
@@ -1027,6 +1766,18 @@ namespace Unity.Appodeal.Xcode {
         internal PBXBuildFileData FindFrameworkByFileGuid (PBXCopyFilesBuildPhaseData phase, string fileGuid) {
             foreach (string buildFileDataGuid in phase.files) {
                 var buildFile = BuildFilesGet (buildFileDataGuid);
+=======
+        internal void SetBaseReferenceForConfig(string configGuid, string baseReference)
+        {
+            buildConfigs[configGuid].baseConfigurationReference = baseReference;
+        }
+
+        internal PBXBuildFileData FindFrameworkByFileGuid(PBXCopyFilesBuildPhaseData phase, string fileGuid)
+        {
+            foreach (string buildFileDataGuid in phase.files)
+            {
+                var buildFile = BuildFilesGet(buildFileDataGuid);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (buildFile.fileRef == fileGuid)
                     return buildFile;
             }
@@ -1041,9 +1792,16 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void AddBuildProperty (string targetGuid, string name, string value) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget (targetGuid)].buildConfigs)
                 AddBuildPropertyForConfig (guid, name, value);
+=======
+        public void AddBuildProperty(string targetGuid, string name, string value)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+                AddBuildPropertyForConfig(guid, name, value);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -1054,9 +1812,16 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuids">The GUIDs of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void AddBuildProperty (IEnumerable<string> targetGuids, string name, string value) {
             foreach (string t in targetGuids)
                 AddBuildProperty (t, name, value);
+=======
+        public void AddBuildProperty(IEnumerable<string> targetGuids, string name, string value)
+        {
+            foreach (string t in targetGuids)
+                AddBuildProperty(t, name, value);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -1067,8 +1832,14 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="configGuid">The GUID of the build configuration as returned by [[BuildConfigByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void AddBuildPropertyForConfig (string configGuid, string name, string value) {
             buildConfigs[configGuid].AddProperty (name, value);
+=======
+        public void AddBuildPropertyForConfig(string configGuid, string name, string value)
+        {
+            buildConfigs[configGuid].AddProperty(name, value);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -1079,9 +1850,16 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="configGuids">The GUIDs of the build configurations as returned by [[BuildConfigByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void AddBuildPropertyForConfig (IEnumerable<string> configGuids, string name, string value) {
             foreach (string guid in configGuids)
                 AddBuildPropertyForConfig (guid, name, value);
+=======
+        public void AddBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value)
+        {
+            foreach (string guid in configGuids)
+                AddBuildPropertyForConfig(guid, name, value);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -1092,9 +1870,16 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuid">The GUID of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void SetBuildProperty (string targetGuid, string name, string value) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget (targetGuid)].buildConfigs)
                 SetBuildPropertyForConfig (guid, name, value);
+=======
+        public void SetBuildProperty(string targetGuid, string name, string value)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+                SetBuildPropertyForConfig(guid, name, value);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -1105,6 +1890,7 @@ namespace Unity.Appodeal.Xcode {
         /// <param name="targetGuids">The GUIDs of the target as returned by [[TargetGuidByName()]].</param>
         /// <param name="name">The name of the build property.</param>
         /// <param name="value">The value of the build property.</param>
+<<<<<<< HEAD
         public void SetBuildProperty (IEnumerable<string> targetGuids, string name, string value) {
             foreach (string t in targetGuids)
                 SetBuildProperty (t, name, value);
@@ -1147,10 +1933,66 @@ namespace Unity.Appodeal.Xcode {
         internal void RemoveBuildPropertyValueListForConfig (IEnumerable<string> configGuids, string name, IEnumerable<string> valueList) {
             foreach (string guid in configGuids)
                 RemoveBuildPropertyValueListForConfig (guid, name, valueList);
+=======
+        public void SetBuildProperty(IEnumerable<string> targetGuids, string name, string value)
+        {
+            foreach (string t in targetGuids)
+                SetBuildProperty(t, name, value);
+        }
+        public void SetBuildPropertyForConfig(string configGuid, string name, string value)
+        {
+            buildConfigs[configGuid].SetProperty(name, value);
+        }
+        public void SetBuildPropertyForConfig(IEnumerable<string> configGuids, string name, string value)
+        {
+            foreach (string guid in configGuids)
+                SetBuildPropertyForConfig(guid, name, value);
+        }
+
+        internal void RemoveBuildProperty(string targetGuid, string name)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+                RemoveBuildPropertyForConfig(guid, name);
+        }
+        internal void RemoveBuildProperty(IEnumerable<string> targetGuids, string name)
+        {
+            foreach (string t in targetGuids)
+                RemoveBuildProperty(t, name);
+        }
+        internal void RemoveBuildPropertyForConfig(string configGuid, string name)
+        {
+            buildConfigs[configGuid].RemoveProperty(name);
+        }
+        internal void RemoveBuildPropertyForConfig(IEnumerable<string> configGuids, string name)
+        {
+            foreach (string guid in configGuids)
+                RemoveBuildPropertyForConfig(guid, name);
+        }
+
+        internal void RemoveBuildPropertyValueList(string targetGuid, string name, IEnumerable<string> valueList)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+                RemoveBuildPropertyValueListForConfig(guid, name, valueList);
+        }
+        internal void RemoveBuildPropertyValueList(IEnumerable<string> targetGuids, string name, IEnumerable<string> valueList)
+        {
+            foreach (string t in targetGuids)
+                RemoveBuildPropertyValueList(t, name, valueList);
+        }
+        internal void RemoveBuildPropertyValueListForConfig(string configGuid, string name, IEnumerable<string> valueList)
+        {
+            buildConfigs[configGuid].RemovePropertyValueList(name, valueList);
+        }
+        internal void RemoveBuildPropertyValueListForConfig(IEnumerable<string> configGuids, string name, IEnumerable<string> valueList)
+        {
+            foreach (string guid in configGuids)
+                RemoveBuildPropertyValueListForConfig(guid, name, valueList);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// Interprets the value of the given property as a set of space-delimited strings, then
         /// removes strings equal to items to removeValues and adds strings in addValues.
+<<<<<<< HEAD
         public void UpdateBuildProperty (string targetGuid, string name,
             IEnumerable<string> addValues, IEnumerable<string> removeValues) {
             foreach (string guid in buildConfigLists[GetConfigListForTarget (targetGuid)].buildConfigs)
@@ -1181,6 +2023,45 @@ namespace Unity.Appodeal.Xcode {
 
         internal string ShellScriptByName (string targetGuid, string name) {
             foreach (var phase in nativeTargets[targetGuid].phases) {
+=======
+        public void UpdateBuildProperty(string targetGuid, string name, 
+                                        IEnumerable<string> addValues, IEnumerable<string> removeValues)
+        {
+            foreach (string guid in buildConfigLists[GetConfigListForTarget(targetGuid)].buildConfigs)
+                UpdateBuildPropertyForConfig(guid, name, addValues, removeValues);
+        }
+        public void UpdateBuildProperty(IEnumerable<string> targetGuids, string name, 
+                                        IEnumerable<string> addValues, IEnumerable<string> removeValues)
+        {
+            foreach (string t in targetGuids)
+                UpdateBuildProperty(t, name, addValues, removeValues);
+        }
+        public void UpdateBuildPropertyForConfig(string configGuid, string name, 
+                                                 IEnumerable<string> addValues, IEnumerable<string> removeValues)
+        {
+            var config = buildConfigs[configGuid];
+            if (config != null)
+            {
+                if (removeValues != null)
+                    foreach (var v in removeValues)
+                        config.RemovePropertyValue(name, v);
+                if (addValues != null)
+                    foreach (var v in addValues)
+                        config.AddProperty(name, v);
+            }
+        }
+        public void UpdateBuildPropertyForConfig(IEnumerable<string> configGuids, string name, 
+                                                 IEnumerable<string> addValues, IEnumerable<string> removeValues)
+        {
+            foreach (string guid in configGuids)
+                UpdateBuildProperty(guid, name, addValues, removeValues);
+        }
+
+        internal string ShellScriptByName(string targetGuid, string name)
+        {
+            foreach (var phase in nativeTargets[targetGuid].phases)
+            {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 var script = shellScripts[phase];
                 if (script != null && script.name == name)
                     return script.guid;
@@ -1188,6 +2069,7 @@ namespace Unity.Appodeal.Xcode {
             return null;
         }
 
+<<<<<<< HEAD
         public void AppendShellScriptBuildPhase (string targetGuid, string name, string shellPath, string shellScript) {
             PBXShellScriptBuildPhaseData shellScriptPhase = PBXShellScriptBuildPhaseData.Create (name, shellPath, shellScript);
 
@@ -1230,6 +2112,60 @@ namespace Unity.Appodeal.Xcode {
         }
 
         internal PBXProjectObjectData GetProjectInternal () {
+=======
+        public void AppendShellScriptBuildPhase(string targetGuid, string name, string shellPath, string shellScript)
+        {
+            PBXShellScriptBuildPhaseData shellScriptPhase = PBXShellScriptBuildPhaseData.Create(name, shellPath, shellScript);
+
+            shellScripts.AddEntry(shellScriptPhase);
+            nativeTargets[targetGuid].phases.AddGUID(shellScriptPhase.guid);
+        }
+
+        public void AppendShellScriptBuildPhase(IEnumerable<string> targetGuids, string name, string shellPath, string shellScript)
+        {
+            PBXShellScriptBuildPhaseData shellScriptPhase = PBXShellScriptBuildPhaseData.Create(name, shellPath, shellScript);
+
+            shellScripts.AddEntry(shellScriptPhase);
+            foreach (string guid in targetGuids)
+            {
+                nativeTargets[guid].phases.AddGUID(shellScriptPhase.guid);
+            }
+        }
+
+        public void ReadFromFile(string path)
+        {
+            ReadFromString(File.ReadAllText(path));
+        }
+
+        public void ReadFromString(string src)
+        {
+            TextReader sr = new StringReader(src);
+            ReadFromStream(sr);
+        }
+
+        public void ReadFromStream(TextReader sr)
+        {
+            m_Data.ReadFromStream(sr);
+        }
+
+        public void WriteToFile(string path)
+        {
+            File.WriteAllText(path, WriteToString());
+        }
+
+        public void WriteToStream(TextWriter sw)
+        {
+            sw.Write(WriteToString());
+        }
+
+        public string WriteToString()
+        {
+            return m_Data.WriteToString();
+        }
+
+        internal PBXProjectObjectData GetProjectInternal()
+        {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return project.project;
         }
 
@@ -1251,6 +2187,7 @@ namespace Unity.Appodeal.Xcode {
          *      };
          *  };
          */
+<<<<<<< HEAD
         internal void SetTargetAttributes (string key, string value) {
             PBXElementDict properties = project.project.GetPropertiesRaw ();
             PBXElementDict attributes;
@@ -1281,3 +2218,45 @@ namespace Unity.Appodeal.Xcode {
         }
     }
 }
+=======
+        internal void SetTargetAttributes(string key, string value)
+        {
+            PBXElementDict properties = project.project.GetPropertiesRaw();
+            PBXElementDict attributes;
+            PBXElementDict targetAttributes;
+            if (properties.Contains("attributes"))
+			{
+                attributes = properties["attributes"] as PBXElementDict;
+            }
+			else
+			{
+                attributes = properties.CreateDict("attributes");
+            }
+
+            if (attributes.Contains("TargetAttributes"))
+			{
+                targetAttributes = attributes["TargetAttributes"] as PBXElementDict;
+            } 
+			else
+			{
+                targetAttributes = attributes.CreateDict("TargetAttributes");
+            }
+
+            foreach (KeyValuePair<string, PBXNativeTargetData> target in nativeTargets.GetEntries()) {
+                PBXElementDict targetAttributesRaw;
+                if (targetAttributes.Contains(target.Key))
+                {
+                    targetAttributesRaw = targetAttributes[target.Key].AsDict();
+                }
+				else
+				{
+                    targetAttributesRaw = targetAttributes.CreateDict(target.Key);
+                }
+                targetAttributesRaw.SetString(key, value); 
+            }
+            project.project.UpdateVars();
+
+        }
+    }
+} // namespace UnityEditor.iOS.Xcode
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -1,14 +1,23 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: eef1fc7c964664acf93b22217f5d09df
+=======
+guid: d1fe8e5776d94409fb9e726400031b8a
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
   iconMap: {}
   executionOrder: {}
+<<<<<<< HEAD
   defineConstraints: []
   isPreloaded: 0
   isOverridable: 0
   isExplicitlyReferenced: 0
+=======
+  isPreloaded: 0
+  isOverridable: 0
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   platformData:
   - first:
       Any: 

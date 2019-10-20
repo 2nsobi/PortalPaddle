@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi.Nearby
 {
@@ -22,6 +26,11 @@ namespace GooglePlayGames.BasicApi.Nearby
 
     public class DummyNearbyConnectionClient : INearbyConnectionClient
     {
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public int MaxUnreliableMessagePayloadLength()
         {
             return NearbyConnectionConfiguration.MaxUnreliableMessagePayloadLength;
@@ -42,9 +51,13 @@ namespace GooglePlayGames.BasicApi.Nearby
             Debug.LogError("SendUnreliable called from dummy implementation");
         }
 
+<<<<<<< HEAD
         public void StartAdvertising(string name, System.Collections.Generic.List<string> appIdentifiers,
             System.TimeSpan? advertisingDuration, System.Action<AdvertisingResult> resultCallback,
             System.Action<ConnectionRequest> connectionRequestCallback)
+=======
+        public void StartAdvertising(string name, System.Collections.Generic.List<string> appIdentifiers, System.TimeSpan? advertisingDuration, System.Action<AdvertisingResult> resultCallback, System.Action<ConnectionRequest> connectionRequestCallback)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             AdvertisingResult obj = new AdvertisingResult(ResponseStatus.LicenseCheckFailed, string.Empty);
             resultCallback.Invoke(obj);
@@ -55,8 +68,12 @@ namespace GooglePlayGames.BasicApi.Nearby
             Debug.LogError("StopAvertising in dummy implementation called");
         }
 
+<<<<<<< HEAD
         public void SendConnectionRequest(string name, string remoteEndpointId, byte[] payload,
             System.Action<ConnectionResponse> responseCallback, IMessageListener listener)
+=======
+        public void SendConnectionRequest(string name, string remoteEndpointId, byte[] payload, System.Action<ConnectionResponse> responseCallback, IMessageListener listener)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             Debug.LogError("SendConnectionRequest called from dummy implementation");
 
@@ -118,4 +135,8 @@ namespace GooglePlayGames.BasicApi.Nearby
         }
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using AppodealAds.Unity.Common;
 using UnityEngine;
 
@@ -34,6 +35,46 @@ namespace AppodealAds.Unity.Android {
 #else
 	{
 		public AppodealBannerCallbacks (IBannerAdListener listener) { }
+=======
+﻿using UnityEngine;
+using AppodealAds.Unity.Common;
+
+namespace AppodealAds.Unity.Android 
+{
+	public class AppodealBannerCallbacks
+#if UNITY_ANDROID
+		: AndroidJavaProxy 
+	{
+		IBannerAdListener listener;	
+
+		internal AppodealBannerCallbacks(IBannerAdListener listener) : base("com.appodeal.ads.BannerCallbacks") {
+			this.listener = listener;
+		}
+
+		void onBannerLoaded(int height, bool isPrecache) {
+			listener.onBannerLoaded(isPrecache);
+		}
+			
+		void onBannerFailedToLoad() {
+			listener.onBannerFailedToLoad();
+		}
+			
+		void onBannerShown() {
+			listener.onBannerShown();
+		}
+			
+		void onBannerClicked() {
+			listener.onBannerClicked();
+		}
+
+        void onBannerExpired(){
+            listener.onBannerExpired();
+        }
+	}
+#else
+	{
+		public AppodealBannerCallbacks(IBannerAdListener listener) { }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 	}
 #endif
 }

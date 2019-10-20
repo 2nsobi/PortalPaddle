@@ -61,13 +61,21 @@ namespace GooglePlayGames.Editor
         public static void MenuItemFileGPGSAndroidSetup()
         {
             EditorWindow window = EditorWindow.GetWindow(
+<<<<<<< HEAD
                 typeof(GPGSAndroidSetupUI), true, GPGSStrings.AndroidSetup.Title);
+=======
+                                      typeof(GPGSAndroidSetupUI), true, GPGSStrings.AndroidSetup.Title);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             window.minSize = new Vector2(500, 400);
         }
 
         [MenuItem("Window/Google Play Games/Setup/Android setup...", true)]
+<<<<<<< HEAD
         public static bool EnableAndroidMenuItem()
         {
+=======
+        public static bool EnableAndroidMenuItem() {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 #if UNITY_ANDROID
             return true;
 #else
@@ -111,10 +119,13 @@ namespace GooglePlayGames.Editor
                 // check the bundle id and set it if needed.
                 CheckBundleId();
 
+<<<<<<< HEAD
                 GPGSUtil.CheckAndFixDependencies();
                 GPGSUtil.CheckAndFixVersionedAssestsPaths();
                 AssetDatabase.Refresh();
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 Google.VersionHandler.VerboseLoggingEnabled = true;
                 Google.VersionHandler.UpdateVersionedAssets(forceUpdate: true);
                 Google.VersionHandler.Enabled = true;
@@ -122,9 +133,15 @@ namespace GooglePlayGames.Editor
 
                 Google.VersionHandler.InvokeStaticMethod(
                     Google.VersionHandler.FindClass(
+<<<<<<< HEAD
                         "Google.JarResolver",
                         "GooglePlayServices.PlayServicesResolver"),
                     "MenuResolve", null);
+=======
+                   "Google.JarResolver",
+                   "GooglePlayServices.PlayServicesResolver"),
+                   "MenuResolve", null);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
                 return PerformSetup(
                     clientId,
@@ -169,8 +186,12 @@ namespace GooglePlayGames.Editor
                 return false;
             }
 
+<<<<<<< HEAD
             if (nearbySvcId != null)
             {
+=======
+            if (nearbySvcId != null) {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 #if UNITY_ANDROID
                 if (!NearbyConnectionUI.PerformSetup(nearbySvcId, true))
                 {
@@ -457,4 +478,8 @@ namespace GooglePlayGames.Editor
             return appId != null;
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

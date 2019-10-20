@@ -39,7 +39,13 @@ public class IAPDemo : MonoBehaviour, IStoreListener
     private IMicrosoftExtensions m_MicrosoftExtensions;
     private IUnityChannelExtensions m_UnityChannelExtensions;
     private ITransactionHistoryExtensions m_TransactionHistoryExtensions;
+<<<<<<< HEAD
     private IGooglePlayStoreExtensions m_GooglePlayStoreExtensions;
+=======
+#if SUBSCRIPTION_MANAGER
+    private IGooglePlayStoreExtensions m_GooglePlayStoreExtensions;
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 #pragma warning disable 0414
     private bool m_IsGooglePlayStoreSelected;
@@ -82,12 +88,18 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         m_MicrosoftExtensions = extensions.GetExtension<IMicrosoftExtensions>();
         m_UnityChannelExtensions = extensions.GetExtension<IUnityChannelExtensions>();
         m_TransactionHistoryExtensions = extensions.GetExtension<ITransactionHistoryExtensions>();
+<<<<<<< HEAD
         m_GooglePlayStoreExtensions = extensions.GetExtension<IGooglePlayStoreExtensions>();
         // Sample code for expose product sku details for google play store
         // Key is product Id (Sku), value is the skuDetails json string
         //Dictionary<string, string> google_play_store_product_SKUDetails_json = m_GooglePlayStoreExtensions.GetProductJSONDictionary();
         // Sample code for manually finish a transaction (consume a product on GooglePlay store)
         //m_GooglePlayStoreExtensions.FinishAdditionalTransaction(productId, transactionId);
+=======
+#if SUBSCRIPTION_MANAGER
+        m_GooglePlayStoreExtensions = extensions.GetExtension<IGooglePlayStoreExtensions>();
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         InitUI(controller.products.all);
 
@@ -98,9 +110,15 @@ public class IAPDemo : MonoBehaviour, IStoreListener
 #if SUBSCRIPTION_MANAGER
         Dictionary<string, string> introductory_info_dict = m_AppleExtensions.GetIntroductoryPriceDictionary();
 #endif
+<<<<<<< HEAD
         // Sample code for expose product sku details for apple store
         //Dictionary<string, string> product_details = m_AppleExtensions.GetProductDetails();
 
+=======
+        // This extension function returns a dictionary of the products' skuDetails from GooglePlay Store
+        // Key is product Id (Sku), value is the skuDetails json string
+        //Dictionary<string, string> google_play_store_product_SKUDetails_json = m_GooglePlayStoreExtensions.GetProductJSONDictionary();
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         Debug.Log("Available items:");
         foreach (var item in controller.products.all)
@@ -495,12 +513,16 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         // iOS stores.
         // So on the Mac App store our products have different identifiers,
         // and we tell Unity IAP this by using the IDs class.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         builder.AddProduct("100.gold.coins", ProductType.Consumable, new IDs
             {
                 {"com.unity3d.unityiap.unityiapdemo.100goldcoins.7", MacAppStore.Name},
                 {"000000596586", TizenStore.Name},
                 {"com.ff", MoolahAppStore.Name},
+<<<<<<< HEAD
                 {"100.gold.coins", AmazonApps.Name},
                 {"100.gold.coins", AppleAppStore.Name}
             }
@@ -511,6 +533,14 @@ public class IAPDemo : MonoBehaviour, IStoreListener
                 }
 #endif //USE_PAYOUTS
                 );
+=======
+                {"100.gold.coins", AmazonApps.Name}
+            }
+#if USE_PAYOUTS
+        , new PayoutDefinition(PayoutType.Currency, "gold", 100)
+#endif //USE_PAYOUTS
+        );
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         builder.AddProduct("500.gold.coins", ProductType.Consumable, new IDs
             {
@@ -524,8 +554,16 @@ public class IAPDemo : MonoBehaviour, IStoreListener
 #endif //USE_PAYOUTS
         );
 
+<<<<<<< HEAD
         builder.AddProduct("300.gold.coins", ProductType.Consumable, new IDs
             {
+=======
+        builder.AddProduct("sword", ProductType.NonConsumable, new IDs
+            {
+                {"com.unity3d.unityiap.unityiapdemo.sword.7", MacAppStore.Name},
+                {"000000596583", TizenStore.Name},
+                {"sword", AmazonApps.Name}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
 #if USE_PAYOUTS
         , new List<PayoutDefinition> {
@@ -535,6 +573,7 @@ public class IAPDemo : MonoBehaviour, IStoreListener
 #endif //USE_PAYOUTS
         );
 
+<<<<<<< HEAD
         builder.AddProduct("sub1", ProductType.Subscription, new IDs
         {
         });
@@ -543,6 +582,15 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         {
         });
 
+=======
+#if SUBSCRIPTION_MANAGER // Auto-Renewing subscription
+        builder.AddProduct("sub9", ProductType.Subscription, new IDs
+        {
+            {"sub9", MacAppStore.Name},
+            {"sub9", AmazonApps.Name}
+        });
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         // Write Amazon's JSON description of our products to storage when using Amazon's local sandbox.
         // This should be removed from a production build.
@@ -660,7 +708,11 @@ public class IAPDemo : MonoBehaviour, IStoreListener
     /// </summary>
     private void OnTransactionsRestored(bool success)
     {
+<<<<<<< HEAD
         Debug.Log("Transactions restored." + success);
+=======
+        Debug.Log("Transactions restored.");
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     }
 
     /// <summary>
@@ -699,7 +751,11 @@ public class IAPDemo : MonoBehaviour, IStoreListener
     private void InitUI(IEnumerable<Product> items)
     {
         // Show Restore, Register, Login, and Validate buttons on supported platforms
+<<<<<<< HEAD
         restoreButton.gameObject.SetActive(true);
+=======
+        restoreButton.gameObject.SetActive(NeedRestoreButton());
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         loginButton.gameObject.SetActive(NeedLoginButton());
         validateButton.gameObject.SetActive(NeedValidateButton());
 
@@ -746,6 +802,7 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         // This is not a requirement for IAP Applications but makes the demo
         // scene tidier whilst the fake purchase dialog is showing.
         m_PurchaseInProgress = true;
+<<<<<<< HEAD
 
         //Sample code how to add accountId in developerPayload to pass it to getBuyIntentExtraParams
         //Dictionary<string, string> payload_dictionary = new Dictionary<string, string>();
@@ -754,6 +811,9 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         //m_Controller.InitiatePurchase(m_Controller.products.WithID(productID), MiniJson.JsonEncode(payload_dictionary));
         m_Controller.InitiatePurchase(m_Controller.products.WithID(productID), "developerPayload");
 
+=======
+        m_Controller.InitiatePurchase(m_Controller.products.WithID(productID), "aDemoDeveloperPayload");
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     }
 
     public void RestoreButtonClick()
@@ -787,10 +847,13 @@ public class IAPDemo : MonoBehaviour, IStoreListener
         {
             m_MicrosoftExtensions.RestoreTransactions();
         }
+<<<<<<< HEAD
         else if (m_IsGooglePlayStoreSelected)
         {
             m_GooglePlayStoreExtensions.RestoreTransactions(OnTransactionsRestored);
         }
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         else
         {
             m_AppleExtensions.RestoreTransactions(OnTransactionsRestored);

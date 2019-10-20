@@ -83,7 +83,11 @@ namespace GooglePlayGames.OurUtils
             {
                 throw new ArgumentNullException();
             }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return value;
         }
 
@@ -97,4 +101,8 @@ namespace GooglePlayGames.OurUtils
             return value;
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

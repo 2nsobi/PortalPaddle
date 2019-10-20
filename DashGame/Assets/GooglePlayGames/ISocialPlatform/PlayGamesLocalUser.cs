@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
@@ -90,7 +94,14 @@ namespace GooglePlayGames
         /// </summary>
         public IUserProfile[] friends
         {
+<<<<<<< HEAD
             get { return mPlatform.GetFriends(); }
+=======
+            get
+            {
+                return mPlatform.GetFriends();
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -109,7 +120,14 @@ namespace GooglePlayGames
         /// </returns>
         public bool authenticated
         {
+<<<<<<< HEAD
             get { return mPlatform.IsAuthenticated(); }
+=======
+            get
+            {
+                return mPlatform.IsAuthenticated();
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -117,7 +135,14 @@ namespace GooglePlayGames
         /// </summary>
         public bool underage
         {
+<<<<<<< HEAD
             get { return true; }
+=======
+            get
+            {
+                return true;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -139,7 +164,10 @@ namespace GooglePlayGames
                         ResetIdentity(retval, mPlatform.GetUserId(), mPlatform.GetUserImageUrl());
                     }
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 return retval;
             }
         }
@@ -168,7 +196,10 @@ namespace GooglePlayGames
                         ResetIdentity(mPlatform.GetUserDisplayName(), retval, mPlatform.GetUserImageUrl());
                     }
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 return retval;
             }
         }
@@ -179,7 +210,14 @@ namespace GooglePlayGames
         /// </summary>
         public new bool isFriend
         {
+<<<<<<< HEAD
             get { return true; }
+=======
+            get
+            {
+                return true;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -188,7 +226,14 @@ namespace GooglePlayGames
         /// </summary>
         public new UserState state
         {
+<<<<<<< HEAD
             get { return UserState.Online; }
+=======
+            get
+            {
+                return UserState.Online;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
 
@@ -206,7 +251,10 @@ namespace GooglePlayGames
                             mPlatform.GetUserId(), retval);
                     }
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 return retval;
             }
         }
@@ -232,7 +280,10 @@ namespace GooglePlayGames
                     emailAddress = mPlatform.GetUserEmail();
                     emailAddress = emailAddress ?? string.Empty;
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 return authenticated ? emailAddress : string.Empty;
             }
         }
@@ -259,4 +310,8 @@ namespace GooglePlayGames
         }
     }
 }
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

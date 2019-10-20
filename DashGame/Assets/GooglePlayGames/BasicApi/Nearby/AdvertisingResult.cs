@@ -33,17 +33,41 @@ namespace GooglePlayGames.BasicApi.Nearby
 
         public bool Succeeded
         {
+<<<<<<< HEAD
             get { return mStatus == ResponseStatus.Success; }
+=======
+            get
+            {
+                return mStatus == ResponseStatus.Success;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public ResponseStatus Status
         {
+<<<<<<< HEAD
             get { return mStatus; }
+=======
+            get
+            {
+                return mStatus;
+            }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string LocalEndpointName
         {
+<<<<<<< HEAD
             get { return mLocalEndpointName; }
         }
     }
 }
+=======
+            get
+            {
+                return mLocalEndpointName;
+            }
+        }
+    }
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

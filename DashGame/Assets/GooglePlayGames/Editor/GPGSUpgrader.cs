@@ -13,8 +13,12 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
+<<<<<<< HEAD
 
 #if UNITY_ANDROID
+=======
+#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.Editor
 {
@@ -33,6 +37,7 @@ namespace GooglePlayGames.Editor
         /// </summary>
         static GPGSUpgrader()
         {
+<<<<<<< HEAD
             Debug.Log("GPGSUpgrader start");
             string initialVer = GPGSProjectSettings.Instance.Get(GPGSUtil.LASTUPGRADEKEY, "00000");
             if (!initialVer.Equals(PluginVersion.VersionKey))
@@ -41,10 +46,24 @@ namespace GooglePlayGames.Editor
                 string prevVer = initialVer;
                 prevVer = Upgrade911(prevVer);
                 prevVer = Upgrade915(prevVer);
+=======
+            string prevVer = GPGSProjectSettings.Instance.Get(GPGSUtil.LASTUPGRADEKEY, "00000");
+            if (!prevVer.Equals(PluginVersion.VersionKey))
+            {
+                // if this is a really old version, upgrade to 911 first, then 915
+                if (!prevVer.Equals(PluginVersion.VersionKeyCPP))
+                {
+                    prevVer = Upgrade911(prevVer);
+                }
+
+                prevVer = Upgrade915(prevVer);
+
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 prevVer = Upgrade927Patch(prevVer);
 
                 // Upgrade to remove gpg version of jar resolver
                 prevVer = Upgrade928(prevVer);
+<<<<<<< HEAD
                 prevVer = Upgrade930(prevVer);
                 prevVer = Upgrade931(prevVer);
                 prevVer = Upgrade935(prevVer);
@@ -60,6 +79,33 @@ namespace GooglePlayGames.Editor
             }
 
             GPGSProjectSettings.Instance.Set(GPGSUtil.LASTUPGRADEKEY, PluginVersion.VersionKey);
+=======
+
+                prevVer = Upgrade930(prevVer);
+
+                prevVer = Upgrade931(prevVer);
+
+                prevVer = Upgrade935(prevVer);
+
+                prevVer = Upgrade941(prevVer);
+
+                prevVer = Upgrade942 (prevVer);
+
+                // there is no migration needed to 930+
+                if (!prevVer.Equals(PluginVersion.VersionKey))
+                {
+                    Debug.Log("Upgrading from format version " + prevVer + " to " + PluginVersion.VersionKey);
+                    prevVer = PluginVersion.VersionKey;
+                }
+
+                string msg = GPGSStrings.PostInstall.Text.Replace(
+                                 "$VERSION",
+                                 PluginVersion.VersionString);
+                EditorUtility.DisplayDialog(GPGSStrings.PostInstall.Title, msg, "OK");
+            }
+
+            GPGSProjectSettings.Instance.Set(GPGSUtil.LASTUPGRADEKEY, prevVer);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             GPGSProjectSettings.Instance.Set(GPGSUtil.PLUGINVERSIONKEY,
                 PluginVersion.VersionString);
             GPGSProjectSettings.Instance.Save();
@@ -70,11 +116,19 @@ namespace GooglePlayGames.Editor
             if (ver >= 5)
             {
                 string[] paths =
+<<<<<<< HEAD
                 {
                     GPGSUtil.RootPath,
                     "Assets/Plugins/Android",
                     "Assets/PlayServicesResolver"
                 };
+=======
+                    {
+                        "Assets/GooglePlayGames",
+                        "Assets/Plugins/Android",
+                        "Assets/PlayServicesResolver"
+                    };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 foreach (string p in paths)
                 {
                     CleanDuplicates(p);
@@ -100,7 +154,10 @@ namespace GooglePlayGames.Editor
             }
 
             AssetDatabase.Refresh();
+<<<<<<< HEAD
             Debug.Log("GPGSUpgrader done");
+=======
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -134,6 +191,7 @@ namespace GooglePlayGames.Editor
             }
         }
 
+<<<<<<< HEAD
 
         private static string Upgrade942(string prevVer)
         {
@@ -185,6 +243,53 @@ namespace GooglePlayGames.Editor
 
             return "00941";
         }
+=======
+    private static string Upgrade942(string prevVer)
+    {
+        string file = "Assets/Plugins/Android/play-games-plugin-support.aar";
+        if (File.Exists(file))
+        {
+            Debug.Log("Deleting obsolete file: " + file);
+            File.Delete(file);
+        }
+        return PluginVersion.VersionKey;
+    }
+
+    /// <summary> Upgrade to 0.9.41 </summary>
+    /// <remarks>This cleans up the Plugins/Android directory since
+    ///   the libraries where refactored into the .aar file.  This
+    ///   also renames MainLibProj to GooglePlayGamesManifest.
+    /// </remarks>
+    private static string Upgrade941 (string prevVer)
+    {
+      string[] obsoleteDirectories = {
+        "Assets/Plugins/Android/MainLibProj",
+      };
+
+      string[] obsoleteFiles = {
+        "Assets/GooglePlayGames/Editor/GPGSDependencies.cs",
+        "Assets/GooglePlayGames/Editor/GPGSDependencies.cs.meta"
+      };
+
+      foreach (string directory in obsoleteDirectories) {
+        if (Directory.Exists (directory)) {
+          Debug.Log ("Deleting obsolete directory: " + directory);
+          Directory.Delete (directory, true);
+        }
+      }
+
+      foreach (string file in obsoleteFiles)
+      {
+        if (File.Exists(file))
+        {
+          Debug.Log("Deleting obsolete file: " + file);
+          File.Delete(file);
+        }
+      }
+
+      return PluginVersion.VersionKey;
+    }
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Upgrade to 0.9.35
@@ -196,7 +301,11 @@ namespace GooglePlayGames.Editor
         private static string Upgrade935(string prevVer)
         {
             string[] obsoleteFiles =
+<<<<<<< HEAD
             {
+=======
+                {
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 "Assets/GooglePlayGames/Editor/CocoaPodHelper.cs",
                 "Assets/GooglePlayGames/Editor/CocoaPodHelper.cs.meta",
                 "Assets/GooglePlayGames/Editor/GPGSInstructionWindow.cs",
@@ -238,7 +347,11 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             return "00935";
+=======
+            return PluginVersion.VersionKey;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -251,10 +364,17 @@ namespace GooglePlayGames.Editor
         private static string Upgrade931(string prevVer)
         {
             string[] obsoleteFiles =
+<<<<<<< HEAD
             {
                 "Assets/GooglePlayGames/Editor/GPGSExportPackageUI.cs",
                 "Assets/GooglePlayGames/Editor/GPGSExportPackageUI.cs.meta"
             };
+=======
+                {
+                    "Assets/GooglePlayGames/Editor/GPGSExportPackageUI.cs",
+                    "Assets/GooglePlayGames/Editor/GPGSExportPackageUI.cs.meta"
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             foreach (string file in obsoleteFiles)
             {
                 if (File.Exists(file))
@@ -264,7 +384,11 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             return "00931";
+=======
+            return PluginVersion.VersionKey;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -274,7 +398,11 @@ namespace GooglePlayGames.Editor
         /// <returns>the version string upgraded to.</returns>
         private static string Upgrade930(string prevVer)
         {
+<<<<<<< HEAD
             Debug.Log("Upgrading from format version " + prevVer + " to 00930");
+=======
+            Debug.Log("Upgrading from format version " + prevVer + " to " + PluginVersion.VersionKeyNativeCRM);
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             // As of 930, the CRM API is handled by the Native SDK, not GmsCore.
             string[] obsoleteFiles =
@@ -294,8 +422,13 @@ namespace GooglePlayGames.Editor
             };
 
             // only delete these if we are not version 0.9.34
+<<<<<<< HEAD
             if (string.Compare(PluginVersion.VersionKey, "00934",
                     System.StringComparison.Ordinal) <= 0)
+=======
+            if (string.Compare(PluginVersion.VersionKey, PluginVersion.VersionKeyJNIStats,
+                               System.StringComparison.Ordinal) <= 0)
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             {
                 foreach (string file in obsoleteFiles)
                 {
@@ -307,11 +440,16 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             return "00930";
+=======
+            return PluginVersion.VersionKeyNativeCRM;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         private static string Upgrade928(string prevVer)
         {
+<<<<<<< HEAD
             Debug.Log("Upgrading from version " + prevVer + " to 00928");
             //remove the jar resolver and if found, then
             // warn the user that restarting the editor is required.
@@ -322,6 +460,17 @@ namespace GooglePlayGames.Editor
                 "Assets/GooglePlayGames/Editor/BackgroundResolution.cs",
                 "Assets/GooglePlayGames/Editor/BackgroundResolution.cs.meta"
             };
+=======
+            //remove the jar resolver and if found, then
+            // warn the user that restarting the editor is required.
+            string[] obsoleteFiles =
+                {
+                    "Assets/GooglePlayGames/Editor/JarResolverLib.dll",
+                    "Assets/GooglePlayGames/Editor/JarResolverLib.dll.meta",
+                    "Assets/GooglePlayGames/Editor/BackgroundResolution.cs",
+                    "Assets/GooglePlayGames/Editor/BackgroundResolution.cs.meta"
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             bool found = File.Exists(obsoleteFiles[0]);
 
@@ -339,7 +488,12 @@ namespace GooglePlayGames.Editor
                 GPGSUtil.Alert("This update made changes that requires that you restart the editor");
             }
 
+<<<<<<< HEAD
             return "00928";
+=======
+            Debug.Log("Upgrading from version " + prevVer + " to " + PluginVersion.VersionKeyJarResolver);
+            return PluginVersion.VersionKeyJarResolver;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -351,6 +505,7 @@ namespace GooglePlayGames.Editor
         private static string Upgrade927Patch(string prevVer)
         {
             string[] obsoleteFiles =
+<<<<<<< HEAD
             {
                 "Assets/GooglePlayGames/Editor/GPGGizmo.cs",
                 "Assets/GooglePlayGames/Editor/GPGGizmo.cs.meta",
@@ -361,6 +516,18 @@ namespace GooglePlayGames.Editor
                 "Assets/GooglePlayGames/Platforms/Native/UnsupportedAppStateClient.cs",
                 "Assets/GooglePlayGames/Platforms/Native/UnsupportedAppStateClient.cs.meta"
             };
+=======
+                {
+                    "Assets/GooglePlayGames/Editor/GPGGizmo.cs",
+                    "Assets/GooglePlayGames/Editor/GPGGizmo.cs.meta",
+                    "Assets/GooglePlayGames/BasicApi/OnStateLoadedListener.cs",
+                    "Assets/GooglePlayGames/BasicApi/OnStateLoadedListener.cs.meta",
+                    "Assets/GooglePlayGames/Platforms/Native/AndroidAppStateClient.cs",
+                    "Assets/GooglePlayGames/Platforms/Native/AndroidAppStateClient.cs.meta",
+                    "Assets/GooglePlayGames/Platforms/Native/UnsupportedAppStateClient.cs",
+                    "Assets/GooglePlayGames/Platforms/Native/UnsupportedAppStateClient.cs.meta"
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             foreach (string file in obsoleteFiles)
             {
                 if (File.Exists(file))
@@ -370,7 +537,11 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             return "00927a";
+=======
+            return PluginVersion.VersionKey27Patch;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -380,6 +551,7 @@ namespace GooglePlayGames.Editor
         /// <returns>the version string upgraded to.</returns>
         private static string Upgrade915(string prevVer)
         {
+<<<<<<< HEAD
             Debug.Log("Upgrading from format version " + prevVer + " to 00915");
 
             // all that was done was moving the Editor files to be in GooglePlayGames/Editor
@@ -422,6 +594,50 @@ namespace GooglePlayGames.Editor
                 "Assets/Plugins/iOS/GPGSAppController 1.mm",
                 "Assets/Plugins/iOS/GPGSAppController 1.mm.meta"
             };
+=======
+            Debug.Log("Upgrading from format version " + prevVer + " to " + PluginVersion.VersionKeyU5);
+
+            // all that was done was moving the Editor files to be in GooglePlayGames/Editor
+            string[] obsoleteFiles =
+                {
+                    "Assets/Editor/GPGSAndroidSetupUI.cs",
+                    "Assets/Editor/GPGSAndroidSetupUI.cs.meta",
+                    "Assets/Editor/GPGSDocsUI.cs",
+                    "Assets/Editor/GPGSDocsUI.cs.meta",
+                    "Assets/Editor/GPGSIOSSetupUI.cs",
+                    "Assets/Editor/GPGSIOSSetupUI.cs.meta",
+                    "Assets/Editor/GPGSInstructionWindow.cs",
+                    "Assets/Editor/GPGSInstructionWindow.cs.meta",
+                    "Assets/Editor/GPGSPostBuild.cs",
+                    "Assets/Editor/GPGSPostBuild.cs.meta",
+                    "Assets/Editor/GPGSProjectSettings.cs",
+                    "Assets/Editor/GPGSProjectSettings.cs.meta",
+                    "Assets/Editor/GPGSStrings.cs",
+                    "Assets/Editor/GPGSStrings.cs.meta",
+                    "Assets/Editor/GPGSUpgrader.cs",
+                    "Assets/Editor/GPGSUpgrader.cs.meta",
+                    "Assets/Editor/GPGSUtil.cs",
+                    "Assets/Editor/GPGSUtil.cs.meta",
+                    "Assets/Editor/GameInfo.template",
+                    "Assets/Editor/GameInfo.template.meta",
+                    "Assets/Editor/PlistBuddyHelper.cs",
+                    "Assets/Editor/PlistBuddyHelper.cs.meta",
+                    "Assets/Editor/PostprocessBuildPlayer",
+                    "Assets/Editor/PostprocessBuildPlayer.meta",
+                    "Assets/Editor/ios_instructions",
+                    "Assets/Editor/ios_instructions.meta",
+                    "Assets/Editor/projsettings.txt",
+                    "Assets/Editor/projsettings.txt.meta",
+                    "Assets/Editor/template-AndroidManifest.txt",
+                    "Assets/Editor/template-AndroidManifest.txt.meta",
+                    "Assets/Plugins/Android/libs/armeabi/libgpg.so",
+                    "Assets/Plugins/Android/libs/armeabi/libgpg.so.meta",
+                    "Assets/Plugins/iOS/GPGSAppController 1.h",
+                    "Assets/Plugins/iOS/GPGSAppController 1.h.meta",
+                    "Assets/Plugins/iOS/GPGSAppController 1.mm",
+                    "Assets/Plugins/iOS/GPGSAppController 1.mm.meta"
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             foreach (string file in obsoleteFiles)
             {
@@ -432,7 +648,11 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             return "00915";
+=======
+            return PluginVersion.VersionKeyU5;
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -442,6 +662,7 @@ namespace GooglePlayGames.Editor
         /// <returns>the version string upgraded to.</returns>
         private static string Upgrade911(string prevVer)
         {
+<<<<<<< HEAD
             Debug.Log("Upgrading from format version " + prevVer + " to 00911");
 
             // delete obsolete files, if they are there
@@ -454,6 +675,20 @@ namespace GooglePlayGames.Editor
                 "Assets/Plugins/GPGSUtils.dll",
                 "Assets/Plugins/GPGSUtils.dll.meta",
             };
+=======
+            Debug.Log("Upgrading from format version " + prevVer + " to " + PluginVersion.VersionKeyCPP);
+
+            // delete obsolete files, if they are there
+            string[] obsoleteFiles =
+                {
+                    "Assets/GooglePlayGames/OurUtils/Utils.cs",
+                    "Assets/GooglePlayGames/OurUtils/Utils.cs.meta",
+                    "Assets/GooglePlayGames/OurUtils/MyClass.cs",
+                    "Assets/GooglePlayGames/OurUtils/MyClass.cs.meta",
+                    "Assets/Plugins/GPGSUtils.dll",
+                    "Assets/Plugins/GPGSUtils.dll.meta",
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             foreach (string file in obsoleteFiles)
             {
@@ -466,9 +701,15 @@ namespace GooglePlayGames.Editor
 
             // delete obsolete directories, if they are there
             string[] obsoleteDirectories =
+<<<<<<< HEAD
             {
                 "Assets/Plugins/Android/BaseGameUtils"
             };
+=======
+                {
+                    "Assets/Plugins/Android/BaseGameUtils"
+                };
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             foreach (string directory in obsoleteDirectories)
             {
@@ -479,9 +720,18 @@ namespace GooglePlayGames.Editor
                 }
             }
 
+<<<<<<< HEAD
             Debug.Log("Done upgrading from format version " + prevVer + " to 00911");
             return "00911";
         }
     }
 }
 #endif
+=======
+            Debug.Log("Done upgrading from format version " + prevVer + " to " + PluginVersion.VersionKeyCPP);
+            return PluginVersion.VersionKeyCPP;
+        }
+    }
+}
+#endif
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

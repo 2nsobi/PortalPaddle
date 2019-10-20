@@ -27,6 +27,10 @@ namespace GooglePlayGames.BasicApi.Video
     /// </remarks>
     public interface IVideoClient
     {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// <summary>
         /// Fetches the video capabilities of the service.
         /// </summary>
@@ -92,4 +96,8 @@ namespace GooglePlayGames.BasicApi.Video
         /// </summary>
         void UnregisterCaptureOverlayStateChangedListener();
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
