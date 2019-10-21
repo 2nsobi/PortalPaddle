@@ -25,55 +25,26 @@ namespace GooglePlayGames.OurUtils
 
         public static bool DebugLogEnabled
         {
-<<<<<<< HEAD
             get { return debugLogEnabled; }
 
             set { debugLogEnabled = value; }
-=======
-            get
-            {
-                return debugLogEnabled;
-            }
-
-            set
-            {
-                debugLogEnabled = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         private static bool warningLogEnabled = true;
 
         public static bool WarningLogEnabled
         {
-<<<<<<< HEAD
             get { return warningLogEnabled; }
 
             set { warningLogEnabled = value; }
-=======
-            get
-            {
-                return warningLogEnabled;
-            }
-
-            set
-            {
-                warningLogEnabled = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public static void d(string msg)
         {
             if (debugLogEnabled)
             {
-<<<<<<< HEAD
                 PlayGamesHelperObject.RunOnGameThread(() =>
                     Debug.Log(ToLogMessage(string.Empty, "DEBUG", msg)));
-=======
-                PlayGamesHelperObject.RunOnGameThread(()=>
-                  Debug.Log(ToLogMessage(string.Empty, "DEBUG", msg)));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -81,13 +52,8 @@ namespace GooglePlayGames.OurUtils
         {
             if (warningLogEnabled)
             {
-<<<<<<< HEAD
                 PlayGamesHelperObject.RunOnGameThread(() =>
                     Debug.LogWarning(ToLogMessage("!!!", "WARNING", msg)));
-=======
-                PlayGamesHelperObject.RunOnGameThread(()=>
-                  Debug.LogWarning(ToLogMessage("!!!", "WARNING", msg)));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -96,11 +62,7 @@ namespace GooglePlayGames.OurUtils
             if (warningLogEnabled)
             {
                 PlayGamesHelperObject.RunOnGameThread(() =>
-<<<<<<< HEAD
                     Debug.LogWarning(ToLogMessage("***", "ERROR", msg)));
-=======
-                  Debug.LogWarning(ToLogMessage("***", "ERROR", msg)));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -111,7 +73,6 @@ namespace GooglePlayGames.OurUtils
 
         private static string ToLogMessage(string prefix, string logType, string msg)
         {
-<<<<<<< HEAD
             string timeString = null;
             try
             {
@@ -129,11 +90,3 @@ namespace GooglePlayGames.OurUtils
         }
     }
 }
-=======
-            return string.Format("{0} [Play Games Plugin DLL] {1} {2}: {3}",
-                prefix, DateTime.Now.ToString("MM/dd/yy H:mm:ss zzz"), logType, msg);
-        }
-    }
-}
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

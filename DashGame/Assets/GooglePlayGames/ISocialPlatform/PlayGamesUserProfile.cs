@@ -14,11 +14,7 @@
 //    limitations under the License.
 // </copyright>
 
-<<<<<<< HEAD
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
@@ -26,12 +22,9 @@ namespace GooglePlayGames
     using System.Collections;
     using GooglePlayGames.OurUtils;
     using UnityEngine;
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
     using UnityEngine.Networking;
 #endif
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     using UnityEngine.SocialPlatforms;
 
     /// <summary>
@@ -67,10 +60,7 @@ namespace GooglePlayGames
                 mImage = null;
                 mAvatarUrl = avatarUrl;
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             mImageLoading = false;
         }
 
@@ -78,50 +68,22 @@ namespace GooglePlayGames
 
         public string userName
         {
-<<<<<<< HEAD
             get { return mDisplayName; }
-=======
-            get
-            {
-                return mDisplayName;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string id
         {
-<<<<<<< HEAD
             get { return mPlayerId; }
-=======
-            get
-            {
-                return mPlayerId;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool isFriend
         {
-<<<<<<< HEAD
             get { return true; }
-=======
-            get
-            {
-                return true;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public UserState state
         {
-<<<<<<< HEAD
             get { return UserState.Online; }
-=======
-            get
-            {
-                return UserState.Online;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public Texture2D image
@@ -143,14 +105,7 @@ namespace GooglePlayGames
 
         public string AvatarURL
         {
-<<<<<<< HEAD
             get { return mAvatarUrl; }
-=======
-            get
-            {
-                return mAvatarUrl;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -165,16 +120,12 @@ namespace GooglePlayGames
             // avatar configured.
             if (!string.IsNullOrEmpty(AvatarURL))
             {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                 UnityWebRequest www = UnityWebRequestTexture.GetTexture(AvatarURL);
                 www.SendWebRequest();
 #else
                 WWW www = new WWW(AvatarURL);
 #endif
-=======
-                WWW www = new WWW(AvatarURL);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 while (!www.isDone)
                 {
                     yield return null;
@@ -182,15 +133,11 @@ namespace GooglePlayGames
 
                 if (www.error == null)
                 {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                     this.mImage = DownloadHandlerTexture.GetContent(www);
 #else
                     this.mImage = www.texture;
 #endif
-=======
-                    this.mImage = www.texture;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
                 else
                 {
@@ -240,8 +187,4 @@ namespace GooglePlayGames
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

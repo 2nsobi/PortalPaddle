@@ -13,12 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi
 {
@@ -42,11 +38,7 @@ namespace GooglePlayGames.BasicApi
     public class Achievement
     {
         static readonly DateTime UnixEpoch =
-<<<<<<< HEAD
             new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-=======
-                new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         private string mId = string.Empty;
         private bool mIsIncremental = false;
@@ -82,21 +74,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public bool IsIncremental
         {
-<<<<<<< HEAD
             get { return mIsIncremental; }
 
             set { mIsIncremental = value; }
-=======
-            get
-            {
-                return mIsIncremental;
-            }
-
-            set
-            {
-                mIsIncremental = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -104,21 +84,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public int CurrentSteps
         {
-<<<<<<< HEAD
             get { return mCurrentSteps; }
 
             set { mCurrentSteps = value; }
-=======
-            get
-            {
-                return mCurrentSteps;
-            }
-
-            set
-            {
-                mCurrentSteps = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -126,21 +94,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public int TotalSteps
         {
-<<<<<<< HEAD
             get { return mTotalSteps; }
 
             set { mTotalSteps = value; }
-=======
-            get
-            {
-                return mTotalSteps;
-            }
-
-            set
-            {
-                mTotalSteps = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -148,21 +104,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public bool IsUnlocked
         {
-<<<<<<< HEAD
             get { return mIsUnlocked; }
 
             set { mIsUnlocked = value; }
-=======
-            get
-            {
-                return mIsUnlocked;
-            }
-
-            set
-            {
-               mIsUnlocked = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -170,21 +114,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public bool IsRevealed
         {
-<<<<<<< HEAD
             get { return mIsRevealed; }
 
             set { mIsRevealed = value; }
-=======
-            get
-            {
-                return mIsRevealed;
-            }
-
-            set
-            {
-                mIsRevealed = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -192,21 +124,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public string Id
         {
-<<<<<<< HEAD
             get { return mId; }
 
             set { mId = value; }
-=======
-            get
-            {
-                return mId;
-            }
-
-            set
-            {
-                mId = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -214,21 +134,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public string Description
         {
-<<<<<<< HEAD
             get { return this.mDescription; }
 
             set { mDescription = value; }
-=======
-            get
-            {
-                return this.mDescription;
-            }
-
-            set
-            {
-                mDescription = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -236,21 +144,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public string Name
         {
-<<<<<<< HEAD
             get { return this.mName; }
 
             set { mName = value; }
-=======
-            get
-            {
-                return this.mName;
-            }
-
-            set
-            {
-                mName = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -262,23 +158,12 @@ namespace GooglePlayGames.BasicApi
         /// </remarks>
         public DateTime LastModifiedTime
         {
-<<<<<<< HEAD
             get { return UnixEpoch.AddMilliseconds(mLastModifiedTime); }
-=======
-            get
-            {
-                return UnixEpoch.AddMilliseconds(mLastModifiedTime);
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             set
             {
                 TimeSpan ts = value - UnixEpoch;
-<<<<<<< HEAD
                 mLastModifiedTime = (long) ts.TotalMilliseconds;
-=======
-                mLastModifiedTime = (long)ts.TotalMilliseconds;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -287,21 +172,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public ulong Points
         {
-<<<<<<< HEAD
             get { return mPoints; }
 
             set { mPoints = value; }
-=======
-            get
-            {
-                return mPoints;
-            }
-
-            set
-            {
-                mPoints = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -309,21 +182,9 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public string RevealedImageUrl
         {
-<<<<<<< HEAD
             get { return mRevealedImageUrl; }
 
             set { mRevealedImageUrl = value; }
-=======
-            get
-            {
-                return mRevealedImageUrl;
-            }
-
-            set
-            {
-                mRevealedImageUrl = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -331,7 +192,6 @@ namespace GooglePlayGames.BasicApi
         /// </summary>
         public string UnlockedImageUrl
         {
-<<<<<<< HEAD
             get { return mUnlockedImageUrl; }
 
             set { mUnlockedImageUrl = value; }
@@ -339,18 +199,3 @@ namespace GooglePlayGames.BasicApi
     }
 }
 #endif
-=======
-            get
-            {
-                return mUnlockedImageUrl;
-            }
-
-            set
-            {
-                mUnlockedImageUrl = value;
-            }
-        }
-    }
-}
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -1,32 +1,19 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: bb6999c8a5ce4ba99688ec579babe5b7
 labels:
 - gvh
 - gvh_targets-editor
 - gvh_version-0.10.04
-=======
-guid: 56f275e07a2440319f9d6561ac43e9f7
-labels:
-- gvh
-- gvh_targets-editor
-- gvh_version-0.9.53
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
   iconMap: {}
   executionOrder: {}
-<<<<<<< HEAD
   defineConstraints: []
   isPreloaded: 0
   isOverridable: 0
   isExplicitlyReferenced: 0
   validateReferences: 1
-=======
-  isPreloaded: 0
-  isOverridable: 0
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   platformData:
   - first:
       Any: 

@@ -33,41 +33,17 @@ namespace GooglePlayGames.BasicApi.Nearby
 
         public string EndpointId
         {
-<<<<<<< HEAD
             get { return mEndpointId; }
-=======
-            get
-            {
-                return mEndpointId;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string Name
         {
-<<<<<<< HEAD
             get { return mName; }
-=======
-            get
-            {
-                return mName;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string ServiceId
         {
-<<<<<<< HEAD
             get { return mServiceId; }
         }
     }
 }
-=======
-            get
-            {
-                return mServiceId;
-            }
-        }
-    }
-}
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

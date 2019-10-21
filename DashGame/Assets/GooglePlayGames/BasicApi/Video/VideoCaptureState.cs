@@ -44,40 +44,19 @@ namespace GooglePlayGames.BasicApi.Video
         /// <summary>Returns whether the service is currently capturing or not.</summary>
         public bool IsCapturing
         {
-<<<<<<< HEAD
             get { return mIsCapturing; }
-=======
-            get
-            {
-                return mIsCapturing;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>Returns the capture mode of the current capture.</summary>
         public VideoCaptureMode CaptureMode
         {
-<<<<<<< HEAD
             get { return mCaptureMode; }
-=======
-            get
-            {
-                return mCaptureMode;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>Returns the quality level of the current capture.</summary>
         public VideoQualityLevel QualityLevel
         {
-<<<<<<< HEAD
             get { return mQualityLevel; }
-=======
-            get
-            {
-                return mQualityLevel;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -88,14 +67,7 @@ namespace GooglePlayGames.BasicApi.Video
         /// </remarks>
         public bool IsOverlayVisible
         {
-<<<<<<< HEAD
             get { return mIsOverlayVisible; }
-=======
-            get
-            {
-                return mIsOverlayVisible;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -106,24 +78,13 @@ namespace GooglePlayGames.BasicApi.Video
         /// </remarks>
         public bool IsPaused
         {
-<<<<<<< HEAD
             get { return mIsPaused; }
-=======
-            get
-            {
-                return mIsPaused;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public override string ToString()
         {
             return string.Format("[VideoCaptureState: mIsCapturing={0}, mCaptureMode={1}, mQualityLevel={2}, " +
-<<<<<<< HEAD
                                  "mIsOverlayVisible={3}, mIsPaused={4}]",
-=======
-                "mIsOverlayVisible={3}, mIsPaused={4}]",
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 mIsCapturing,
                 mCaptureMode.ToString(),
                 mQualityLevel.ToString(),

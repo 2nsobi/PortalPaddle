@@ -13,19 +13,11 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
 
 namespace GooglePlayGames.BasicApi.Multiplayer
 {
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
-
-namespace GooglePlayGames.BasicApi.Multiplayer
-{
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     /// <summary>
     /// Represents a player. A player is different from a participant! The participant is
     /// an entity that takes part in a particular match; a Player is a real-world person
@@ -40,8 +32,4 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

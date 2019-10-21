@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## [1.22.0] - 2019-03-18
 ### Added
 - Added Unity Distribution Portal (UDP) module as an Android build target. Unity Distribution Portal streamlines your distribution process. UDP allows you to only build one version of your game, centralize the management of your marketing assets and metadata, and submit your content to multiple app stores, all in the same workflow. For more details, please refer to https://docs.unity3d.com/Packages/com.unity.purchasing.udp@1.0/manual/index.html.
@@ -16,9 +15,6 @@
 - Fixed wrong product id when cancel a subscription product purchase.
 
 ## [1.20.1] - 2018-10-5
-=======
-## []1.20.1] - 2018-10-5
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 ### Added
 - Added a callback function that allows developers to check the state of the upgrade/downgrade process of subscriptions on GooglePlay.
 
@@ -49,11 +45,7 @@
 ## [1.19.0] - 2018-04-17
 ### Added
 - For GooglePlay store, `developerPayload` has been encoded to base64 string and formatted to a JSON string with two other information of the product. When extract `developerPayload` from the product receipt, firstly decode the json string and get the `developerPayload` field base64 string, secondly decode the base64 string to the original `developerPayload`.
-<<<<<<< HEAD
 - `SubscriptionManager` - This new class allows developer to query the purchased subscription product's information. (available for AppleStore and GooglePlay store) 
-=======
-- `SubscriptionManager` - This new class allows developer to query the purchased subscription product's infomation. (available for AppleStore and GooglePlay store) 
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     - For GooglePlay store, this class can only be used on products purchased using IAP 1.19.0 SDK. Products purchased on previous SDKs do not have the fields in the "developerPayload" that are needed to parse the subscription information.
         - If the "Payload" json string field in the product's json string receipt has a "skuDetails" filed, then this product can use `SubscriptionManager` to get its subscription information.
 - Added the `StoreSpecificPurchaseErrorCode` enum. Currently contains values for all Apple and Google Play error codes that are returned directly from the store.

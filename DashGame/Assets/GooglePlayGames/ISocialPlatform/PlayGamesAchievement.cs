@@ -13,24 +13,17 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
     using System;
     using GooglePlayGames.BasicApi;
     using UnityEngine;
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
     using UnityEngine.Networking;
 #endif
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     using UnityEngine.SocialPlatforms;
 
     internal delegate void ReportProgress(string id, double progress, Action<bool> callback);
@@ -49,7 +42,6 @@ namespace GooglePlayGames
         private double mPercentComplete = 0.0;
         private bool mCompleted = false;
         private bool mHidden = false;
-<<<<<<< HEAD
         private DateTime mLastModifiedTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         private string mTitle = string.Empty;
         private string mRevealedImageUrl = string.Empty;
@@ -59,13 +51,6 @@ namespace GooglePlayGames
 #else
         private WWW mImageFetcher = null;
 #endif
-=======
-        private DateTime mLastModifiedTime = new DateTime (1970, 1, 1, 0, 0, 0, 0);
-        private string mTitle = string.Empty;
-        private string mRevealedImageUrl = string.Empty;
-        private string mUnlockedImageUrl = string.Empty;
-        private WWW mImageFetcher = null;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         private Texture2D mImage = null;
         private string mDescription = string.Empty;
         private ulong mPoints = 0;
@@ -91,11 +76,7 @@ namespace GooglePlayGames
                 if (ach.TotalSteps > 0)
                 {
                     this.mPercentComplete =
-<<<<<<< HEAD
                         ((double) ach.CurrentSteps / (double) ach.TotalSteps) * 100.0;
-=======
-                        ((double)ach.CurrentSteps / (double)ach.TotalSteps) * 100.0;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
                 else
                 {
@@ -106,10 +87,7 @@ namespace GooglePlayGames
             {
                 this.mPercentComplete = ach.IsUnlocked ? 100.0 : 0.0;
             }
-<<<<<<< HEAD
 
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             this.mCompleted = ach.IsUnlocked;
             this.mHidden = !ach.IsRevealed;
             this.mLastModifiedTime = ach.LastModifiedTime;
@@ -118,10 +96,6 @@ namespace GooglePlayGames
             this.mPoints = ach.Points;
             this.mRevealedImageUrl = ach.RevealedImageUrl;
             this.mUnlockedImageUrl = ach.UnlockedImageUrl;
-<<<<<<< HEAD
-=======
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -146,19 +120,12 @@ namespace GooglePlayGames
         /// </summary>
         private Texture2D LoadImage()
         {
-<<<<<<< HEAD
             if (hidden)
             {
                 // return null, we dont have images for hidden achievements.
                 return null;
             }
 
-=======
-            if (hidden) {
-                // return null, we dont have images for hidden achievements.
-                return null;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             string url = completed ? mUnlockedImageUrl : mRevealedImageUrl;
 
             // the url can be null if the image is not configured.
@@ -166,15 +133,11 @@ namespace GooglePlayGames
             {
                 if (mImageFetcher == null || mImageFetcher.url != url)
                 {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                     mImageFetcher = UnityWebRequestTexture.GetTexture(url);
 #else
                     mImageFetcher = new WWW(url);
 #endif
-=======
-                    mImageFetcher = new WWW(url);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                     mImage = null;
                 }
 
@@ -187,15 +150,11 @@ namespace GooglePlayGames
 
                 if (mImageFetcher.isDone)
                 {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                     mImage = DownloadHandlerTexture.GetContent(mImageFetcher);
 #else
                     mImage = mImageFetcher.texture;
 #endif
-=======
-                    mImage = mImageFetcher.texture;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                     return mImage;
                 }
             }
@@ -213,21 +172,9 @@ namespace GooglePlayGames
         /// </returns>
         public string id
         {
-<<<<<<< HEAD
             get { return mId; }
 
             set { mId = value; }
-=======
-            get
-            {
-                return mId;
-            }
-
-            set
-            {
-                mId = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -239,14 +186,7 @@ namespace GooglePlayGames
         /// <returns><c>true</c> if incremental; otherwise, <c>false</c>.</returns>
         public bool isIncremental
         {
-<<<<<<< HEAD
             get { return mIsIncremental; }
-=======
-            get
-            {
-                return mIsIncremental;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -260,14 +200,7 @@ namespace GooglePlayGames
         /// <returns>The current steps.</returns>
         public int currentSteps
         {
-<<<<<<< HEAD
             get { return mCurrentSteps; }
-=======
-            get
-            {
-                return mCurrentSteps;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -281,14 +214,7 @@ namespace GooglePlayGames
         /// <returns>The total steps.</returns>
         public int totalSteps
         {
-<<<<<<< HEAD
             get { return mTotalSteps; }
-=======
-            get
-            {
-                return mTotalSteps;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -299,21 +225,9 @@ namespace GooglePlayGames
         /// </returns>
         public double percentCompleted
         {
-<<<<<<< HEAD
             get { return mPercentComplete; }
 
             set { mPercentComplete = value; }
-=======
-            get
-            {
-                return mPercentComplete;
-            }
-
-            set
-            {
-                mPercentComplete = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -326,14 +240,7 @@ namespace GooglePlayGames
         /// <returns><c>true</c> if completed; otherwise, <c>false</c>.</returns>
         public bool completed
         {
-<<<<<<< HEAD
             get { return this.mCompleted; }
-=======
-            get
-            {
-                return this.mCompleted;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -342,92 +249,38 @@ namespace GooglePlayGames
         /// <value><c>true</c> if hidden; otherwise, <c>false</c>.</value>
         public bool hidden
         {
-<<<<<<< HEAD
             get { return this.mHidden; }
-=======
-            get
-            {
-                return this.mHidden;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public DateTime lastReportedDate
         {
-<<<<<<< HEAD
             get { return mLastModifiedTime; }
-=======
-            get
-            {
-                return mLastModifiedTime;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public String title
         {
-<<<<<<< HEAD
             get { return mTitle; }
         }
 
         public Texture2D image
         {
             get { return LoadImage(); }
-=======
-            get
-            {
-                return mTitle;
-            }
-        }
-        public Texture2D image
-        {
-            get
-            {
-                return LoadImage();
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string achievedDescription
         {
-<<<<<<< HEAD
             get { return mDescription; }
-=======
-            get
-            {
-                return mDescription;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string unachievedDescription
         {
-<<<<<<< HEAD
             get { return mDescription; }
-=======
-            get
-            {
-                return mDescription;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public int points
         {
-<<<<<<< HEAD
             get { return (int) mPoints; }
         }
     }
 }
 #endif
-=======
-            get
-            {
-                return (int) mPoints;
-            }
-        }
-
-    }
-}
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

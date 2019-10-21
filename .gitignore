@@ -32,13 +32,8 @@ ExportedObj/
 sysinfo.txt
 
 # Builds
-<<<<<<< HEAD
 *.apkw
 *.unitypackage
 
 # Appodeal (file in folder exceeds 100 MB)
 **/Assets/Plugins/iOS/Appodeal.framework
-=======
-*.apk
-*.unitypackage
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

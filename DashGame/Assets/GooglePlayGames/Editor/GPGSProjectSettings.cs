@@ -20,7 +20,6 @@ namespace GooglePlayGames.Editor
 {
     using System.Collections.Generic;
     using System.IO;
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
     using UnityEngine.Networking;
 #else
@@ -28,10 +27,6 @@ namespace GooglePlayGames.Editor
 
 #endif
 
-=======
-    using UnityEngine;
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     public class GPGSProjectSettings
     {
         private static GPGSProjectSettings sInstance = null;
@@ -55,30 +50,17 @@ namespace GooglePlayGames.Editor
 
         private GPGSProjectSettings()
         {
-<<<<<<< HEAD
             mFile = GPGSUtil.SlashesToPlatformSeparator("ProjectSettings/GooglePlayGameSettings.txt");
-=======
-            string ds = Path.DirectorySeparatorChar.ToString();
-            mFile = "ProjectSettings/GooglePlayGameSettings.txt".Replace("/", ds);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             StreamReader rd = null;
 
             // read the settings file, this list is all the locations it can be in order of precedence.
             string[] fileLocations =
-<<<<<<< HEAD
             {
                 mFile,
                 GPGSUtil.SlashesToPlatformSeparator(Path.Combine(GPGSUtil.RootPath, "Editor/projsettings.txt")),
                 GPGSUtil.SlashesToPlatformSeparator("Assets/Editor/projsettings.txt")
             };
-=======
-                {
-                    mFile,
-                    "Assets/GooglePlayGames/Editor/projsettings.txt".Replace("/", ds),
-                    "Assets/Editor/projsettings.txt".Replace("/", ds)
-                };
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
             foreach (string f in fileLocations)
             {
@@ -101,11 +83,7 @@ namespace GooglePlayGames.Editor
                     }
 
                     line = line.Trim();
-<<<<<<< HEAD
                     string[] p = line.Split(new char[] {'='}, 2);
-=======
-                    string[] p = line.Split(new char[] { '=' }, 2);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                     if (p.Length >= 2)
                     {
                         mDict[p[0].Trim()] = p[1].Trim();
@@ -124,15 +102,11 @@ namespace GooglePlayGames.Editor
             }
             else if (mDict.ContainsKey(key))
             {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                 return UnityWebRequest.UnEscapeURL(mDict[key]);
 #else
                 return WWW.UnEscapeURL(mDict[key]);
 #endif
-=======
-                return WWW.UnEscapeURL(mDict[key]);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             else
             {
@@ -144,16 +118,11 @@ namespace GooglePlayGames.Editor
         {
             if (mDict.ContainsKey(key))
             {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
                 return UnityWebRequest.UnEscapeURL(mDict[key]);
 #else
                 return WWW.UnEscapeURL(mDict[key]);
 #endif
-=======
-                string val = WWW.UnEscapeURL(mDict[key]);
-                return val;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             else
             {
@@ -178,15 +147,11 @@ namespace GooglePlayGames.Editor
 
         public void Set(string key, string val)
         {
-<<<<<<< HEAD
 #if UNITY_2017_1_OR_NEWER
             string escaped = UnityWebRequest.EscapeURL(val);
 #else
             string escaped = WWW.EscapeURL(val);
 #endif
-=======
-            string escaped = WWW.EscapeURL(val);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             mDict[key] = escaped;
             mDirty = true;
         }
@@ -224,17 +189,9 @@ namespace GooglePlayGames.Editor
             mDirty = false;
         }
 
-<<<<<<< HEAD
         public static void Reload()
-=======
-        public static void Reload ()
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             sInstance = new GPGSProjectSettings();
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

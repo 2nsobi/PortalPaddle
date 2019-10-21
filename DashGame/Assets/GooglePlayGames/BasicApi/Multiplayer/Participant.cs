@@ -14,12 +14,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi.Multiplayer
 {
@@ -55,14 +51,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// Gets the participant's display name.
         public string DisplayName
         {
-<<<<<<< HEAD
             get { return mDisplayName; }
-=======
-            get
-            {
-                return mDisplayName;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -75,27 +64,13 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <value>The participant identifier.</value>
         public string ParticipantId
         {
-<<<<<<< HEAD
             get { return mParticipantId; }
-=======
-            get
-            {
-                return mParticipantId;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// Gets the participant's status (invited, joined, declined, left, finished, ...)
         public ParticipantStatus Status
         {
-<<<<<<< HEAD
             get { return mStatus; }
-=======
-            get
-            {
-                return mStatus;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -105,14 +80,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <value>The player, or null if this is an anonymous participant.</value>
         public Player Player
         {
-<<<<<<< HEAD
             get { return mPlayer; }
-=======
-            get
-            {
-                return mPlayer;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// <summary>
@@ -121,35 +89,17 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// </summary>
         public bool IsConnectedToRoom
         {
-<<<<<<< HEAD
             get { return mIsConnectedToRoom; }
-=======
-            get
-            {
-                return mIsConnectedToRoom;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         /// Returns whether or not this is an automatch participant.
         public bool IsAutomatch
         {
-<<<<<<< HEAD
             get { return mPlayer == null; }
         }
 
         internal Participant(string displayName, string participantId,
             ParticipantStatus status, Player player, bool connectedToRoom)
-=======
-            get
-            {
-                return mPlayer == null;
-            }
-        }
-
-        internal Participant(string displayName, string participantId,
-                             ParticipantStatus status, Player player, bool connectedToRoom)
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             mDisplayName = displayName;
             mParticipantId = participantId;
@@ -161,11 +111,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         public override string ToString()
         {
             return string.Format("[Participant: '{0}' (id {1}), status={2}, " +
-<<<<<<< HEAD
                                  "player={3}, connected={4}]", mDisplayName, mParticipantId, mStatus.ToString(),
-=======
-                "player={3}, connected={4}]", mDisplayName, mParticipantId, mStatus.ToString(),
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 mPlayer == null ? "NULL" : mPlayer.ToString(), mIsConnectedToRoom);
         }
 
@@ -191,11 +137,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
                 return false;
             }
 
-<<<<<<< HEAD
             Participant other = (Participant) obj;
-=======
-            Participant other = (Participant)obj;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return mParticipantId.Equals(other.mParticipantId);
         }
 
@@ -205,8 +147,4 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

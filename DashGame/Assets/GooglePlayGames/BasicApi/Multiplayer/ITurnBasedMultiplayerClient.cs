@@ -13,12 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi.Multiplayer
 {
@@ -40,11 +36,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// If it succeeds, will be called with (true, match); if it fails, will be
         /// called with (false, null).</param>
         void CreateQuickMatch(uint minOpponents, uint maxOpponents, uint variant,
-<<<<<<< HEAD
             Action<bool, TurnBasedMatch> callback);
-=======
-                              Action<bool, TurnBasedMatch> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Starts a game with randomly selected opponent(s) using exclusiveBitMask.
@@ -75,11 +67,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <param name="callback">Callback. Will be called with (true, match) on success,
         /// and (false, null) if there is an error or the user cancelled.</param>
         void CreateWithInvitationScreen(uint minOpponents, uint maxOpponents, uint variant,
-<<<<<<< HEAD
             Action<bool, TurnBasedMatch> callback);
-=======
-                                        Action<bool, TurnBasedMatch> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Starts a game with an invitation screen. </summary>
@@ -108,7 +96,6 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         void GetAllMatches(Action<TurnBasedMatch[]> callback);
 
         /// <summary>
-<<<<<<< HEAD
         /// Gets match for given match id.
         /// </summary>
         /// <param name="matchId">Match id</param>
@@ -116,8 +103,6 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         void GetMatch(string matchId, Action<bool, TurnBasedMatch> callback);
 
         /// <summary>
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// Starts a game by showing the match inbox.</summary>
         /// <remarks> The player's match inbox will be
         /// shown, allowing the player to pick an ongoing match or accept an outstanding
@@ -163,11 +148,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <param name="callback">Callback. Will be called with true for success,
         /// false for failure.</param>
         void TakeTurn(TurnBasedMatch match, byte[] data, string pendingParticipantId,
-<<<<<<< HEAD
             Action<bool> callback);
-=======
-                      Action<bool> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Gets the size of the max match data, in bytes.
@@ -210,11 +191,7 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         /// <param name="pendingParticipantId">ID of next participant to play.</param>
         /// <param name="callback">Callback.</param>
         void LeaveDuringTurn(TurnBasedMatch match, string pendingParticipantId,
-<<<<<<< HEAD
             Action<bool> callback);
-=======
-                             Action<bool> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Cancel a match.</summary>
@@ -228,7 +205,6 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         void Cancel(TurnBasedMatch match, Action<bool> callback);
 
         /// <summary>
-<<<<<<< HEAD
         /// Dismiss a match.
         /// </summary>
         /// <remarks>Dismissing a match hides it from the dismisser's match list UI
@@ -242,8 +218,6 @@ namespace GooglePlayGames.BasicApi.Multiplayer
         void Dismiss(TurnBasedMatch match);
 
         /// <summary>
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// Request a rematch.</summary>
         /// <remarks>
         /// This can be used on a finished match in order to start a new
@@ -261,7 +235,6 @@ namespace GooglePlayGames.BasicApi.Multiplayer
     }
 
     /// <summary>
-<<<<<<< HEAD
     /// Match delegate. Called when a match arrives.
     /// <param name="shouldAutoLaunch">If this is true, then the game should immediately
     /// proceed to the game screen to play this match, without prompting the user. If
@@ -277,20 +250,3 @@ namespace GooglePlayGames.BasicApi.Multiplayer
     public delegate void MatchDelegate(TurnBasedMatch match, bool shouldAutoLaunch);
 }
 #endif
-=======
-/// Match delegate. Called when a match arrives.
-/// <param name="shouldAutoLaunch">If this is true, then the game should immediately
-/// proceed to the game screen to play this match, without prompting the user. If
-/// false, you should prompt the user before going to the match screen. As an example,
-/// when a user taps on the "Play" button on a notification in Android, it is
-/// clear that they want to play that match right away, so the plugin calls this
-/// delegate with shouldAutoLaunch = true. However, if we receive an incoming notification
-/// that the player hasn't specifically indicated they wish to accept (for example,
-/// we received one in the background from the server), this delegate will be called
-/// with shouldAutoLaunch=false to indicate that you should confirm with the user
-/// before switching to the game.</param>
-/// </summary>
-    public delegate void MatchDelegate(TurnBasedMatch match, bool shouldAutoLaunch);
-}
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

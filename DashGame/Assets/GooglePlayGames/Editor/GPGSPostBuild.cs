@@ -15,10 +15,6 @@
 // </copyright>
 
 #if UNITY_ANDROID
-<<<<<<< HEAD
-=======
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 namespace GooglePlayGames.Editor
 {
     using System.Collections.Generic;
@@ -29,7 +25,6 @@ namespace GooglePlayGames.Editor
 
     public static class GPGSPostBuild
     {
-<<<<<<< HEAD
         [PostProcessBuild(99999)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
@@ -45,24 +40,3 @@ namespace GooglePlayGames.Editor
     }
 }
 #endif //UNITY_ANDROID
-=======
-        [PostProcessBuild (99999)]
-        public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
-        {
-#if UNITY_5_3_OR_NEWER
-            if (target != BuildTarget.iOS)
-            {
-                if (!GPGSProjectSettings.Instance.GetBool(GPGSUtil.ANDROIDSETUPDONEKEY, false))
-                {
-                    EditorUtility.DisplayDialog("Google Play Games not configured!",
-                        "Warning!!  Google Play Games was not configured, Game Services will not work correctly.",
-                        "OK");
-                }
-                return;
-            }
-#endif
-        }
-    }
-}
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

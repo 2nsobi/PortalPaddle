@@ -13,12 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames
 {
@@ -60,111 +56,42 @@ namespace GooglePlayGames
 
         public bool loading
         {
-<<<<<<< HEAD
             get { return mLoading; }
             internal set { mLoading = value; }
-=======
-            get
-            {
-                return mLoading;
-            }
-            internal set
-            {
-                mLoading = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string id
         {
-<<<<<<< HEAD
             get { return mId; }
             set { mId = value; }
-=======
-            get
-            {
-                return mId;
-            }
-            set
-            {
-                mId = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public UserScope userScope
         {
-<<<<<<< HEAD
             get { return mUserScope; }
             set { mUserScope = value; }
-=======
-            get
-            {
-                return mUserScope;
-            }
-            set
-            {
-                mUserScope = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public Range range
         {
-<<<<<<< HEAD
             get { return mRange; }
             set { mRange = value; }
-=======
-            get
-            {
-                return mRange;
-            }
-            set
-            {
-                mRange = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public TimeScope timeScope
         {
-<<<<<<< HEAD
             get { return mTimeScope; }
             set { mTimeScope = value; }
-=======
-            get
-            {
-                return mTimeScope;
-            }
-            set
-            {
-                mTimeScope = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public IScore localUserScore
         {
-<<<<<<< HEAD
             get { return mLocalUserScore; }
-=======
-            get
-            {
-                return mLocalUserScore;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public uint maxRange
         {
-<<<<<<< HEAD
             get { return mMaxRange; }
-=======
-            get
-            {
-                return mMaxRange;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public IScore[] scores
@@ -179,14 +106,7 @@ namespace GooglePlayGames
 
         public string title
         {
-<<<<<<< HEAD
             get { return mTitle; }
-=======
-            get
-            {
-                return mTitle;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         #endregion
@@ -198,20 +118,12 @@ namespace GooglePlayGames
                 Debug.Log("Setting leaderboard from: " + data);
                 SetMaxRange(data.ApproximateCount);
                 SetTitle(data.Title);
-<<<<<<< HEAD
                 SetLocalUserScore((PlayGamesScore) data.PlayerScore);
                 foreach (IScore score in data.Scores)
                 {
                     AddScore((PlayGamesScore) score);
                 }
 
-=======
-                SetLocalUserScore((PlayGamesScore)data.PlayerScore);
-                foreach (IScore score in data.Scores)
-                {
-                    AddScore((PlayGamesScore)score);
-                }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 mLoading = data.Scores.Length == 0 || HasAllScores();
             }
 
@@ -220,11 +132,7 @@ namespace GooglePlayGames
 
         internal void SetMaxRange(ulong val)
         {
-<<<<<<< HEAD
             mMaxRange = (uint) val;
-=======
-            mMaxRange = (uint)val;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         internal void SetTitle(string value)
@@ -252,28 +160,16 @@ namespace GooglePlayGames
                         return mScoreList.Count;
                     }
                 }
-<<<<<<< HEAD
 
                 mScoreList.Add(score);
             }
 
-=======
-                mScoreList.Add(score);
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return mScoreList.Count;
         }
 
         public int ScoreCount
         {
-<<<<<<< HEAD
             get { return mScoreList.Count; }
-=======
-            get
-            {
-                return mScoreList.Count;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         internal bool HasAllScores()
@@ -282,8 +178,4 @@ namespace GooglePlayGames
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

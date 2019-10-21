@@ -1,5 +1,4 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 6e6a02dcd7bdb4d57b23989dcc182bc5
 folderAsset: yes
 PluginImporter:
@@ -28,38 +27,6 @@ PluginImporter:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-=======
-guid: 2d3441d36ccb947688e631a6f2cdfb57
-folderAsset: yes
-timeCreated: 1532084007
-licenseType: Pro
-PluginImporter:
-  serializedVersion: 2
-  iconMap: {}
-  executionOrder: {}
-  isPreloaded: 0
-  isOverridable: 0
-  platformData:
-    data:
-      first:
-        Android: Android
-      second:
-        enabled: 1
-        settings: {}
-    data:
-      first:
-        Any: 
-      second:
-        enabled: 0
-        settings: {}
-    data:
-      first:
-        Editor: Editor
-      second:
-        enabled: 0
-        settings:
-          DefaultValueInitialized: true
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
   userData: 
   assetBundleName: 
   assetBundleVariant: 

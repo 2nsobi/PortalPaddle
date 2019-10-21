@@ -32,14 +32,7 @@ namespace GooglePlayGames.BasicApi.SavedGame
         ///
         /// </summary>
         /// <value><c>true</c> if this instance is open; otherwise, <c>false</c>.</value>
-<<<<<<< HEAD
         bool IsOpen { get; }
-=======
-        bool IsOpen
-        {
-            get;
-        }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Returns the filename for this saved game. A saved game filename will only consist of
@@ -47,41 +40,20 @@ namespace GooglePlayGames.BasicApi.SavedGame
         /// and will between 1 and 100 characters in length (inclusive).
         /// </summary>
         /// <value>The filename.</value>
-<<<<<<< HEAD
         string Filename { get; }
-=======
-        string Filename
-        {
-            get;
-        }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Returns a human-readable description of what the saved game contains. This may be null.
         /// </summary>
         /// <value>The description.</value>
-<<<<<<< HEAD
         string Description { get; }
-=======
-        string Description
-        {
-            get;
-        }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// A URL corresponding to the PNG-encoded image corresponding to this saved game. null if
         /// the saved game does not have a cover image.
         /// </summary>
         /// <value>The cover image URL.</value>
-<<<<<<< HEAD
         string CoverImageURL { get; }
-=======
-        string CoverImageURL
-        {
-            get;
-        }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Returns the total time played by the player for this saved game. This value is
@@ -91,14 +63,7 @@ namespace GooglePlayGames.BasicApi.SavedGame
         /// <code>TimeSpan.FromMilliseconds(0)</code>
         /// </summary>
         /// <value>The total time played.</value>
-<<<<<<< HEAD
         TimeSpan TotalTimePlayed { get; }
-=======
-        TimeSpan TotalTimePlayed
-        {
-            get;
-        }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// A timestamp corresponding to the last modification to the underlying saved game. If the
@@ -107,15 +72,6 @@ namespace GooglePlayGames.BasicApi.SavedGame
         /// CommitUpdate or Resolve methods).
         /// </summary>
         /// <value>The last modified timestamp.</value>
-<<<<<<< HEAD
         DateTime LastModifiedTimestamp { get; }
     }
 }
-=======
-        DateTime LastModifiedTimestamp
-        {
-            get;
-        }
-    }
-}
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

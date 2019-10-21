@@ -35,11 +35,7 @@ namespace GooglePlayGames.BasicApi.Nearby
         private readonly long mLocalClientId;
 
         public NearbyConnectionConfiguration(Action<InitializationStatus> callback,
-<<<<<<< HEAD
             long localClientId)
-=======
-                                             long localClientId)
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             this.mInitializationCallback = Misc.CheckNotNull(callback);
             this.mLocalClientId = localClientId;
@@ -47,29 +43,12 @@ namespace GooglePlayGames.BasicApi.Nearby
 
         public long LocalClientId
         {
-<<<<<<< HEAD
             get { return mLocalClientId; }
-=======
-            get
-            {
-                return mLocalClientId;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public Action<InitializationStatus> InitializationCallback
         {
-<<<<<<< HEAD
             get { return mInitializationCallback; }
         }
     }
 }
-=======
-            get
-            {
-                return mInitializationCallback;
-            }
-        }
-    }
-}
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -18,10 +18,6 @@ namespace GooglePlayGames.BasicApi.SavedGame
 {
     using System;
     using System.Collections.Generic;
-<<<<<<< HEAD
-=======
-    using GooglePlayGames.Native;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
     /// <summary>
     /// An enum for the different strategies that can be used to resolve saved game conflicts (i.e.
@@ -142,7 +138,6 @@ namespace GooglePlayGames.BasicApi.SavedGame
         /// The request failed because it was given bad input (e.g. a filename with 200 characters).
         /// </summary>
         ///
-<<<<<<< HEAD
         BadInputError = -4,
 
         UiBusy = -5
@@ -165,28 +160,6 @@ namespace GooglePlayGames.BasicApi.SavedGame
     /// </summary>
     public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMetadata original,
         byte[] originalData, ISavedGameMetadata unmerged, byte[] unmergedData);
-=======
-        BadInputError = -4
-    }
-
-///
-/// <summary>
-/// A delegate that is invoked when we encounter a conflict during execution of
-/// <see cref="ISavedGameClient.OpenWithAutomaticConflictResolution"/>. The caller must resolve the
-/// conflict using the passed <see cref="IConflictResolver"/>. All passed metadata is open.
-/// If <see cref="ISavedGameClient.OpenWithAutomaticConflictResolution"/> was invoked with
-/// <c>prefetchDataOnConflict</c> set to <c>true</c>, the <paramref name="originalData"/> and
-/// <paramref name="unmergedData"/> will be equal to the binary data of the "original" and
-/// "unmerged" saved game respectively (and null otherwise). Since conflict files may be generated
-/// by other clients, it is possible that neither of the passed saved games were originally written
-/// by the current device. Consequently, any conflict resolution strategy should not rely on local
-/// data that is not part of the binary data of the passed saved games - this data will not be
-/// present if conflict resolution occurs on a different device. In addition, since a given saved
-/// game may have multiple conflicts, this callback must be designed to handle multiple invocations.
-/// </summary>
-public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMetadata original,
-    byte[] originalData, ISavedGameMetadata unmerged, byte[] unmergedData);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
     /// <summary>
     /// The main entry point for interacting with saved games. Saved games are persisted in the cloud
@@ -250,13 +223,8 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// returned metadata will only be non-null if the open succeeded. This callback will always
         /// execute on the game thread and the returned metadata (if any) will be "Open".</param>
         void OpenWithAutomaticConflictResolution(string filename, DataSource source,
-<<<<<<< HEAD
             ConflictResolutionStrategy resolutionStrategy,
             Action<SavedGameRequestStatus, ISavedGameMetadata> callback);
-=======
-                                             ConflictResolutionStrategy resolutionStrategy,
-                                             Action<SavedGameRequestStatus, ISavedGameMetadata> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Opens the file with the indicated name and data source. If there is a conflict that
@@ -285,13 +253,8 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// will always execute on the game thread and the returned metadata (if any) will be "Open".
         /// </param>
         void OpenWithManualConflictResolution(string filename, DataSource source,
-<<<<<<< HEAD
             bool prefetchDataOnConflict, ConflictCallback conflictCallback,
             Action<SavedGameRequestStatus, ISavedGameMetadata> completedCallback);
-=======
-                                          bool prefetchDataOnConflict, ConflictCallback conflictCallback,
-                                          Action<SavedGameRequestStatus, ISavedGameMetadata> completedCallback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Reads the binary data of the passed saved game. The passed metadata must be opened (i.e.
@@ -307,11 +270,7 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// bytes will correspond to the binary data for the file. In the case of
         /// </param>
         void ReadBinaryData(ISavedGameMetadata metadata,
-<<<<<<< HEAD
             Action<SavedGameRequestStatus, byte[]> completedCallback);
-=======
-                        Action<SavedGameRequestStatus, byte[]> completedCallback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Shows the select saved game UI with the indicated configuration. If the user selects a
@@ -335,11 +294,7 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// receive <see cref="UserClosedUI"/> and a null saved game. This callback will always execute
         /// on the game thread.</param>
         void ShowSelectSavedGameUI(string uiTitle, uint maxDisplayedSavedGames, bool showCreateSaveUI,
-<<<<<<< HEAD
             bool showDeleteSaveUI, Action<SelectUIStatus, ISavedGameMetadata> callback);
-=======
-                               bool showDeleteSaveUI, Action<SelectUIStatus, ISavedGameMetadata> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Durably commits an update to the passed saved game. When this method returns successfully,
@@ -363,11 +318,7 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// will always execute on the game thread and the returned metadata (if any) will NOT be
         /// "Open" (i.e. commiting an update closes the metadata).</param>
         void CommitUpdate(ISavedGameMetadata metadata, SavedGameMetadataUpdate updateForMetadata,
-<<<<<<< HEAD
             byte[] updatedBinaryData, Action<SavedGameRequestStatus, ISavedGameMetadata> callback);
-=======
-                      byte[] updatedBinaryData, Action<SavedGameRequestStatus, ISavedGameMetadata> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Returns the metadata for all known saved games for this game. All returned saved games are
@@ -382,11 +333,7 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         /// will always execute on the game thread and the returned metadata (if any) will NOT be
         /// "Open".</param>
         void FetchAllSavedGames(DataSource source,
-<<<<<<< HEAD
             Action<SavedGameRequestStatus, List<ISavedGameMetadata>> callback);
-=======
-                            Action<SavedGameRequestStatus, List<ISavedGameMetadata>> callback);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
         /// <summary>
         /// Delete the specified snapshot.
@@ -423,9 +370,4 @@ public delegate void ConflictCallback(IConflictResolver resolver, ISavedGameMeta
         void ResolveConflict(ISavedGameMetadata chosenMetadata, SavedGameMetadataUpdate metadataUpdate,
             byte[] updatedData);
     }
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -44,74 +44,32 @@ namespace GooglePlayGames.BasicApi.SavedGame
 
         public bool IsDescriptionUpdated
         {
-<<<<<<< HEAD
             get { return mDescriptionUpdated; }
-=======
-            get
-            {
-                return mDescriptionUpdated;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string UpdatedDescription
         {
-<<<<<<< HEAD
             get { return mNewDescription; }
-=======
-            get
-            {
-                return mNewDescription;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsCoverImageUpdated
         {
-<<<<<<< HEAD
             get { return mCoverImageUpdated; }
-=======
-            get
-            {
-                return mCoverImageUpdated;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public byte[] UpdatedPngCoverImage
         {
-<<<<<<< HEAD
             get { return mNewPngCoverImage; }
-=======
-            get
-            {
-                return mNewPngCoverImage;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public bool IsPlayedTimeUpdated
         {
-<<<<<<< HEAD
             get { return mNewPlayedTime.HasValue; }
-=======
-            get
-            {
-                return mNewPlayedTime.HasValue;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public TimeSpan? UpdatedPlayedTime
         {
-<<<<<<< HEAD
             get { return mNewPlayedTime; }
-=======
-            get
-            {
-                return mNewPlayedTime;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public struct Builder
@@ -141,11 +99,7 @@ namespace GooglePlayGames.BasicApi.SavedGame
                 if (newPlayedTime.TotalMilliseconds > ulong.MaxValue)
                 {
                     throw new InvalidOperationException("Timespans longer than ulong.MaxValue " +
-<<<<<<< HEAD
                                                         "milliseconds are not allowed");
-=======
-                        "milliseconds are not allowed");
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 }
 
                 mNewPlayedTime = newPlayedTime;
@@ -158,8 +112,4 @@ namespace GooglePlayGames.BasicApi.SavedGame
             }
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

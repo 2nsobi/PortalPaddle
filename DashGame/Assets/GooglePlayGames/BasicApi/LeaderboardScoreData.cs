@@ -13,12 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi
 {
@@ -58,119 +54,48 @@ namespace GooglePlayGames.BasicApi
             get
             {
                 return mStatus == ResponseStatus.Success ||
-<<<<<<< HEAD
                        mStatus == ResponseStatus.SuccessWithStale;
-=======
-                mStatus == ResponseStatus.SuccessWithStale;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
         public ResponseStatus Status
         {
-<<<<<<< HEAD
             get { return mStatus; }
 
             internal set { mStatus = value; }
-=======
-            get
-            {
-                return mStatus;
-            }
-
-            internal set
-            {
-                mStatus = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public ulong ApproximateCount
         {
-<<<<<<< HEAD
             get { return mApproxCount; }
 
             internal set { mApproxCount = value; }
-=======
-            get
-            {
-                return mApproxCount;
-            }
-
-            internal set
-            {
-                mApproxCount  = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string Title
         {
-<<<<<<< HEAD
             get { return mTitle; }
 
             internal set { mTitle = value; }
-=======
-            get
-            {
-                return mTitle;
-            }
-
-            internal set
-            {
-                mTitle = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string Id
         {
-<<<<<<< HEAD
             get { return mId; }
 
             internal set { mId = value; }
-=======
-            get
-            {
-                return mId;
-            }
-
-            internal set
-            {
-                mId = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public IScore PlayerScore
         {
-<<<<<<< HEAD
             get { return mPlayerScore; }
 
             internal set { mPlayerScore = value; }
-=======
-            get
-            {
-                return mPlayerScore;
-            }
-
-            internal set
-            {
-                mPlayerScore = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public IScore[] Scores
         {
-<<<<<<< HEAD
             get { return mScores.ToArray(); }
-=======
-            get
-            {
-                return mScores.ToArray();
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         internal int AddScore(PlayGamesScore score)
@@ -181,56 +106,24 @@ namespace GooglePlayGames.BasicApi
 
         public ScorePageToken PrevPageToken
         {
-<<<<<<< HEAD
             get { return mPrevPage; }
 
             internal set { mPrevPage = value; }
-=======
-            get
-            {
-                return mPrevPage;
-            }
-
-            internal set
-            {
-                mPrevPage = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public ScorePageToken NextPageToken
         {
-<<<<<<< HEAD
             get { return mNextPage; }
 
             internal set { mNextPage = value; }
-=======
-            get
-            {
-                return mNextPage;
-            }
-
-            internal set
-            {
-                mNextPage = value;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public override string ToString()
         {
             return string.Format("[LeaderboardScoreData: mId={0}, " +
-<<<<<<< HEAD
                                  " mStatus={1}, mApproxCount={2}, mTitle={3}]",
-=======
-                " mStatus={1}, mApproxCount={2}, mTitle={3}]",
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 mId, mStatus, mApproxCount, mTitle);
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

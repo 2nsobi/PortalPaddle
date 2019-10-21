@@ -13,7 +13,6 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
 
@@ -25,12 +24,6 @@ namespace GooglePlayGames.BasicApi
         Backward = 2,
     }
 
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
-
-namespace GooglePlayGames.BasicApi
-{
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
     /// <summary>
     /// Score page token. This holds the internal token used
     /// to page through the score pages.  The id, collection, and
@@ -39,92 +32,47 @@ namespace GooglePlayGames.BasicApi
     /// </summary>
     public class ScorePageToken
     {
-<<<<<<< HEAD
-=======
-
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         private string mId;
         private object mInternalObject;
         private LeaderboardCollection mCollection;
         private LeaderboardTimeSpan mTimespan;
-<<<<<<< HEAD
         private ScorePageDirection mDirection;
 
         internal ScorePageToken(object internalObject, string id,
             LeaderboardCollection collection, LeaderboardTimeSpan timespan,
             ScorePageDirection direction)
-=======
-
-        internal ScorePageToken(object internalObject, string id,
-            LeaderboardCollection collection, LeaderboardTimeSpan timespan)
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             mInternalObject = internalObject;
             mId = id;
             mCollection = collection;
             mTimespan = timespan;
-<<<<<<< HEAD
             mDirection = direction;
-=======
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public LeaderboardCollection Collection
         {
-<<<<<<< HEAD
             get { return mCollection; }
-=======
-            get
-            {
-                return mCollection;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public LeaderboardTimeSpan TimeSpan
         {
-<<<<<<< HEAD
             get { return mTimespan; }
         }
 
         public ScorePageDirection Direction
         {
             get { return mDirection; }
-=======
-            get
-            {
-                return mTimespan;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         public string LeaderboardId
         {
-<<<<<<< HEAD
             get { return mId; }
-=======
-            get
-            {
-                return mId;
-            }
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         internal object InternalObject
         {
-<<<<<<< HEAD
             get { return mInternalObject; }
         }
     }
 }
 #endif
-=======
-            get
-            {
-                return mInternalObject;
-            }
-        }
-    }
-}
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

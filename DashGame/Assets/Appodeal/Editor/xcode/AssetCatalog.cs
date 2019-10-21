@@ -3,15 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-<<<<<<< HEAD
 namespace Unity.Appodeal.Xcode {
     internal class DeviceTypeRequirement {
-=======
-namespace Unity.Appodeal.Xcode
-{
-	internal class DeviceTypeRequirement
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public static readonly string Key = "idiom";
         public static readonly string Any = "universal";
         public static readonly string iPhone = "iphone";
@@ -20,24 +13,14 @@ namespace Unity.Appodeal.Xcode
         public static readonly string iWatch = "watch";
     }
 
-<<<<<<< HEAD
     internal class MemoryRequirement {
-=======
-	internal class MemoryRequirement
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public static readonly string Key = "memory";
         public static readonly string Any = "";
         public static readonly string Mem1GB = "1GB";
         public static readonly string Mem2GB = "2GB";
     }
 
-<<<<<<< HEAD
     internal class GraphicsRequirement {
-=======
-	internal class GraphicsRequirement
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public static readonly string Key = "graphics-feature-set";
         public static readonly string Any = "";
         public static readonly string Metal1v2 = "metal1v2";
@@ -45,12 +28,7 @@ namespace Unity.Appodeal.Xcode
     }
 
     // only used for image sets
-<<<<<<< HEAD
     internal class SizeClassRequirement {
-=======
-    internal class SizeClassRequirement
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public static readonly string HeightKey = "height-class";
         public static readonly string WidthKey = "width-class";
         public static readonly string Any = "";
@@ -59,12 +37,7 @@ namespace Unity.Appodeal.Xcode
     }
 
     // only used for image sets
-<<<<<<< HEAD
     internal class ScaleRequirement {
-=======
-    internal class ScaleRequirement
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public static readonly string Key = "scale";
         public static readonly string Any = ""; // vector image
         public static readonly string X1 = "1x";
@@ -72,7 +45,6 @@ namespace Unity.Appodeal.Xcode
         public static readonly string X3 = "3x";
     }
 
-<<<<<<< HEAD
     internal class DeviceRequirement {
         internal Dictionary<string, string> values = new Dictionary<string, string> ();
 
@@ -119,70 +91,11 @@ namespace Unity.Appodeal.Xcode
     }
 
     internal class AssetCatalog {
-=======
-    internal class DeviceRequirement
-    {
-        internal Dictionary<string, string> values = new Dictionary<string, string>();
-
-        public DeviceRequirement AddDevice(string device)
-        {
-			AddCustom(DeviceTypeRequirement.Key, device);
-            return this;
-        }
-
-        public DeviceRequirement AddMemory(string memory)
-        {
-			AddCustom(MemoryRequirement.Key, memory);
-            return this;
-        }
-
-        public DeviceRequirement AddGraphics(string graphics)
-        {
-			AddCustom(GraphicsRequirement.Key, graphics);
-            return this;
-        }
-
-        public DeviceRequirement AddWidthClass(string sizeClass)
-        {
-            AddCustom(SizeClassRequirement.WidthKey, sizeClass);
-            return this;
-        }
-
-        public DeviceRequirement AddHeightClass(string sizeClass)
-        {
-            AddCustom(SizeClassRequirement.HeightKey, sizeClass);
-            return this;
-        }
-
-        public DeviceRequirement AddScale(string scale)
-        {
-            AddCustom(ScaleRequirement.Key, scale);
-            return this;
-        }
-
-        public DeviceRequirement AddCustom(string key, string value)
-        {
-            if (values.ContainsKey(key))
-                values.Remove(key);
-            values.Add(key, value);
-            return this;
-        }
-
-        public DeviceRequirement()
-        {
-			values.Add("idiom", DeviceTypeRequirement.Any);
-        }
-    }
-
-    internal class AssetCatalog
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         AssetFolder m_Root;
 
         public string path { get { return m_Root.path; } }
         public AssetFolder root { get { return m_Root; } }
 
-<<<<<<< HEAD
         public AssetCatalog (string path, string authorId) {
             if (Path.GetExtension (path) != ".xcassets")
                 throw new Exception ("Asset catalogs must have xcassets extension");
@@ -198,25 +111,6 @@ namespace Unity.Appodeal.Xcode
             AssetFolder folder = root;
             foreach (var pathItem in pathItems)
                 folder = folder.OpenFolder (pathItem);
-=======
-        public AssetCatalog(string path, string authorId)
-        {
-            if (Path.GetExtension(path) != ".xcassets")
-                throw new Exception("Asset catalogs must have xcassets extension");
-            m_Root = new AssetFolder(path, null, authorId);
-        }
-
-        AssetFolder OpenFolderForResource(string relativePath)
-        {
-            var pathItems = PBXPath.Split(relativePath).ToList();
-
-            // remove path filename
-            pathItems.RemoveAt(pathItems.Count - 1);
-
-            AssetFolder folder = root;
-            foreach (var pathItem in pathItems)
-                folder = folder.OpenFolder(pathItem);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return folder;
         }
 
@@ -227,7 +121,6 @@ namespace Unity.Appodeal.Xcode
         // If you want to put certain resources in folders with namespace, first
         // manually create the folders and then set the providesNamespace attribute.
         // OpenNamespacedFolder may help to do this.
-<<<<<<< HEAD
         public AssetDataSet OpenDataSet (string relativePath) {
             var folder = OpenFolderForResource (relativePath);
             return folder.OpenDataSet (Path.GetFileName (relativePath));
@@ -246,55 +139,19 @@ namespace Unity.Appodeal.Xcode
         public AssetBrandAssetGroup OpenBrandAssetGroup (string relativePath) {
             var folder = OpenFolderForResource (relativePath);
             return folder.OpenBrandAssetGroup (Path.GetFileName (relativePath));
-=======
-        public AssetDataSet OpenDataSet(string relativePath)
-        {
-            var folder = OpenFolderForResource(relativePath);
-            return folder.OpenDataSet(Path.GetFileName(relativePath));
-        }
-
-        public AssetImageSet OpenImageSet(string relativePath)
-        {
-            var folder = OpenFolderForResource(relativePath);
-            return folder.OpenImageSet(Path.GetFileName(relativePath));
-        }
-        
-        public AssetImageStack OpenImageStack(string relativePath)
-        {
-            var folder = OpenFolderForResource(relativePath);
-            return folder.OpenImageStack(Path.GetFileName(relativePath));
-        }
-
-        public AssetBrandAssetGroup OpenBrandAssetGroup(string relativePath)
-        {
-            var folder = OpenFolderForResource(relativePath);
-            return folder.OpenBrandAssetGroup(Path.GetFileName(relativePath));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         // Checks if a folder with given path exists and returns it if it does.
         // Otherwise, creates a new folder. Parent folders are created if needed.
-<<<<<<< HEAD
         public AssetFolder OpenFolder (string relativePath) {
             if (relativePath == null)
                 return root;
             var pathItems = PBXPath.Split (relativePath);
-=======
-        public AssetFolder OpenFolder(string relativePath)
-        {
-            if (relativePath == null)
-                return root;
-            var pathItems = PBXPath.Split(relativePath);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             if (pathItems.Length == 0)
                 return root;
             AssetFolder folder = root;
             foreach (var pathItem in pathItems)
-<<<<<<< HEAD
                 folder = folder.OpenFolder (pathItem);
-=======
-                folder = folder.OpenFolder(pathItem);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return folder;
         }
 
@@ -303,27 +160,16 @@ namespace Unity.Appodeal.Xcode
         // directories if needed. Effectively calls OpenFolder(relativeBasePath).
         // Then, relative to this directory, creates namespacePath directories with "provides
         // namespace" attribute set. Fails if the attribute can't be set.
-<<<<<<< HEAD
         public AssetFolder OpenNamespacedFolder (string relativeBasePath, string namespacePath) {
             var folder = OpenFolder (relativeBasePath);
             var pathItems = PBXPath.Split (namespacePath);
             foreach (var pathItem in pathItems) {
                 folder = folder.OpenFolder (pathItem);
-=======
-        public AssetFolder OpenNamespacedFolder(string relativeBasePath, string namespacePath)
-        {
-            var folder = OpenFolder(relativeBasePath);
-            var pathItems = PBXPath.Split(namespacePath);
-            foreach (var pathItem in pathItems)
-            {
-                folder = folder.OpenFolder(pathItem);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 folder.providesNamespace = true;
             }
             return folder;
         }
 
-<<<<<<< HEAD
         public void Write () {
             Write (null);
         }
@@ -334,26 +180,10 @@ namespace Unity.Appodeal.Xcode
     }
 
     internal abstract class AssetCatalogItem {
-=======
-        public void Write()
-        {
-            Write(null);
-        }
-
-        public void Write(List<string> warnings)
-        {
-            m_Root.Write(warnings);
-        }
-    }
-
-    internal abstract class AssetCatalogItem
-    {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         public readonly string name;
         public readonly string authorId;
         public string path { get { return m_Path; } }
 
-<<<<<<< HEAD
         protected Dictionary<string, string> m_Properties = new Dictionary<string, string> ();
 
         protected string m_Path;
@@ -361,21 +191,10 @@ namespace Unity.Appodeal.Xcode
         public AssetCatalogItem (string name, string authorId) {
             if (name != null && name.Contains ("/"))
                 throw new Exception ("Asset catalog item must not have slashes in name");
-=======
-        protected Dictionary<string, string> m_Properties = new Dictionary<string, string>();
-
-        protected string m_Path;
-
-        public AssetCatalogItem(string name, string authorId)
-        {
-            if (name != null && name.Contains("/"))
-                throw new Exception("Asset catalog item must not have slashes in name");
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             this.name = name;
             this.authorId = authorId;
         }
 
-<<<<<<< HEAD
         protected JsonElementDict WriteInfoToJson (JsonDocument doc) {
             var info = doc.root.CreateDict ("info");
             info.SetInteger ("version", 1);
@@ -396,52 +215,19 @@ namespace Unity.Appodeal.Xcode
                 if (m_Items.Count > 0 && value != m_ProvidesNamespace)
                     throw new Exception ("Asset folder namespace providing status can't be " +
                         "changed after items have been added");
-=======
-        protected JsonElementDict WriteInfoToJson(JsonDocument doc)
-        {
-            var info = doc.root.CreateDict("info");
-            info.SetInteger("version", 1);
-            info.SetString("author", authorId);
-            return info;
-        }
-
-        public abstract void Write(List<string> warnings);
-    }
-
-    internal class AssetFolder : AssetCatalogItem
-    {
-        List<AssetCatalogItem> m_Items = new List<AssetCatalogItem>();
-        bool m_ProvidesNamespace = false;
-
-        public bool providesNamespace
-        {
-            get { return m_ProvidesNamespace; }
-            set {
-                if (m_Items.Count > 0 && value != m_ProvidesNamespace)
-                    throw new Exception("Asset folder namespace providing status can't be "+
-                                        "changed after items have been added");
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 m_ProvidesNamespace = value;
             }
         }
 
-<<<<<<< HEAD
         internal AssetFolder (string parentPath, string name, string authorId) : base (name, authorId) {
             if (name != null)
                 m_Path = Path.Combine (parentPath, name);
-=======
-        internal AssetFolder(string parentPath, string name, string authorId) : base(name, authorId)
-        {
-            if (name != null)
-                m_Path = Path.Combine(parentPath, name);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             else
                 m_Path = parentPath;
         }
 
         // Checks if a folder with given name exists and returns it if it does.
         // Otherwise, creates a new folder.
-<<<<<<< HEAD
         public AssetFolder OpenFolder (string name) {
             var item = GetChild (name);
             if (item != null) {
@@ -461,38 +247,12 @@ namespace Unity.Appodeal.Xcode
                 if (item is T)
                     return item as T;
                 throw new Exception ("The given path is already occupied with an asset");
-=======
-        public AssetFolder OpenFolder(string name)
-        {
-            var item = GetChild(name);
-            if (item != null)
-            {
-                if (item is AssetFolder)
-                    return item as AssetFolder;
-                throw new Exception("The given path is already occupied with an asset");
-            }
-
-            var folder = new AssetFolder(m_Path, name, authorId);
-            m_Items.Add(folder);
-            return folder;
-        }
-
-        T GetExistingItemWithType<T>(string name) where T : class
-        {
-            var item = GetChild(name);
-            if (item != null)
-            {
-                if (item is T)
-                    return item as T;
-                throw new Exception("The given path is already occupied with an asset");
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return null;
         }
 
         // Checks if a dataset with given name exists and returns it if it does.
         // Otherwise, creates a new data set.
-<<<<<<< HEAD
         public AssetDataSet OpenDataSet (string name) {
             var item = GetExistingItemWithType<AssetDataSet> (name);
             if (item != null)
@@ -500,22 +260,11 @@ namespace Unity.Appodeal.Xcode
 
             var dataset = new AssetDataSet (m_Path, name, authorId);
             m_Items.Add (dataset);
-=======
-        public AssetDataSet OpenDataSet(string name)
-        {
-            var item = GetExistingItemWithType<AssetDataSet>(name);
-            if (item != null)
-                return item;
-
-            var dataset = new AssetDataSet(m_Path, name, authorId);
-            m_Items.Add(dataset);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return dataset;
         }
 
         // Checks if an imageset with given name exists and returns it if it does.
         // Otherwise, creates a new image set.
-<<<<<<< HEAD
         public AssetImageSet OpenImageSet (string name) {
             var item = GetExistingItemWithType<AssetImageSet> (name);
             if (item != null)
@@ -547,62 +296,18 @@ namespace Unity.Appodeal.Xcode
 
             var brandAsset = new AssetBrandAssetGroup (m_Path, name, authorId);
             m_Items.Add (brandAsset);
-=======
-        public AssetImageSet OpenImageSet(string name)
-        {
-            var item = GetExistingItemWithType<AssetImageSet>(name);
-            if (item != null)
-                return item;
-
-            var imageset = new AssetImageSet(m_Path, name, authorId);
-            m_Items.Add(imageset);
-            return imageset;
-        }
-        
-        // Checks if a image stack with given name exists and returns it if it does.
-        // Otherwise, creates a new image stack.
-        public AssetImageStack OpenImageStack(string name)
-        {
-            var item = GetExistingItemWithType<AssetImageStack>(name);
-            if (item != null)
-                return item;
-            
-            var imageStack = new AssetImageStack(m_Path, name, authorId);
-            m_Items.Add(imageStack);
-            return imageStack;
-        }
-        
-        // Checks if a brand asset with given name exists and returns it if it does.
-        // Otherwise, creates a new brand asset.
-        public AssetBrandAssetGroup OpenBrandAssetGroup(string name)
-        {
-            var item = GetExistingItemWithType<AssetBrandAssetGroup>(name);
-            if (item != null)
-                return item;
-            
-            var brandAsset = new AssetBrandAssetGroup(m_Path, name, authorId);
-            m_Items.Add(brandAsset);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             return brandAsset;
         }
 
         // Returns the requested item or null if not found
-<<<<<<< HEAD
         public AssetCatalogItem GetChild (string name) {
             foreach (var item in m_Items) {
-=======
-        public AssetCatalogItem GetChild(string name)
-        {
-            foreach (var item in m_Items)
-            {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (item.name == name)
                     return item;
             }
             return null;
         }
 
-<<<<<<< HEAD
         void WriteJson () {
             if (!providesNamespace)
                 return; // json is optional when namespace is not provided
@@ -640,72 +345,18 @@ namespace Unity.Appodeal.Xcode
 
             public VariantData (DeviceRequirement requirement, string path) {
                 this.requirement = requirement;
-=======
-        void WriteJson()
-        {
-            if (!providesNamespace)
-                return; // json is optional when namespace is not provided
-
-            var doc = new JsonDocument();
-
-            WriteInfoToJson(doc);
-
-            var props = doc.root.CreateDict("properties");
-            props.SetBoolean("provides-namespace", providesNamespace);
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
-        }
-
-        public override void Write(List<string> warnings)
-        {
-            if (Directory.Exists(m_Path))
-                Directory.Delete(m_Path, true); // ensure we start from clean state
-            Directory.CreateDirectory(m_Path);
-            WriteJson();
-
-            foreach (var item in m_Items)
-                item.Write(warnings);
-        }
-    }
-
-    abstract class AssetCatalogItemWithVariants : AssetCatalogItem
-    {
-		protected List<VariantData> m_Variants = new List<VariantData>();
-        protected List<string> m_ODRTags = new List<string>();
-
-        protected AssetCatalogItemWithVariants(string name, string authorId) :
-            base(name, authorId)
-        {
-        }
-
-        protected class VariantData
-        {
-			public DeviceRequirement requirement;
-            public string path;
-
-            public VariantData(DeviceRequirement requirement, string path)
-            {
-				this.requirement = requirement;
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 this.path = path;
             }
         }
 
-<<<<<<< HEAD
         public bool HasVariant (DeviceRequirement requirement) {
             foreach (var item in m_Variants) {
-=======
-        public bool HasVariant(DeviceRequirement requirement)
-        {
-            foreach (var item in m_Variants)
-            {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 if (item.requirement.values == requirement.values)
                     return true;
             }
             return false;
         }
 
-<<<<<<< HEAD
         public void AddOnDemandResourceTag (string tag) {
             if (!m_ODRTags.Contains (tag))
                 m_ODRTags.Add (tag);
@@ -735,49 +386,10 @@ namespace Unity.Appodeal.Xcode
             foreach (var kv in req.values) {
                 if (kv.Value != null && kv.Value != "")
                     item.SetString (kv.Key, kv.Value);
-=======
-        public void AddOnDemandResourceTag(string tag)
-        {
-            if (!m_ODRTags.Contains(tag))
-                m_ODRTags.Add(tag);
-        }
-
-        protected void AddVariant(VariantData newItem)
-        {
-            foreach (var item in m_Variants)
-            {
-                if (item.requirement.values == newItem.requirement.values)
-                    throw new Exception("The given requirement has been already added");
-                if (Path.GetFileName(item.path) == Path.GetFileName(path))
-                    throw new Exception("Two items within the same set must not have the same file name");
-            }
-            if (Path.GetFileName(newItem.path) == "Contents.json")
-                throw new Exception("The file name must not be equal to Contents.json");
-            m_Variants.Add(newItem);
-        }
-
-        protected void WriteODRTagsToJson(JsonElementDict info)
-        {
-            if (m_ODRTags.Count > 0)
-            {
-                var tags = info.CreateArray("on-demand-resource-tags");
-                foreach (var tag in m_ODRTags)
-                    tags.AddString(tag);
-            }
-        }
-
-        protected void WriteRequirementsToJson(JsonElementDict item, DeviceRequirement req)
-        {
-            foreach (var kv in req.values)
-            {
-                if (kv.Value != null && kv.Value != "")
-                    item.SetString(kv.Key, kv.Value);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
         // Returns the filename of the resulting file
-<<<<<<< HEAD
         protected string CopyFileToSet (string path, HashSet<string> existingFilenames, List<string> warnings) {
             var filename = Path.GetFileName (path);
             if (!File.Exists (path)) {
@@ -795,56 +407,20 @@ namespace Unity.Appodeal.Xcode
                 }
                 existingFilenames.Add (filename);
                 File.Copy (path, Path.Combine (m_Path, filename));
-=======
-        protected string CopyFileToSet(string path, HashSet<string> existingFilenames, List<string> warnings)
-        {
-            var filename = Path.GetFileName(path);
-            if (!File.Exists(path))
-            {
-                if (warnings != null)
-                    warnings.Add("File not found: " + path);
-            }
-            else
-            {
-                // ensure that we don't create duplicate filenames
-                int index = 1;
-                string filenameBase = Path.GetFileNameWithoutExtension(filename);
-                string extension = Path.GetExtension(filename);
-
-                while (existingFilenames.Contains(filename))
-                {
-                    filename = String.Format("{0}-{1}{2}", filenameBase, index, extension);
-                    index++;
-                }
-                existingFilenames.Add(filename);
-                File.Copy(path, Path.Combine(m_Path, filename));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return filename;
         }
     }
 
-<<<<<<< HEAD
     internal class AssetDataSet : AssetCatalogItemWithVariants {
         class DataSetVariant : VariantData {
             public string id;
 
             public DataSetVariant (DeviceRequirement requirement, string path, string id) : base (requirement, path) {
-=======
-    internal class AssetDataSet : AssetCatalogItemWithVariants
-    {
-        class DataSetVariant : VariantData
-        {
-            public string id;
-
-            public DataSetVariant(DeviceRequirement requirement, string path, string id) : base(requirement, path)
-            {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
                 this.id = id;
             }
         }
 
-<<<<<<< HEAD
         internal AssetDataSet (string parentPath, string name, string authorId) : base (name, authorId) {
             m_Path = Path.Combine (parentPath, name + ".dataset");
         }
@@ -892,80 +468,17 @@ namespace Unity.Appodeal.Xcode
 
     internal class ImageResizing {
         public enum SlicingType {
-=======
-        internal AssetDataSet(string parentPath, string name, string authorId) : base(name, authorId)
-        {
-            m_Path = Path.Combine(parentPath, name + ".dataset");
-        }
-
-		// an exception is thrown is two equivalent requirements are added.
-        // The same asset dataset must not have paths with equivalent filenames.
-        // The identifier allows to identify which data variant is actually loaded (use
-        // the typeIdentifer property of the NSDataAsset that was created from the data set)
-        public void AddVariant(DeviceRequirement requirement, string path, string typeIdentifier)
-        {
-            foreach (DataSetVariant item in m_Variants)
-            {
-                if (item.id != null && typeIdentifier != null && item.id == typeIdentifier)
-                    throw new Exception("Two items within the same dataset must not have the same id");
-            }
-            AddVariant(new DataSetVariant(requirement, path, typeIdentifier));
-        }
-
-        public override void Write(List<string> warnings)
-        {
-            Directory.CreateDirectory(m_Path);
-
-            var doc = new JsonDocument();
-
-            var info = WriteInfoToJson(doc);
-            WriteODRTagsToJson(info);
-
-            var data = doc.root.CreateArray("data");
-
-            var existingFilenames = new HashSet<string>();
-
-            foreach (DataSetVariant item in m_Variants)
-            {
-                var filename = CopyFileToSet(item.path, existingFilenames, warnings);
-
-                var docItem = data.AddDict();
-                docItem.SetString("filename", filename);
-                WriteRequirementsToJson(docItem, item.requirement);
-                if (item.id != null)
-                    docItem.SetString("universal-type-identifier", item.id);
-            }
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
-        }
-    }
-
-    internal class ImageAlignment
-    {
-        public int left = 0, right = 0, top = 0, bottom = 0;
-    }
-
-    internal class ImageResizing
-    {
-        public enum SlicingType
-        {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             Horizontal,
             Vertical,
             HorizontalAndVertical
         }
 
-<<<<<<< HEAD
         public enum ResizeMode {
-=======
-        public enum ResizeMode
-        {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             Stretch,
             Tile
         }
 
         public SlicingType type = SlicingType.HorizontalAndVertical;
-<<<<<<< HEAD
         public int left = 0; // only valid for horizontal slicing
         public int right = 0; // only valid for horizontal slicing
         public int top = 0; // only valid for vertical slicing
@@ -1015,88 +528,20 @@ namespace Unity.Appodeal.Xcode
                     return "3-part-vertical";
                 case ImageResizing.SlicingType.HorizontalAndVertical:
                     return "9-part";
-=======
-        public int left = 0;                // only valid for horizontal slicing
-        public int right = 0;               // only valid for horizontal slicing
-        public int top = 0;                 // only valid for vertical slicing
-        public int bottom = 0;              // only valid for vertical slicing
-        public ResizeMode centerResizeMode = ResizeMode.Stretch;
-        public int centerWidth = 0;         // only valid for vertical slicing
-        public int centerHeight = 0;        // only valid for horizontal slicing
-    }
-
-    // TODO: rendering intent property
-    internal class AssetImageSet : AssetCatalogItemWithVariants
-    {
-        internal AssetImageSet(string assetCatalogPath, string name, string authorId) : base(name, authorId)
-        {
-            m_Path = Path.Combine(assetCatalogPath, name + ".imageset");
-        }
-
-        class ImageSetVariant : VariantData
-        {
-            public ImageAlignment alignment = null;
-            public ImageResizing resizing = null;
-
-            public ImageSetVariant(DeviceRequirement requirement, string path) : base(requirement, path)
-            {
-            }
-        }
-
-        public void AddVariant(DeviceRequirement requirement, string path)
-        {
-            AddVariant(new ImageSetVariant(requirement, path));
-        }
-
-        public void AddVariant(DeviceRequirement requirement, string path, ImageAlignment alignment, ImageResizing resizing)
-        {
-            var imageset = new ImageSetVariant(requirement, path);
-            imageset.alignment = alignment;
-            imageset.resizing = resizing;
-            AddVariant(imageset);
-        }
-
-        void WriteAlignmentToJson(JsonElementDict item, ImageAlignment alignment)
-        {
-            var docAlignment = item.CreateDict("alignment-insets");
-            docAlignment.SetInteger("top", alignment.top);
-            docAlignment.SetInteger("bottom", alignment.bottom);
-            docAlignment.SetInteger("left", alignment.left);
-            docAlignment.SetInteger("right", alignment.right);
-        }
-
-        static string GetSlicingMode(ImageResizing.SlicingType mode)
-        {
-            switch (mode)
-            {
-                case ImageResizing.SlicingType.Horizontal: return "3-part-horizontal";
-                case ImageResizing.SlicingType.Vertical: return "3-part-vertical";
-                case ImageResizing.SlicingType.HorizontalAndVertical: return "9-part";
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return "";
         }
 
-<<<<<<< HEAD
         static string GetCenterResizeMode (ImageResizing.ResizeMode mode) {
             switch (mode) {
                 case ImageResizing.ResizeMode.Stretch:
                     return "stretch";
                 case ImageResizing.ResizeMode.Tile:
                     return "tile";
-=======
-        static string GetCenterResizeMode(ImageResizing.ResizeMode mode)
-        {
-            switch (mode)
-            {
-                case ImageResizing.ResizeMode.Stretch: return "stretch";
-                case ImageResizing.ResizeMode.Tile: return "tile";
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
             return "";
         }
 
-<<<<<<< HEAD
         void WriteResizingToJson (JsonElementDict item, ImageResizing resizing) {
             var docResizing = item.CreateDict ("resizing");
             docResizing.SetString ("mode", GetSlicingMode (resizing.type));
@@ -1135,84 +580,25 @@ namespace Unity.Appodeal.Xcode
                     WriteResizingToJson (docItem, item.resizing);
             }
             doc.WriteToFile (Path.Combine (m_Path, "Contents.json"));
-=======
-        void WriteResizingToJson(JsonElementDict item, ImageResizing resizing)
-        {
-            var docResizing = item.CreateDict("resizing");
-            docResizing.SetString("mode", GetSlicingMode(resizing.type));
-
-            var docCenter = docResizing.CreateDict("center");
-            docCenter.SetString("mode", GetCenterResizeMode(resizing.centerResizeMode));
-            docCenter.SetInteger("width", resizing.centerWidth);
-            docCenter.SetInteger("height", resizing.centerHeight);
-
-            var docInsets = docResizing.CreateDict("cap-insets");
-            docInsets.SetInteger("top", resizing.top);
-            docInsets.SetInteger("bottom", resizing.bottom);
-            docInsets.SetInteger("left", resizing.left);
-            docInsets.SetInteger("right", resizing.right);
-        }
-
-        public override void Write(List<string> warnings)
-        {
-            Directory.CreateDirectory(m_Path);
-            var doc = new JsonDocument();
-            var info = WriteInfoToJson(doc);
-            WriteODRTagsToJson(info);
-
-            var images = doc.root.CreateArray("images");
-
-            var existingFilenames = new HashSet<string>();
-
-            foreach (ImageSetVariant item in m_Variants)
-            {
-                var filename = CopyFileToSet(item.path, existingFilenames, warnings);
-
-                var docItem = images.AddDict();
-                docItem.SetString("filename", filename);
-                WriteRequirementsToJson(docItem, item.requirement);
-                if (item.alignment != null)
-                    WriteAlignmentToJson(docItem, item.alignment);
-                if (item.resizing != null)
-                    WriteResizingToJson(docItem, item.resizing);
-            }
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
     }
 
     /*  A stack layer may either contain an image set or reference another imageset
-<<<<<<< HEAD
      */
     class AssetImageStackLayer : AssetCatalogItem {
         internal AssetImageStackLayer (string assetCatalogPath, string name, string authorId) : base (name, authorId) {
             m_Path = Path.Combine (assetCatalogPath, name + ".imagestacklayer");
             m_Imageset = new AssetImageSet (m_Path, "Content", authorId);
-=======
-    */
-    class AssetImageStackLayer : AssetCatalogItem
-    {
-        internal AssetImageStackLayer(string assetCatalogPath, string name, string authorId) : base(name, authorId)
-        {
-            m_Path = Path.Combine(assetCatalogPath, name + ".imagestacklayer");
-            m_Imageset = new AssetImageSet(m_Path, "Content", authorId);
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         }
 
         AssetImageSet m_Imageset = null;
         string m_ReferencedName = null;
 
-<<<<<<< HEAD
         public void SetReference (string name) {
-=======
-        public void SetReference(string name)
-        {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             m_Imageset = null;
             m_ReferencedName = name;
         }
 
-<<<<<<< HEAD
         public string ReferencedName () {
             return m_ReferencedName;
         }
@@ -1275,87 +661,10 @@ namespace Unity.Appodeal.Xcode
 
     class AssetBrandAssetGroup : AssetCatalogItem {
         class AssetBrandAssetItem {
-=======
-        public string ReferencedName()
-        {
-            return m_ReferencedName;
-        }
-
-        public AssetImageSet GetImageSet()
-        {
-            return m_Imageset;
-        }
-
-        public override void Write(List<string> warnings)
-        {
-            Directory.CreateDirectory(m_Path);
-            var doc = new JsonDocument();
-            WriteInfoToJson(doc);
-
-            if (m_ReferencedName != null)
-            {
-                var props = doc.root.CreateDict("properties");
-                var reference = props.CreateDict("content-reference");
-                reference.SetString("type", "image-set");
-                reference.SetString("name", m_ReferencedName);
-                reference.SetString("matching-style", "fully-qualified-name");
-            }
-            if (m_Imageset != null)
-                m_Imageset.Write(warnings);
-
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
-        }
-    }
-
-    class AssetImageStack : AssetCatalogItem
-    {
-        List<AssetImageStackLayer> m_Layers = new List<AssetImageStackLayer>();
-
-        internal AssetImageStack(string assetCatalogPath, string name, string authorId) : base(name, authorId)
-        {
-            m_Path = Path.Combine(assetCatalogPath, name + ".imagestack");
-        }
-
-        public AssetImageStackLayer AddLayer(string name)
-        {
-            foreach (var layer in m_Layers)
-            {
-                if (layer.name == name)
-                    throw new Exception("A layer with given name already exists");
-            }
-            var newLayer = new AssetImageStackLayer(m_Path, name, authorId);
-            m_Layers.Add(newLayer);
-            return newLayer;
-        }
-
-        public override void Write(List<string> warnings)
-        {
-            Directory.CreateDirectory(m_Path);
-            var doc = new JsonDocument();
-            WriteInfoToJson(doc);
-
-            var docLayers = doc.root.CreateArray("layers");
-            foreach (var layer in m_Layers)
-            {
-                layer.Write(warnings);
- 
-                var docLayer = docLayers.AddDict();
-                docLayer.SetString("filename", Path.GetFileName(layer.path));
-            }
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
-        }
-    }
-    
-    class AssetBrandAssetGroup : AssetCatalogItem
-    {
-        class AssetBrandAssetItem
-        {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             internal string idiom = null;
             internal string role = null;
             internal int width, height;
             internal AssetCatalogItem item = null;
-<<<<<<< HEAD
 
         }
 
@@ -1371,32 +680,11 @@ namespace Unity.Appodeal.Xcode
                     throw new Exception ("An item with given name already exists");
             }
             var newItem = new AssetBrandAssetItem ();
-=======
-            
-        }
-
-        List<AssetBrandAssetItem> m_Items = new List<AssetBrandAssetItem>();
-        
-        internal AssetBrandAssetGroup(string assetCatalogPath, string name, string authorId) : base(name, authorId)
-        {
-            m_Path = Path.Combine(assetCatalogPath, name + ".brandassets");
-        }
-        
-        void AddItem(AssetCatalogItem item, string idiom, string role, int width, int height)
-        {
-            foreach (var it in m_Items)
-            {
-                if (it.item.name == item.name)
-                    throw new Exception("An item with given name already exists");
-            }
-            var newItem = new AssetBrandAssetItem();
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             newItem.item = item;
             newItem.idiom = idiom;
             newItem.role = role;
             newItem.width = width;
             newItem.height = height;
-<<<<<<< HEAD
             m_Items.Add (newItem);
         }
 
@@ -1431,44 +719,3 @@ namespace Unity.Appodeal.Xcode
         }
     }
 }
-=======
-            m_Items.Add(newItem);
-        }
-
-        public AssetImageSet OpenImageSet(string name, string idiom, string role, int width, int height)
-        {
-            var newItem = new AssetImageSet(m_Path, name, authorId);
-            AddItem(newItem, idiom, role, width, height);
-            return newItem;
-        }
-
-        public AssetImageStack OpenImageStack(string name, string idiom, string role, int width, int height)
-        {
-            var newItem = new AssetImageStack(m_Path, name, authorId);
-            AddItem(newItem, idiom, role, width, height);
-            return newItem;
-        }
-        
-        public override void Write(List<string> warnings)
-        {
-            Directory.CreateDirectory(m_Path);
-            var doc = new JsonDocument();
-            WriteInfoToJson(doc);
-            
-            var docAssets = doc.root.CreateArray("assets");
-            foreach (var item in m_Items)
-            {
-                var docAsset = docAssets.AddDict();
-                docAsset.SetString("size", String.Format("{0}x{1}", item.width, item.height));
-                docAsset.SetString("idiom", item.idiom);
-                docAsset.SetString("role", item.role);
-                docAsset.SetString("filename", Path.GetFileName(item.item.path));
-                
-                item.item.Write(warnings);
-            }
-            doc.WriteToFile(Path.Combine(m_Path, "Contents.json"));
-        }
-    }
-
-} // namespace UnityEditor.iOS.Xcode
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa

@@ -13,12 +13,8 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-<<<<<<< HEAD
 
 #if UNITY_ANDROID
-=======
-#if (UNITY_ANDROID || (UNITY_IPHONE && !NO_GPGS))
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
 
 namespace GooglePlayGames.BasicApi
 {
@@ -105,11 +101,7 @@ namespace GooglePlayGames.BasicApi
         }
 
         public void GetAnotherServerAuthCode(bool reAuthenticateIfNeeded,
-<<<<<<< HEAD
             Action<string> callback)
-=======
-                                             Action<string> callback)
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         {
             LogUsage();
             callback(null);
@@ -191,20 +183,6 @@ namespace GooglePlayGames.BasicApi
         }
 
         /// <summary>
-<<<<<<< HEAD
-=======
-        /// Returns the achievement corresponding to the passed achievement identifier.
-        /// </summary>
-        /// <returns>The achievement.</returns>
-        /// <param name="achId">Achievement identifier.</param>
-        public Achievement GetAchievement(string achId)
-        {
-            LogUsage();
-            return null;
-        }
-
-        /// <summary>
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// Unlocks the achievement.
         /// </summary>
         /// <param name="achId">Achievement identifier.</param>
@@ -329,13 +307,8 @@ namespace GooglePlayGames.BasicApi
             if (callback != null)
             {
                 callback(new LeaderboardScoreData(
-<<<<<<< HEAD
                     leaderboardId,
                     ResponseStatus.LicenseCheckFailed));
-=======
-                        leaderboardId,
-                        ResponseStatus.LicenseCheckFailed));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -358,13 +331,8 @@ namespace GooglePlayGames.BasicApi
             if (callback != null)
             {
                 callback(new LeaderboardScoreData(
-<<<<<<< HEAD
                     token.LeaderboardId,
                     ResponseStatus.LicenseCheckFailed));
-=======
-                        token.LeaderboardId,
-                        ResponseStatus.LicenseCheckFailed));
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             }
         }
 
@@ -507,30 +475,13 @@ namespace GooglePlayGames.BasicApi
         }
 
         /// <summary>
-<<<<<<< HEAD
-=======
-        /// Gets the Android API client. Returns null on non-Android players.
-        /// </summary>
-        /// <returns>The API client.</returns>
-        public IntPtr GetApiClient()
-        {
-            LogUsage();
-            return IntPtr.Zero;
-        }
-
-        /// <summary>
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
         /// Sets the gravity for popups (Android only).
         /// </summary>
         /// <remarks>This can only be called after authentication.  It affects
         /// popups for achievements and other game services elements.</remarks>
         /// <param name="gravity">Gravity for the popup.</param>
-<<<<<<< HEAD
         public void SetGravityForPopups(Gravity gravity)
         {
-=======
-        public void SetGravityForPopups(Gravity gravity) {
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
             LogUsage();
         }
 
@@ -543,8 +494,4 @@ namespace GooglePlayGames.BasicApi
         }
     }
 }
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 1aec2fb31523c49eca080618f52a5c2e6c3139fa
