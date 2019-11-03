@@ -166,7 +166,7 @@ PlayerSettings:
     Standalone: com.Company.ProductName
     iPhone: com.nnaji.PortalPaddle
   buildNumber: {}
-  AndroidBundleVersionCode: 47
+  AndroidBundleVersionCode: 49
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -256,7 +256,7 @@ PlayerSettings:
   clonedFromGUID: fe97a795c6621624a9fc94fd2443b1a8
   templatePackageId: com.unity.template.2d@1.0.0
   templateDefaultScene: Assets/Scenes/SampleScene.unity
-  AndroidTargetArchitectures: 7
+  AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: C:/Users/NNobi/PortalPaddleKey.keystore

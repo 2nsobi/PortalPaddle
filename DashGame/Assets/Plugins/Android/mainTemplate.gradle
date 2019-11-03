@@ -47,7 +47,7 @@ apply plugin: 'com.android.application'
 **APPLY_PLUGINS**
 
 dependencies {
-	implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 // Android Resolver Dependencies Start
     implementation 'com.google.games:gpgs-plugin-support:0.10.04' // Assets/GooglePlayGames/Editor/GooglePlayGamesPluginDependencies.xml:11
@@ -60,6 +60,7 @@ android {
       exclude ('/lib/armeabi/*' + '*')
       exclude ('/lib/mips/*' + '*')
       exclude ('/lib/mips64/*' + '*')
+      exclude ('/lib/x86/*' + '*')
       exclude ('/lib/x86_64/*' + '*')
   }
 }
